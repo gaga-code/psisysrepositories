@@ -52,21 +52,9 @@
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									<th class="center" style="width:50px;">序号</th>
-									<th class="center">企业名称</th>
-									<th class="center">电话</th>
-									<th class="center">传真</th>
-									<th class="center">邮编</th>
-									<th class="center">法人代表</th>
-									<th class="center">电子邮件</th>
-									<th class="center">网址</th>
-									<th class="center">开户银行</th>
-									<th class="center">银行账号</th>
-									<th class="center">地址</th>
-									<th class="center">所属分支</th>
-									<th class="center">所属总部</th>
-									<th class="center">备注</th>
-									<th class="center">企业logo</th>
-									<th class="center">备注</th>
+									<th class="center">编号</th>
+									<th class="center">名称</th>
+									<th class="center">收入支出</th>
 									<th class="center">操作</th>
 								</tr>
 							</thead>
@@ -218,7 +206,7 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="新增";
-			 diag.URL = '<%=basePath%>accountset/goAdd.do';
+			 diag.URL = '<%=basePath%>ietypes/goAdd.do';
 			 diag.Width = 450;
 			 diag.Height = 368;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -254,7 +242,7 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="编辑";
-			 diag.URL = '<%=basePath%>psiaccountset/goEdit.do?FHBUTTON_ID='+Id;
+			 diag.URL = '<%=basePath%>ietypes/goEdit.do?FHBUTTON_ID='+Id;
 			 diag.Width = 450;
 			 diag.Height = 368;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -295,7 +283,7 @@
 							top.jzts();
 							$.ajax({
 								type: "POST",
-								url: '<%=basePath%>fhbutton/deleteAll.do?tm='+new Date().getTime(),
+								url: '<%=basePath%>ietypes/deleteAll.do?tm='+new Date().getTime(),
 						    	data: {DATA_IDS:str},
 								dataType:'json',
 								//beforeSend: validateData,

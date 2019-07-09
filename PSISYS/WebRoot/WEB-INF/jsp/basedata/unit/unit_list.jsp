@@ -52,20 +52,7 @@
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									<th class="center" style="width:50px;">序号</th>
-									<th class="center">企业名称</th>
-									<th class="center">电话</th>
-									<th class="center">传真</th>
-									<th class="center">邮编</th>
-									<th class="center">法人代表</th>
-									<th class="center">电子邮件</th>
-									<th class="center">网址</th>
-									<th class="center">开户银行</th>
-									<th class="center">银行账号</th>
-									<th class="center">地址</th>
-									<th class="center">所属分支</th>
-									<th class="center">所属总部</th>
-									<th class="center">备注</th>
-									<th class="center">企业logo</th>
+									<th class="center">单位名称</th>
 									<th class="center">备注</th>
 									<th class="center">操作</th>
 								</tr>
@@ -218,7 +205,7 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="新增";
-			 diag.URL = '<%=basePath%>accountset/goAdd.do';
+			 diag.URL = '<%=basePath%>unit/goAdd.do';
 			 diag.Width = 450;
 			 diag.Height = 368;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -240,7 +227,7 @@
 			bootbox.confirm("确定要删除吗?", function(result) {
 				if(result) {
 					top.jzts();
-					var url = "<%=basePath%>accountset/delete.do?FHBUTTON_ID="+Id+"&tm="+new Date().getTime();
+					var url = "<%=basePath%>unit/delete.do?FHBUTTON_ID="+Id+"&tm="+new Date().getTime();
 					$.get(url,function(data){
 						nextPage(${page.currentPage});
 					});
@@ -254,7 +241,7 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="编辑";
-			 diag.URL = '<%=basePath%>psiaccountset/goEdit.do?FHBUTTON_ID='+Id;
+			 diag.URL = '<%=basePath%>unit/goEdit.do?FHBUTTON_ID='+Id;
 			 diag.Width = 450;
 			 diag.Height = 368;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -295,7 +282,7 @@
 							top.jzts();
 							$.ajax({
 								type: "POST",
-								url: '<%=basePath%>fhbutton/deleteAll.do?tm='+new Date().getTime(),
+								url: '<%=basePath%>unit/deleteAll.do?tm='+new Date().getTime(),
 						    	data: {DATA_IDS:str},
 								dataType:'json',
 								//beforeSend: validateData,

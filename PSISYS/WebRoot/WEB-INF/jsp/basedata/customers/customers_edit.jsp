@@ -28,39 +28,39 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">企业名称:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">客户编号:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入企业名称" title="企业名称" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">电话:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">所属地区:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入电话" title="电话" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">传真:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">客户名称:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入传真" title="传真" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">邮编:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">简称:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入邮编" title="邮编" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">法人代表:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">拼音编码:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入法人代表" title="法人代表" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">电子邮件:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">电话:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入电子邮件" title="电子邮件" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">网址:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">传真:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入网址" title="网址" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">开户银行:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">手机:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入开户银行" title="开户银行" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">银行账号:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">传呼:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入银行账号" title="银行账号" style="width:98%;"/></td>
 							</tr>
 							<tr>
@@ -68,19 +68,35 @@
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入地址" title="地址" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">所属分支:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">联系人:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入所属分支" title="所属分支" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">所属总部:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">经销方式:</td>
 								<td><input type="text" name="BZ" id="BZ" value="${pd.BZ}" maxlength="255" placeholder="这里输入所属总部" title="所属总部" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">备注:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">信誉程度:</td>
 								<td><input type="text" name="BZ" id="BZ" value="${pd.BZ}" maxlength="255" placeholder="这里输入备注" title="备注" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">企业logo:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">备注1:</td>
+								<td><input type="text" name="BZ" id="BZ" value="${pd.BZ}" maxlength="255" placeholder="这里输入企业logo" title="企业logo" style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:79px;text-align: right;padding-top: 13px;">备注2:</td>
+								<td><input type="text" name="BZ" id="BZ" value="${pd.BZ}" maxlength="255" placeholder="这里输入企业logo" title="企业logo" style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:79px;text-align: right;padding-top: 13px;">备注3:</td>
+								<td><input type="text" name="BZ" id="BZ" value="${pd.BZ}" maxlength="255" placeholder="这里输入企业logo" title="企业logo" style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:79px;text-align: right;padding-top: 13px;">备注4:</td>
+								<td><input type="text" name="BZ" id="BZ" value="${pd.BZ}" maxlength="255" placeholder="这里输入企业logo" title="企业logo" style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:79px;text-align: right;padding-top: 13px;">备注5:</td>
 								<td><input type="text" name="BZ" id="BZ" value="${pd.BZ}" maxlength="255" placeholder="这里输入企业logo" title="企业logo" style="width:98%;"/></td>
 							</tr>
 							<tr>
