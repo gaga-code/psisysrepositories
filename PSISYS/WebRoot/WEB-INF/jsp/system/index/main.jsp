@@ -20,8 +20,8 @@
 	</style>
 	
 	<!-- 及时通讯css -->
-	<link rel="stylesheet" href="plugins/fhim/dist/css/layui.css">
-	<link rel="stylesheet" href="plugins/fhim/dist/css/contextMenu.css">
+<!-- 	<link rel="stylesheet" href="plugins/fhim/dist/css/layui.css">
+	<link rel="stylesheet" href="plugins/fhim/dist/css/contextMenu.css"> -->
 	
 </head>
 	<body class="no-skin">
@@ -170,9 +170,9 @@
 		</script>
 		
 		<!-- 及时通讯js¨ -->
-		<script src="plugins/fhim/dist/layui.js"></script>
+		<!-- <script src="plugins/fhim/dist/layui.js"></script> -->
 		<!-- 及时通讯页面¨ -->
-		<%@ include file="im.jsp"%>
+		<%-- <%@ include file="im.jsp"%> --%>
 		
 	</body>
 </html>

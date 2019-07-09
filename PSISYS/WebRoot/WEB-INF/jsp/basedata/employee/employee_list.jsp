@@ -52,21 +52,17 @@
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									<th class="center" style="width:50px;">序号</th>
-									<th class="center">企业名称</th>
+									<th class="center">员工编号</th>
+									<th class="center">员工名称</th>
+									<th class="center">拼音编码</th>
+									<th class="center">出生日期</th>
+									<th class="center">性别</th>
+									<th class="center">学历</th>
+									<th class="center">卡号</th>
+									<th class="center">籍贯</th>
+									<th class="center">是否离职</th>
+									<th class="center">入职日期</th>
 									<th class="center">电话</th>
-									<th class="center">传真</th>
-									<th class="center">邮编</th>
-									<th class="center">法人代表</th>
-									<th class="center">电子邮件</th>
-									<th class="center">网址</th>
-									<th class="center">开户银行</th>
-									<th class="center">银行账号</th>
-									<th class="center">地址</th>
-									<th class="center">所属分支</th>
-									<th class="center">所属总部</th>
-									<th class="center">备注</th>
-									<th class="center">企业logo</th>
-									<th class="center">备注</th>
 									<th class="center">操作</th>
 								</tr>
 							</thead>
@@ -218,7 +214,7 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="新增";
-			 diag.URL = '<%=basePath%>accountset/goAdd.do';
+			 diag.URL = '<%=basePath%>employee/goAdd.do';
 			 diag.Width = 450;
 			 diag.Height = 368;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -240,7 +236,7 @@
 			bootbox.confirm("确定要删除吗?", function(result) {
 				if(result) {
 					top.jzts();
-					var url = "<%=basePath%>accountset/delete.do?FHBUTTON_ID="+Id+"&tm="+new Date().getTime();
+					var url = "<%=basePath%>employee/delete.do?FHBUTTON_ID="+Id+"&tm="+new Date().getTime();
 					$.get(url,function(data){
 						nextPage(${page.currentPage});
 					});
@@ -254,7 +250,7 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="编辑";
-			 diag.URL = '<%=basePath%>psiaccountset/goEdit.do?FHBUTTON_ID='+Id;
+			 diag.URL = '<%=basePath%>employee/goEdit.do?FHBUTTON_ID='+Id;
 			 diag.Width = 450;
 			 diag.Height = 368;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -295,7 +291,7 @@
 							top.jzts();
 							$.ajax({
 								type: "POST",
-								url: '<%=basePath%>fhbutton/deleteAll.do?tm='+new Date().getTime(),
+								url: '<%=basePath%>employee/deleteAll.do?tm='+new Date().getTime(),
 						    	data: {DATA_IDS:str},
 								dataType:'json',
 								//beforeSend: validateData,
