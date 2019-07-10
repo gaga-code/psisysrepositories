@@ -52,15 +52,9 @@
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									<th class="center" style="width:50px;">序号</th>
-									<th class="center">现金</th>
-									<th class="center">转账</th>
-									<th class="center">微信</th>
-									<th class="center">支付宝</th>
-									<th class="center">刷卡</th>
-									<th class="center">微信（罗）</th>
-									<th class="center">快递代收</th>
-									<th class="center">老板收</th>
-									<th class="center">其他</th>
+									<th class="center">编号</th>
+									<th class="center">支付方式</th>
+									<th class="center">备注</th>
 									<th class="center">操作</th>
 								</tr>
 							</thead>
