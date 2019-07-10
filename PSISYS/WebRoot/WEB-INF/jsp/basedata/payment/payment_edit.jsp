@@ -13,7 +13,7 @@
 	<!-- jsp文件头和头部 -->
 	<%@ include file="../../system/index/top.jsp"%>
 </head>
-<body class="no-skin" >
+<body class="no-skin" > 
 <!-- /section:basics/navbar.layout -->
 <div class="main-container" id="main-container">
 	<!-- /section:basics/sidebar -->
@@ -23,21 +23,21 @@
 				<div class="row">
 					<div class="col-xs-12">
 					
-					<form action="accountset/${msg }.do" name="Form" id="Form" method="post">
-						<input type="hidden" name="FHBUTTON_ID" id="FHBUTTON_ID" value="${pd.FHBUTTON_ID}"/>
+					<form action="payment/${msg}.do" name="Form" id="Form" method="post">
+						<input type="hidden" name="PAYMETHOD_ID" id="PAYMETHOD_ID" value="${pd.PAYMETHOD_ID}"/>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">编号:</td>
-								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入企业名称" title="企业名称" style="width:98%;"/></td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">支付方式:</td>
+								<td><input type="text" name="NAME" id="PAYMETHODNAME" value="${pd.PAYMETHODNAME}" maxlength="30" placeholder="这里输入支付方式" title="支付方式" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">支付方式:</td>
-								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入企业名称" title="企业名称" style="width:98%;"/></td>
+								<td style="width:79px;text-align: right;padding-top: 13px;">经手人:</td>
+								<td><input type="text" name="NAME" id="USERNAME" value="${pd.USERNAME}" maxlength="30" placeholder="这里输入经手人" title="经手人" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;">备注:</td>
-								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入银行账号" title="银行账号" style="width:98%;"/></td>
+								<td><input type="text" name="NAME" id="NOTE" value="${pd.NOTE}" maxlength="30" placeholder="这里输入备注" title="备注" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="text-align: center;" colspan="10">
@@ -83,34 +83,34 @@
 		}
 		//保存
 		function save(){
-			if($("#NAME").val()==""){
-				$("#NAME").tips({
+			if($("#PAYMETHODNAME").val()==""){
+				$("#PAYMETHODNAME").tips({
 					side:3,
-		            msg:'请输入企业名称',
+		            msg:'请输入支付方式名称',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#NAME").focus();
+				$("#PAYMETHODNAME").focus();
 			return false;
 			}
-			if($("#QX_NAME").val()==""){
-				$("#QX_NAME").tips({
+			if($("#USERNAME").val()==""){
+				$("#USERNAME").tips({
 					side:3,
-		            msg:'请输入电话',
+		            msg:'请输入经手人',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#QX_NAME").focus();
+				$("#USERNAME").focus();
 			return false;
 			}
-			if($("#BZ").val()==""){
-				$("#BZ").tips({
+			if($("#NOTE").val()==""){
+				$("#NOTE").tips({
 					side:3,
 		            msg:'请输入备注',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#BZ").focus();
+				$("#NOTE").focus();
 			return false;
 			}
 			$("#Form").submit();

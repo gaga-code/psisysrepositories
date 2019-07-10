@@ -1,26 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="FhbuttonMapper">
+<mapper namespace="PaymentMapper">
 	
 	<!--表名 -->
 	<sql id="tableName">
-		SYS_FHBUTTON
+		base_paymethod
 	</sql>
 	
 	<!-- 字段 -->
-	<sql id="Field">
-		NAME,	
-		QX_NAME,	
-		BZ,	
-		FHBUTTON_ID
+	<sql id="FieldCha">	
+		PAYMETHOD_ID,	
+		PAYMETHODNAME,	
+		USER_ID,
+		NOTE
+	</sql>
+	<!-- 字段 -->
+	<sql id="FieldAdd">	
+		PAYMETHOD_ID,	
+		PAYMETHODNAME,	
+		USER_ID,
+		NOTE,
+		PK_SOBOOKS,
+		CRATETIME
 	</sql>
 	
 	<!-- 字段值 -->
-	<sql id="FieldValue">
-		#{NAME},	
-		#{QX_NAME},	
-		#{BZ},	
-		#{FHBUTTON_ID}
+	<sql id="FieldValueAdd">
+		#{PAYMETHOD_ID},	
+		#{PAYMETHODNAME},	
+		#{USER_ID},	
+		#{NOTE},
+		#{PK_SOBOOKS},
+		#{CRATETIME}
+	</sql>
+		<!-- 字段值 -->
+	<sql id="FieldValue2">
+		#{PAYMETHOD_ID},	
+		#{PAYMETHODNAME},	
+		#{USER_ID},	
+		#{NOTE},
+		#{PK_SOBOOKS},
+		#{CRATETIME}
+	</sql>
+		<!-- 字段值 -->
+	<sql id="FieldValue3">
+		#{PAYMETHOD_ID},	
+		#{PAYMETHODNAME},	
+		#{USER_ID},	
+		#{NOTE},
+		#{PK_SOBOOKS},
+		#{CRATETIME}
 	</sql>
 	
 	<!-- 新增-->
@@ -28,9 +57,9 @@
 		insert into 
 	<include refid="tableName"></include>
 		(
-	<include refid="Field"></include>
+	<include refid="FieldAdd"></include>
 		) values (
-	<include refid="FieldValue"></include>
+	<include refid="FieldValueAdd"></include>
 		)
 	</insert>
 	
@@ -39,7 +68,7 @@
 		delete from
 		<include refid="tableName"></include>
 		where 
-			FHBUTTON_ID = #{FHBUTTON_ID}
+			PAYMETHOD_ID = #{PAYMETHOD_ID}
 	</delete>
 	
 	<!-- 修改 -->
@@ -47,46 +76,43 @@
 		update
 		<include refid="tableName"></include>
 		set 
-			NAME = #{NAME},
-			QX_NAME = #{QX_NAME},
-			BZ = #{BZ},
-		FHBUTTON_ID = FHBUTTON_ID
+			PAYMETHODNAME = #{PAYMETHODNAME},
+			NOTE = #{NOTE},
+			USER_ID = #{USER_ID},
+			LASTTIME = #{LASTTIME}
 		where 
-		FHBUTTON_ID = #{FHBUTTON_ID}
+		PAYMETHOD_ID = #{PAYMETHOD_ID}	
 	</update>
 	
 	<!-- 通过ID获取数据 -->
 	<select id="findById" parameterType="pd" resultType="pd">
 		select 
-		<include refid="Field"></include>
+		<include refid="FieldCha"></include>
 		from 
 		<include refid="tableName"></include>
 		where 
-			FHBUTTON_ID = #{FHBUTTON_ID}
+			PAYMETHOD_ID = #{PAYMETHOD_ID}
 	</select>
 	
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
-		<include refid="Field"></include>
+		<include refid="FieldCha"></include>
 		from 
 		<include refid="tableName"></include>
 		where 1=1
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
 		and
 			(
-				NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-				 or 
-				QX_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+				PAYMETHODNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 			)
-				
 		</if>
 	</select>
 	
 	<!-- 列表(全部) -->
 	<select id="listAll" parameterType="pd" resultType="pd">
 		select
-		<include refid="Field"></include>
+		<include refid="FieldCha"></include>
 		from 
 		<include refid="tableName"></include>
 	</select>
@@ -96,7 +122,7 @@
 		delete from
 		<include refid="tableName"></include>
 		where 
-			FHBUTTON_ID in
+			PAYMETHOD_ID in
 		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
                  #{item}
 		</foreach>

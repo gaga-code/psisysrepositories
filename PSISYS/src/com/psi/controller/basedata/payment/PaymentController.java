@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
+import com.psi.service.basedata.payment.PaymentManager;
 import com.psi.service.system.fhbutton.FhbuttonManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Jurisdiction;
@@ -28,15 +29,15 @@ import com.psi.util.ObjectExcelView;
 import com.psi.util.PageData;
 
 /**
- * 说明：按钮管理
+ * 说明：支付方式
  */
 @Controller
 @RequestMapping(value="/payment")
 public class PaymentController extends BaseController {
 	
 	String menuUrl = "payment/list.do"; //菜单地址(权限用)
-	@Resource(name="fhbuttonService")
-	private FhbuttonManager fhbuttonService;
+	@Resource(name="paymentService")
+	private PaymentManager paymentService;
 	
 	/**保存
 	 * @param
@@ -44,13 +45,13 @@ public class PaymentController extends BaseController {
 	 */
 	@RequestMapping(value="/save")
 	public ModelAndView save() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"新增goods");
+		logBefore(logger, Jurisdiction.getUsername()+"新增支付方式");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("FHBUTTON_ID", this.get32UUID());	//主键
-		fhbuttonService.save(pd);
+		pd.put("PAYMETHOD_ID", this.get32UUID());	//主键
+		paymentService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -62,11 +63,11 @@ public class PaymentController extends BaseController {
 	 */
 	@RequestMapping(value="/delete")
 	public void delete(PrintWriter out) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"删除goods");
+		logBefore(logger, Jurisdiction.getUsername()+"删除支付方式");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		fhbuttonService.delete(pd);
+		paymentService.delete(pd);
 		out.write("success");
 		out.close();
 	}
@@ -77,12 +78,12 @@ public class PaymentController extends BaseController {
 	 */
 	@RequestMapping(value="/edit")
 	public ModelAndView edit() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"修改goods");
+		logBefore(logger, Jurisdiction.getUsername()+"修改支付方式");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		fhbuttonService.edit(pd);
+		paymentService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -94,18 +95,18 @@ public class PaymentController extends BaseController {
 	 */
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"列表goods");
+		logBefore(logger, Jurisdiction.getUsername()+"列表支付方式");
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-//		String keywords = pd.getString("keywords");				//关键词检索条件
-//		if(null != keywords && !"".equals(keywords)){
-//			pd.put("keywords", keywords.trim());
-//		}
-//		page.setPd(pd);
-//		List<PageData>	varList = fhbuttonService.list(page);	//列出列表
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+		page.setPd(pd);
+		List<PageData>	varList = paymentService.list(page);	//列出列表
 		mv.setViewName("basedata/payment/payment_list");
-//		mv.addObject("varList", varList);
+		mv.addObject("varList", varList);
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
@@ -135,7 +136,7 @@ public class PaymentController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd = fhbuttonService.findById(pd);	//根据ID读取
+		pd = paymentService.findById(pd);	//根据ID读取
 		mv.setViewName("system/payment/payment_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
@@ -149,7 +150,7 @@ public class PaymentController extends BaseController {
 	@RequestMapping(value="/deleteAll")
 	@ResponseBody
 	public Object deleteAll() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"批量删除goods");
+		logBefore(logger, Jurisdiction.getUsername()+"批量删除支付方式");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
 		PageData pd = new PageData();		
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -158,7 +159,7 @@ public class PaymentController extends BaseController {
 		String DATA_IDS = pd.getString("DATA_IDS");
 		if(null != DATA_IDS && !"".equals(DATA_IDS)){
 			String ArrayDATA_IDS[] = DATA_IDS.split(",");
-			fhbuttonService.deleteAll(ArrayDATA_IDS);
+			paymentService.deleteAll(ArrayDATA_IDS);
 			pd.put("msg", "ok");
 		}else{
 			pd.put("msg", "no");
@@ -174,24 +175,24 @@ public class PaymentController extends BaseController {
 	 */
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"导出goods到excel");
+		logBefore(logger, Jurisdiction.getUsername()+"导出支付方式到excel");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		List<String> titles = new ArrayList<String>();
-		titles.add("名称");	//1
-		titles.add("权限标识");	//2
+		titles.add("支付方式");	//1
+		titles.add("经手人");	//2
 		titles.add("备注");	//3
 		dataMap.put("titles", titles);
-		List<PageData> varOList = fhbuttonService.listAll(pd);
+		List<PageData> varOList = paymentService.listAll(pd);
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
-			vpd.put("var1", varOList.get(i).getString("NAME"));	//1
-			vpd.put("var2", varOList.get(i).getString("QX_NAME"));	//2
-			vpd.put("var3", varOList.get(i).getString("BZ"));	//3
+			vpd.put("var1", varOList.get(i).getString("PAYMETHODNAME"));	//1
+			vpd.put("var2", varOList.get(i).getString("USERNAME"));	//2
+			vpd.put("var3", varOList.get(i).getString("NOTE"));	//3
 			varList.add(vpd);
 		}
 		dataMap.put("varList", varList);
