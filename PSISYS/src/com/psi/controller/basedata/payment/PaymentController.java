@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.shiro.session.Session;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -21,9 +22,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
+import com.psi.entity.system.User;
 import com.psi.service.basedata.payment.PaymentManager;
-import com.psi.service.system.fhbutton.FhbuttonManager;
 import com.psi.util.AppUtil;
+import com.psi.util.Const;
 import com.psi.util.Jurisdiction;
 import com.psi.util.ObjectExcelView;
 import com.psi.util.PageData;
@@ -121,6 +123,10 @@ public class PaymentController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		Session session = Jurisdiction.getSession();
+		User user = (User)session.getAttribute(Const.SESSION_USER);
+		pd.put("USER_ID", user.getUSER_ID());
+		pd.put("USERNAME",user.getNAME());
 		mv.setViewName("basedata/payment/payment_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
@@ -137,7 +143,11 @@ public class PaymentController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd = paymentService.findById(pd);	//根据ID读取
-		mv.setViewName("system/payment/payment_edit");
+		Session session = Jurisdiction.getSession();
+		User user = (User)session.getAttribute(Const.SESSION_USER);
+		pd.put("USER_ID", user.getUSER_ID());
+		pd.put("USERNAME",user.getNAME());
+		mv.setViewName("basedata/payment/payment_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
 		return mv;

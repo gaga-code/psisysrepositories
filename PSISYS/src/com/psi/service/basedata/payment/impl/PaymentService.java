@@ -33,7 +33,7 @@ public class PaymentService implements PaymentManager{
 	 * @throws Exception
 	 */
 	public void delete(PageData pd)throws Exception{
-		dao.delete("PaymentMapper.delete", pd);
+		dao.update("PaymentMapper.delete", pd);
 	}
 	
 	/**修改

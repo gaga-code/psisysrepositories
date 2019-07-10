@@ -1,6 +1,7 @@
 package com.psi.entity;
 
 import com.psi.util.Const;
+import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
 import com.psi.util.Tools;
 
@@ -17,9 +18,19 @@ public class Page {
 	private boolean entityOrField;		//true:需要分页的地方，传入的参数就是Page实体；false:需要分页的地方，传入的参数所代表的实体拥有Page属性
 	private String pageStr;				//最终页面显示的底部翻页导航，详细见：getPageStr();
 	private String pageStrSimplify;		//最终页面显示的底部翻页导航，详细见：getPageStrSimplify();
+//	private String PK_SOBOOKS;          //设置帐套主键
+//	public String getPK_SOBOOKS() {
+//		return PK_SOBOOKS;
+//	}
+//
+//	public void setPK_SOBOOKS(String pK_SOBOOKS) {
+//		PK_SOBOOKS = pK_SOBOOKS;
+//	}
+
 	private PageData pd = new PageData();
 	
 	public Page(){
+//		this.setPK_SOBOOKS((String) Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS)); //设置帐套主键
 		try {
 			this.showCount = Integer.parseInt(Tools.readTxtFile(Const.PAGE));
 		} catch (Exception e) {

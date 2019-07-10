@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.session.Session;
+
 /** 
  * 说明：参数封装Map
  */
@@ -42,6 +44,9 @@ public class PageData extends HashMap implements Map{
 			}
 			returnMap.put(name, value); 
 		}
+//		String PK_SOBOOKS = (String) Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS);
+//		map.put("PK_SOBOOKS", PK_SOBOOKS);
+		returnMap.put("PK_SOBOOKS", "1");
 		map = returnMap;
 	}
 	

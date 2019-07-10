@@ -1,0 +1,25 @@
+1、时间datatime
+DateUtil.getTime().toString()
+
+
+<td><input oninput="changecode(this.value)" type="text" name="QX_NAME" id="QX_NAME" value="${pd.QX_NAME}" maxlength="50" placeholder="这里输入权限标识" title="权限标识" style="width:98%;"/></td>
+
+2、获取session里的属性值
+Session session = Jurisdiction.getSession();
+String sessionCode = (String)session.getAttribute(Const.SESSION_SECURITY_CODE);
+
+
+3、修改、删除、查询必加的
+and PK_SOBOOKS = #{PK_SOBOOKS}
+and IFNULL(dr,0)=0 
+
+4、删除
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update 
+		<include refid="tableName"></include>
+		set
+			DR = 1 
+		where 
+			PAYMETHOD_ID = #{PAYMETHOD_ID}
+	</update>
