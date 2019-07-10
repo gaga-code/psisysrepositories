@@ -21,22 +21,31 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
-import com.psi.service.system.fhbutton.FhbuttonManager;
+import com.psi.service.basedata.accountset.AccountSetManager;
+import com.psi.service.erp.level.LevelManager;
+import com.psi.service.erp.remarks.RemarksManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Jurisdiction;
 import com.psi.util.ObjectExcelView;
 import com.psi.util.PageData;
+import com.psi.util.Tools;
 
 /**
- * 说明：按钮管理
+ * 说明：账套管理
  */
 @Controller
 @RequestMapping(value="/accountset")
 public class AccountSetController extends BaseController {
-	
 	String menuUrl = "accountset/list.do"; //菜单地址(权限用)
-	@Resource(name="fhbuttonService")
-	private FhbuttonManager fhbuttonService;
+	
+	@Resource(name="accountSetService")
+	private AccountSetManager accountSetService;
+	
+//	@Resource(name="remarksService")
+//	private RemarksManager remarksService;
+//	
+//	@Resource(name="levelService")
+//	private LevelManager levelService;
 	
 	/**保存
 	 * @param
@@ -44,13 +53,15 @@ public class AccountSetController extends BaseController {
 	 */
 	@RequestMapping(value="/save")
 	public ModelAndView save() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"新增Fhbutton");
+		logBefore(logger, Jurisdiction.getUsername()+"新增accountset");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("FHBUTTON_ID", this.get32UUID());	//主键
-		fhbuttonService.save(pd);
+		pd.put("SOBOOKS_ID", this.get32UUID());		//主键
+		pd.put("CRATETIME", Tools.date2Str(new Date()));	//创建时间
+		pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
+		accountSetService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -62,11 +73,12 @@ public class AccountSetController extends BaseController {
 	 */
 	@RequestMapping(value="/delete")
 	public void delete(PrintWriter out) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"删除Fhbutton");
+		logBefore(logger, Jurisdiction.getUsername()+"删除accountset");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		fhbuttonService.delete(pd);
+		pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
+		accountSetService.delete(pd);
 		out.write("success");
 		out.close();
 	}
@@ -77,12 +89,13 @@ public class AccountSetController extends BaseController {
 	 */
 	@RequestMapping(value="/edit")
 	public ModelAndView edit() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"修改Fhbutton");
+		logBefore(logger, Jurisdiction.getUsername()+"修改accountset");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		fhbuttonService.edit(pd);
+		pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
+		accountSetService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -95,17 +108,59 @@ public class AccountSetController extends BaseController {
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表accountset");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-//		String keywords = pd.getString("keywords");				//关键词检索条件
-//		if(null != keywords && !"".equals(keywords)){
-//			pd.put("keywords", keywords.trim());
-//		}
-//		page.setPd(pd);
-//		List<PageData>	varList = fhbuttonService.list(page);	//列出Fhbutton列表
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+		}
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+		} 
+		page.setPd(pd);
+		List<PageData>	varList = accountSetService.list(page);	//列出accountset列表
 		mv.setViewName("basedata/accountset/accountset_list");
-//		mv.addObject("varList", varList);
+		mv.addObject("varList", varList);
+		mv.addObject("pd", pd);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		return mv;
+	}
+	
+	/**列表(弹窗选择用)
+	 * @param page
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/windowsList")
+	public ModelAndView windowsList(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表accountset");
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+		}
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+		} 
+		pd.put("USERNAME", Jurisdiction.getUsername());
+		page.setPd(pd);
+		List<PageData>	varList = accountSetService.list(page);	//列出Customer列表
+		mv.setViewName("basedata/accountset/windows_accountset_list");
+		mv.addObject("varList", varList);
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
@@ -120,9 +175,14 @@ public class AccountSetController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		pd.put("USERNAME", Jurisdiction.getUsername());	//用户名
+//		List<PageData>	varList = remarksService.listAll(pd);
+//		List<PageData>	varListL = levelService.listAll(pd);
 		mv.setViewName("basedata/accountset/accountset_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
+//		mv.addObject("varList", varList);
+//		mv.addObject("varListL", varListL);
 		return mv;
 	}	
 	
@@ -135,12 +195,37 @@ public class AccountSetController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd = fhbuttonService.findById(pd);	//根据ID读取
-		mv.setViewName("system/fhbutton/fhbutton_edit");
+		pd = accountSetService.findById(pd);	//根据ID读取
+//		pd.put("USERNAME", Jurisdiction.getUsername());	//用户名
+//		List<PageData>	varList = remarksService.listAll(pd);
+//		List<PageData>	varListL = levelService.listAll(pd);
+		mv.setViewName("basedata/accountset/accountset_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
+//		mv.addObject("varList", varList);
+//		mv.addObject("varListL", varListL);
 		return mv;
 	}	
+	
+	 /**查看页面
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/goView")
+	public ModelAndView goView()throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		pd = accountSetService.findById(pd);	//根据ID读取
+//		List<PageData>	varList = remarksService.listAll(pd);
+//		List<PageData>	varListL = levelService.listAll(pd);
+		mv.setViewName("basedata/accountset/accountset_view");
+		mv.addObject("msg", "edit");
+		mv.addObject("pd", pd);
+//		mv.addObject("varList", varList);
+//		mv.addObject("varListL", varListL);
+		return mv;
+	}
 	
 	 /**批量删除
 	 * @param
@@ -149,7 +234,7 @@ public class AccountSetController extends BaseController {
 	@RequestMapping(value="/deleteAll")
 	@ResponseBody
 	public Object deleteAll() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"批量删除Fhbutton");
+		logBefore(logger, Jurisdiction.getUsername()+"批量删除accountset");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
 		PageData pd = new PageData();		
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -158,7 +243,7 @@ public class AccountSetController extends BaseController {
 		String DATA_IDS = pd.getString("DATA_IDS");
 		if(null != DATA_IDS && !"".equals(DATA_IDS)){
 			String ArrayDATA_IDS[] = DATA_IDS.split(",");
-			fhbuttonService.deleteAll(ArrayDATA_IDS);
+			accountSetService.deleteAll(ArrayDATA_IDS);
 			pd.put("msg", "ok");
 		}else{
 			pd.put("msg", "no");
@@ -174,24 +259,41 @@ public class AccountSetController extends BaseController {
 	 */
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"导出Fhbutton到excel");
+		logBefore(logger, Jurisdiction.getUsername()+"导出accountset到excel");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		List<String> titles = new ArrayList<String>();
-		titles.add("名称");	//1
-		titles.add("权限标识");	//2
-		titles.add("备注");	//3
+		titles.add("姓名");	//1
+		titles.add("年龄");	//2
+		titles.add("手机");	//3
+		titles.add("地址");	//4
+		titles.add("QQ");	//5
+		titles.add("微信");	//6
+		titles.add("建档时间");	//7
+		titles.add("消费金额");	//8
+		titles.add("级别");	//9
+		titles.add("备注1");	//10
+		titles.add("备注2");	//11
 		dataMap.put("titles", titles);
-		List<PageData> varOList = fhbuttonService.listAll(pd);
+		pd.put("USERNAME", Jurisdiction.getUsername());
+		List<PageData> varOList = accountSetService.listAll(pd);
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
-			vpd.put("var1", varOList.get(i).getString("NAME"));	//1
-			vpd.put("var2", varOList.get(i).getString("QX_NAME"));	//2
-			vpd.put("var3", varOList.get(i).getString("BZ"));	//3
+			vpd.put("var1", varOList.get(i).getString("NAME"));	    //1
+			vpd.put("var2", varOList.get(i).getString("AGE"));	    //2
+			vpd.put("var3", varOList.get(i).get("PHONE").toString());	//3
+			vpd.put("var4", varOList.get(i).getString("ADDRESS"));	    //4
+			vpd.put("var5", varOList.get(i).get("QQ").toString());	//5
+			vpd.put("var6", varOList.get(i).getString("WEIXIN"));	    //6
+			vpd.put("var7", varOList.get(i).getString("CTIME"));	    //7
+			vpd.put("var8", varOList.get(i).get("MONEY").toString());	//8
+			vpd.put("var9", varOList.get(i).getString("LEVEL"));	    //9
+			vpd.put("var10", varOList.get(i).getString("REMARKS1"));	    //10
+			vpd.put("var11", varOList.get(i).getString("REMARKS2"));	    //11
 			varList.add(vpd);
 		}
 		dataMap.put("varList", varList);

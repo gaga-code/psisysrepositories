@@ -12,12 +12,8 @@
 <html lang="en">
 <head>
 <base href="<%=basePath%>">
-<!-- 下拉框 -->
-<link rel="stylesheet" href="static/ace/css/chosen.css" />
 <!-- jsp文件头和头部 -->
 <%@ include file="../../system/index/top.jsp"%>
-<!-- 日期框 -->
-<link rel="stylesheet" href="static/ace/css/datepicker.css" />
 </head>
 <body class="no-skin">
 
@@ -42,12 +38,9 @@
 										</span>
 									</div>
 								</td>
-								<%-- <td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
-								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td> --%>
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
-								<%-- <c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if> --%>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -65,9 +58,16 @@
 									<th class="center">电子邮件</th>
 									<th class="center">地址</th>
 									<th class="center">所属分支</th>
-									<th class="center">所属总部</th>
 									<th class="center">备注</th>
-									<th class="center" style="width:110px;">操作</th>
+									<th class="center">操作</th>
+									<!-- <th class="center">传真</th> -->
+									<!-- <th class="center">邮编</th> -->
+									<!-- <th class="center">网址</th> -->
+									<!-- <th class="center">开户银行</th>
+									<th class="center">银行账号</th> -->
+									<!-- <th class="center">所属总部</th> -->
+									<!-- <th class="center">备注</th> -->
+									<!-- <th class="center">企业logo</th> -->
 								</tr>
 							</thead>
 													
@@ -79,32 +79,24 @@
 									<c:forEach items="${varList}" var="var" varStatus="vs">
 										<tr>
 											<td class='center'>
-												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.SOBOOKS_ID}" class="ace" /><span class="lbl"></span></label>
+												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.FHBUTTON_ID}" class="ace" /><span class="lbl"></span></label>
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
-											<td class='center'>${var.ENTERPRISENAME}</td>
-											<td class='center'>${var.PHONE}</td>
-											<td class='center'>${var.LEGALREP}</td>
-											<td class='center'>${var.EMAIL}</td>
-											<td class='center'>${var.ADDRESS}</td>
-											<td class='center'>${var.SUBBRANCH}</td>
-											<td class='center'>${var.SUBHEADQUARTER}</td>
-											<td class='center'>${var.NOTE}</td>
+											<td class='center'>${var.NAME}</td>
+											<td class='center'>${var.QX_NAME}</td>
+											<td class='center'>${var.BZ}</td>
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
-													<a class="btn btn-xs btn-success" title="查看" onclick="view('${var.SOBOOKS_ID}');">
-														<i class="ace-icon fa fa-eye bigger-120" title="查看"></i>
-													</a>
 													<c:if test="${QX.edit == 1 }">
-													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.SOBOOKS_ID}');">
+													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.FHBUTTON_ID}');">
 														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
 													</a>
 													</c:if>
 													<c:if test="${QX.del == 1 }">
-													<a class="btn btn-xs btn-danger" onclick="del('${var.SOBOOKS_ID}');">
+													<a class="btn btn-xs btn-danger" onclick="del('${var.FHBUTTON_ID}');">
 														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
 													</a>
 													</c:if>
@@ -116,16 +108,9 @@
 														</button>
 			
 														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-															<li>
-																<a style="cursor:pointer;" onclick="view('${var.SOBOOKS_ID}');" class="tooltip-success" data-rel="tooltip" title="查看">
-																	<span class="green">
-																		<i class="ace-icon fa fa-eye bigger-120"></i>
-																	</span>
-																</a>
-															</li>
 															<c:if test="${QX.edit == 1 }">
 															<li>
-																<a style="cursor:pointer;" onclick="edit('${var.SOBOOKS_ID}');" class="tooltip-success" data-rel="tooltip" title="修改">
+																<a style="cursor:pointer;" onclick="edit('${var.FHBUTTON_ID}');" class="tooltip-success" data-rel="tooltip" title="修改">
 																	<span class="green">
 																		<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
 																	</span>
@@ -134,7 +119,7 @@
 															</c:if>
 															<c:if test="${QX.del == 1 }">
 															<li>
-																<a style="cursor:pointer;" onclick="del('${var.SOBOOKS_ID}');" class="tooltip-error" data-rel="tooltip" title="删除">
+																<a style="cursor:pointer;" onclick="del('${var.FHBUTTON_ID}');" class="tooltip-error" data-rel="tooltip" title="删除">
 																	<span class="red">
 																		<i class="ace-icon fa fa-trash-o bigger-120"></i>
 																	</span>
@@ -168,10 +153,10 @@
 							<tr>
 								<td style="vertical-align:top;">
 									<c:if test="${QX.add == 1 }">
-									<a class="btn btn-mini btn-success" onclick="add();">新增</a>
+									<a class="btn btn-sm btn-success" onclick="add();">新增</a>
 									</c:if>
 									<c:if test="${QX.del == 1 }">
-									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a>
+									<a class="btn btn-sm btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a>
 									</c:if>
 								</td>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
@@ -205,10 +190,6 @@
 	<script src="static/ace/js/bootbox.js"></script>
 	<!-- ace scripts -->
 	<script src="static/ace/js/ace/ace.js"></script>
-	<!-- 下拉框 -->
-	<script src="static/ace/js/chosen.jquery.js"></script>
-	<!-- 日期框 -->
-	<script src="static/ace/js/date-time/bootstrap-datepicker.js"></script>
 	<!--提示框-->
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
 	<script type="text/javascript">
@@ -219,40 +200,6 @@
 			$("#Form").submit();
 		}
 		$(function() {
-		
-			//日期框
-			$('.date-picker').datepicker({
-				autoclose: true,
-				todayHighlight: true
-			});
-			
-			//下拉框
-			if(!ace.vars['touch']) {
-				$('.chosen-select').chosen({allow_single_deselect:true}); 
-				$(window)
-				.off('resize.chosen')
-				.on('resize.chosen', function() {
-					$('.chosen-select').each(function() {
-						 var $this = $(this);
-						 $this.next().css({'width': $this.parent().width()});
-					});
-				}).trigger('resize.chosen');
-				$(document).on('settings.ace.chosen', function(e, event_name, event_val) {
-					if(event_name != 'sidebar_collapsed') return;
-					$('.chosen-select').each(function() {
-						 var $this = $(this);
-						 $this.next().css({'width': $this.parent().width()});
-					});
-				});
-				$('#chosen-multiple-style .btn').on('click', function(e){
-					var target = $(this).find('input[type=radio]');
-					var which = parseInt(target.val());
-					if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
-					 else $('#form-field-select-4').removeClass('tag-input-style');
-				});
-			}
-			
-			
 			//复选框全选控制
 			var active_class = 'active';
 			$('#simple-table > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
@@ -272,68 +219,30 @@
 			 diag.Drag=true;
 			 diag.Title ="新增";
 			 diag.URL = '<%=basePath%>accountset/goAdd.do';
-			 diag.Width = 600;
-			 diag.Height = 700;
-			 diag.Modal = false;				//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮
+			 diag.Width = 450;
+			 diag.Height = 368;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 if('${page.currentPage}' == '0'){
-						 tosearch();
+						 top.jzts();
+						 setTimeout("self.location=self.location",100);
 					 }else{
-						 tosearch();
+						 nextPage(${page.currentPage});
 					 }
 				}
 				diag.close();
 			 };
 			 diag.show();
 		}
-				
-		//跟踪记录
-		function chaImg(SOBOOKS_ID){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="跟踪记录";
-			 diag.URL = '<%=basePath%>customerimg/list.do?SOBOOKS_ID='+SOBOOKS_ID;
-			 diag.Width = 800;
-			 diag.Height = 650;
-			 diag.Modal = false;			//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮
-			 diag.CancelEvent = function(){ //关闭事件
-				diag.close();
-			 };
-			 diag.show();
-		}
 		
-		//消费记录
-		function consume(SOBOOKS_ID){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="消费记录";
-			 diag.URL = '<%=basePath%>outku/list.do?SOBOOKS_ID='+SOBOOKS_ID;
-			 diag.Width = 800;
-			 diag.Height = 600;
-			 diag.Modal = false;			//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮
-			 diag.CancelEvent = function(){ //关闭事件
-				diag.close();
-			 };
-			 diag.show();
-		}
-				
 		//删除
 		function del(Id){
 			bootbox.confirm("确定要删除吗?", function(result) {
 				if(result) {
 					top.jzts();
-					var url = "<%=basePath%>accountset/delete.do?SOBOOKS_ID="+Id+"&tm="+new Date().getTime();
+					var url = "<%=basePath%>accountset/delete.do?FHBUTTON_ID="+Id+"&tm="+new Date().getTime();
 					$.get(url,function(data){
-						tosearch();
+						nextPage(${page.currentPage});
 					});
 				}
 			});
@@ -345,36 +254,12 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="编辑";
-			 diag.URL = '<%=basePath%>accountset/goEdit.do?SOBOOKS_ID='+Id;
-			 diag.Width = 600;
-			 diag.Height = 700;
-			 diag.Modal = false;				//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮 
-			 diag.CancelEvent = function(){ //关闭事件
-				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 tosearch();
-				}
-				diag.close();
-			 };
-			 diag.show();
-		}
-		
-		//查看
-		function view(Id){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="查看";
-			 diag.URL = '<%=basePath%>accountset/goView.do?SOBOOKS_ID='+Id;
+			 diag.URL = '<%=basePath%>psiaccountset/goEdit.do?FHBUTTON_ID='+Id;
 			 diag.Width = 450;
-			 diag.Height = 500;
-			 diag.Modal = false;				//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮 
+			 diag.Height = 368;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 tosearch();
+					 nextPage(${page.currentPage});
 				}
 				diag.close();
 			 };
@@ -410,14 +295,14 @@
 							top.jzts();
 							$.ajax({
 								type: "POST",
-								url: '<%=basePath%>accountset/deleteAll.do?tm='+new Date().getTime(),
+								url: '<%=basePath%>fhbutton/deleteAll.do?tm='+new Date().getTime(),
 						    	data: {DATA_IDS:str},
 								dataType:'json',
 								//beforeSend: validateData,
 								cache: false,
 								success: function(data){
 									 $.each(data.list, function(i, list){
-											tosearch();
+											nextPage(${page.currentPage});
 									 });
 								}
 							});
@@ -429,7 +314,7 @@
 		
 		//导出excel
 		function toExcel(){
-			window.location.href='<%=basePath%>accountset/excel.do';
+			window.location.href='<%=basePath%>fhbutton/excel.do';
 		}
 	</script>
 
