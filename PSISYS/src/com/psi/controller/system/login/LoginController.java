@@ -27,6 +27,7 @@ import com.psi.controller.base.BaseController;
 import com.psi.entity.system.Menu;
 import com.psi.entity.system.Role;
 import com.psi.entity.system.User;
+import com.psi.service.basedata.accountset.AccountSetManager;
 import com.psi.service.erp.customer.CustomerManager;
 import com.psi.service.erp.intoku.IntoKuManager;
 import com.psi.service.erp.outku.OutKuManager;
@@ -71,7 +72,8 @@ public class LoginController extends BaseController {
 	private IntoKuManager intokuService;
 	@Resource(name="outkuService")
 	private OutKuManager outkuService;
-	
+	@Resource(name="accountSetService")
+	private AccountSetManager accountSetService;
 	/**访问登录页
 	 * @return
 	 * @throws Exception
@@ -81,10 +83,30 @@ public class LoginController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		
+		//获取账套列表
+		pd.put("varList", getAccountSetList(pd));
+		
 		pd = this.setLoginPd(pd);	//设置登录页面的配置参数
 		mv.setViewName("system/index/login");
 		mv.addObject("pd",pd);
 		return mv;
+	}
+	
+	//获取账套列表
+	public List<PageData> getAccountSetList(PageData pd) throws Exception{
+		List<PageData> varOList = accountSetService.listAll(pd);
+		List<PageData> varList = new ArrayList<PageData>();
+		if(varOList == null || varOList.size() == 0)
+			return varList;
+		pd.put("SOBOOKS_ID", varOList.get(0).getString("varOList"));
+		for(int i=0;i<varOList.size();i++){
+			PageData vpd = new PageData();
+			vpd.put("SOBOOKS_ID", varOList.get(i).getString("SOBOOKS_ID"));	    //1
+			vpd.put("ENTERPRISENAME", varOList.get(i).getString("ENTERPRISENAME"));	    //2
+			varList.add(vpd);
+		}
+		return varList;
 	}
 	
 	/**请求登录，验证用户
@@ -99,7 +121,7 @@ public class LoginController extends BaseController {
 		pd = this.getPageData();
 		String errInfo = "";
 		String KEYDATA[] = pd.getString("KEYDATA").split(",");
-		if(null != KEYDATA && KEYDATA.length == 3){
+		if(null != KEYDATA && KEYDATA.length == 4){
 			Session session = Jurisdiction.getSession();
 			String sessionCode = (String)session.getAttribute(Const.SESSION_SECURITY_CODE);		//获取session中的验证码
 			String code = KEYDATA[2];
@@ -147,6 +169,7 @@ public class LoginController extends BaseController {
 				}
 				if(Tools.isEmpty(errInfo)){
 					errInfo = "success";					//验证成功
+					session.setAttribute(Const.SESSION_PK_SOBOOKS, KEYDATA[3]);
 					logBefore(logger, USERNAME+"登录系统");
 					FHLOG.save(USERNAME, "登录系统");
 				}

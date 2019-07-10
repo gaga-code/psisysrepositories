@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String path = request.getContextPath();
+	String basePath = "http://localhost:8080/PSISYS/";
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,6 +31,10 @@
 	padding-top:20px;
     }
     */
+    
+   body{
+        background-image:url(static/login/images/banner_slide_05.jpg);
+    }
       .cavs{
     	z-index:1;
     	position: fixed;
@@ -46,7 +51,7 @@
 			//关闭提示晃动屏幕，注释掉这句话即可
 			//timer = setInterval(xzfh2, 10); 
 		};
-		var current = 0;
+		/* var current = 0;
 		function xzfh(){
 			current = (current)%360;
 			document.body.style.transform = 'rotate('+current+'deg)';
@@ -66,16 +71,16 @@
 			current ++;
 			if(current2 == 1){current2 = -1;}else{current2 = 1;}
 			fhi++;
-		};
+		}; */
 	</script>
 </head>
 <body>
 
-	<c:if test="${pd.isMusic == 'yes' }">
+	<%-- <c:if test="${pd.isMusic == 'yes' }">
 	<div style="display: none">
 	    <audio src="static/login/music/fh1.mp3" autoplay=""></audio>
 	</div>	
-	</c:if>
+	</c:if> --%>
 	<canvas class="cavs"></canvas>
 	<div style="width:100%;text-align: center;margin: 0 auto;position: absolute;">
 		<!-- 登录 -->
@@ -83,9 +88,23 @@
 		<div id="loginbox" >
 			<form action="" method="post" name="loginForm" id="loginForm">
 				<div class="control-group normal_text">
-					<h3>
-						<img src="static/login/logo.png" alt="Logo" />
-					</h3>
+					<h3>ERP进销存系统</h3>
+				</div>
+				<!-- <div class="control-group">
+					<div class="controls">
+						<div class="main_input_box">
+							<span class="add-on bg_lg">
+							<i><img height="37" src="static/login/user.png" /></i>
+							</span><input type="text" name="accountset" id="accountset" value="" placeholder="请选择账套" />
+						</div>
+					</div>
+				</div> -->
+				<div>
+					<select name="accountset" id="accountset" placeholder="请选择账套" title="账套" style="width:81%; height:38px" >
+						<c:forEach items="${pd.varList}" var="var">
+							<option value="${var.SOBOOKS_ID }" <c:if test="${var.SOBOOKS_ID == pd.SOBOOKS_ID }">selected</c:if>>${var.ENTERPRISENAME }</option>
+						</c:forEach>
+					</select>
 				</div>
 				<div class="control-group">
 					<div class="controls">
@@ -222,7 +241,7 @@
 		</div>
 		
 	</div>
-	<div id="templatemo_banner_slide" class="container_wapper">
+	<%-- <div id="templatemo_banner_slide" class="container_wapper">
 		<div class="camera_wrap camera_emboss" id="camera_slide">
 			<!-- 背景图片 -->
 			<c:choose>
@@ -238,10 +257,10 @@
 					<div data-src="static/login/images/banner_slide_04.jpg"></div>
 					<div data-src="static/login/images/banner_slide_05.jpg"></div>
 				</c:otherwise>
-			</c:choose>
+			</c:choose> 
 		</div>
 		<!-- #camera_wrap_3 -->
-	</div>
+	</div>--%>
 
 	<script type="text/javascript">
 		//服务器校验
@@ -249,7 +268,8 @@
 			if(check()){
 				var loginname = $("#loginname").val();
 				var password = $("#password").val();
-				var code = loginname+","+password+","+$("#code").val();
+				var accountset = $("#accountset").val();
+				var code = loginname+","+password+","+$("#code").val() + "," + accountset;
 				$.ajax({
 					type: "POST",
 					url: 'login_login',

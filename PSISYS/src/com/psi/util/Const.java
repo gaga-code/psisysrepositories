@@ -6,6 +6,9 @@ import org.springframework.context.ApplicationContext;
  * 说明： 常量类   
  */
 public class Const {
+	
+	public static final String SESSION_PK_SOBOOKS = "PK_SOBOOKS";//账套主键
+	
 	public static final String SESSION_SECURITY_CODE = "sessionSecCode";	//验证码
 	public static final String SESSION_USER = "sessionUser";				//session用的用户
 	public static final String SESSION_ROLE_RIGHTS = "sessionRoleRights";
