@@ -34,7 +34,7 @@
 							</tr>
 							<tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;">经手人:</td>
-								<td><input type="text" name="USERNAME" id="USERNAME" readonly="readonly" value="${pd.USERNAME}" maxlength="30"  title="经手人" style="width:98%;"/></td>
+								<td><input type="text" name="NAME" id="NAME" readonly="readonly" value="${pd.NAME}" maxlength="30"  title="经手人" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;">备注:</td>
@@ -94,14 +94,14 @@
 				$("#PAYMETHODNAME").focus();
 			return false;
 			}
-			if($("#USERNAME").val()==""){
-				$("#USERNAME").tips({
+			if($("#NAME").val()==""){
+				$("#NAME").tips({
 					side:3,
 		            msg:'请输入经手人',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#USERNAME").focus();
+				$("#NAME").focus();
 			return false;
 			}
 			if($("#NOTE").val()==""){

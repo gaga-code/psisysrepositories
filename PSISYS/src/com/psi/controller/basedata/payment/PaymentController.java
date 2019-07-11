@@ -126,7 +126,7 @@ public class PaymentController extends BaseController {
 		Session session = Jurisdiction.getSession();
 		User user = (User)session.getAttribute(Const.SESSION_USER);
 		pd.put("USER_ID", user.getUSER_ID());
-		pd.put("USERNAME",user.getNAME());
+		pd.put("NAME",user.getNAME());
 		mv.setViewName("basedata/payment/payment_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
@@ -146,7 +146,7 @@ public class PaymentController extends BaseController {
 		Session session = Jurisdiction.getSession();
 		User user = (User)session.getAttribute(Const.SESSION_USER);
 		pd.put("USER_ID", user.getUSER_ID());
-		pd.put("USERNAME",user.getNAME());
+		pd.put("NAME",user.getNAME());
 		mv.setViewName("basedata/payment/payment_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
@@ -201,7 +201,7 @@ public class PaymentController extends BaseController {
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
 			vpd.put("var1", varOList.get(i).getString("PAYMETHODNAME"));	//1
-			vpd.put("var2", varOList.get(i).getString("USERNAME"));	//2
+			vpd.put("var2", varOList.get(i).getString("NAME"));	//2
 			vpd.put("var3", varOList.get(i).getString("NOTE"));	//3
 			varList.add(vpd);
 		}

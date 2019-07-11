@@ -71,7 +71,7 @@
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.PAYMETHODNAME}</td>
-											<td class='center'>${var.USERNAME}</td>
+											<td class='center'>${var.NAME}</td>
 											<td class='center'>${var.NOTE}</td>
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
