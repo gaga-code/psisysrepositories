@@ -84,8 +84,8 @@
 		select <include refid="Field"></include> from
 		<include refid="tableName"></include>
 		where 1=1
-		<if test="USERNAME!=null and PASSWORD!=null">
-		and USERNAME = #{USERNAME} and PASSWORD=#{PASSWORD}
+		<if test="USERNAME!=null and PASSWORD!=null and PK_SOBOOKS!=null">
+		and USERNAME = #{USERNAME} and PASSWORD=#{PASSWORD} and PK_SOBOOKS=#{PK_SOBOOKS}
 		</if>
 		<if test="USER_ID!=null and USER_ID>0">
 		and USER_ID = #{USER_ID}

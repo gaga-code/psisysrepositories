@@ -44,6 +44,11 @@
     }
   </style>
   <script>
+  
+ /*  $(function(){ 
+	    alert("${pd.varList}"); 
+	});  */
+  
   		//window.setTimeout(showfh,3000); 
   		var timer;
 		function showfh(){
@@ -283,7 +288,7 @@
 						}else if("usererror" == data.result){
 							$("#loginname").tips({
 								side : 1,
-								msg : "用户名或密码有误",
+								msg : "用户名或密码或账套有误",
 								bg : '#FF5080',
 								time : 15
 							});

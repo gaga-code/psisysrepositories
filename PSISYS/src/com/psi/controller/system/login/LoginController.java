@@ -93,13 +93,18 @@ public class LoginController extends BaseController {
 		return mv;
 	}
 	
-	//获取账套列表
+	/**
+	 * 获取账套列表
+	 * @param pd
+	 * @return varList
+	 * @throws Exception
+	 */
 	public List<PageData> getAccountSetList(PageData pd) throws Exception{
 		List<PageData> varOList = accountSetService.listAll(pd);
 		List<PageData> varList = new ArrayList<PageData>();
 		if(varOList == null || varOList.size() == 0)
 			return varList;
-		pd.put("SOBOOKS_ID", varOList.get(0).getString("varOList"));
+		pd.put("SOBOOKS_ID", varOList.get(0).getString("SOBOOKS_ID"));
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
 			vpd.put("SOBOOKS_ID", varOList.get(i).getString("SOBOOKS_ID"));	    //1
@@ -134,7 +139,8 @@ public class LoginController extends BaseController {
 				if(Tools.notEmpty(sessionCode) && sessionCode.equalsIgnoreCase(code)){		//判断登录验证码
 					String passwd = new SimpleHash("SHA-1", USERNAME, PASSWORD).toString();	//密码加密
 					pd.put("PASSWORD", passwd);
-					pd = userService.getUserByNameAndPwd(pd);	//根据用户名和密码去读取用户信息
+					pd.put("PK_SOBOOKS", KEYDATA[3]);
+					pd = userService.getUserByNameAndPwd(pd);	//根据用户名和密码  账套主键 去读取用户信息
 					if(pd != null){
 						this.removeSession(USERNAME);//请缓存
 						pd.put("LAST_LOGIN",DateUtil.getTime().toString());
@@ -161,8 +167,8 @@ public class LoginController extends BaseController {
 					    }
 					}else{
 						errInfo = "usererror"; 				//用户名或密码有误
-						logBefore(logger, USERNAME+"登录系统密码或用户名错误");
-						FHLOG.save(USERNAME, "登录系统密码或用户名错误");
+						logBefore(logger, USERNAME+"登录系统密码或用户名或账套错误");
+						FHLOG.save(USERNAME, "登录系统密码或用户名或账套错误");
 					}
 				}else{
 					errInfo = "codeerror";				 	//验证码输入有误
@@ -269,7 +275,7 @@ public class LoginController extends BaseController {
 	}
 	
 	/**
-	 * 添加权限函数
+	 * 测试添加权限函数
 	 */
 	public static void main(String[] args) {
 //		BigInteger num = new BigInteger("1179912190806029211781825486");//系统管理员初始权限值
@@ -448,11 +454,19 @@ public class LoginController extends BaseController {
 		this.removeSession(USERNAME);//请缓存
 		//shiro销毁登录
 		Subject subject = SecurityUtils.getSubject(); 
-		subject.logout();
+	
+		try {
+			subject.logout();  
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		pd = this.getPageData();
 		pd.put("msg", pd.getString("msg"));
 		pd = this.setLoginPd(pd);	//设置登录页面的配置参数
 		mv.setViewName("system/index/login");
+		//获取账套列表
+		pd.put("varList", getAccountSetList(pd));
 		mv.addObject("pd",pd);
 		return mv;
 	}
@@ -471,6 +485,7 @@ public class LoginController extends BaseController {
 		session.removeAttribute(Const.SESSION_USERNAME);
 		session.removeAttribute(Const.SESSION_U_NAME);
 		session.removeAttribute(Const.SESSION_USERROL);
+		session.removeAttribute(Const.SESSION_PK_SOBOOKS);
 		session.removeAttribute("changeMenu");
 		session.removeAttribute("DEPARTMENT_IDS");
 		session.removeAttribute("DEPARTMENT_ID");
