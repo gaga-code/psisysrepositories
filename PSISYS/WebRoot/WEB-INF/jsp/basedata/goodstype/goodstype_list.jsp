@@ -40,9 +40,9 @@
 									</div>
 								</td>
 								<td>&nbsp;
-									<select name="DICTIONARIES_ID" id="DICTIONARIES_ID">
-										<option value="${DICTIONARIES_ID}" <c:if test="${DICTIONARIES_ID != ''}">selected</c:if>>本级</option>
-										<option value="" <c:if test="${DICTIONARIES_ID == ''}">selected</c:if>>全部</option>
+									<select name="GOODTYPE_ID" id="GOODTYPE_ID">
+										<option value="${GOODTYPE_ID}" <c:if test="${GOODTYPE_ID != ''}">selected</c:if>>本级</option>
+										<option value="" <c:if test="${GOODTYPE_ID == ''}">selected</c:if>>全部</option>
 									</select>
 								</td>
 								<c:if test="${QX.cha == 1 }">
@@ -57,9 +57,7 @@
 								<tr>
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">名称</th>
-									<th class="center">英文</th>
 									<th class="center">编码</th>
-									<th class="center">排序</th>
 									<th class="center">操作</th>
 								</tr>
 							</thead>
@@ -72,22 +70,20 @@
 									<c:forEach items="${varList}" var="var" varStatus="vs">
 										<tr>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
-											<td class='center'><a href="javascript:goSondict('${var.DICTIONARIES_ID }')"><i class="ace-icon fa fa-share bigger-100"></i>&nbsp;${var.NAME}</a></td>
-											<td class='center'><a href="javascript:goSondict('${var.DICTIONARIES_ID }')">${var.NAME_EN}</a></td>
-											<td class='center'>${var.BIANMA}</td>
-											<td class='center'>${var.ORDER_BY}</td>
+											<td class='center'><a href="javascript:goSondict('${var.GOODTYPE_ID }')"><i class="ace-icon fa fa-share bigger-100"></i>&nbsp;${var.TYPENAME}</a></td>
+											<td class='center'>${var.TYPECODE}</td>
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
 													<c:if test="${QX.edit == 1 }">
-													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.DICTIONARIES_ID}');">
+													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.GOODTYPE_ID}');">
 														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
 													</a>
 													</c:if>
 													<c:if test="${QX.del == 1 }">
-													<a class="btn btn-xs btn-danger" onclick="del('${var.DICTIONARIES_ID}');">
+													<a class="btn btn-xs btn-danger" onclick="del('${var.GOODTYPE_ID}');">
 														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
 													</a>
 													</c:if>
@@ -101,7 +97,7 @@
 														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 															<c:if test="${QX.edit == 1 }">
 															<li>
-																<a style="cursor:pointer;" onclick="edit('${var.DICTIONARIES_ID}');" class="tooltip-success" data-rel="tooltip" title="修改">
+																<a style="cursor:pointer;" onclick="edit('${var.GOODTYPE_ID}');" class="tooltip-success" data-rel="tooltip" title="修改">
 																	<span class="green">
 																		<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
 																	</span>
@@ -110,7 +106,7 @@
 															</c:if>
 															<c:if test="${QX.del == 1 }">
 															<li>
-																<a style="cursor:pointer;" onclick="del('${var.DICTIONARIES_ID}');" class="tooltip-error" data-rel="tooltip" title="删除">
+																<a style="cursor:pointer;" onclick="del('${var.GOODTYPE_ID}');" class="tooltip-error" data-rel="tooltip" title="删除">
 																	<span class="red">
 																		<i class="ace-icon fa fa-trash-o bigger-120"></i>
 																	</span>
@@ -144,9 +140,9 @@
 							<tr>
 								<td style="vertical-align:top;">
 									<c:if test="${QX.add == 1 }">
-									<a class="btn btn-sm btn-success" onclick="add('${DICTIONARIES_ID}');">新增</a>
+									<a class="btn btn-sm btn-success" onclick="add('${GOODTYPE_ID}');">新增</a>
 									</c:if>
-									<c:if test="${null != pd.DICTIONARIES_ID && pd.DICTIONARIES_ID != ''}">
+									<c:if test="${null != pd.GOODTYPE_ID && pd.GOODTYPE_ID != ''}">
 									<a class="btn btn-sm btn-success" onclick="goSondict('${pd.PARENT_ID}');">返回</a>
 									</c:if>
 								</td>
@@ -193,23 +189,23 @@
 		}
 		
 		//去此ID下子列表
-		function goSondict(DICTIONARIES_ID){
+		function goSondict(GOODTYPE_ID){
 			top.jzts();
-			window.location.href="<%=basePath%>goodstype/list.do?DICTIONARIES_ID="+DICTIONARIES_ID;
+			window.location.href="<%=basePath%>goodstype/list.do?GOODTYPE_ID="+GOODTYPE_ID;
 		};
 		
 		//新增
-		function add(DICTIONARIES_ID){
+		function add(GOODTYPE_ID){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="新增";
-			 diag.URL = '<%=basePath%>goodstype/goAdd.do?DICTIONARIES_ID='+DICTIONARIES_ID;
+			 diag.URL = '<%=basePath%>goodstype/goAdd.do?GOODTYPE_ID='+GOODTYPE_ID;
 			 diag.Width = 500;
 			 diag.Height = 515;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if('none' == diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display){
-					 parent.location.href="<%=basePath%>goodstype/listAllDict.do?DICTIONARIES_ID=${DICTIONARIES_ID}&dnowPage=${page.currentPage}";
+					 parent.location.href="<%=basePath%>goodstype/listAllDict.do?GOODTYPE_ID=${GOODTYPE_ID}&dnowPage=${page.currentPage}";
 				}
 				diag.close();
 			 };
@@ -221,11 +217,11 @@
 			bootbox.confirm("确定要删除吗?", function(result) {
 				if(result) {
 					top.jzts();
-					var url = "<%=basePath%>goodstype/delete.do?DICTIONARIES_ID="+Id+"&tm="+new Date().getTime();
+					var url = "<%=basePath%>goodstype/delete.do?GOODTYPE_ID="+Id+"&tm="+new Date().getTime();
 					$.get(url,function(data){
 						
 						if("success" == data.result){
-							parent.location.href="<%=basePath%>goodstype/listAllDict.do?DICTIONARIES_ID=${DICTIONARIES_ID}&dnowPage=${page.currentPage}";
+							parent.location.href="<%=basePath%>goodstype/listAllDict.do?GOODTYPE_ID=${GOODTYPE_ID}&dnowPage=${page.currentPage}";
 						}else if("false" == data.result){
 							top.hangge();
 							bootbox.dialog({
@@ -264,12 +260,12 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="编辑";
-			 diag.URL = '<%=basePath%>goodstype/goEdit.do?DICTIONARIES_ID='+Id;
+			 diag.URL = '<%=basePath%>goodstype/goEdit.do?GOODTYPE_ID='+Id;
 			 diag.Width = 500;
 			 diag.Height = 515;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 parent.location.href="<%=basePath%>goodstype/listAllDict.do?DICTIONARIES_ID=${DICTIONARIES_ID}&dnowPage=${page.currentPage}";
+					 parent.location.href="<%=basePath%>goodstype/listAllDict.do?GOODTYPE_ID=${GOODTYPE_ID}&dnowPage=${page.currentPage}";
 				}
 				diag.close();
 			 };

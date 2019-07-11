@@ -15,6 +15,7 @@
 		<typeAlias type="com.psi.entity.system.Menu" alias="Menu"/>
 		<typeAlias type="com.psi.entity.system.Dictionaries" alias="Dictionaries"/>
 		
+		<typeAlias type="com.psi.entity.basedata.GoodsType" alias="GoodsType"/>
 		<!-- 这里添加生成的实体类 -->
 		
 		

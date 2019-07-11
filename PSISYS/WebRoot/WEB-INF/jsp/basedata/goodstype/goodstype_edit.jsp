@@ -25,32 +25,32 @@
 				<div class="row">
 					<div class="col-xs-12">
 					
-					<form action="dictionaries/${msg }.do" name="Form" id="Form" method="post">
-						<input type="hidden" name="DICTIONARIES_ID" id="DICTIONARIES_ID" value="${pd.DICTIONARIES_ID}"/>
-						<input type="hidden" name="PARENT_ID" id="PARENT_ID" value="${null == pd.PARENT_ID ? DICTIONARIES_ID:pd.PARENT_ID}"/>
+					<form action="goodstype/${msg }.do" name="Form" id="Form" method="post">
+						<input type="hidden" name="GOODTYPE_ID" id="GOODTYPE_ID" value="${pd.GOODTYPE_ID}"/>
+						<input type="hidden" name="PARENTS" id="PARENTS" value="${null == pd.PARENTS ? GOODTYPE_ID:pd.PARENTS}"/>
 						<div id="zhongxin">
 						<table id="table_report" class="table table-striped table-bordered table-hover" style="margin-top:15px;">
 							<tr>
 								<td style="width:70px;text-align: right;padding-top: 13px;">上级:</td>
 								<td>
 									<div class="col-xs-4 label label-lg label-light arrowed-in arrowed-right">
-										<b>${null == pds.NAME ?'(无) 此项为顶级':pds.NAME}</b>
+										<b>${null == pds.TYPENAME ?'(无) 此项为顶级':pds.TYPENAME}</b>
 									</div>
 								</td>
 							</tr>
 							<tr>
 								<td style="width:70px;text-align: right;padding-top: 13px;">名称:</td>
-								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="50" placeholder="这里输入名称" title="名称" style="width:98%;"/></td>
+								<td><input type="text" name="TYPENAME" id="TYPENAME" value="${pd.TYPENAME}" maxlength="50" placeholder="这里输入名称" title="名称" style="width:98%;"/></td>
 							</tr>
-							<tr>
+							<%-- <tr>
 								<td style="width:70px;text-align: right;padding-top: 13px;">英文:</td>
-								<td><input type="text" name="NAME_EN" id="NAME_EN" value="${pd.NAME_EN}" maxlength="50" placeholder="这里输入英文" title="英文" style="width:98%;"/></td>
-							</tr>
+								<td><input type="text" name="TYPENAME_EN" id="TYPENAME_EN" value="${pd.TYPENAME_EN}" maxlength="50" placeholder="这里输入英文" title="英文" style="width:98%;"/></td>
+							</tr> --%>
 							<tr>
 								<td style="width:70px;text-align: right;padding-top: 13px;">编码:</td>
-								<td><input type="text" name="BIANMA" id="BIANMA" value="${pd.BIANMA}" maxlength="32" placeholder="这里输入编码 (不重复, 禁止修改)" title="编码" style="width:76%;" <c:if test="${null != pd.BIANMA}">readonly="readonly"</c:if> <c:if test="${null == pd.BIANMA}">onblur="hasBianma();"</c:if> /></td>
+								<td><input type="text" name="TYPECODE" id="TYPECODE" value="${pd.TYPECODE}" maxlength="32" placeholder="这里输入编码 (不重复, 禁止修改)" title="编码" style="width:76%;" <c:if test="${null != pd.TYPECODE}">readonly="readonly"</c:if> <c:if test="${null == pd.TYPECODE}">onblur="hasBianma();"</c:if> /></td>
 							</tr>
-							<tr>
+							<%-- <tr>
 								<td style="width:70px;text-align: right;padding-top: 13px;">排序:</td>
 								<td><input type="number" name="ORDER_BY" id="ORDER_BY" value="${pd.ORDER_BY}" maxlength="32" placeholder="这里输入排序" title="排序"/></td>
 							</tr>
@@ -59,14 +59,14 @@
 								<td>
 									<textarea rows="3" cols="46" name="BZ" id="BZ" placeholder="这里输入备注" title="备注"  style="width:98%;">${pd.BZ}</textarea>
 								</td>
-							</tr>
-							<tr>
+							</tr> --%>
+							<%-- <tr>
 								<td style="width:70px;text-align: right;padding-top: 13px;">排查表:</td>
-								<td><input type="text" name="TBSNAME" id="TBSNAME" value="${pd.TBSNAME}" maxlength="100" placeholder="这里输入表名, 多个用逗号分隔(非必录)" title="排查表" style="width:98%;"/></td>
+								<td><input type="text" name="TBSTYPENAME" id="TBSTYPENAME" value="${pd.TBSTYPENAME}" maxlength="100" placeholder="这里输入表名, 多个用逗号分隔(非必录)" title="排查表" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td colspan="10" class="center"><p class="text-warning bigger-110 orange">排查表：删除此条数据时会去此表查询是否被占用(是:禁止删除)</p></td>
-							</tr>
+							</tr> --%>
 							<tr>
 								<td class="center" colspan="10">
 									<a class="btn btn-mini btn-primary" onclick="save();">保存</a>
@@ -102,34 +102,34 @@
 		$(top.hangge());
 		//保存
 		function save(){
-			if($("#NAME").val()==""){
-				$("#NAME").tips({
+			if($("#TYPENAME").val()==""){
+				$("#TYPENAME").tips({
 					side:3,
 		            msg:'请输入名称',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#NAME").focus();
+				$("#TYPENAME").focus();
 			return false;
 		}
-			if($("#NAME_EN").val()==""){
-				$("#NAME_EN").tips({
+			if($("#TYPENAME_EN").val()==""){
+				$("#TYPENAME_EN").tips({
 					side:3,
 		            msg:'请输入英文',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#NAME_EN").focus();
+				$("#TYPENAME_EN").focus();
 			return false;
 		}
-			if($("#BIANMA").val()==""){
-				$("#BIANMA").tips({
+			if($("#TYPECODE").val()==""){
+				$("#TYPECODE").tips({
 					side:3,
 		            msg:'请输入编码',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#BIANMA").focus();
+				$("#TYPECODE").focus();
 			return false;
 		}
 			if($("#ORDER_BY").val()==""){
@@ -151,24 +151,24 @@
 		
 		//判断编码是否存在
 		function hasBianma(){
-			var BIANMA = $.trim($("#BIANMA").val());
-			if("" == BIANMA)return;
+			var TYPECODE = $.trim($("#TYPECODE").val());
+			if("" == TYPECODE)return;
 			$.ajax({
 				type: "POST",
-				url: '<%=basePath%>dictionaries/hasBianma.do',
-		    	data: {BIANMA:BIANMA,tm:new Date().getTime()},
+				url: '<%=basePath%>goodstype/hasBianma.do',
+		    	data: {TYPECODE:TYPECODE,tm:new Date().getTime()},
 				dataType:'json',
 				cache: false,
 				success: function(data){
 					 if("success" == data.result){
 					 }else{
-						$("#BIANMA").tips({
+						$("#TYPECODE").tips({
 							side:1,
-				            msg:'编码'+BIANMA+'已存在,重新输入',
+				            msg:'编码'+TYPECODE+'已存在,重新输入',
 				            bg:'#AE81FF',
 				            time:5
 				        });
-						$('#BIANMA').val('');
+						$('#TYPECODE').val('');
 					 }
 				}
 			});

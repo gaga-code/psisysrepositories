@@ -9,7 +9,7 @@ Session session = Jurisdiction.getSession();
 String sessionCode = (String)session.getAttribute(Const.SESSION_SECURITY_CODE);
 
 
-3、修改、删除、查询必加的
+3、修改、查询必加的
 and PK_SOBOOKS = #{PK_SOBOOKS}
 and IFNULL(dr,0)=0 
 
