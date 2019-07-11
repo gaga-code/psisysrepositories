@@ -52,10 +52,9 @@ public class GoodsTypeController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		Session session = Jurisdiction.getSession();
-		String PK_SOBOOKS = (String)session.getAttribute(Const.SESSION_PK_SOBOOKS);
-		pd.put("PK_SOBOOKS", PK_SOBOOKS);	//账套主键
 		pd.put("GOODTYPE_ID", this.get32UUID());	//主键
+		if(pd.get("PARENTS") == null || pd.get("PARENTS").equals(""))
+			pd.put("PARENTS", "0");
 		goodsTypeService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -151,10 +150,8 @@ public class GoodsTypeController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		try{
-			Session session = Jurisdiction.getSession();
-			String PK_SOBOOKS = (String)session.getAttribute(Const.SESSION_PK_SOBOOKS);
 			Map<String,String> map = new HashMap<String, String>();
-			map.put("PK_SOBOOKS", PK_SOBOOKS);
+			map.put("PK_SOBOOKS", pd.getString("PK_SOBOOKS"));
 			map.put("PARENTS", "0");
 			JSONArray arr = JSONArray.fromObject(goodsTypeService.listAllDict(map));
 			String json = arr.toString();
@@ -199,9 +196,9 @@ public class GoodsTypeController extends BaseController {
 		String GOODTYPE_ID = pd.getString("GOODTYPE_ID");
 		pd = goodsTypeService.findById(pd);	//根据ID读取
 		mv.addObject("pd", pd);					//放入视图容器
-		pd.put("GOODTYPE_ID",pd.get("PARENT_ID").toString());			//用作上级信息
+		pd.put("GOODTYPE_ID",pd.get("PARENTS").toString());			//用作上级信息
 		mv.addObject("pds",goodsTypeService.findById(pd));				//传入上级所有信息
-		mv.addObject("GOODTYPE_ID", pd.get("PARENT_ID").toString());	//传入上级ID，作为子ID用
+		mv.addObject("GOODTYPE_ID", pd.get("PARENTS").toString());	//传入上级ID，作为子ID用
 		pd.put("GOODTYPE_ID",GOODTYPE_ID);							//复原本ID
 		mv.setViewName("basedata/goodstype/goodstype_edit");
 		mv.addObject("msg", "edit");

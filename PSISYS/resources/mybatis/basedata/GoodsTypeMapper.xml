@@ -69,7 +69,7 @@
 		<include refid="tableName"></include>
 		set 
 			TYPECODE = #{TYPECODE},
-			TYPENAME = #{TYPENAME},
+			TYPENAME = #{TYPENAME}
 		where 
 			GOODTYPE_ID = #{GOODTYPE_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
