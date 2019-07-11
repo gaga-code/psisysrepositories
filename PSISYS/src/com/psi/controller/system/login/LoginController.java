@@ -28,7 +28,7 @@ import com.psi.entity.system.Menu;
 import com.psi.entity.system.Role;
 import com.psi.entity.system.User;
 import com.psi.service.basedata.accountset.AccountSetManager;
-import com.psi.service.erp.customer.CustomerManager;
+import com.psi.service.basedata.customer.CustomerManager;
 import com.psi.service.erp.intoku.IntoKuManager;
 import com.psi.service.erp.outku.OutKuManager;
 import com.psi.service.system.buttonrights.ButtonrightsManager;

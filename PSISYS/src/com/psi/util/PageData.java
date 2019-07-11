@@ -8,7 +8,10 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
+
+import com.psi.entity.system.User;
 
 /** 
  * 说明：参数封装Map
@@ -44,9 +47,12 @@ public class PageData extends HashMap implements Map{
 			}
 			returnMap.put(name, value); 
 		}
-//		String PK_SOBOOKS = (String) Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS);
-//		map.put("PK_SOBOOKS", PK_SOBOOKS);
-		returnMap.put("PK_SOBOOKS", "1");
+		Session session = Jurisdiction.getSession();
+		if(session.getAttribute(Const.SESSION_USER) != null) {
+			returnMap.put("USER_ID", ((User)session.getAttribute(Const.SESSION_USER)).getUSER_ID());	//用户主键
+			returnMap.put("PK_SOBOOKS", session.getAttribute(Const.SESSION_PK_SOBOOKS)); //帐套主键
+			
+		}
 		map = returnMap;
 	}
 	

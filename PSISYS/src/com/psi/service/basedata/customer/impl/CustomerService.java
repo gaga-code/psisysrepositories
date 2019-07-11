@@ -1,4 +1,4 @@
-package com.psi.service.basedata.payment.impl;
+package com.psi.service.basedata.customer.impl;
 
 import java.util.List;
 
@@ -8,26 +8,24 @@ import org.springframework.stereotype.Service;
 
 import com.psi.dao.DaoSupport;
 import com.psi.entity.Page;
-import com.psi.service.basedata.payment.PaymentManager;
+import com.psi.service.basedata.customer.CustomerManager;
 import com.psi.util.PageData;
 
 /**
- * 说明： 支付方式
+ * 说明： 客户管理
  */
-@Service("paymentService")
-public class PaymentService implements PaymentManager{
+@Service("customerService")
+public class CustomerService implements CustomerManager{
 
 	@Resource(name = "daoSupport")
 	private DaoSupport dao;
-	
-	
 	
 	/**新增
 	 * @param pd
 	 * @throws Exception
 	 */
 	public void save(PageData pd)throws Exception{
-		dao.save("PaymentMapper.save", pd);
+		dao.save("CustomerMapper.save", pd);
 	}
 	
 	/**删除
@@ -35,7 +33,7 @@ public class PaymentService implements PaymentManager{
 	 * @throws Exception
 	 */
 	public void delete(PageData pd)throws Exception{
-		dao.update("PaymentMapper.delete", pd);
+		dao.delete("CustomerMapper.delete", pd);
 	}
 	
 	/**修改
@@ -43,7 +41,7 @@ public class PaymentService implements PaymentManager{
 	 * @throws Exception
 	 */
 	public void edit(PageData pd)throws Exception{
-		dao.update("PaymentMapper.edit", pd);
+		dao.update("CustomerMapper.edit", pd);
 	}
 	
 	/**列表
@@ -52,7 +50,7 @@ public class PaymentService implements PaymentManager{
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> list(Page page)throws Exception{
-		return (List<PageData>)dao.findForList("PaymentMapper.datalistPage", page);
+		return (List<PageData>)dao.findForList("CustomerMapper.datalistPage", page);
 	}
 	
 	/**列表(全部)
@@ -61,7 +59,7 @@ public class PaymentService implements PaymentManager{
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> listAll(PageData pd)throws Exception{
-		return (List<PageData>)dao.findForList("PaymentMapper.listAll", pd);
+		return (List<PageData>)dao.findForList("CustomerMapper.listAll", pd);
 	}
 	
 	/**通过id获取数据
@@ -69,7 +67,7 @@ public class PaymentService implements PaymentManager{
 	 * @throws Exception
 	 */
 	public PageData findById(PageData pd)throws Exception{
-		return (PageData)dao.findForObject("PaymentMapper.findById", pd);
+		return (PageData)dao.findForObject("CustomerMapper.findById", pd);
 	}
 	
 	/**批量删除
@@ -77,8 +75,8 @@ public class PaymentService implements PaymentManager{
 	 * @throws Exception
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
-		dao.update("PaymentMapper.deleteAll", ArrayDATA_IDS);
+		dao.delete("CustomerMapper.deleteAll", ArrayDATA_IDS);
 	}
 	
-
 }
+

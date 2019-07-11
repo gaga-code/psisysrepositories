@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
-import com.psi.service.erp.customer.CustomerManager;
+import com.psi.service.basedata.customer.CustomerManager;
 import com.psi.service.erp.goods.GoodsManager;
 import com.psi.service.erp.level.LevelManager;
 import com.psi.service.erp.remarks.RemarksManager;

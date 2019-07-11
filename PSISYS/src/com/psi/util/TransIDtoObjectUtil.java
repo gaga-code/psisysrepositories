@@ -1,6 +1,5 @@
 package com.psi.util;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**

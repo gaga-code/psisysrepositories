@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CustomerMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		base_customer
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		CUATOMERNAME,	
+		SIMPLENAME,	
+		PHONE,	
+		ADDRESS,	
+		YICODE,	
+		TELEPHONE,	
+		PAGING,
+		FAX,	
+		LINKMAN,
+		DISTRIBUTIONMODE,
+		CREDITDEGREE,	
+		NOTE,	
+		NOTE2,
+		NOTE3,
+		USER_ID,
+		PK_SOBOOKS,	
+		CUSTOMER_ID
+	</sql>
+	<!-- 字段 -->
+	<sql id="FieldCha">
+		CUATOMERNAME,	
+		SIMPLENAME,	
+		PHONE,	
+		ADDRESS,	
+		YICODE,	
+		TELEPHONE,	
+		PAGING,
+		FAX,	
+		LINKMAN,
+		DISTRIBUTIONMODE,
+		CREDITDEGREE,	
+		NOTE,	
+		NOTE2,
+		NOTE3,
+		USER_ID,
+		PK_SOBOOKS,
+		CREATETIME,	
+		CUSTOMER_ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{CUATOMERNAME},	
+		#{SIMPLENAME},	
+		#{PHONE},	
+		#{ADDRESS},	
+		#{YICODE},	
+		#{TELEPHONE},	
+		#{PAGING},	
+		#{FAX},	
+		#{LINKMAN},	
+		#{DISTRIBUTIONMODE},	
+		#{CREDITDEGREE},	
+		#{NOTE},	
+		#{NOTE1},	
+		#{NOTE2},
+		#{USER_ID},	
+		#{PK_SOBOOKS},	
+		#{CUSTOMER_ID}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update 
+		<include refid="tableName"></include>
+		set
+			DR = 1 
+		where 
+			CUSTOMER_ID = #{CUSTOMER_ID}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			CUATOMERNAME = #{CUATOMERNAME},
+			SIMPLENAME = #{SIMPLENAME},
+			PHONE = #{PHONE},
+			ADDRESS = #{ADDRESS},
+			YICODE = #{YICODE},
+			TELEPHONE = #{TELEPHONE},
+			PAGING = #{PAGING},
+			FAX = #{FAX},
+			LINKMAN = #{LINKMAN},
+			DISTRIBUTIONMODE = #{DISTRIBUTIONMODE},
+			CREDITDEGREE = #{CREDITDEGREE},
+			NOTE = #{NOTE},
+			NOTE1 = #{NOTE2},
+			NOTE2 = #{NOTE2},
+			USER_ID = #{USER_ID},
+		CUSTOMER_ID = CUSTOMER_ID
+		where 
+		CUSTOMER_ID = #{CUSTOMER_ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="FieldCha"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			CUSTOMER_ID = #{CUSTOMER_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+			a.CUATOMERNAME,	
+			a.SIMPLENAME,	
+			a.PHONE,	
+			a.ADDRESS,	
+			a.YICODE,	
+			a.TELEPHONE,	
+			a.CREATETIME,	
+			a.PAGING,	
+			a.FAX,	
+			a.LINKMAN,	
+			a.DISTRIBUTIONMODE,	
+			a.CREDITDEGREE,	
+			a.NOTE,
+			a.NOTE2,
+			a.NOTE3,
+			a.USER_ID,	
+			a.CUSTOMER_ID
+		from 
+		<include refid="tableName"></include> a
+		where 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					a.CUATOMERNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					a.PHONE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					a.ADDRESS LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					a.DISTRIBUTIONMODE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					a.NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					a.USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				)
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart!=''">
+			and a.CREATETIME &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and a.CREATETIME &lt;= #{pd.lastEnd} 
+		</if>
+		<if test="pd.USER_ID!=null and pd.USER_ID!=''">
+			and a.USER_ID = #{pd.USER_ID} 
+		</if>
+		order by a.CREATETIME desc
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where
+			1=1
+		<if test="days!=null and days!=''"><!-- 几天内 -->
+			and DATE_SUB(CURDATE(), INTERVAL ${days} DAY) &lt;= date(CREATETIME)
+		</if>
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		update 
+		<include refid="tableName"></include>
+		set 
+			DR = 1
+		where 
+			CUSTOMER_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+		   and PK_SOBOOKS = #{PK_SOBOOKS}
+		   and IFNULL(DR,0)=0 
+	</update>
+</mapper>

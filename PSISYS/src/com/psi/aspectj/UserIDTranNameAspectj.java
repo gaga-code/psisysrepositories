@@ -33,7 +33,6 @@ public class UserIDTranNameAspectj {
 	
 	@AfterReturning(value = "pointcutlist() || pointcutfind()", returning = "returnObj") 
 	public Object afterReturn(Object returnObj) { 
- 		System.out.println(returnObj);
 		if(returnObj == null) {
 			return returnObj;
 		}else if(returnObj instanceof java.util.List) {
