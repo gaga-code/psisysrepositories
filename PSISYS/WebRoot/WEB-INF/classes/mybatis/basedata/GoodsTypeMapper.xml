@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GoodsTypeMapper">
+	
+	<resultMap type="GoodsType" id="goodsTypeResultMap">
+		<id column="GOODTYPE_ID" property="GOODTYPE_ID"/>
+		<result column="TYPENAME" property="TYPENAME"/>
+		<result column="PARENTS" property="PARENTS"/>
+	</resultMap>
+	
+	<!--表名 -->
+	<sql id="tableName">
+		base_goodtype
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		GOODTYPE_ID,
+		PK_SOBOOKS,
+		TYPECODE,
+		TYPENAME,
+		USER_ID,
+		PARENTS,
+		DEF1,
+		DEF2,
+		DEF3,
+		DEF4,
+		DEF5
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{GOODTYPE_ID},	
+		#{PK_SOBOOKS},	
+		#{TYPECODE},	
+		#{TYPENAME},	
+		#{USER_ID},	
+		#{PARENTS},	
+		#{DEF1},
+		#{DEF2},
+		#{DEF3},
+		#{DEF4},
+		#{DEF5}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set DR = 1
+		where 
+			GOODTYPE_ID = #{GOODTYPE_ID}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			TYPECODE = #{TYPECODE},
+			TYPENAME = #{TYPENAME},
+		where 
+			GOODTYPE_ID = #{GOODTYPE_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			GOODTYPE_ID = #{GOODTYPE_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 通过编码获取数据 -->
+	<select id="findByBianma" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			TYPECODE = #{TYPECODE}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where
+			1=1
+		<if test="pd.GOODTYPE_ID!= null and pd.GOODTYPE_ID != ''"><!-- 检索 -->
+		and PARENTS = #{pd.GOODTYPE_ID}
+		</if>
+		<if test="pd.keywords != null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+				 TYPENAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				 or 
+				 TYPECODE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+				)
+		</if>
+		and PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 通过ID获取其子级列表 -->
+	<select id="listSubDictByParentId" parameterType="String" resultMap="goodsTypeResultMap">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			PARENTS = #{PARENTS} 
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 排查表检查是否被占用 -->
+	<select id="findFromTbs" parameterType="pd" resultType="pd">
+		select
+			count(*) zs
+		from 
+			${thisTable}
+		where
+			TYPECODE = #{TYPECODE}
+	</select>
+</mapper>
