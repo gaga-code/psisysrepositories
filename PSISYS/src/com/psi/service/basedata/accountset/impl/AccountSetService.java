@@ -31,7 +31,7 @@ public class AccountSetService implements AccountSetManager{
 	 * @throws Exception
 	 */
 	public void delete(PageData pd)throws Exception{
-		dao.delete("AccountSetMapper.delete", pd);
+		dao.update("AccountSetMapper.delete", pd);
 	}
 	
 	/**修改
@@ -73,7 +73,7 @@ public class AccountSetService implements AccountSetManager{
 	 * @throws Exception
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
-		dao.delete("AccountSetMapper.deleteAll", ArrayDATA_IDS);
+		dao.update("AccountSetMapper.deleteAll", ArrayDATA_IDS);
 	}
 	
 }

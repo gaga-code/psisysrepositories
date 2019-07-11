@@ -28,10 +28,7 @@
 		DEF2,	
 		DEF3,	
 		DEF4,	
-		DEF5,	
-		CRATETIME,	
-		LASTTIME,	
-		DR
+		DEF5
 	</sql>
 	
 	<!-- 字段值 -->
@@ -55,10 +52,7 @@
 		#{DEF2},
 		#{DEF3},
 		#{DEF4},
-		#{DEF5},
-		#{CRATETIME},
-		#{LASTTIME},
-		#{DR}
+		#{DEF5}
 	</sql>
 	
 	<!-- 新增-->
@@ -73,14 +67,13 @@
 	</insert>
 	
 	<!-- 删除-->
-	<delete id="delete" parameterType="pd">
+	<update id="delete" parameterType="pd">
 		update
 		<include refid="tableName"></include>
-		set DR = 1,
-		LASTTIME = #{LASTTIME}
+		set DR = 1
 		where 
 			SOBOOKS_ID = #{SOBOOKS_ID}
-	</delete>
+	</update>
 	
 	<!-- 修改 -->
 	<update id="edit" parameterType="pd">
@@ -106,7 +99,6 @@
 			DEF3 = #{DEF3},
 			DEF4 = #{DEF4},
 			DEF5 = #{DEF5},
-			LASTTIME = #{LASTTIME},
 		SOBOOKS_ID = SOBOOKS_ID
 		where 
 		SOBOOKS_ID = #{SOBOOKS_ID}
@@ -176,15 +168,14 @@
 	</select>
 	
 	<!-- 批量删除 -->
-	<delete id="deleteAll" parameterType="String">
+	<update id="deleteAll" parameterType="String">
 		update 
 		<include refid="tableName"></include>
-		set DR = 1,
-		LASTTIME = now()
+		set DR = 1 
 		where 
 			SOBOOKS_ID in
 		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
                  #{item}
 		</foreach>
-	</delete>
+	</update>
 </mapper>
