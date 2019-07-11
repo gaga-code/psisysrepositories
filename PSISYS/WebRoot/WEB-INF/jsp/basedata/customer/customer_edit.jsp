@@ -27,6 +27,13 @@
 						<input type="hidden" name="CUSTOMER_ID" id="CUSTOMER_ID" value="${pd.CUSTOMER_ID}"/>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
+							<c:if test="${msg == 'save' }">
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">客户编号:</td>
+								<td><input type="text" name="CUSTOMERCODE" id="CUSTOMERCODE" value="${pd.CUSTOMERCODE}" maxlength="100" placeholder="这里输入客户编号" title="客户编号" style="width:98%;"/></td>
+							</tr>
+							</c:if>
+							
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">姓名:</td>
 								<td><input type="text" name="CUATOMERNAME" id="CUATOMERNAME" value="${pd.CUATOMERNAME}" maxlength="100" placeholder="这里输入姓名" title="姓名" style="width:98%;"/></td>
@@ -70,10 +77,12 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">经销方式:</td>
 								<td>
-									<select name="DISTRIBUTIONMODE" id="DISTRIBUTIONMODE" placeholder="请选择" title="经销方式" style="width:98%;background-color:#EBEBEB" disabled="disabled">
+									<select name="DISTRIBUTIONMODE" id="DISTRIBUTIONMODE" placeholder="请选择" title="经销方式" style="width:98%;background-color:#EBEBEB" >
 									<c:forEach items="${varListL}" var="var">
 										<option value="${var.LEVEL_ID }" <c:if test="${var.LEVEL_ID == pd.DISTRIBUTIONMODE }">selected</c:if>>${var.TITLE }</option>
 									</c:forEach>
+								<!-- 	<option value="1" >现金</option>
+									<option value="2" >月结</option> -->
 									</select>
 								</td>
 							</tr>
@@ -124,6 +133,12 @@
 				$("#CUATOMERNAME").tips({
 					side:3,
 		            msg:'请输入姓名',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				$("#CUSTOMERCODE").tips({
+					side:3,
+		            msg:'请输入客户编号',
 		            bg:'#AE81FF',
 		            time:2
 		        });

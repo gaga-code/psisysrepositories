@@ -9,6 +9,7 @@
 	
 	<!-- 字段 -->
 	<sql id="Field">
+		CUSTOMERCODE,
 		CUATOMERNAME,	
 		SIMPLENAME,	
 		PHONE,	
@@ -29,6 +30,7 @@
 	</sql>
 	<!-- 字段 -->
 	<sql id="FieldCha">
+		CUSTOMERCODE,
 		CUATOMERNAME,	
 		SIMPLENAME,	
 		PHONE,	
@@ -51,6 +53,7 @@
 	
 	<!-- 字段值 -->
 	<sql id="FieldValue">
+		#{CUSTOMERCODE},	
 		#{CUATOMERNAME},	
 		#{SIMPLENAME},	
 		#{PHONE},	
@@ -89,6 +92,7 @@
 			DR = 1 
 		where 
 			CUSTOMER_ID = #{CUSTOMER_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
 	</update>
 	
 	<!-- 修改 -->
@@ -108,8 +112,8 @@
 			DISTRIBUTIONMODE = #{DISTRIBUTIONMODE},
 			CREDITDEGREE = #{CREDITDEGREE},
 			NOTE = #{NOTE},
-			NOTE1 = #{NOTE2},
 			NOTE2 = #{NOTE2},
+			NOTE3 = #{NOTE3},
 			USER_ID = #{USER_ID},
 		CUSTOMER_ID = CUSTOMER_ID
 		where 
@@ -124,11 +128,14 @@
 		<include refid="tableName"></include>
 		where 
 			CUSTOMER_ID = #{CUSTOMER_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
 	</select>
 	
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
+			a.CUSTOMERCODE,	
 			a.CUATOMERNAME,	
 			a.SIMPLENAME,	
 			a.PHONE,	
@@ -174,13 +181,16 @@
 		<if test="pd.USER_ID!=null and pd.USER_ID!=''">
 			and a.USER_ID = #{pd.USER_ID} 
 		</if>
+		and PK_SOBOOKS = #{pd.PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
 		order by a.CREATETIME desc
+		
 	</select>
 	
 	<!-- 列表(全部) -->
 	<select id="listAll" parameterType="pd" resultType="pd">
 		select
-		<include refid="Field"></include>
+		<include refid="FieldCha"></include>
 		from 
 		<include refid="tableName"></include>
 		where

@@ -56,6 +56,7 @@
 							<thead>
 								<tr>
 									<th class="center" style="width:50px;">序号</th>
+									<th class="center">客户编号</th>
 									<th class="center">姓名</th>
 									<th class="center">手机</th>
 									<th class="center">地址</th>
@@ -74,6 +75,7 @@
 									<c:forEach items="${varList}" var="var" varStatus="vs">
 										<tr>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
+											<td class='center'>${var.CUSTOMERCODE}</td>
 											<td class='center'>${var.CUATOMERNAME}</td>
 											<td class='center'>${var.PHONE}</td>
 											<td class='center'>${var.ADDRESS}</td>

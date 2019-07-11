@@ -58,8 +58,6 @@ public class CustomerController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		Session session = Jurisdiction.getSession();
-		User user = (User)session.getAttribute(Const.SESSION_USER);
 		pd.put("CUSTOMER_ID", this.get32UUID());		//主键
 		customerService.save(pd);
 		mv.addObject("msg","success");
@@ -183,7 +181,7 @@ public class CustomerController extends BaseController {
 		xianjin.put("LEVEL_ID", 1);
 		xianjin.put("TITLE","现金");
 		HashMap yuejie = new HashMap();
-		yuejie.put("LEVEL_ID", 1);
+		yuejie.put("LEVEL_ID", 2);
 		yuejie.put("TITLE","月结");
 		varListL.add(xianjin);
 		varListL.add(yuejie);
@@ -202,12 +200,18 @@ public class CustomerController extends BaseController {
 		pd = this.getPageData();
 		pd = customerService.findById(pd);	//根据ID读取
 		pd.put("USERNAME", Jurisdiction.getUsername());	//用户名
-		List<PageData>	varList = remarksService.listAll(pd);
-		List<PageData>	varListL = levelService.listAll(pd);
 		mv.setViewName("basedata/customer/customer_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
-		mv.addObject("varList", varList);
+		List<HashMap> varListL = new ArrayList<HashMap>();
+		HashMap xianjin = new HashMap();
+		xianjin.put("LEVEL_ID", 1);
+		xianjin.put("TITLE","现金");
+		HashMap yuejie = new HashMap();
+		yuejie.put("LEVEL_ID", 2);
+		yuejie.put("TITLE","月结");
+		varListL.add(xianjin);
+		varListL.add(yuejie);
 		mv.addObject("varListL", varListL);
 		return mv;
 	}	
@@ -222,12 +226,18 @@ public class CustomerController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd = customerService.findById(pd);	//根据ID读取
-		List<PageData>	varList = remarksService.listAll(pd);
-		List<PageData>	varListL = levelService.listAll(pd);
 		mv.setViewName("basedata/customer/customer_view");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
-		mv.addObject("varList", varList);
+		List<HashMap> varListL = new ArrayList<HashMap>();
+		HashMap xianjin = new HashMap();
+		xianjin.put("LEVEL_ID", 1);
+		xianjin.put("TITLE","现金");
+		HashMap yuejie = new HashMap();
+		yuejie.put("LEVEL_ID", 2);
+		yuejie.put("TITLE","月结");
+		varListL.add(xianjin);
+		varListL.add(yuejie);
 		mv.addObject("varListL", varListL);
 		return mv;
 	}
@@ -272,33 +282,42 @@ public class CustomerController extends BaseController {
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		List<String> titles = new ArrayList<String>();
 		titles.add("姓名");	//1
-		titles.add("年龄");	//2
+		titles.add("客户编号");	//2
 		titles.add("手机");	//3
 		titles.add("地址");	//4
-		titles.add("QQ");	//5
-		titles.add("微信");	//6
+		titles.add("简称");	//5
+		titles.add("拼音编码");	//6
 		titles.add("建档时间");	//7
-		titles.add("消费金额");	//8
-		titles.add("级别");	//9
-		titles.add("备注1");	//10
-		titles.add("备注2");	//11
+		titles.add("信誉程度");	//8
+		titles.add("电话");	//9
+		titles.add("传真");	//10
+		titles.add("传呼");	//11
+		titles.add("联系人");	//12
+		titles.add("经销方式");	//13
+		titles.add("备注");	//14
+		titles.add("备注2");	//15
+		titles.add("备注3");	//16
 		dataMap.put("titles", titles);
-		pd.put("USERNAME", Jurisdiction.getUsername());
 		List<PageData> varOList = customerService.listAll(pd);
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
-			vpd.put("var1", varOList.get(i).getString("NAME"));	    //1
-			vpd.put("var2", varOList.get(i).getString("AGE"));	    //2
+			vpd.put("var1", varOList.get(i).getString("CUATOMERNAME"));	    //1
+			vpd.put("var2", varOList.get(i).getString("CUSTOMERCODE"));	    //2
 			vpd.put("var3", varOList.get(i).get("PHONE").toString());	//3
 			vpd.put("var4", varOList.get(i).getString("ADDRESS"));	    //4
-			vpd.put("var5", varOList.get(i).get("QQ").toString());	//5
-			vpd.put("var6", varOList.get(i).getString("WEIXIN"));	    //6
-			vpd.put("var7", varOList.get(i).getString("CTIME"));	    //7
-			vpd.put("var8", varOList.get(i).get("MONEY").toString());	//8
-			vpd.put("var9", varOList.get(i).getString("LEVEL"));	    //9
-			vpd.put("var10", varOList.get(i).getString("REMARKS1"));	    //10
-			vpd.put("var11", varOList.get(i).getString("REMARKS2"));	    //11
+			vpd.put("var5", varOList.get(i).get("SIMPLENAME").toString());	//5
+			vpd.put("var6", varOList.get(i).getString("YICODE"));	    //6
+			vpd.put("var7", varOList.get(i).getString("CREATETIME"));	    //7
+			vpd.put("var8", varOList.get(i).get("CREDITDEGREE").toString());	//8
+			vpd.put("var9", varOList.get(i).getString("TELEPHONE"));	    //9
+			vpd.put("var10", varOList.get(i).getString("FAX"));	    //10
+			vpd.put("var11", varOList.get(i).getString("PAGING"));	    //11
+			vpd.put("var12", varOList.get(i).getString("LINKMAN"));	    //11
+			vpd.put("var13","1".equals( varOList.get(i).getString("DISTRIBUTIONMODE") )?"现金":"月结");	    //11
+			vpd.put("var14", varOList.get(i).getString("NOTE"));	    //11
+			vpd.put("var15", varOList.get(i).getString("NOTE2"));	    //11
+			vpd.put("var16", varOList.get(i).getString("NOTE3"));	    //11
 			varList.add(vpd);
 		}
 		dataMap.put("varList", varList);

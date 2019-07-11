@@ -55,6 +55,7 @@
 								<tr>
 									<th class="center" style="width:35px;" id="fhadminth"></th>
 									<th class="center" style="width:50px;">序号</th>
+									<th class="center">客户编号</th>
 									<th class="center">姓名</th>
 									<th class="center">手机</th>
 									<th class="center">建档时间</th>
@@ -74,6 +75,7 @@
 												<label class="pos-rel"><input type='radio' name="fhadmin" value="${var.CUSTOMER_ID }" onclick="setCustomer(this.value,'${var.CUATOMERNAME }')" class="ace" /><span class="lbl"></span></label>
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
+											<td class='center'>${var.CUSTOMERCODE}</td>
 											<td class='center'>${var.CUATOMERNAME}</td>
 											<td class='center'>${var.PHONE}</td>
 											<td class='center'>${var.CREATETIME}</td>

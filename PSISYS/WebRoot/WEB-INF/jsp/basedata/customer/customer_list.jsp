@@ -59,6 +59,7 @@
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									<th class="center" style="width:50px;">序号</th>
+									<th class="center">客户编号</th>
 									<th class="center">姓名</th>
 									<th class="center">手机</th>
 									<th class="center">建档时间</th>
@@ -82,6 +83,7 @@
 												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.CUSTOMER_ID}" class="ace" /><span class="lbl"></span></label>
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
+											<td class='center'>${var.CUSTOMERCODE}</td>
 											<td class='center'>${var.CUATOMERNAME}</td>
 											<td class='center'>${var.PHONE}</td>
 											<td class='center'>${var.CREATETIME}</td>
@@ -373,7 +375,7 @@
 			 diag.Title ="查看";
 			 diag.URL = '<%=basePath%>customer/goView.do?CUSTOMER_ID='+Id;
 			 diag.Width = 450;
-			 diag.Height = 500;
+			 diag.Height = 650;
 			 diag.Modal = false;				//有无遮罩窗口
 			 diag. ShowMaxButton = true;	//最大化按钮
 		     diag.ShowMinButton = true;		//最小化按钮 

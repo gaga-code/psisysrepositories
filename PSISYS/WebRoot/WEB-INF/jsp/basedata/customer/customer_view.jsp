@@ -28,6 +28,10 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">客户编号:</td>
+								<td style="padding-top: 13px;">${pd.CUSTOMERCODE}</td>
+							</tr>
+							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">姓名:</td>
 								<td style="padding-top: 13px;">${pd.CUATOMERNAME}</td>
 							</tr>
@@ -72,7 +76,7 @@
 								<td>
 									<select name="DISTRIBUTIONMODE" id="DISTRIBUTIONMODE" placeholder="请选择" title="经销方式" style="width:98%;background-color:#EBEBEB" disabled="disabled">
 									<c:forEach items="${varListL}" var="var">
-										<option value="${var.LEVEL_ID }" <c:if test="${var.LEVEL_ID == pd.LEVEL }">selected</c:if>>${var.TITLE }</option>
+										<option value="${var.LEVEL_ID }" <c:if test="${var.LEVEL_ID == pd.DISTRIBUTIONMODE }">selected</c:if>>${var.TITLE }</option>
 									</c:forEach>
 									</select>
 								</td>
