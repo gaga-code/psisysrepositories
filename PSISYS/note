@@ -24,19 +24,61 @@ and IFNULL(dr,0)=0
 			DR = 1 
 		where 
 			PAYMETHOD_ID = #{PAYMETHOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
 	</update>
 	
-	<!-- 批量删除 -->
-	<update id="deleteAll" parameterType="String">
-		update 
-		<include refid="tableName"></include>
-		set 
-			DR = 1
-		where 
-			PAYMETHOD_ID in
-		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
-                 #{item}
-		</foreach>
-		   and PK_SOBOOKS = #{PK_SOBOOKS}
-		   and IFNULL(DR,0)=0 
-	</update>
+
+	
+	
+5、 timestamp 的取法		
+		String createtime = ((Timestamp)varOList.get(i).get("CREATETIME")).toString();
+			vpd.put("var7", createtime.substring(0, createtime.length()-2));	
+
+6
+	@Autowired
+	private JdbcTempUtil jdbcTempUtil;
+
+7、批量删除的迁移
+===============================controller层==========================================
+/**批量删除
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/deleteAll")
+	@ResponseBody
+	public Object deleteAll() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"批量删除supplier");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
+		PageData pd = new PageData();		
+		Map<String,Object> map = new HashMap<String,Object>();
+		pd = this.getPageData();
+		List<PageData> pdList = new ArrayList<PageData>();
+		String DATA_IDS = pd.getString("DATA_IDS");
+		if(null != DATA_IDS && !"".equals(DATA_IDS)){
+			String[] ids = DATA_IDS.split(",");
+			StringBuffer idstr = new StringBuffer("");
+			for(int i=0;i<ids.length;i++) {
+				idstr.append("'"+ids[i]+"',");
+			}
+			supplierService.deleteAll(idstr.toString().substring(0,idstr.toString().length()-1),(String)pd.get("PK_SOBOOKS"));
+			pd.put("msg", "ok");
+		}else{
+			pd.put("msg", "no");
+		}
+		pdList.add(pd);
+		map.put("list", pdList);
+		return AppUtil.returnObject(pd, map);
+	}
+=============================================service层============================================	
+/**
+	 * 批量删除
+	 * DATA_IDS   主键 
+	 * PK_SOBOOKS  帐套主键
+	 */
+	public void deleteAll(String DATA_IDS,String PK_SOBOOKS)throws Exception{
+		//表名和主键字段名
+		jdbcTempUtil.deleteAll(DATA_IDS, PK_SOBOOKS, "base_supplier", "SUPPLIER_ID");
+	}
+			
+			

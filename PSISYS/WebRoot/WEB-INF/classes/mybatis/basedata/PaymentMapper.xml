@@ -53,6 +53,8 @@
 			DR = 1 
 		where 
 			PAYMETHOD_ID = #{PAYMETHOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
 	</update>
 	
 	<!-- 修改 -->
@@ -64,6 +66,7 @@
 			NOTE = #{NOTE}
 		where 
 		PAYMETHOD_ID = #{PAYMETHOD_ID}	
+		and PK_SOBOOKS = #{PK_SOBOOKS}
 		and IFNULL(DR,0)=0 
 	</update>
 	

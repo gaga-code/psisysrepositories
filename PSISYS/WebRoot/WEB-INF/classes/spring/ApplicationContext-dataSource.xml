@@ -30,7 +30,7 @@
             <property name="dataSource" ref="dataSource">
             </property>
     </bean>
-    <bean id="transIDtoObjectUtil" class="com.psi.util.TransIDtoObjectUtil">
+    <bean id="jdbcTempUtil" class="com.psi.util.JdbcTempUtil">
     	<property name="jdbcTemplate" ref="jdbcTemplate"></property>
     </bean>
 	<!-- 阿里 druid数据库连接池 -->

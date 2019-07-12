@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.psi.util.PageData;
-import com.psi.util.TransIDtoObjectUtil;
+import com.psi.util.JdbcTempUtil;
 
 @Component 
 @Aspect 
@@ -67,14 +67,14 @@ public class UserIDTranNameAspectj {
 	}
 	
 	@Autowired
-	private TransIDtoObjectUtil transIDtoObjectUtil;
+	private JdbcTempUtil jdbcTempUtil;
 	/**
 	 * 经手人主键 转 名称
 	 * @param pd 
 	 * @return
 	 */
 	private PageData transUserIdToUserName(PageData pd) {
-		String NAME = transIDtoObjectUtil.transIDtoString("sys_user", "USER_ID", (String) pd.get("USER_ID"), "NAME");
+		String NAME = jdbcTempUtil.transIDtoString("sys_user", "USER_ID", (String) pd.get("USER_ID"), "NAME");
 		pd.put("PSI_NAME", NAME);
 		return pd;
 	}
