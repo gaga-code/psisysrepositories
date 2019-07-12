@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.shiro.session.Session;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
+import com.psi.entity.system.User;
 import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.basedata.goodstype.GoodsTypeManager;
 import com.psi.service.erp.spbrand.SpbrandManager;
@@ -219,6 +221,9 @@ public class GoodsController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		Session session = Jurisdiction.getSession();
+		User user = (User)session.getAttribute(Const.SESSION_USER);
+		pd.put("PSI_NAME", user.getNAME());	//用户主键
 		List<PageData> goodsTypeList =  goodsTypeService.listAll(pd); 						//商品分类列表
 		List<PageData> spunitList = spunitService.listAll(Jurisdiction.getUsername()); 		//计量单位列表
 		mv.setViewName("basedata/goods/goods_edit");

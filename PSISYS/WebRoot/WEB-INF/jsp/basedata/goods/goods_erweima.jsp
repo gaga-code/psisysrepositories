@@ -27,7 +27,7 @@
 				<div class="page-content">
 					<div class="row">
 						<div class="col-xs-12" style="padding-top: 9px;">
-							<img id="encoderImgId" cache="false" src="<%=basePath%>uploadFiles/twoDimensionCode/${pd.GOODS_ID }.png" width="261px" height="261px;"/>			
+							<img id="encoderImgId" cache="false" src="<%=basePath%>uploadFiles/twoDimensionCode/${pd.GOOD_ID }.png" width="261px" height="261px;"/>			
 						</div>
 						<!-- /.col -->
 					</div>

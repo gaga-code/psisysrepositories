@@ -52,7 +52,7 @@
 							</tr>
 							<tr>
 								<td style="width:100px;text-align: right;padding-top: 13px;">经手人:</td>
-								<td><input type="text" name="TYPECODE" id="TYPECODE" value="${pd.NAME}" maxlength="32" placeholder="这里输入经手人(禁止修改)" title="经手人" style="width:76%;" readonly="readonly" /></td>
+								<td><input type="text" name="TYPECODE" id="TYPECODE" value="${pd.PSI_NAME}" maxlength="32" placeholder="这里输入经手人(禁止修改)" title="经手人" style="width:76%;" readonly="readonly" /></td>
 							</tr>
 							<%-- <tr>
 								<td style="width:70px;text-align: right;padding-top: 13px;">排序:</td>

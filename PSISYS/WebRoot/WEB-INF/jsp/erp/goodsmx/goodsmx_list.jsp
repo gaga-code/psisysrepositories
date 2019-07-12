@@ -57,7 +57,7 @@
 					<!-- 检索  -->
 					<form action="goodsmx/list.do" method="post" name="Form" id="Form">
 					<input type="hidden" name="MASTER_ID" id="MASTER_ID" value="${pd.MASTER_ID}" />
-					<table style="margin-top:5px;">
+					<%-- <table style="margin-top:5px;">
 						<tr>
 							<td>
 								<div class="nav-search">
@@ -70,7 +70,7 @@
 							<td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="searchs();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 							</c:if>
 						</tr>
-					</table>
+					</table> --%>
 					<!-- 检索  -->
 					<table id="simple-table" class="table table-striped table-bordered table-hover"  style="margin-top:0px;">
 						<thead>

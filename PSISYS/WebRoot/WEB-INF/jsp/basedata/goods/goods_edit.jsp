@@ -58,7 +58,7 @@
 								<td style="width:75px;text-align: right;padding-top: 13px;">简称:</td>
 								<td><input type="text" name="SIMPLENAME" id="SIMPLENAME" value="${pd.SIMPLENAME}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
-								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.USER_ID}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;" readonly="readonly"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品规格:</td>

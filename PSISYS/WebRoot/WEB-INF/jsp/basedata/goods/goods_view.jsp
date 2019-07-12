@@ -30,6 +30,10 @@
 								<td colspan="10" style="padding-top: 13px;">${pd.GOODNAME}</td>
 							</tr>
 							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
+								<td colspan="10" style="padding-top: 13px;">${pd.PSI_NAME}</td>
+							</tr>
+							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品编号:</td>
 								<td style="padding-top: 13px;">${pd.GOODCODE}</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">简称:</td>
@@ -112,7 +116,7 @@
 
 <c:if test="${'edit' == msg }">
 	<div>
-		<iframe name="treeFrame" id="treeFrame" frameborder="0" src="<%=basePath%>/goodsmx/viewList.do?MASTER_ID=${pd.GOODS_ID}" style="margin:0 auto;width:805px;height:368px;;"></iframe>
+		<iframe name="treeFrame" id="treeFrame" frameborder="0" src="<%=basePath%>/goodsmx/viewList.do?MASTER_ID=${pd.GOOD_ID}" style="margin:0 auto;width:805px;height:368px;;"></iframe>
 	</div>
 </c:if>
 

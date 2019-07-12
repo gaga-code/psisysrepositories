@@ -24,7 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
 import com.psi.entity.system.User;
-import com.psi.service.basedata.supplier.SupplierManager;
 import com.psi.service.erp.level.LevelManager;
 import com.psi.service.erp.remarks.RemarksManager;
 import com.psi.util.AppUtil;
@@ -40,15 +39,15 @@ import com.psi.util.PageData;
 @RequestMapping(value="/supplier")
 public class SupplierController extends BaseController {
 	
-	String menuUrl = "supplier/list.do"; //菜单地址(权限用)
+	/*String menuUrl = "supplier/list.do"; //菜单地址(权限用)
 	@Resource(name="supplierService")
 	private SupplierManager supplierService;
 
 	
-	/**保存
+	*//**保存
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/save")
 	public ModelAndView save() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"新增supplier");
@@ -63,10 +62,10 @@ public class SupplierController extends BaseController {
 		return mv;
 	}
 	
-	/**删除
+	*//**删除
 	 * @param out
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/delete")
 	public void delete(PrintWriter out) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"删除supplier");
@@ -78,10 +77,10 @@ public class SupplierController extends BaseController {
 		out.close();
 	}
 	
-	/**修改
+	*//**修改
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/edit")
 	public ModelAndView edit() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"修改supplier");
@@ -95,10 +94,10 @@ public class SupplierController extends BaseController {
 		return mv;
 	}
 	
-	/**列表
+	*//**列表
 	 * @param page
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表supplier");
@@ -127,10 +126,10 @@ public class SupplierController extends BaseController {
 		return mv;
 	}
 	
-	/**列表(弹窗选择用)
+	*//**列表(弹窗选择用)
 	 * @param page
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/windowsList")
 	public ModelAndView windowsList(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表supplier");
@@ -159,10 +158,10 @@ public class SupplierController extends BaseController {
 		return mv;
 	}
 	
-	/**去新增页面
+	*//**去新增页面
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/goAdd")
 	public ModelAndView goAdd()throws Exception{
 		ModelAndView mv = this.getModelAndView();
@@ -187,10 +186,10 @@ public class SupplierController extends BaseController {
 		return mv;
 	}	
 	
-	 /**去修改页面
+	 *//**去修改页面
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/goEdit")
 	public ModelAndView goEdit()throws Exception{
 		ModelAndView mv = this.getModelAndView();
@@ -213,10 +212,10 @@ public class SupplierController extends BaseController {
 		return mv;
 	}	
 	
-	 /**查看页面
+	 *//**查看页面
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/goView")
 	public ModelAndView goView()throws Exception{
 		ModelAndView mv = this.getModelAndView();
@@ -239,10 +238,10 @@ public class SupplierController extends BaseController {
 		return mv;
 	}
 	
-	 /**批量删除
+	 *//**批量删除
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/deleteAll")
 	@ResponseBody
 	public Object deleteAll() throws Exception{
@@ -269,10 +268,10 @@ public class SupplierController extends BaseController {
 		return AppUtil.returnObject(pd, map);
 	}
 	
-	 /**导出到excel
+	 *//**导出到excel
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"导出supplier到excel");
@@ -334,5 +333,5 @@ public class SupplierController extends BaseController {
 	public void initBinder(WebDataBinder binder){
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(format,true));
-	}
+	}*/
 }
