@@ -1,6 +1,7 @@
 package com.psi.controller.basedata.customer;
 
 import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -120,7 +121,6 @@ public class CustomerController extends BaseController {
 		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
 			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
 		} 
-		pd.put("USERNAME", Jurisdiction.getUsername());
 		page.setPd(pd);
 		List<PageData>	varList = customerService.list(page);	//列出Customer列表
 		mv.setViewName("basedata/customer/customer_list");
@@ -153,7 +153,6 @@ public class CustomerController extends BaseController {
 		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
 			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
 		} 
-		pd.put("USERNAME", Jurisdiction.getUsername());
 		page.setPd(pd);
 		List<PageData>	varList = customerService.list(page);	//列出Customer列表
 		mv.setViewName("basedata/customer/windows_customer_list");
@@ -172,7 +171,9 @@ public class CustomerController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("USERNAME", Jurisdiction.getUsername());	//用户名
+		Session session = Jurisdiction.getSession();
+		User user = (User)session.getAttribute(Const.SESSION_USER);
+		pd.put("PSI_NAME", user.getNAME());	//用户主键
 		mv.setViewName("basedata/customer/customer_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
@@ -199,7 +200,6 @@ public class CustomerController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd = customerService.findById(pd);	//根据ID读取
-		pd.put("USERNAME", Jurisdiction.getUsername());	//用户名
 		mv.setViewName("basedata/customer/customer_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
@@ -294,9 +294,10 @@ public class CustomerController extends BaseController {
 		titles.add("传呼");	//11
 		titles.add("联系人");	//12
 		titles.add("经销方式");	//13
-		titles.add("备注");	//14
-		titles.add("备注2");	//15
-		titles.add("备注3");	//16
+		titles.add("经手人");	//14
+		titles.add("备注");	//15
+		titles.add("备注2");	//16
+		titles.add("备注3");	//17
 		dataMap.put("titles", titles);
 		List<PageData> varOList = customerService.listAll(pd);
 		List<PageData> varList = new ArrayList<PageData>();
@@ -308,16 +309,18 @@ public class CustomerController extends BaseController {
 			vpd.put("var4", varOList.get(i).getString("ADDRESS"));	    //4
 			vpd.put("var5", varOList.get(i).get("SIMPLENAME").toString());	//5
 			vpd.put("var6", varOList.get(i).getString("YICODE"));	    //6
-			vpd.put("var7", varOList.get(i).getString("CREATETIME"));	    //7
+			String createtime = ((Timestamp)varOList.get(i).get("CREATETIME")).toString();
+			vpd.put("var7", createtime.substring(0, createtime.length()-2));	    //7
 			vpd.put("var8", varOList.get(i).get("CREDITDEGREE").toString());	//8
 			vpd.put("var9", varOList.get(i).getString("TELEPHONE"));	    //9
 			vpd.put("var10", varOList.get(i).getString("FAX"));	    //10
 			vpd.put("var11", varOList.get(i).getString("PAGING"));	    //11
-			vpd.put("var12", varOList.get(i).getString("LINKMAN"));	    //11
-			vpd.put("var13","1".equals( varOList.get(i).getString("DISTRIBUTIONMODE") )?"现金":"月结");	    //11
-			vpd.put("var14", varOList.get(i).getString("NOTE"));	    //11
-			vpd.put("var15", varOList.get(i).getString("NOTE2"));	    //11
-			vpd.put("var16", varOList.get(i).getString("NOTE3"));	    //11
+			vpd.put("var12", varOList.get(i).getString("LINKMAN"));	    //12
+			vpd.put("var13","1".equals( varOList.get(i).getString("DISTRIBUTIONMODE") )?"现金":"月结");	    //13
+			vpd.put("var14", varOList.get(i).getString("PSI_NAME"));	    //14
+			vpd.put("var14", varOList.get(i).getString("NOTE"));	    //15
+			vpd.put("var15", varOList.get(i).getString("NOTE2"));	    //16
+			vpd.put("var16", varOList.get(i).getString("NOTE3"));	    //17
 			varList.add(vpd);
 		}
 		dataMap.put("varList", varList);

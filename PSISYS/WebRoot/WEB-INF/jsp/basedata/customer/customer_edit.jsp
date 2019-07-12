@@ -27,6 +27,10 @@
 						<input type="hidden" name="CUSTOMER_ID" id="CUSTOMER_ID" value="${pd.CUSTOMER_ID}"/>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
+							<tr>
+								<td style="width:79px;text-align: right;padding-top: 13px;">经手人:</td>
+								<td><input type="text" name="PSI_NAME" id="PSI_NAME" readonly="readonly" value="${pd.PSI_NAME}" maxlength="30"  title="经手人" style="width:98%;"/></td>
+							</tr>
 							<c:if test="${msg == 'save' }">
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">客户编号:</td>

@@ -61,6 +61,7 @@
 									<th class="center">手机</th>
 									<th class="center">地址</th>
 									<th class="center">建档时间</th>
+									<th class="center">经手人</th>
 <!-- 									<th class="center">跟踪记录</th>
 									<th class="center">谁的客户?</th> -->
 									<th class="center">操作</th>
@@ -80,6 +81,7 @@
 											<td class='center'>${var.PHONE}</td>
 											<td class='center'>${var.ADDRESS}</td>
 											<td class='center'>${var.CREATETIME}</td>
+											<td class='center'>${var.PSI_NAME}</td>
 											<%-- <td class='center'><a style="cursor:pointer;" onclick="chaImg('${var.CUSTOMER_ID}')">[查看跟踪记录]</a></td>
 											<td class='center'>${var.USERNAME }&nbsp;<a onclick="viewUser('${var.USERNAME}')" style="cursor:pointer;">[查看]</a></td>  --%>
 											<td class="center">

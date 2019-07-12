@@ -28,6 +28,10 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
+								<td style="padding-top: 13px;">${pd.PSI_NAME}</td>
+							</tr>
+							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">客户编号:</td>
 								<td style="padding-top: 13px;">${pd.CUSTOMERCODE}</td>
 							</tr>

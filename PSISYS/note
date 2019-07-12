@@ -5,11 +5,13 @@ DateUtil.getTime().toString()
 <td><input oninput="changecode(this.value)" type="text" name="QX_NAME" id="QX_NAME" value="${pd.QX_NAME}" maxlength="50" placeholder="这里输入权限标识" title="权限标识" style="width:98%;"/></td>
 
 2、获取session里的属性值
+
 Session session = Jurisdiction.getSession();
-String sessionCode = (String)session.getAttribute(Const.SESSION_SECURITY_CODE);
+User user = (User)session.getAttribute(Const.SESSION_USER);
+pd.put("USER_ID", user.getUSER_ID());	//用户主键
 
 
-3、修改、查询必加的
+3、修改、删除、查询必加的
 and PK_SOBOOKS = #{PK_SOBOOKS}
 and IFNULL(dr,0)=0 
 
@@ -22,4 +24,19 @@ and IFNULL(dr,0)=0
 			DR = 1 
 		where 
 			PAYMETHOD_ID = #{PAYMETHOD_ID}
+	</update>
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		update 
+		<include refid="tableName"></include>
+		set 
+			DR = 1
+		where 
+			PAYMETHOD_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+		   and PK_SOBOOKS = #{PK_SOBOOKS}
+		   and IFNULL(DR,0)=0 
 	</update>

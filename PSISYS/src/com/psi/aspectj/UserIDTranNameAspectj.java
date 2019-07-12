@@ -75,7 +75,7 @@ public class UserIDTranNameAspectj {
 	 */
 	private PageData transUserIdToUserName(PageData pd) {
 		String NAME = transIDtoObjectUtil.transIDtoString("sys_user", "USER_ID", (String) pd.get("USER_ID"), "NAME");
-		pd.put("NAME", NAME);
+		pd.put("PSI_NAME", NAME);
 		return pd;
 	}
 	/**

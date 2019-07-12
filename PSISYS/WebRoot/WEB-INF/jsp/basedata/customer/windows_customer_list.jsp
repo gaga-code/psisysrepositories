@@ -61,6 +61,7 @@
 									<th class="center">建档时间</th>
 									<th class="center">地址</th>
 									<th class="center">经销方式</th>
+									<th class="center">经手人</th>
 								</tr>
 							</thead>
 													
@@ -81,6 +82,7 @@
 											<td class='center'>${var.CREATETIME}</td>
 											<td class='center'>${var.ADDRESS}</td>
 											<td class='center'>${var.DISTRIBUTIONMODE}</td>
+											<td class='center'>${var.PSI_NAME}</td>
 										</tr>
 									</c:forEach>
 									</c:if>
