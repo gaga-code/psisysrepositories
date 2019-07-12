@@ -1,8 +1,10 @@
-package com.psi.service.erp.goods;
+package com.psi.service.basedata.goods;
 
 import java.util.List;
+import java.util.Map;
 
 import com.psi.entity.Page;
+import com.psi.entity.basedata.GoodsType;
 import com.psi.util.PageData;
 
 /**
@@ -10,6 +12,22 @@ import com.psi.util.PageData;
  */
 public interface GoodsManager{
 
+	/**
+	 * 通过ID获取其子级列表
+	 * @param parentId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GoodsType> listSubDictByParentId(Map<String,String> parentIdAndPK_SOBOOKS) throws Exception;
+	
+	/**
+	 * 获取所有数据并填充每条数据的子级列表(递归处理)
+	 * @param MENU_ID
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GoodsType> listAllDict(Map<String,String> parentIdAndPK_SOBOOKS) throws Exception;
+	
 	/**新增
 	 * @param pd
 	 * @throws Exception

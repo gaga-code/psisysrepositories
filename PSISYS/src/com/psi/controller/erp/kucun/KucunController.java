@@ -14,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
-import com.psi.service.erp.goods.GoodsManager;
 import com.psi.service.erp.spbrand.SpbrandManager;
 import com.psi.service.erp.sptype.SptypeManager;
 import com.psi.service.erp.spunit.SpunitManager;
@@ -30,7 +29,7 @@ import com.psi.util.Tools;
 @RequestMapping(value="/kucun")
 public class KucunController extends BaseController {
 
-	String menuUrl = "kucun/list.do"; //菜单地址(权限用)
+	/*String menuUrl = "kucun/list.do"; //菜单地址(权限用)
 	@Resource(name="goodsService")
 	private GoodsManager goodsService;
 	@Resource(name="spbrandService")
@@ -40,10 +39,10 @@ public class KucunController extends BaseController {
 	@Resource(name="spunitService")
 	private SpunitManager spunitService;
 	
-	/**列表
+	*//**列表
 	 * @param page
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表Goods");
@@ -72,10 +71,10 @@ public class KucunController extends BaseController {
 		return mv;
 	}
 	
-	/**库存盘点
+	*//**库存盘点
 	 * @return
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/kucunchar")
 	public ModelAndView kucunchar() throws Exception{
 		ModelAndView mv = this.getModelAndView();
@@ -97,10 +96,10 @@ public class KucunController extends BaseController {
 		return mv;
 	}
 	
-	 /**导出到excel
+	 *//**导出到excel
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"导出库存到excel");
@@ -139,6 +138,6 @@ public class KucunController extends BaseController {
 		ObjectExcelView erv = new ObjectExcelView();
 		mv = new ModelAndView(erv,dataMap);
 		return mv;
-	}
+	}*/
 	
 }

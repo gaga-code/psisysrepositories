@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GoodsMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		base_good
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		GOOD_ID,
+		PK_SOBOOKS,
+		USER_ID,
+		GOODTYPE_ID,
+		GOODCODE,
+		GOODNAME,
+		BARCODE,
+		SIMPLENAME,
+		SUBGZ_ID,
+		GOODSPECIF,
+		CUNIT_ID,
+		GOODTYPECODE,
+		FZUNIT_ID,
+		YICODE,
+		UNITPROP,
+		SUPPLIER_ID,
+		NOTE,
+		LASTPPRICE,
+		CPRICE,
+		RPRICE,
+		LFZUPPRICE,
+		FZUCPRICE,
+		MPRICE,
+		STOCKNUM,
+		STOCKUPNUM,
+		STOCKDOWNNUM
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{GOOD_ID},	
+		#{PK_SOBOOKS},	
+		#{USER_ID},	
+		#{GOODTYPE_ID},	
+		#{GOODCODE},	
+		#{GOODNAME},	
+		#{BARCODE},	
+		#{SIMPLENAME},	
+		#{SUBGZ_ID},	
+		#{GOODSPECIF},	
+		#{CUNIT_ID},	
+		#{GOODTYPECODE},	
+		#{FZUNIT_ID},	
+		#{YICODE},	
+		#{UNITPROP},	
+		#{SUPPLIER_ID},	
+		#{NOTE},	
+		#{LASTPPRICE},	
+		#{CPRICE},	
+		#{RPRICE},	
+		#{LFZUPPRICE},	
+		#{FZUCPRICE},	
+		#{MPRICE},	
+		#{STOCKNUM},	
+		#{STOCKUPNUM},	
+		#{STOCKDOWNNUM}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update 
+		<include refid="tableName"></include>
+		set DR = 1
+		where 
+			GOOD_ID = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			GOODTYPE_ID = #{GOODTYPE_ID},	
+			GOODCODE = #{GOODCODE},	
+			GOODNAME = #{GOODNAME},	
+			BARCODE=#{BARCODE},	
+			SIMPLENAME=#{SIMPLENAME},	
+			SUBGZ_ID=#{SUBGZ_ID},	
+			GOODSPECIF=#{GOODSPECIF},	
+			CUNIT_ID=#{CUNIT_ID},	
+			GOODTYPECODE=#{GOODTYPECODE},	
+			FZUNIT_ID=#{FZUNIT_ID},	
+			YICODE=#{YICODE},	
+			UNITPROP=#{UNITPROP},	
+			SUPPLIER_ID=#{SUPPLIER_ID},	
+			NOTE=#{NOTE},	
+			LASTPPRICE=#{LASTPPRICE},	
+			CPRICE=#{CPRICE},	
+			RPRICE=#{RPRICE},	
+			LFZUPPRICE=#{LFZUPPRICE},	
+			FZUCPRICE=#{FZUCPRICE},	
+			MPRICE=#{MPRICE},	
+			STOCKNUM=#{STOCKNUM},	
+			STOCKUPNUM=#{STOCKUPNUM},	
+			STOCKDOWNNUM=#{STOCKDOWNNUM}
+		where 
+			GOOD_ID = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 修改库存 -->
+	<update id="editKuCun" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			STOCKNUM = #{STOCKNUM}
+		where 
+			GOOD_ID = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			GOOD_ID = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	
+	<!-- 通过ID获取数据(查看详细信息) -->
+	<select id="findByIdToCha" parameterType="pd" resultType="pd">
+		select
+			a.GOOD_ID,
+			a.USER_ID,
+			a.GOODTYPE_ID,
+			a.GOODCODE,
+			a.GOODNAME,	
+			a.BARCODE,	
+			a.SIMPLENAME,
+			a.BRANT,
+			a.SUBGZ_ID,
+			a.GOODSPECIF,
+			a.CUNIT_ID,
+			a.GOODTYPECODE,
+			a.FZUNIT_ID,
+			a.YICODE,
+			a.UNITPROP,
+			a.GOODPIC,
+			a.SUPPLIER_ID,
+			a.NOTE,
+			a.LASTPPRICE,
+			a.CPRICE,
+			a.RPRICE,
+			a.LFZUPPRICE,
+			a.FZUCPRICE,
+			a.MPRICE,
+			a.STOCKNUM,
+			a.STOCKUPNUM,
+			a.STOCKDOWNNUM,		
+			
+			b.SUPPLIERNAME,
+			c.NAME UNITNAME,
+			d.NAME FZUNITNAME
+		from 
+		<include refid="tableName"></include> a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		left join cp_spunit c
+		on a.CUNIT_ID = c.SPUNIT_ID
+		left join cp_spunit d
+		on a.FZUNIT_ID = d.SPUNIT_ID
+		where 1=1
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
+			and a.GOOD_ID = #{GOOD_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+			a.GOOD_ID,
+			a.USER_ID,
+			a.GOODTYPE_ID,
+			a.GOODCODE,
+			a.GOODNAME,	
+			a.BARCODE,	
+			a.SIMPLENAME,
+			a.BRANT,
+			a.SUBGZ_ID,
+			a.GOODSPECIF,
+			a.CUNIT_ID,
+			a.GOODTYPECODE,
+			a.FZUNIT_ID,
+			a.YICODE,
+			a.UNITPROP,
+			a.GOODPIC,
+			a.SUPPLIER_ID,
+			a.NOTE,
+			a.LASTPPRICE,
+			a.CPRICE,
+			a.RPRICE,
+			a.LFZUPPRICE,
+			a.FZUCPRICE,
+			a.MPRICE,
+			a.STOCKNUM,
+			a.STOCKUPNUM,
+			a.STOCKDOWNNUM,		
+			
+			b.SUPPLIERNAME,
+			c.NAME UNITNAME,
+			d.NAME FZUNITNAME
+		from 
+		<include refid="tableName"></include> a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		left join cp_spunit c
+		on a.CUNIT_ID = c.SPUNIT_ID
+		left join cp_spunit d
+		on a.FZUNIT_ID = d.SPUNIT_ID
+		where 1=1
+			and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					a.GOODNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					a.GOODTYPECODE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+				)
+		</if>
+		 <if test="pd.GOODTYPE_ID!= null and pd.GOODTYPE_ID != ''">
+			and a.GOODTYPE_ID = #{pd.GOODTYPE_ID}
+		</if>
+		<if test="pd.SUPPLIER_ID!= null and pd.SUPPLIER_ID != ''">
+			and a.SUPPLIER_ID = #{pd.SUPPLIER_ID}
+		</if>
+		<!-- <if test="pd.isKucun!= null and pd.isKucun != ''">
+			and a.ZCOUNT != 0
+			order by a.ZCOUNT
+		</if> -->
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+			a.GOOD_ID,
+			a.USER_ID,
+			a.GOODTYPE_ID,
+			a.GOODCODE,
+			a.GOODNAME,	
+			a.BARCODE,	
+			a.SIMPLENAME,
+			a.BRANT,
+			a.SUBGZ_ID,
+			a.GOODSPECIF,
+			a.CUNIT_ID,
+			a.GOODTYPECODE,
+			a.FZUNIT_ID,
+			a.YICODE,
+			a.UNITPROP,
+			a.GOODPIC,
+			a.SUPPLIER_ID,
+			a.NOTE,
+			a.LASTPPRICE,
+			a.CPRICE,
+			a.RPRICE,
+			a.LFZUPPRICE,
+			a.FZUCPRICE,
+			a.MPRICE,
+			a.STOCKNUM,
+			a.STOCKUPNUM,
+			a.STOCKDOWNNUM,		
+			
+			b.SUPPLIERNAME,
+			c.NAME UNITNAME,
+			d.NAME FZUNITNAME
+		from 
+		<include refid="tableName"></include> a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		left join cp_spunit c
+		on a.CUNIT_ID = c.SPUNIT_ID
+		left join cp_spunit d
+		on a.FZUNIT_ID = d.SPUNIT_ID
+		where 1=1
+			and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
+		order by a.STOCKNUM desc
+	</select>
+	
+	<!-- 通过产品编码 -->
+	<select id="listByBm" parameterType="pd" resultType="pd">
+		select
+			a.GOOD_ID,
+			a.USER_ID,
+			a.GOODTYPE_ID,
+			a.GOODCODE,
+			a.GOODNAME,	
+			a.BARCODE,	
+			a.SIMPLENAME,
+			a.BRANT,
+			a.SUBGZ_ID,
+			a.GOODSPECIF,
+			a.CUNIT_ID,
+			a.GOODTYPECODE,
+			a.FZUNIT_ID,
+			a.YICODE,
+			a.UNITPROP,
+			a.GOODPIC,
+			a.SUPPLIER_ID,
+			a.NOTE,
+			a.LASTPPRICE,
+			a.CPRICE,
+			a.RPRICE,
+			a.LFZUPPRICE,
+			a.FZUCPRICE,
+			a.MPRICE,
+			a.STOCKNUM,
+			a.STOCKUPNUM,
+			a.STOCKDOWNNUM,		
+			
+			b.SUPPLIERNAME,
+			c.NAME UNITNAME,
+			d.NAME FZUNITNAME
+		from 
+		<include refid="tableName"></include> a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		left join cp_spunit c
+		on a.CUNIT_ID = c.SPUNIT_ID
+		left join cp_spunit d
+		on a.FZUNIT_ID = d.SPUNIT_ID
+		
+		where 
+			a.GOODCODE = #{GOODCODE}
+			and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
+		order by a.STOCKNUM desc
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			GOOD_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	<!-- 商品入库，增加库存 -->
+	<update id="editZCOUNT" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			STOCKNUM = STOCKNUM + #{INCOUNT}
+		where 
+			GOOD_ID = #{GOOD_ID}
+			and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+	</update>
+	
+</mapper>

@@ -39,16 +39,20 @@
 								</td>
 							</tr>
 							<tr>
-								<td style="width:70px;text-align: right;padding-top: 13px;">名称:</td>
-								<td><input type="text" name="TYPENAME" id="TYPENAME" value="${pd.TYPENAME}" maxlength="50" placeholder="这里输入名称" title="名称" style="width:98%;"/></td>
+								<td style="width:100px;text-align: right;padding-top: 13px;">商品分类名称:</td>
+								<td><input type="text" name="TYPENAME" id="TYPENAME" value="${pd.TYPENAME}" maxlength="50" placeholder="这里输入商品分类名称" title="商品分类名称" style="width:98%;"/></td>
 							</tr>
 							<%-- <tr>
 								<td style="width:70px;text-align: right;padding-top: 13px;">英文:</td>
 								<td><input type="text" name="TYPENAME_EN" id="TYPENAME_EN" value="${pd.TYPENAME_EN}" maxlength="50" placeholder="这里输入英文" title="英文" style="width:98%;"/></td>
 							</tr> --%>
 							<tr>
-								<td style="width:70px;text-align: right;padding-top: 13px;">编码:</td>
-								<td><input type="text" name="TYPECODE" id="TYPECODE" value="${pd.TYPECODE}" maxlength="32" placeholder="这里输入编码 (不重复, 禁止修改)" title="编码" style="width:76%;" <c:if test="${null != pd.TYPECODE}">readonly="readonly"</c:if> <c:if test="${null == pd.TYPECODE}">onblur="hasBianma();"</c:if> /></td>
+								<td style="width:100px;text-align: right;padding-top: 13px;">商品分类编号:</td>
+								<td><input type="text" name="TYPECODE" id="TYPECODE" value="${pd.TYPECODE}" maxlength="32" placeholder="这里输入商品分类编号 (不重复, 禁止修改)" title="商品分类编号" style="width:76%;" <c:if test="${null != pd.TYPECODE}">readonly="readonly"</c:if> <c:if test="${null == pd.TYPECODE}">onblur="hasBianma();"</c:if> /></td>
+							</tr>
+							<tr>
+								<td style="width:100px;text-align: right;padding-top: 13px;">经手人:</td>
+								<td><input type="text" name="TYPECODE" id="TYPECODE" value="${pd.NAME}" maxlength="32" placeholder="这里输入经手人(禁止修改)" title="经手人" style="width:76%;" readonly="readonly" /></td>
 							</tr>
 							<%-- <tr>
 								<td style="width:70px;text-align: right;padding-top: 13px;">排序:</td>

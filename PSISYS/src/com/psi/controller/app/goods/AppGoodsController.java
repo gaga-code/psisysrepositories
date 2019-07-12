@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
-import com.psi.service.erp.goods.GoodsManager;
 import com.psi.service.erp.spbrand.SpbrandManager;
 import com.psi.service.erp.sptype.SptypeManager;
 import com.psi.service.erp.spunit.SpunitManager;
@@ -32,7 +31,7 @@ import com.psi.util.PageData;
 @RequestMapping(value="/appGoods")
 public class AppGoodsController extends BaseController {
     
-	@Resource(name="goodsService")
+	/*@Resource(name="goodsService")
 	private GoodsManager goodsService;
 	@Resource(name="picturesService")
 	private PicturesManager picturesService;
@@ -43,11 +42,11 @@ public class AppGoodsController extends BaseController {
 	@Resource(name="spunitService")
 	private SpunitManager spunitService;
 	
-	 /**商品详情页面
+	 *//**商品详情页面
 	 * @param
 	 * @throws Exception
 	 * http://127.0.0.1:8080/FHSHGL/appGoods/goods.do?GOODS_ID=284e2238d7fc4bd481c6324fc4c160cf
-	 */
+	 *//*
 	@RequestMapping(value="/goods")
 	public ModelAndView goView()throws Exception{
 		ModelAndView mv = this.getModelAndView();
@@ -59,7 +58,7 @@ public class AppGoodsController extends BaseController {
 		mv.addObject("varList", varList);
 		mv.addObject("pd", pd);
 		return mv;
-	}
+	}*/
 	
 
 	

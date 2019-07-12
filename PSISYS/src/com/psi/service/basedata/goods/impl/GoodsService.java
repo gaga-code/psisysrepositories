@@ -1,6 +1,8 @@
-package com.psi.service.erp.goods.impl;
+package com.psi.service.basedata.goods.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -8,7 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.psi.dao.DaoSupport;
 import com.psi.entity.Page;
-import com.psi.service.erp.goods.GoodsManager;
+import com.psi.entity.basedata.GoodsType;
+import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.util.PageData;
 
 /**
@@ -19,6 +22,37 @@ public class GoodsService implements GoodsManager{
 
 	@Resource(name = "daoSupport")
 	private DaoSupport dao;
+	
+	/**
+	 * 获取所有数据并填充每条数据的子级列表(递归处理)
+	 * @param MENU_ID
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GoodsType> listAllDict(Map<String,String> parentIdAndPK_SOBOOKS) throws Exception {
+		List<GoodsType> dictList = this.listSubDictByParentId(parentIdAndPK_SOBOOKS);
+		Map<String,String> map = new HashMap<String, String>();
+		map.put("PK_SOBOOKS", parentIdAndPK_SOBOOKS.get("PK_SOBOOKS"));
+		for(GoodsType dict : dictList){
+			dict.setTreeurl("goods/list.do?GOODTYPE_ID="+dict.getGOODTYPE_ID());
+			//dict.setSubDict(this.listAllDict(dict.getGOODTYPE_ID()));
+			map.put("PARENTS", dict.getGOODTYPE_ID());
+			dict.setSubDict(this.listAllDict(map));
+			dict.setTarget("treeFrame");
+		}
+		return dictList;
+	}
+	
+	/**
+	 * 通过ID获取其子级列表
+	 * @param parentId
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<GoodsType> listSubDictByParentId(Map<String,String> parentIdAndPK_SOBOOKS) throws Exception {
+		return (List<GoodsType>) dao.findForList("GoodsTypeMapper.listSubDictByParentId", parentIdAndPK_SOBOOKS);
+	}
 	
 	/**新增
 	 * @param pd
@@ -33,7 +67,7 @@ public class GoodsService implements GoodsManager{
 	 * @throws Exception
 	 */
 	public void delete(PageData pd)throws Exception{
-		dao.delete("GoodsMapper.delete", pd);
+		dao.update("GoodsMapper.delete", pd);
 	}
 	
 	/**修改

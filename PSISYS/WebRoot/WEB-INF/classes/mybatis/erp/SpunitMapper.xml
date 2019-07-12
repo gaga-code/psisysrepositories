@@ -88,8 +88,8 @@
 		<include refid="Field"></include>
 		from 
 		<include refid="tableName"></include>
-		where 
-		USERNAME = #{USERNAME}
+		<!-- where 
+		USERNAME = #{USERNAME} -->
 	</select>
 	
 	<!-- 批量删除 -->

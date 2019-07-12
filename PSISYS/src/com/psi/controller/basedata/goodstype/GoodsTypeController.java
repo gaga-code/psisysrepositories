@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
+import com.psi.entity.system.User;
 import com.psi.service.basedata.goodstype.GoodsTypeManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
@@ -177,6 +178,10 @@ public class GoodsTypeController extends BaseController {
 		pd = this.getPageData();
 		String GOODTYPE_ID = null == pd.get("GOODTYPE_ID")?"":pd.get("GOODTYPE_ID").toString();
 		pd.put("GOODTYPE_ID", GOODTYPE_ID);					//上级ID
+		Session session = Jurisdiction.getSession();
+		User user = (User)session.getAttribute(Const.SESSION_USER);
+		pd.put("NAME", user.getNAME());	//用户名字作为经手人名字
+		mv.addObject("pd",pd);		//传入上级所有信息
 		mv.addObject("pds",goodsTypeService.findById(pd));		//传入上级所有信息
 		mv.addObject("GOODTYPE_ID", GOODTYPE_ID);			//传入ID，作为子级ID用
 		mv.setViewName("basedata/goodstype/goodstype_edit");

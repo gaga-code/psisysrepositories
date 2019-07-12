@@ -41,6 +41,12 @@ public interface GoodsTypeManager{
 	 * @throws Exception
 	 */
 	public PageData findById(PageData pd)throws Exception;
+	
+	/**获取所有数据
+	 * @param pd
+	 * @throws Exception
+	 */
+	public List<PageData> listAll(PageData pd)throws Exception;
 
 	/**通过编码获取数据
 	 * @param pd

@@ -21,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
-import com.psi.service.erp.goods.GoodsManager;
 import com.psi.service.erp.intoku.IntoKuManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Jurisdiction;
@@ -36,16 +35,16 @@ import com.psi.util.Tools;
 @RequestMapping(value="/intoku")
 public class IntoKuController extends BaseController {
 	
-	String menuUrl = "intoku/list.do"; //菜单地址(权限用)
+/*	String menuUrl = "intoku/list.do"; //菜单地址(权限用)
 	@Resource(name="intokuService")
 	private IntoKuManager intokuService;
 	@Resource(name="goodsService")
 	private GoodsManager goodsService;
 	
-	/**保存
+	*//**保存
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/save")
 	public ModelAndView save() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"新增IntoKu");
@@ -64,10 +63,10 @@ public class IntoKuController extends BaseController {
 		return mv;
 	}
 	
-	/**删除
+	*//**删除
 	 * @param out
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/delete")
 	public void delete(PrintWriter out) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"删除IntoKu");
@@ -79,10 +78,10 @@ public class IntoKuController extends BaseController {
 		out.close();
 	}
 	
-	/**修改
+	*//**修改
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/edit")
 	public ModelAndView edit() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"修改IntoKu");
@@ -96,10 +95,10 @@ public class IntoKuController extends BaseController {
 		return mv;
 	}
 	
-	/**列表
+	*//**列表
 	 * @param page
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表IntoKu");
@@ -135,10 +134,10 @@ public class IntoKuController extends BaseController {
 		return mv;
 	}
 	
-	/**去新增页面
+	*//**去新增页面
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/goAdd")
 	public ModelAndView goAdd()throws Exception{
 		ModelAndView mv = this.getModelAndView();
@@ -153,10 +152,10 @@ public class IntoKuController extends BaseController {
 		return mv;
 	}	
 	
-	 /**去修改页面
+	 *//**去修改页面
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/goEdit")
 	public ModelAndView goEdit()throws Exception{
 		ModelAndView mv = this.getModelAndView();
@@ -172,10 +171,10 @@ public class IntoKuController extends BaseController {
 		return mv;
 	}	
 	
-	 /**批量删除
+	 *//**批量删除
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/deleteAll")
 	@ResponseBody
 	public Object deleteAll() throws Exception{
@@ -198,10 +197,10 @@ public class IntoKuController extends BaseController {
 		return AppUtil.returnObject(pd, map);
 	}
 	
-	 /**导出到excel
+	 *//**导出到excel
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"导出入库到excel");
@@ -260,5 +259,5 @@ public class IntoKuController extends BaseController {
 	public void initBinder(WebDataBinder binder){
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(format,true));
-	}
+	}*/
 }

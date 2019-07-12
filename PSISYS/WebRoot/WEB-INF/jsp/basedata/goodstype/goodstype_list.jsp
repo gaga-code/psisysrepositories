@@ -56,9 +56,10 @@
 							<thead>
 								<tr>
 									<th class="center" style="width:50px;">序号</th>
-									<th class="center">名称</th>
-									<th class="center">编码</th>
-									<th class="center">操作</th>
+									<th class="center">商品分类名称</th>
+									<th class="center">商品分类编号</th>
+									<th class="center">经手人</th>
+									<th class="center" style="width:80px;">操作</th>
 								</tr>
 							</thead>
 													
@@ -72,6 +73,7 @@
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'><a href="javascript:goSondict('${var.GOODTYPE_ID }')"><i class="ace-icon fa fa-share bigger-100"></i>&nbsp;${var.TYPENAME}</a></td>
 											<td class='center'>${var.TYPECODE}</td>
+											<td class='center'>${var.NAME}</td>
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
@@ -202,7 +204,7 @@
 			 diag.Title ="新增";
 			 diag.URL = '<%=basePath%>goodstype/goAdd.do?GOODTYPE_ID='+GOODTYPE_ID;
 			 diag.Width = 500;
-			 diag.Height = 515;
+			 diag.Height = 270;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if('none' == diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display){
 					 parent.location.href="<%=basePath%>goodstype/listAllDict.do?GOODTYPE_ID=${GOODTYPE_ID}&dnowPage=${page.currentPage}";
@@ -262,7 +264,7 @@
 			 diag.Title ="编辑";
 			 diag.URL = '<%=basePath%>goodstype/goEdit.do?GOODTYPE_ID='+Id;
 			 diag.Width = 500;
-			 diag.Height = 515;
+			 diag.Height = 270;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 parent.location.href="<%=basePath%>goodstype/listAllDict.do?GOODTYPE_ID=${GOODTYPE_ID}&dnowPage=${page.currentPage}";

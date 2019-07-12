@@ -64,6 +64,15 @@ public class GoodsTypeService implements GoodsTypeManager{
 		return (PageData)dao.findForObject("GoodsTypeMapper.findById", pd);
 	}
 	
+	/**获取所有数据
+	 * @param pd
+	 * @throws Exception
+	 */
+	@Override
+	public List<PageData> listAll(PageData pd) throws Exception {
+		return (List<PageData>)dao.findForList("GoodsTypeMapper.listAll", pd);
+	}
+	
 	/**通过编码获取数据
 	 * @param pd
 	 * @throws Exception
@@ -110,6 +119,6 @@ public class GoodsTypeService implements GoodsTypeManager{
 	public PageData findFromTbs(PageData pd)throws Exception{
 		return (PageData)dao.findForObject("GoodsTypeMapper.findFromTbs", pd);
 	}
-	
+
 }
 

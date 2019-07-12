@@ -1,4 +1,4 @@
-package com.psi.controller.erp.goods;
+package com.psi.controller.basedata.goods;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
-import com.psi.service.erp.goods.GoodsManager;
+import com.psi.service.basedata.goods.GoodsManager;
+import com.psi.service.basedata.goodstype.GoodsTypeManager;
 import com.psi.service.erp.spbrand.SpbrandManager;
 import com.psi.service.erp.sptype.SptypeManager;
 import com.psi.service.erp.spunit.SpunitManager;
@@ -31,6 +33,8 @@ import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
 import com.psi.util.PathUtil;
 import com.psi.util.TwoDimensionCode;
+
+import net.sf.json.JSONArray;
 
 /**
  * 说明：商品管理
@@ -50,6 +54,8 @@ public class GoodsController extends BaseController {
 	private SptypeManager sptypeService;
 	@Resource(name="spunitService")
 	private SpunitManager spunitService;
+	@Resource(name="goodsTypeService")
+	private GoodsTypeManager goodsTypeService;
 	
 	/**保存
 	 * @param
@@ -62,9 +68,10 @@ public class GoodsController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("GOODS_ID", this.get32UUID());	//主键 
-		pd.put("ZCOUNT", 0);					//库存
-		pd.put("USERNAME", Jurisdiction.getUsername());	//用户名
+		pd.put("GOOD_ID", this.get32UUID());	//主键 
+		//库存
+		if(pd.get("STOCKNUM") == null || pd.get("STOCKNUM").equals(""))
+			pd.put("STOCKNUM", 0);					
 		goodsService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -85,11 +92,13 @@ public class GoodsController extends BaseController {
 		pd = this.getPageData();
 		String errInfo = "success";
 		//当商品下面有图片 或者 此商品已经上架 或者 库存不为0时 不能删除
-		if(Integer.parseInt(picturesService.findCount(pd).get("zs").toString()) > 0 || Integer.parseInt( goodsService.findById(pd).get("ZCOUNT").toString()) > 0){
-			errInfo = "false";
-		}else{
-			goodsService.delete(pd);
-		}
+//		if(Integer.parseInt(picturesService.findCount(pd).get("zs").toString()) > 0 || Integer.parseInt( goodsService.findById(pd).get("ZCOUNT").toString()) > 0){
+//			errInfo = "false";
+//		}else{
+//			goodsService.delete(pd);
+//		}
+		//无条件删除
+		goodsService.delete(pd);
 		map.put("result", errInfo);
 		return AppUtil.returnObject(new PageData(), map);
 	}
@@ -120,10 +129,10 @@ public class GoodsController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String encoderImgId = pd.getString("GOODS_ID")+".png"; //encoderImgId此处二维码的图片名
+		String encoderImgId = pd.getString("GOOD_ID")+".png"; //encoderImgId此处二维码的图片名
 		String filePath = PathUtil.getClasspath() + Const.FILEPATHTWODIMENSIONCODE + encoderImgId; 		//存放路径
 		TwoDimensionCode.encoderQRCode(pd.getString("url"), filePath, "png");							//执行生成二维码
-		mv.setViewName("erp/goods/goods_erweima");
+		mv.setViewName("basedata/goods/goods_erweima");
 		mv.addObject("pd", pd);
 		return mv;
 	}
@@ -137,11 +146,39 @@ public class GoodsController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String barcodeImgId = pd.getString("GOODS_ID")+".png"; 									//barcodeImgId此处条形码的图片名
+		String barcodeImgId = pd.getString("GOOD_ID")+".png"; 									//barcodeImgId此处条形码的图片名
 		String filePath = PathUtil.getClasspath() + Const.FILEPATHTBARCODE + barcodeImgId; 		//存放路径
 		BarcodeUtil.generateFile(pd.getString("BIANMA"), filePath);								//执行生成条形码
-		mv.setViewName("erp/goods/goods_barcode");
+		mv.setViewName("basedata/goods/goods_barcode");
 		mv.addObject("pd", pd);
+		return mv;
+	}
+	
+	
+	/**
+	 * 显示列表ztree
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/listAllDict")
+	public ModelAndView listAllDict(Model model,String GOODTYPE_ID)throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		try{
+			Map<String,String> map = new HashMap<String, String>();
+			map.put("PK_SOBOOKS", pd.getString("PK_SOBOOKS"));
+			map.put("PARENTS", "0");
+			JSONArray arr = JSONArray.fromObject(goodsService.listAllDict(map));
+			String json = arr.toString();
+			json = json.replaceAll("GOODTYPE_ID", "id").replaceAll("PARENTS", "pId").replaceAll("TYPENAME", "name").replaceAll("subDict", "nodes").replaceAll("hasDict", "checked").replaceAll("treeurl", "url");
+			model.addAttribute("zTreeNodes", json);
+			mv.addObject("GOODTYPE_ID",GOODTYPE_ID);
+			mv.addObject("pd", pd);	
+			mv.setViewName("basedata/goods/goods_ztree");
+		} catch(Exception e){
+			logger.error(e.toString(), e);
+		}
 		return mv;
 	}
 	
@@ -160,17 +197,14 @@ public class GoodsController extends BaseController {
 		if(null != keywords && !"".equals(keywords)){
 			pd.put("keywords", keywords.trim());
 		}
+		pd.put("GOODTYPE_ID", pd.get("id"));
 		pd.put("USERNAME", "admin".equals(Jurisdiction.getUsername())?"":Jurisdiction.getUsername());
 		page.setPd(pd);
 		List<PageData>	varList = goodsService.list(page);	//列出Goods列表
-		List<PageData> spbrandList = spbrandService.listAll(Jurisdiction.getUsername()); 	//品牌列表
-		List<PageData> sptypeList = sptypeService.listAll(Jurisdiction.getUsername()); 		//类别列表
 		List<PageData> spunitList = spunitService.listAll(Jurisdiction.getUsername()); 		//计量单位列表
-		mv.setViewName("erp/goods/goods_list");
+		mv.setViewName("basedata/goods/goods_list");
 		mv.addObject("varList", varList);
 		mv.addObject("pd", pd);
-		mv.addObject("spbrandList", spbrandList);
-		mv.addObject("sptypeList", sptypeList);
 		mv.addObject("spunitList", spunitList);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
@@ -185,15 +219,13 @@ public class GoodsController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		List<PageData> spbrandList = spbrandService.listAll(Jurisdiction.getUsername()); 	//品牌列表
-		List<PageData> sptypeList = sptypeService.listAll(Jurisdiction.getUsername()); 		//类别列表
+		List<PageData> goodsTypeList =  goodsTypeService.listAll(pd); 						//商品分类列表
 		List<PageData> spunitList = spunitService.listAll(Jurisdiction.getUsername()); 		//计量单位列表
-		mv.setViewName("erp/goods/goods_edit");
+		mv.setViewName("basedata/goods/goods_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
-		mv.addObject("spbrandList", spbrandList);
-		mv.addObject("sptypeList", sptypeList);
 		mv.addObject("spunitList", spunitList);
+		mv.addObject("goodsTypeList", goodsTypeList);
 		return mv;
 	}	
 	
@@ -207,15 +239,13 @@ public class GoodsController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd = goodsService.findById(pd);	//根据ID读取
-		List<PageData> spbrandList = spbrandService.listAll(Jurisdiction.getUsername()); 	//品牌列表
-		List<PageData> sptypeList = sptypeService.listAll(Jurisdiction.getUsername()); 		//类别列表
 		List<PageData> spunitList = spunitService.listAll(Jurisdiction.getUsername()); 		//计量单位列表
-		mv.setViewName("erp/goods/goods_edit");
+		List<PageData> goodsTypeList =  goodsTypeService.listAll(pd); 						//商品分类列表
+		mv.setViewName("basedata/goods/goods_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
-		mv.addObject("spbrandList", spbrandList);
-		mv.addObject("sptypeList", sptypeList);
 		mv.addObject("spunitList", spunitList);
+		mv.addObject("goodsTypeList", goodsTypeList);
 		return mv;
 	}
 	
@@ -229,7 +259,7 @@ public class GoodsController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd = goodsService.findByIdToCha(pd);	//根据ID读取
-		mv.setViewName("erp/goods/goods_view");
+		mv.setViewName("basedata/goods/goods_view");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
 		return mv;

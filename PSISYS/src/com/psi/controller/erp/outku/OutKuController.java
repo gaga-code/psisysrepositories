@@ -21,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
-import com.psi.service.erp.goods.GoodsManager;
 import com.psi.service.erp.outku.OutKuManager;
 import com.psi.util.AppUtil;
 import com.psi.util.DateUtil;
@@ -37,16 +36,16 @@ import com.psi.util.Tools;
 @RequestMapping(value="/outku")
 public class OutKuController extends BaseController {
 	
-	String menuUrl = "outku/list.do"; //菜单地址(权限用)
+	/*String menuUrl = "outku/list.do"; //菜单地址(权限用)
 	@Resource(name="outkuService")
 	private OutKuManager outkuService;
 	@Resource(name="goodsService")
 	private GoodsManager goodsService;
 	
-	/**保存库存
+	*//**保存库存
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/save")
 	public ModelAndView save() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"新增OutKu");
@@ -75,9 +74,9 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	/**把出库记录临时表的数据转入到正式表
+	*//**把出库记录临时表的数据转入到正式表
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/transfer")
 	@ResponseBody
 	public Object transfer() throws Exception{
@@ -101,10 +100,10 @@ public class OutKuController extends BaseController {
 	}
 	
 	
-	/**新增订单中保存一个商品订单信息
+	*//**新增订单中保存一个商品订单信息
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/saveOne")
 	public ModelAndView saveOne() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"保存One");
@@ -127,10 +126,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	/**删除
+	*//**删除
 	 * @param out
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/delete")
 	public void delete(PrintWriter out) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"删除临时OutKu");
@@ -142,10 +141,10 @@ public class OutKuController extends BaseController {
 		out.close();
 	}
 	
-	/**修改
+	*//**修改
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/editTemp")
 	public ModelAndView edit() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"修改OutKuTemp");
@@ -159,10 +158,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	/**出库列表
+	*//**出库列表
 	 * @param page
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表OutKu");
@@ -200,10 +199,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	/**出库列表(临时)
+	*//**出库列表(临时)
 	 * @param page
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/listTemp")
 	public ModelAndView listTemp() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表OutKu");
@@ -223,10 +222,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	/**订单列表
+	*//**订单列表
 	 * @param page
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/dingdanList")
 	public ModelAndView dingdanList(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"订单列表OutKu");
@@ -255,10 +254,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	/**某一订单号下的出库记录
+	*//**某一订单号下的出库记录
 	 * @param page
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/listAllByDingdan")
 	public ModelAndView listAllByDingdan() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"订单出库记录");
@@ -274,10 +273,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	/**商品销售报表
+	*//**商品销售报表
 	 * @param page
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/salesReport")
 	public ModelAndView salesReport(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"销售报表");
@@ -307,10 +306,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	/**去新增页面
+	*//**去新增页面
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/goAdd")
 	public ModelAndView goAdd()throws Exception{
 		ModelAndView mv = this.getModelAndView();
@@ -325,10 +324,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	/**去新增订单页面
+	*//**去新增订单页面
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/goAddDingdan")
 	public ModelAndView goAddDingdan()throws Exception{
 		ModelAndView mv = this.getModelAndView();
@@ -345,10 +344,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	 /**去打印出库(订)单页面
+	 *//**去打印出库(订)单页面
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/ddpirnt")
 	public ModelAndView ddpirnt()throws Exception{
 		ModelAndView mv = this.getModelAndView();
@@ -360,10 +359,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	 /**去修改页面
+	 *//**去修改页面
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/goEdit")
 	public ModelAndView goEdit()throws Exception{
 		ModelAndView mv = this.getModelAndView();
@@ -379,10 +378,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	 /**导出到excel
+	 *//**导出到excel
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"导出出库到excel");
@@ -434,10 +433,10 @@ public class OutKuController extends BaseController {
 		return mv;
 	}
 	
-	/**销售报表导出到excel
+	*//**销售报表导出到excel
 	 * @param
 	 * @throws Exception
-	 */
+	 *//*
 	@RequestMapping(value="/excel2")
 	public ModelAndView exportExcel2(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"导出销售报表到excel");
@@ -485,5 +484,5 @@ public class OutKuController extends BaseController {
 	public void initBinder(WebDataBinder binder){
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(format,true));
-	}
+	}*/
 }
