@@ -40,7 +40,7 @@ public class ButtonrightsService implements ButtonrightsManager{
 	 * @throws Exception
 	 */
 	public void delete(PageData pd)throws Exception{
-		dao.delete("ButtonrightsMapper.delete", pd);
+		dao.update("ButtonrightsMapper.delete", pd);
 	}
 	
 	/**列表(全部)

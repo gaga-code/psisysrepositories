@@ -16,14 +16,16 @@
 	<sql id="Field">
 		RB_ID,	
 		ROLE_ID,
-		BUTTON_ID
+		BUTTON_ID,
+		PK_SOBOOKS
 	</sql>
 	
 	<!-- 字段值 -->
 	<sql id="FieldValue">
 		#{RB_ID},	
 		#{ROLE_ID},
-		#{BUTTON_ID}
+		#{BUTTON_ID},
+ 		#{PK_SOBOOKS}
 	</sql>
 	
 	<!-- 按钮表字段 -->
@@ -52,24 +54,31 @@
 			ROLE_ID = #{ROLE_ID}
 		and
 			BUTTON_ID = #{BUTTON_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
 	</select>
 	
 	<!-- 删除-->
-	<delete id="delete" parameterType="pd">
-		delete from
+	<update id="delete" parameterType="pd">
+		update 
 		<include refid="tableName"></include>
+		set
+			DR = 1 
 		where 
 			ROLE_ID = #{ROLE_ID}
-		and
-			BUTTON_ID = #{BUTTON_ID}
-	</delete>
-	
+			and BUTTON_ID = #{BUTTON_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+	</update>
 	<!-- 列表(全部) -->
 	<select id="listAll" parameterType="pd" resultType="pd">
 		select
 		<include refid="Field"></include>
 		from 
 		<include refid="tableName"></include>
+		where 
+			PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
 	</select>
 	
 	<!-- 列表(全部)左连接按钮表,查出安全权限标识-->
@@ -84,6 +93,8 @@
 			a.BUTTON_ID = b.FHBUTTON_ID
 		where
 			a.ROLE_ID = #{ROLE_ID}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
 	</select>
 	
 </mapper>

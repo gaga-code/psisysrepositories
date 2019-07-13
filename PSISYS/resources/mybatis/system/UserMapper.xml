@@ -76,7 +76,8 @@
 		SKIN,
 		EMAIL,
 		NUMBER,
-		PHONE
+		PHONE,
+ 		PK_SOBOOKS
 	</sql>
 	
 	<!-- 字段值 -->
@@ -100,7 +101,8 @@
 		#{SKIN},
 		#{EMAIL},
 		#{NUMBER},
-		#{PHONE}
+		#{PHONE},
+ 		#{PK_SOBOOKS}
 	</sql>
 	
 	<!-- 判断用户名和密码 -->

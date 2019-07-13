@@ -12,7 +12,8 @@
 		NAME,	
 		QX_NAME,	
 		BZ,	
-		FHBUTTON_ID
+		FHBUTTON_ID,
+ 		PK_SOBOOKS
 	</sql>
 	
 	<!-- 字段值 -->
@@ -20,7 +21,8 @@
 		#{NAME},	
 		#{QX_NAME},	
 		#{BZ},	
-		#{FHBUTTON_ID}
+		#{FHBUTTON_ID},
+ 		#{PK_SOBOOKS}
 	</sql>
 	
 	<!-- 新增-->

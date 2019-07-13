@@ -39,7 +39,8 @@
  		MENU_ICON,
  		MENU_ORDER,
  		MENU_STATE,
- 		MENU_TYPE
+ 		MENU_TYPE,
+ 		PK_SOBOOKS
 	</sql>
 	
 	<!-- 字段值 -->
@@ -51,7 +52,8 @@
  		#{MENU_ICON},
  		#{MENU_ORDER},
  		#{MENU_STATE},
- 		#{MENU_TYPE}
+ 		#{MENU_TYPE},
+ 		#{PK_SOBOOKS}
 	</sql>
 	
 	<!--通过ID获取其子一级菜单 -->
