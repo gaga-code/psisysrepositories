@@ -1,0 +1,11 @@
+
+############在主页面中新建一个页面#########################
+
+<script type="text/javascript" src="static/js/myjs/head.js"></script>
+
+function edit(Id){
+			var url = 'inorder/goEdit.do?INORDER_ID='+Id;
+			siMenu('z191','lm181','添加进货单',url);
+}
+
+############在主页面中新建一个页面#########################
