@@ -8,6 +8,12 @@
 		<result column="USERNAME" property="USERNAME"/>
 		<result column="PASSWORD" property="PASSWORD"/>
 		<result column="NAME" property="NAME"/>
+		<result column="YICODE" property="YICODE"/>
+		<result column="BIRTHDATEDATE" property="BIRTHDATEDATE"/>
+		<result column="SEX" property="SEX"/>
+		<result column="EDUCATION" property="EDUCATION"/>
+		<result column="NPLACE" property="NPLACE"/>
+		<result column="HIREDATE" property="HIREDATE"/>
 		<result column="RIGHTS" property="RIGHTS"/>
 		<result column="LAST_LOGIN" property="LAST_LOGIN"/>
 		<result column="IP" property="IP"/>
@@ -25,6 +31,12 @@
 		<result column="PASSWORD" property="PASSWORD"/>
 		<result column="NAME" property="NAME"/>
 		<result column="RIGHTS" property="RIGHTS"/>
+		<result column="YICODE" property="YICODE"/>
+		<result column="BIRTHDATEDATE" property="BIRTHDATEDATE"/>
+		<result column="SEX" property="SEX"/>
+		<result column="EDUCATION" property="EDUCATION"/>
+		<result column="NPLACE" property="NPLACE"/>
+		<result column="HIREDATE" property="HIREDATE"/>
 		<result column="LAST_LOGIN" property="LAST_LOGIN"/>
 		<result column="IP" property="IP"/>
 		<result column="STATUS" property="STATUS"/>
@@ -50,6 +62,12 @@
 		PASSWORD,
 		NAME,
 		RIGHTS,
+		YICODE,
+		BIRTHDATEDATE,
+		SEX,
+		EDUCATION,
+		NPLACE,
+		HIREDATE,
 		ROLE_ID,
 		LAST_LOGIN,
 		IP,
@@ -68,6 +86,12 @@
 		#{PASSWORD},
 		#{NAME},
 		#{RIGHTS},
+		#{YICODE},
+		#{BIRTHDATEDATE},
+		#{SEX},
+		#{EDUCATION},
+		#{NPLACE},
+		#{HIREDATE},
 		#{ROLE_ID},
 		#{LAST_LOGIN},
 		#{IP},
@@ -90,6 +114,8 @@
 		<if test="USER_ID!=null and USER_ID>0">
 		and USER_ID = #{USER_ID}
 		</if>
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
 	</select>
 	
 	<!-- 更新登录时间 -->
@@ -99,6 +125,8 @@
 		set 
 		LAST_LOGIN = #{LAST_LOGIN} 
 		where USER_ID = #{USER_ID}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
 	</update>
 	
 	<!-- 保存用户皮肤 -->
@@ -108,14 +136,22 @@
 		set 
 		SKIN = #{SKIN} 
 		where USERNAME = #{USERNAME}
+		 	  and PK_SOBOOKS = #{PK_SOBOOKS}
+		      and IFNULL(dr,0)=0 
 	</update>
 	
 	<!-- 通过用户ID获取用户信息和角色信息 -->
-	<select id="getUserAndRoleById" parameterType="String" resultMap="userAndRoleResultMap">
+	<select id="getUserAndRoleById" parameterType="pd" resultMap="userAndRoleResultMap">
 		select  u.USER_ID,
 				u.USERNAME,
 				u.NAME,
 				u.RIGHTS as USER_RIGHTS,
+				u.YICODE,
+				u.BIRTHDATEDATE,
+				u.SEX,
+				u.EDUCATION,
+				u.NPLACE,
+				u.HIREDATE,
 				u.PASSWORD,
 				u.SKIN,
 				r.ROLE_ID,
@@ -128,6 +164,9 @@
 		on u.ROLE_ID=r.ROLE_ID 
 		where u.STATUS=0 
 		and u.USER_ID=#{USER_ID}
+		and r.PK_SOBOOKS = #{PK_SOBOOKS}
+		and u.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(u.dr,0)=0 
 	</select>
 	
 	<!-- 通过USERNAME获取数据 -->
@@ -138,6 +177,8 @@
 			<include refid="tableName"></include>
 		where 
 			USERNAME = #{USERNAME}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
 	</select>
 	
 	<!-- 存入IP -->
@@ -148,6 +189,8 @@
 			IP = #{IP}
 		where 
 			USERNAME = #{USERNAME}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
 	</update>
 	
 	<!-- 列出某角色下的所有用户 -->
@@ -157,6 +200,8 @@
 		<include refid="tableName"></include>
 		where 
 		ROLE_ID = #{ROLE_ID}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
 	</select>
 	
 	<!-- 用户列表 -->
@@ -165,6 +210,12 @@
 				u.USERNAME,
 				u.PASSWORD,
 				u.LAST_LOGIN,
+				u.YICODE,
+				u.BIRTHDATEDATE,
+				u.SEX,
+				u.EDUCATION,
+				u.NPLACE,
+				u.HIREDATE,
 				u.NAME,
 				u.IP,
 				u.EMAIL,
@@ -199,6 +250,10 @@
 		<if test="pd.lastLoginEnd!=null and pd.lastLoginEnd!=''"><!-- 登录时间检索 -->
 			and u.LAST_LOGIN &lt;= #{pd.lastLoginEnd} 
 		</if>
+		and u.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and r.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(u.dr,0)=0
+		and IFNULL(r.dr,0)=0
 		order by u.LAST_LOGIN desc
 	</select>
 	
@@ -209,6 +264,12 @@
 				u.PASSWORD,
 				u.LAST_LOGIN,
 				u.NAME,
+				u.YICODE,
+				u.BIRTHDATEDATE,
+				u.SEX,
+				u.EDUCATION,
+				u.NPLACE,
+				u.HIREDATE,
 				u.IP,
 				u.EMAIL,
 				u.NUMBER,
@@ -243,6 +304,10 @@
 			and u.LAST_LOGIN &lt;= #{pd.lastLoginEnd} 
 		</if>
 		and u.USERNAME not in (select s.USER_ID from <include refid="staffTableName"></include> s where s.USER_ID !='')
+		and u.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and r.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(u.dr,0)=0
+		and IFNULL(r.dr,0)=0
 		order by u.LAST_LOGIN desc
 	</select>
 	
@@ -257,6 +322,8 @@
 		<if test="USERNAME != null and USERNAME != ''">
 			and USERNAME != #{USERNAME} 
 		</if>
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0
 	</select>
 	
 	<!-- 通过编号获取数据 -->
@@ -270,6 +337,8 @@
 		<if test="USERNAME != null and USERNAME != ''">
 			and USERNAME != #{USERNAME} 
 		</if>
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
 	</select>
 	
 	<!-- 通过user_id获取数据 -->
@@ -280,6 +349,8 @@
 			<include refid="tableName"></include>
 		where 
 			USER_ID = #{USER_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
 	</select>
 	
 	<!-- 新增用户 -->
@@ -305,16 +376,21 @@
 			</if>
 			where 
 				USER_ID = #{USER_ID}
+				and PK_SOBOOKS = #{PK_SOBOOKS}
+				and IFNULL(dr,0)=0
 	</update>
 	
 	<!-- 删除用户 -->
-	<delete id="deleteU" parameterType="pd" flushCache="false">
-		delete from <include refid="tableName"></include>
+	<update id="deleteU" parameterType="pd" flushCache="false">
+		update 
+		 <include refid="tableName"></include>
+		set
+			DR = 1 
 		where 
 			USER_ID = #{USER_ID}
-		and 
-				USER_ID != '1'
-	</delete>
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0
+	</update>
 	
 	<!-- 批量删除用户 -->
 	<delete id="deleteAllU" parameterType="String" >
@@ -368,6 +444,10 @@
 		<if test="lastLoginEnd!=null and lastLoginEnd!=''"><!-- 登录时间检索 -->
 			and u.LAST_LOGIN &lt;= #{lastLoginEnd} 
 		</if>
+		and u.PK_SOBOOKS = #{PK_SOBOOKS}
+		and r.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(u.dr,0)=0
+		and IFNULL(r.dr,0)=0
 		order by u.LAST_LOGIN desc
 	</select>
 	
@@ -377,7 +457,9 @@
 			count(USER_ID) userCount
 		from 
 		<include refid="tableName"></include>
+		where 
+			PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
 	</select>
 	
-	<!-- fh313596790qq(青苔) -->
 </mapper>

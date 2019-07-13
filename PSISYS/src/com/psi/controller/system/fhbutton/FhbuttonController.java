@@ -148,25 +148,23 @@ public class FhbuttonController extends BaseController {
 	 */
 	@RequestMapping(value="/deleteAll")
 	@ResponseBody
-	public Object deleteAll() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"批量删除Fhbutton");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
-		PageData pd = new PageData();		
-		Map<String,Object> map = new HashMap<String,Object>();
-		pd = this.getPageData();
-		List<PageData> pdList = new ArrayList<PageData>();
-		String DATA_IDS = pd.getString("DATA_IDS");
-		if(null != DATA_IDS && !"".equals(DATA_IDS)){
-			String ArrayDATA_IDS[] = DATA_IDS.split(",");
-			fhbuttonService.deleteAll(ArrayDATA_IDS);
-			pd.put("msg", "ok");
-		}else{
-			pd.put("msg", "no");
-		}
-		pdList.add(pd);
-		map.put("list", pdList);
-		return AppUtil.returnObject(pd, map);
+	public Object deleteAll() throws Exception{logBefore(logger, Jurisdiction.getUsername()+"批量删除Fhbutton");
+	if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
+	PageData pd = new PageData();		
+	Map<String,Object> map = new HashMap<String,Object>();
+	pd = this.getPageData();
+	List<PageData> pdList = new ArrayList<PageData>();
+	String DATA_IDS = pd.getString("DATA_IDS");
+	if(null != DATA_IDS && !"".equals(DATA_IDS)){
+		String ArrayDATA_IDS[] = DATA_IDS.split(",");
+		fhbuttonService.deleteAll(ArrayDATA_IDS);
+		pd.put("msg", "ok");
+	}else{
+		pd.put("msg", "no");
 	}
+	pdList.add(pd);
+	map.put("list", pdList);
+	return AppUtil.returnObject(pd, map);}
 	
 	 /**导出到excel
 	 * @param

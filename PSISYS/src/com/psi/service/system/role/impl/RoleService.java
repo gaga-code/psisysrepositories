@@ -60,7 +60,9 @@ public class RoleService implements RoleManager{
 	 * @throws Exception
 	 */
 	public void deleteRoleById(String ROLE_ID) throws Exception {
-		dao.delete("RoleMapper.deleteRoleById", ROLE_ID);
+		PageData pd = new PageData();
+		pd.put("ROLE_ID", ROLE_ID);
+		dao.update("RoleMapper.deleteRoleById", pd);
 	}
 	
 	/**给当前角色附加菜单权限
@@ -77,7 +79,9 @@ public class RoleService implements RoleManager{
 	 * @throws Exception
 	 */
 	public Role getRoleById(String ROLE_ID) throws Exception {
-		return (Role) dao.findForObject("RoleMapper.getRoleById", ROLE_ID);
+		PageData pd = new PageData();
+		pd.put("ROLE_ID", ROLE_ID);
+		return (Role) dao.findForObject("RoleMapper.getRoleById", pd);
 	}
 	
 	/**给全部子角色加菜单权限

@@ -14,6 +14,8 @@
 <base href="<%=basePath%>">
 <!-- 下拉框 -->
 <link rel="stylesheet" href="static/ace/css/chosen.css" />
+<!-- 日期框 -->
+<link rel="stylesheet" href="static/ace/css/datepicker.css" />
 <!-- jsp文件头和头部 -->
 <%@ include file="../index/top.jsp"%>
 </head>
@@ -51,6 +53,10 @@
 											<td><input type="text" name="USERNAME" id="loginname" value="${pd.USERNAME }" maxlength="32" placeholder="这里输入用户名" title="用户名" style="width:98%;"/></td>
 										</tr>
 										<tr>
+											<td style="width:79px;text-align: right;padding-top: 13px;">拼音编码:</td>
+											<td><input type="text" name="YICODE" id="YICODE" value="${pd.YICODE }" maxlength="32" placeholder="这里输入拼音编码" title="拼音编码" style="width:98%;"/></td>
+										</tr>
+										<tr>
 											<td style="width:79px;text-align: right;padding-top: 13px;">编号:</td>
 											<td><input type="text" name="NUMBER" id="NUMBER" value="${pd.NUMBER }" maxlength="32" placeholder="这里输入编号" title="编号" onblur="hasN('${pd.USERNAME }')" style="width:98%;"/></td>
 										</tr>
@@ -67,12 +73,44 @@
 											<td><input type="text" name="NAME" id="name"  value="${pd.NAME }"  maxlength="32" placeholder="这里输入姓名" title="姓名" style="width:98%;"/></td>
 										</tr>
 										<tr>
+											<td style="width:79px;text-align: right;padding-top: 13px;">出生日期:</td>
+											<td style="padding-left:2px;"><input class="span10 date-picker" name="BIRTHDATEDATE" id="BIRTHDATEDATE"  value="${pd.BIRTHDATEDATE}" type="text" data-date-format="yyyy-mm-dd"  style="width:98%;" placeholder="出生日期" title="出生日期"/></td>
+										</tr>
+										<tr>
+											<td style="width:79px;text-align: right;padding-top: 13px;">入职日期:</td>
+											<td style="padding-left:2px;"><input class="span10 date-picker" name="HIREDATE" id="HIREDATE"  value="${pd.HIREDATE}" type="text" data-date-format="yyyy-mm-dd"  style="width:98%;" placeholder="入职日期" title="入职日期"/></td>
+										</tr>
+										<tr>
+											<td style="width:75px;text-align: right;padding-top: 13px;">性别:</td>
+											<td>
+												<select name="SEX" id="SEX" placeholder="请选择" title="性别" style="width:98%;background-color:#EBEBEB" >
+												<c:forEach items="${varListSex}" var="var">
+													<option value="${var.LEVEL_ID }" <c:if test="${var.LEVEL_ID == pd.SEX }">selected</c:if>>${var.TITLE }</option>
+												</c:forEach>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<td style="width:75px;text-align: right;padding-top: 13px;">学历:</td>
+											<td>
+												<select name="EDUCATION" id="EDUCATION" placeholder="请选择" title="学历" style="width:98%;background-color:#EBEBEB" >
+												<c:forEach items="${varListLEduction}" var="var">
+													<option value="${var.LEVEL_ID }" <c:if test="${var.LEVEL_ID == pd.EDUCATION }">selected</c:if>>${var.TITLE }</option>
+												</c:forEach>
+												</select>
+											</td>
+										</tr>
+										<tr>
 											<td style="width:79px;text-align: right;padding-top: 13px;">手机号:</td>
 											<td><input type="number" name="PHONE" id="PHONE"  value="${pd.PHONE }"  maxlength="32" placeholder="这里输入手机号" title="手机号" style="width:98%;"/></td>
 										</tr>
 										<tr>
 											<td style="width:79px;text-align: right;padding-top: 13px;">邮箱:</td>
 											<td><input type="email" name="EMAIL" id="EMAIL"  value="${pd.EMAIL }" maxlength="32" placeholder="这里输入邮箱" title="邮箱" onblur="hasE('${pd.USERNAME }')" style="width:98%;"/></td>
+										</tr>
+										<tr>
+											<td style="width:79px;text-align: right;padding-top: 13px;">籍贯:</td>
+											<td><input type="text" name="NPLACE" id="NPLACE"  value="${pd.NPLACE }"  maxlength="32" placeholder="这里输入籍贯" title="籍贯" style="width:98%;"/></td>
 										</tr>
 										<tr>
 											<td style="width:79px;text-align: right;padding-top: 13px;">备注:</td>
@@ -104,6 +142,8 @@
 	<%@ include file="../index/foot.jsp"%>
 	<!-- ace scripts -->
 	<script src="static/ace/js/ace/ace.js"></script>
+	<!-- 日期框 -->
+	<script src="static/ace/js/date-time/bootstrap-datepicker.js"></script>
 	<!-- inline scripts related to this page -->
 	<!-- 下拉框 -->
 	<script src="static/ace/js/chosen.jquery.js"></script>
@@ -309,6 +349,8 @@
 		});
 	}
 	$(function() {
+		//日期框
+		$('.date-picker').datepicker({autoclose: true,todayHighlight: true});
 		//下拉框
 		if(!ace.vars['touch']) {
 			$('.chosen-select').chosen({allow_single_deselect:true}); 

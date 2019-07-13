@@ -125,6 +125,49 @@ public class UserController extends BaseController {
 		mv.addObject("msg", "saveU");
 		mv.addObject("pd", pd);
 		mv.addObject("roleList", roleList);
+		
+		//性别
+		List<HashMap> varListSex = new ArrayList<HashMap>();
+		HashMap man = new HashMap();
+		man.put("LEVEL_ID", 1);
+		man.put("TITLE","男");
+		HashMap women = new HashMap();
+		women.put("LEVEL_ID", 2);
+		women.put("TITLE","女");
+		varListSex.add(man);
+		varListSex.add(women);
+		mv.addObject("varListSex", varListSex);
+		//学历
+		List<HashMap> varListLEduction = new ArrayList<HashMap>();
+		HashMap one = new HashMap();
+		one.put("LEVEL_ID", 1);
+		one.put("TITLE","平凡");
+		HashMap two = new HashMap();
+		two.put("LEVEL_ID", 2);
+		two.put("TITLE","初中毕业");
+		HashMap three = new HashMap();
+		three.put("LEVEL_ID", 3);
+		three.put("TITLE","中专毕业");
+		HashMap four = new HashMap();
+		four.put("LEVEL_ID", 4);
+		four.put("TITLE","初中毕业");
+		HashMap five = new HashMap();
+		five.put("LEVEL_ID", 5);
+		five.put("TITLE","高中毕业");
+		HashMap six = new HashMap();
+		six.put("LEVEL_ID", 6);
+		six.put("TITLE","大学专科");
+		HashMap seven = new HashMap();
+		seven.put("LEVEL_ID", 7);
+		seven.put("TITLE","大学本科");
+		varListLEduction.add(one);
+		varListLEduction.add(two);
+		varListLEduction.add(three);
+		varListLEduction.add(four);
+		varListLEduction.add(five);
+		varListLEduction.add(six);
+		varListLEduction.add(seven);
+		mv.addObject("varListLEduction", varListLEduction);
 		return mv;
 	}
 	
@@ -339,14 +382,18 @@ public class UserController extends BaseController {
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
 		logBefore(logger, Jurisdiction.getUsername()+"批量删除user");
 		FHLOG.save(Jurisdiction.getUsername(), "批量删除user");
-		PageData pd = new PageData();
+		PageData pd = new PageData();		
 		Map<String,Object> map = new HashMap<String,Object>();
 		pd = this.getPageData();
 		List<PageData> pdList = new ArrayList<PageData>();
-		String USER_IDS = pd.getString("USER_IDS");
-		if(null != USER_IDS && !"".equals(USER_IDS)){
-			String ArrayUSER_IDS[] = USER_IDS.split(",");
-			userService.deleteAllU(ArrayUSER_IDS);
+		String DATA_IDS = pd.getString("USER_IDS");
+		if(null != DATA_IDS && !"".equals(DATA_IDS)){
+			String[] ids = DATA_IDS.split(",");
+			StringBuffer idstr = new StringBuffer("");
+			for(int i=0;i<ids.length;i++) {
+				idstr.append("'"+ids[i]+"',");
+			}
+			userService.deleteAllU(idstr.toString().substring(0,idstr.toString().length()-1),(String)pd.get("PK_SOBOOKS"));
 			pd.put("msg", "ok");
 		}else{
 			pd.put("msg", "no");

@@ -157,8 +157,12 @@ public class IetypeController extends BaseController {
 		List<PageData> pdList = new ArrayList<PageData>();
 		String DATA_IDS = pd.getString("DATA_IDS");
 		if(null != DATA_IDS && !"".equals(DATA_IDS)){
-			String ArrayDATA_IDS[] = DATA_IDS.split(",");
-			fhbuttonService.deleteAll(ArrayDATA_IDS);
+			String[] ids = DATA_IDS.split(",");
+			StringBuffer idstr = new StringBuffer("");
+			for(int i=0;i<ids.length;i++) {
+				idstr.append("'"+ids[i]+"',");
+			}
+			fhbuttonService.deleteAll(idstr.toString().substring(0,idstr.toString().length()-1),(String)pd.get("PK_SOBOOKS"));
 			pd.put("msg", "ok");
 		}else{
 			pd.put("msg", "no");

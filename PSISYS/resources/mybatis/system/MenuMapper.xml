@@ -55,12 +55,16 @@
 	</sql>
 	
 	<!--通过ID获取其子一级菜单 -->
-	<select id="listSubMenuByParentId" parameterType="String" resultMap="menuResultMap">
+	<select id="listSubMenuByParentId" parameterType="pd" resultMap="menuResultMap">
 		select  
 			<include refid="Field"></include>
 		from 
 			<include refid="tableName"></include>
-		where PARENT_ID = #{parentId} order by (MENU_ORDER+0) 
+		where PARENT_ID = #{parentId}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
+		 order by (MENU_ORDER+0) 
+		
 	</select>
 	
 	<!--通过菜单ID获取数据 -->
@@ -70,6 +74,8 @@
 		 from 
 			<include refid="tableName"></include>
 		 where MENU_ID=#{MENU_ID}
+		 		and PK_SOBOOKS = #{PK_SOBOOKS}
+				and IFNULL(dr,0)=0 
 	</select>
 	
 	<!--新增 -->
@@ -87,14 +93,22 @@
 	<select id="findMaxId" parameterType="pd" resultType="pd">
 		select MAX(MENU_ID) MID from 
 		<include refid="tableName"></include>
+		where 
+				PK_SOBOOKS = #{PK_SOBOOKS}
+				and IFNULL(dr,0)=0 
 	</select>
 	
 	<!--删除菜单-->
-	<delete id="deleteMenuById" parameterType="String">
-		delete from 
-		<include refid="tableName"></include> 
-		where MENU_ID=#{MENU_ID} 
-	</delete>
+	<update id="deleteMenuById" parameterType="pd">
+		update 
+		<include refid="tableName"></include>
+		set
+			DR = 1 
+		where 
+			MENU_ID = #{MENU_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+	</update>
 	
 	<!--编辑 -->
 	<update id="updateMenu" parameterType="Menu">
@@ -108,6 +122,8 @@
 			MENU_TYPE =#{MENU_TYPE}
 		where 
 			MENU_ID=#{MENU_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+		  	and IFNULL(dr,0)=0 
 	</update>
 
 	<!--保存菜单图标  -->
@@ -118,7 +134,8 @@
 			MENU_ICON=#{MENU_ICON}
 		where
 			MENU_ID=#{MENU_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+		    and IFNULL(dr,0)=0 
 	</update>
 	
-	<!-- fh313596790qq(青苔) -->
 </mapper>

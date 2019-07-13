@@ -114,7 +114,7 @@ public interface UserManager {
 	 * @param USER_IDS
 	 * @throws Exception
 	 */
-	public void deleteAllU(String[] USER_IDS)throws Exception;
+	public void deleteAllU(String DATA_IDS,String PK_SOBOOKS)throws Exception;
 	
 	/**用户列表(全部)
 	 * @param pd

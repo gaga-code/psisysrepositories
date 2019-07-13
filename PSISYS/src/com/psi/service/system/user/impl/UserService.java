@@ -4,12 +4,17 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.shiro.session.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.psi.dao.DaoSupport;
 import com.psi.entity.Page;
 import com.psi.entity.system.User;
 import com.psi.service.system.user.UserManager;
+import com.psi.util.Const;
+import com.psi.util.JdbcTempUtil;
+import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
 
 /**
@@ -52,7 +57,12 @@ public class UserService implements UserManager{
 	 * @throws Exception
 	 */
 	public User getUserAndRoleById(String USER_ID) throws Exception {
-		return (User) dao.findForObject("UserMapper.getUserAndRoleById", USER_ID);
+		Session session = Jurisdiction.getSession();
+		PageData pd = new PageData();
+		pd.put("PK_SOBOOKS", session.getAttribute(Const.SESSION_PK_SOBOOKS));
+		pd.remove("USER_ID");
+		pd.put("USER_ID", USER_ID);
+		return (User) dao.findForObject("UserMapper.getUserAndRoleById", pd);
 	}
 	
 	/**通过USERNAEME获取数据
@@ -151,15 +161,19 @@ public class UserService implements UserManager{
 	 * @throws Exception
 	 */
 	public void deleteU(PageData pd)throws Exception{
-		dao.delete("UserMapper.deleteU", pd);
+		dao.update("UserMapper.deleteU", pd);
 	}
 	
-	/**批量删除用户
-	 * @param USER_IDS
-	 * @throws Exception
+	@Autowired
+	private JdbcTempUtil jdbcTempUtil;
+	/**
+	 * 批量删除
+	 * DATA_IDS   主键 
+	 * PK_SOBOOKS  帐套主键
 	 */
-	public void deleteAllU(String[] USER_IDS)throws Exception{
-		dao.delete("UserMapper.deleteAllU", USER_IDS);
+	public void deleteAllU(String DATA_IDS,String PK_SOBOOKS)throws Exception{
+		//表名和主键字段名
+		jdbcTempUtil.deleteAll(DATA_IDS, PK_SOBOOKS, "sys_user", "USER_ID");
 	}
 	
 	/**用户列表(全部)
@@ -176,7 +190,8 @@ public class UserService implements UserManager{
 	 * @throws Exception
 	 */
 	public PageData getUserCount(String value)throws Exception{
-		return (PageData)dao.findForObject("UserMapper.getUserCount", value);
+		Session session = Jurisdiction.getSession();
+		return (PageData)dao.findForObject("UserMapper.getUserCount", session.getAttribute(Const.SESSION_PK_SOBOOKS));
 	}
 	
 }

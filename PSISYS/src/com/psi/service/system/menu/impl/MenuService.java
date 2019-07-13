@@ -4,11 +4,14 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Service;
 
 import com.psi.dao.DaoSupport;
 import com.psi.entity.system.Menu;
 import com.psi.service.system.menu.MenuManager;
+import com.psi.util.Const;
+import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
 
 /**
@@ -28,7 +31,11 @@ public class MenuService implements MenuManager{
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Menu> listSubMenuByParentId(String parentId) throws Exception {
-		return (List<Menu>) dao.findForList("MenuMapper.listSubMenuByParentId", parentId);
+		Session session = Jurisdiction.getSession();
+		PageData pd = new PageData();
+		pd.put("PK_SOBOOKS", session.getAttribute(Const.SESSION_PK_SOBOOKS));
+		pd.put("parentId", parentId);
+		return (List<Menu>) dao.findForList("MenuMapper.listSubMenuByParentId", pd);
 	}
 	
 	/**
@@ -66,7 +73,11 @@ public class MenuService implements MenuManager{
 	 * @throws Exception
 	 */
 	public void deleteMenuById(String MENU_ID) throws Exception {
-		dao.save("MenuMapper.deleteMenuById", MENU_ID);
+		Session session = Jurisdiction.getSession();
+		PageData pd = new PageData();
+		pd.put("PK_SOBOOKS", session.getAttribute(Const.SESSION_PK_SOBOOKS));
+		pd.put("MENU_ID", MENU_ID);
+		dao.update("MenuMapper.deleteMenuById", pd);
 	}
 	
 	/**

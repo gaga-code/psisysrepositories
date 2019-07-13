@@ -58,6 +58,12 @@ public class PageData extends HashMap implements Map{
 	
 	public PageData() {
 		map = new HashMap();
+		Session session = Jurisdiction.getSession();
+		if(session.getAttribute(Const.SESSION_USER) != null) {
+			map.put("USER_ID", ((User)session.getAttribute(Const.SESSION_USER)).getUSER_ID());	//用户主键
+			map.put("PK_SOBOOKS", session.getAttribute(Const.SESSION_PK_SOBOOKS)); //帐套主键
+			
+		}
 	}
 	
 	@Override
