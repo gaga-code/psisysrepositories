@@ -1,4 +1,4 @@
-package com.psi.controller.basedata.supplier;
+package com.psi.controller.inventorymanagement.suppsetbill;
 
 import java.io.PrintWriter;
 import java.sql.Timestamp;
@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.james.mime4j.field.datetime.DateTime;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -24,7 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
 import com.psi.entity.system.User;
-import com.psi.service.basedata.supplier.SupplierManager;
+import com.psi.service.inventorymanagement.suppsetbill.SuppsetbillManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
 import com.psi.util.Jurisdiction;
@@ -32,15 +33,15 @@ import com.psi.util.ObjectExcelView;
 import com.psi.util.PageData;
 
 /**
- * 说明：供应商管理
+ * 说明：供应商结算单
  */
 @Controller
-@RequestMapping(value="/supplier")
-public class SupplierController extends BaseController {
+@RequestMapping(value="/suppsetbill")
+public class SuppsetbillController extends BaseController {
 	
-	String menuUrl = "supplier/list.do"; //菜单地址(权限用)
-	@Resource(name="supplierService")
-	private SupplierManager supplierService;
+	String menuUrl = "suppsetbill/list.do"; //菜单地址(权限用)
+	@Resource(name="suppsetbillService")
+	private SuppsetbillManager suppsetbillService;
 
 	
 	/**保存
@@ -49,13 +50,13 @@ public class SupplierController extends BaseController {
 	 */
 	@RequestMapping(value="/save")
 	public ModelAndView save() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"新增supplier");
+		logBefore(logger, Jurisdiction.getUsername()+"新增suppsetbill");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd.put("SUPPLIER_ID", this.get32UUID());		//主键
-		supplierService.save(pd);
+		suppsetbillService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -67,11 +68,11 @@ public class SupplierController extends BaseController {
 	 */
 	@RequestMapping(value="/delete")
 	public void delete(PrintWriter out) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"删除supplier");
+		logBefore(logger, Jurisdiction.getUsername()+"删除suppsetbill");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		supplierService.delete(pd);
+		suppsetbillService.delete(pd);
 		out.write("success");
 		out.close();
 	}
@@ -82,12 +83,12 @@ public class SupplierController extends BaseController {
 	 */
 	@RequestMapping(value="/edit")
 	public ModelAndView edit() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"修改supplier");
+		logBefore(logger, Jurisdiction.getUsername()+"修改suppsetbill");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		supplierService.edit(pd);
+		suppsetbillService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -99,10 +100,10 @@ public class SupplierController extends BaseController {
 	 */
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"列表supplier");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		logBefore(logger, Jurisdiction.getUsername()+"列表suppsetbill");
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		ModelAndView mv = this.getModelAndView();
-		PageData pd = new PageData();
+				PageData pd = new PageData();
 		pd = this.getPageData();
 		String keywords = pd.getString("keywords");				//关键词检索条件
 		if(null != keywords && !"".equals(keywords)){
@@ -117,9 +118,9 @@ public class SupplierController extends BaseController {
 			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
 		} 
 		page.setPd(pd);
-		List<PageData>	varList = supplierService.list(page);	//列出supplier列表
-		mv.setViewName("basedata/supplier/supplier_list");
-		mv.addObject("varList", varList);
+		List<PageData>	suppSetList = suppsetbillService.list(page);	//列出suppsetbill列表
+		mv.setViewName("inventorymanagement/suppsetbill/suppsetbill_list");
+		mv.addObject("suppSetList", suppSetList);
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
@@ -131,7 +132,7 @@ public class SupplierController extends BaseController {
 	 */
 	@RequestMapping(value="/windowsList")
 	public ModelAndView windowsList(Page page) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"列表supplier");
+		logBefore(logger, Jurisdiction.getUsername()+"列表suppsetbill");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
@@ -149,30 +150,12 @@ public class SupplierController extends BaseController {
 			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
 		} 
 		page.setPd(pd);
-		List<PageData>	varList = supplierService.list(page);	//列出supplier列表
-		mv.setViewName("basedata/supplier/windows_supplier_list");
+		List<PageData>	varList = suppsetbillService.list(page);	//列出suppsetbill列表
+		mv.setViewName("inventorymanagement/suppsetbill/windows_suppsetbill_list");
 		mv.addObject("varList", varList);
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
-	}
-	
-	/**
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/listNameAndID" ,produces="application/json;charset=UTF-8")
-	@ResponseBody
-	public Object listNameAndID()throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"列表supplier");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
-		Map<String,Object> map = new HashMap<String,Object>();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		
-		List<PageData> varList = supplierService.listAll(pd);	//列出supplier列表
-		map.put("varList", varList);
-		return AppUtil.returnObject(pd, map);
 	}
 	
 	/**去新增页面
@@ -187,7 +170,8 @@ public class SupplierController extends BaseController {
 		Session session = Jurisdiction.getSession();
 		User user = (User)session.getAttribute(Const.SESSION_USER);
 		pd.put("PSI_NAME", user.getNAME());	//用户主键
-		mv.setViewName("basedata/supplier/supplier_edit");
+//		pd.put("LDATE", new Date().getTime());//录单时间
+		mv.setViewName("inventorymanagement/suppsetbill/suppsetbill_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
 		List<HashMap> varListL = new ArrayList<HashMap>();
@@ -200,6 +184,7 @@ public class SupplierController extends BaseController {
 		varListL.add(xianjin);
 		varListL.add(yuejie);
 		mv.addObject("varListL", varListL);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
 	}	
 	
@@ -212,8 +197,8 @@ public class SupplierController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd = supplierService.findById(pd);	//根据ID读取
-		mv.setViewName("basedata/supplier/supplier_edit");
+		pd = suppsetbillService.findById(pd);	//根据ID读取
+		mv.setViewName("inventorymanagement/suppsetbill/suppsetbill_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
 		List<HashMap> varListL = new ArrayList<HashMap>();
@@ -226,6 +211,7 @@ public class SupplierController extends BaseController {
 		varListL.add(xianjin);
 		varListL.add(yuejie);
 		mv.addObject("varListL", varListL);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
 	}	
 	
@@ -238,8 +224,8 @@ public class SupplierController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd = supplierService.findById(pd);	//根据ID读取
-		mv.setViewName("basedata/supplier/supplier_view");
+		pd = suppsetbillService.findById(pd);	//根据ID读取
+		mv.setViewName("inventorymanagement/suppsetbill/suppsetbill_view");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
 		List<HashMap> varListL = new ArrayList<HashMap>();
@@ -262,7 +248,7 @@ public class SupplierController extends BaseController {
 	@RequestMapping(value="/deleteAll")
 	@ResponseBody
 	public Object deleteAll() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"批量删除supplier");
+		logBefore(logger, Jurisdiction.getUsername()+"批量删除suppsetbill");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
 		PageData pd = new PageData();		
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -275,7 +261,7 @@ public class SupplierController extends BaseController {
 			for(int i=0;i<ids.length;i++) {
 				idstr.append("'"+ids[i]+"',");
 			}
-			supplierService.deleteAll(idstr.toString().substring(0,idstr.toString().length()-1),(String)pd.get("PK_SOBOOKS"));
+			suppsetbillService.deleteAll(idstr.toString().substring(0,idstr.toString().length()-1),(String)pd.get("PK_SOBOOKS"));
 			pd.put("msg", "ok");
 		}else{
 			pd.put("msg", "no");
@@ -291,7 +277,7 @@ public class SupplierController extends BaseController {
 	 */
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"导出supplier到excel");
+		logBefore(logger, Jurisdiction.getUsername()+"导出suppsetbill到excel");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
@@ -316,7 +302,7 @@ public class SupplierController extends BaseController {
 		titles.add("备注2");	//16
 		titles.add("备注3");	//17
 		dataMap.put("titles", titles);
-		List<PageData> varOList = supplierService.listAll(pd);
+		List<PageData> varOList = suppsetbillService.listAll(pd);
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();

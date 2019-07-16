@@ -33,18 +33,74 @@ public class UserIDTranNameAspectj {
 	
 	@AfterReturning(value = "pointcutlist() || pointcutfind()", returning = "returnObj") 
 	public Object afterReturn(Object returnObj) { 
-		if(returnObj == null) {
+		if (returnObj == null) {
 			return returnObj;
-		}else if(returnObj instanceof java.util.List) {
-			if(((java.util.List) returnObj).isEmpty()) {
+		} else if (returnObj instanceof java.util.List) {
+			if (((java.util.List) returnObj).isEmpty()) {
 				return returnObj;
-			}else {
-				for(Object o:(java.util.List)returnObj) {
-					if(o.getClass() == PageData.class) {
+			} else {
+				for (Object o : (java.util.List) returnObj) {
+					if (o.getClass() == PageData.class) {
 						PageData pd = (PageData) o;
-						if(pd.containsKey("USER_ID")) {
+						if(pd.get("DISTRIBUTIONMODE") == null) {
+							System.out.println(pd);
+						}
+						if(pd.get("DISTRIBUTIONMODE") != null) {
+							System.out.println(pd.get("DISTRIBUTIONMODE"));
+						}
+						if (pd.containsKey("USER_ID")) {
 							PageData pdf = transUserIdToUserName(pd);
 							System.out.println(pdf);
+						} else if (pd.get("DISTRIBUTIONMODE") != null) {
+							if (pd.get("DISTRIBUTIONMODE").equals("1")) {
+								pd.put("DISTRIBUTIONMODENAME", "现金");
+							} else if (pd.get("DISTRIBUTIONMODE").equals("2")) {
+								pd.put("DISTRIBUTIONMODENAME", "月结");
+							}
+							System.out.println(pd);
+						} else if (pd.get("SEX") != null) {
+							if (pd.get("SEX").equals("1")) {
+								pd.put("SEXNAME", "男");
+							} else if (pd.get("SEX").equals("2")) {
+								pd.put("SEXNAME", "女");
+							}
+						} else if (pd.get("EDUCATION") != null) {
+							// 平凡、初中毕业、中专毕业、高中毕业、大学专科、大学本科
+							if (pd.get("EDUCATION").equals("1")) {
+								pd.put("EDUCATIONNAME", "平凡");
+							} else if (pd.get("EDUCATION").equals("2")) {
+								pd.put("EDUCATIONNAME", "初中毕业");
+							} else if (pd.get("EDUCATION").equals("3")) {
+								pd.put("EDUCATIONNAME", "中专毕业");
+							} else if (pd.get("EDUCATION").equals("4")) {
+								pd.put("EDUCATIONNAME", "高中毕业");
+							} else if (pd.get("EDUCATION").equals("5")) {
+								pd.put("EDUCATIONNAME", "大学专科");
+							} else if (pd.get("EDUCATION").equals("6")) {
+								pd.put("EDUCATIONNAME", "大学本科");
+							} 
+						} else if (pd.get("BILLSTATUS") != null) {
+							if (pd.get("BILLSTATUS").equals("0")) {
+								pd.put("BILLSTATUSNAME", "自由");
+							}else if (pd.get("BILLSTATUS").equals("1")) {
+								pd.put("BILLSTATUSNAME", "未审核");
+							} else if (pd.get("BILLSTATUS").equals("2")) {
+								pd.put("BILLSTATUSNAME", "已审核");
+							}
+						}else if (pd.get("BILLTYPE") != null) {
+							if (pd.get("BILLTYPE").equals("1")) {
+								pd.put("BILLTYPENAME", "进货单");
+							}else if (pd.get("BILLTYPE").equals("2")) {
+								pd.put("BILLTYPENAME", "销售单");
+							} else if (pd.get("BILLTYPE").equals("3")) {
+								pd.put("BILLTYPENAME", "供应商结算单");
+							}else if (pd.get("BILLTYPE").equals("4")) {
+								pd.put("BILLTYPENAME", "客户结算单");
+							}else if (pd.get("BILLTYPE").equals("5")) {
+								pd.put("BILLTYPENAME", "供应商退货单");
+							}else if (pd.get("BILLTYPE").equals("6")) {
+								pd.put("BILLTYPENAME", "客户退货单");
+							}
 						}else {
 							return returnObj;
 						}
@@ -53,12 +109,59 @@ public class UserIDTranNameAspectj {
 					}
 				}
 			}
-			
-		}
-		if(returnObj.getClass() == PageData.class) {
+		} else if (returnObj.getClass() == PageData.class) {
 			PageData pd = (PageData) returnObj;
-			if(pd.containsKey("USER_ID")) {
+			if (pd.containsKey("USER_ID")) {
 				return transUserIdToUserName(pd);
+			}else if (pd.containsKey("DISTRIBUTIONMODE")) {
+				if (pd.get("DISTRIBUTIONMODE").equals("1")) {
+					pd.put("DISTRIBUTIONMODENAME", "现金");
+				} else if (pd.get("DISTRIBUTIONMODE").equals("2")) {
+					pd.put("DISTRIBUTIONMODENAME", "月结");
+				}
+			} else if (pd.containsKey("SEX")) {
+				if (pd.get("SEX").equals("1")) {
+					pd.put("SEXNAME", "男");
+				} else if (pd.get("SEX").equals("2")) {
+					pd.put("SEXNAME", "女");
+				}
+			} else if (pd.containsKey("EDUCATION")) {
+				// 平凡、初中毕业、中专毕业、高中毕业、大学专科、大学本科
+				if (pd.get("EDUCATION").equals("1")) {
+					pd.put("EDUCATIONNAME", "平凡");
+				} else if (pd.get("EDUCATION").equals("2")) {
+					pd.put("EDUCATIONNAME", "初中毕业");
+				} else if (pd.get("EDUCATION").equals("3")) {
+					pd.put("EDUCATIONNAME", "中专毕业");
+				} else if (pd.get("EDUCATION").equals("4")) {
+					pd.put("EDUCATIONNAME", "高中毕业");
+				} else if (pd.get("EDUCATION").equals("5")) {
+					pd.put("EDUCATIONNAME", "大学专科");
+				} else if (pd.get("EDUCATION").equals("6")) {
+					pd.put("EDUCATIONNAME", "大学本科");
+				} 
+			} else if (pd.containsKey("BILLSTATUS")) {
+				if (pd.get("BILLSTATUS").equals("0")) {
+					pd.put("BILLSTATUSNAME", "自由");
+				}else if (pd.get("BILLSTATUS").equals("1")) {
+					pd.put("BILLSTATUSNAME", "未审核");
+				} else if (pd.get("BILLSTATUS").equals("2")) {
+					pd.put("BILLSTATUSNAME", "已审核");
+				}
+			}else if (pd.containsKey("BILLTYPE")) {
+				if (pd.get("BILLTYPE").equals("1")) {
+					pd.put("BILLTYPENAME", "进货单");
+				}else if (pd.get("BILLTYPE").equals("2")) {
+					pd.put("BILLTYPENAME", "销售单");
+				} else if (pd.get("BILLTYPE").equals("3")) {
+					pd.put("BILLTYPENAME", "供应商结算单");
+				}else if (pd.get("BILLTYPE").equals("4")) {
+					pd.put("BILLTYPENAME", "客户结算单");
+				}else if (pd.get("BILLTYPE").equals("5")) {
+					pd.put("BILLTYPENAME", "供应商退货单");
+				}else if (pd.get("BILLTYPE").equals("6")) {
+					pd.put("BILLTYPENAME", "客户退货单");
+				}
 			}else {
 				return returnObj;
 			}
