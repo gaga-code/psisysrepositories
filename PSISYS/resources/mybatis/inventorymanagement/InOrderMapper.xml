@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InOrderMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		psi_inorder
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		PK_SOBOOKS,
+		INORDER_ID,
+		LDATE,
+		BILLCODE,
+		SUPPLIER_ID,
+		USER_ID,
+		WAREHOUSE_ID,
+		ALLAMOUNT,
+		BILLTYPE,
+		BILLSTATUS,
+		PAIDAMOUNT,
+		UNPAIDAMOUNT,
+		THISPAY,
+		SUBBRANCH,
+		NOTE,
+		ISSETTLEMENTED
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{INORDER_ID},	
+		#{LDATE},	
+		#{BILLCODE},	
+		#{SUPPLIER_ID},	
+		#{USER_ID},	
+		#{WAREHOUSE_ID},	
+		#{ALLAMOUNT},	
+		#{BILLTYPE},	
+		#{BILLSTATUS},	
+		#{PAIDAMOUNT},	
+		#{UNPAIDAMOUNT},
+		#{THISPAY},	
+		#{SUBBRANCH},
+		#{NOTE},
+		#{ISSETTLEMENTED},
+		#{PK_SOBOOKS}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set DR = 1
+		where 
+			PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			LDATE = #{LDATE},
+			SUPPLIER_ID = #{SUPPLIER_ID},
+			WAREHOUSE_ID = #{WAREHOUSE_ID},
+			ALLAMOUNT = #{ALLAMOUNT},
+			BILLTYPE = #{BILLTYPE},
+			BILLSTATUS = #{BILLSTATUS},
+			PAIDAMOUNT = #{PAIDAMOUNT},
+			UNPAIDAMOUNT = #{UNPAIDAMOUNT},
+			THISPAY = #{THISPAY},
+			SUBBRANCH = #{SUBBRANCH},
+			ISSETTLEMENTED = #{ISSETTLEMENTED},
+			NOTE = #{NOTE},
+		where 
+		PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			a.PK_SOBOOKS,
+			a.INORDER_ID,
+			a.LDATE,
+			a.BILLCODE,
+			a.SUPPLIER_ID,
+			a.USER_ID,
+			a.WAREHOUSE_ID,
+			a.ALLAMOUNT,
+			a.BILLTYPE,
+			a.BILLSTATUS,
+			a.PAIDAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.THISPAY,
+			a.SUBBRANCH,
+			a.NOTE,
+			a.ISSETTLEMENTED,
+			b.SUPPLIERNAME 
+		from 
+		<include refid="tableName"></include> a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		where 
+			a.INORDER_ID = #{INORDER_ID}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+			a.PK_SOBOOKS,
+			a.INORDER_ID,
+			a.LDATE,
+			a.BILLCODE,
+			a.SUPPLIER_ID,
+			a.USER_ID,
+			a.WAREHOUSE_ID,
+			a.ALLAMOUNT,
+			a.BILLTYPE,
+			a.BILLSTATUS,
+			a.PAIDAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.THISPAY,
+			a.SUBBRANCH,
+			a.NOTE,
+			a.ISSETTLEMENTED,
+			b.SUPPLIERNAME SUPPLIERNAME
+		from 
+		<include refid="tableName"></include>a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					<!--  or 
+					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					ADDRESS LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					SUBBRANCH LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					SUBHEADQUARTER LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') -->
+				)
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where
+			1=1
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+		<!-- <if test="USERNAME!=null and USERNAME!=''">
+			and USERNAME = #{USERNAME} 
+		</if> -->
+		<!-- <if test="days!=null and days!=''">几天内
+			and DATE_SUB(CURDATE(), INTERVAL ${days} DAY) &lt;= date(CTIME)
+		</if> -->
+	</select>
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		update 
+		<include refid="tableName"></include>
+		set DR = 1 
+		where 
+			INORDER_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</update>
+</mapper>

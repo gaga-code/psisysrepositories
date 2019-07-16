@@ -12,7 +12,8 @@
 		NAME,	
 		QX_NAME,	
 		BZ,	
-		FHBUTTON_ID
+		FHBUTTON_ID,
+ 		PK_SOBOOKS
 	</sql>
 	
 	<!-- 字段值 -->
@@ -20,7 +21,8 @@
 		#{NAME},	
 		#{QX_NAME},	
 		#{BZ},	
-		#{FHBUTTON_ID}
+		#{FHBUTTON_ID},
+ 		#{PK_SOBOOKS}
 	</sql>
 	
 	<!-- 新增-->
@@ -33,14 +35,17 @@
 	<include refid="FieldValue"></include>
 		)
 	</insert>
-	
-	<!-- 删除-->
-	<delete id="delete" parameterType="pd">
-		delete from
+		<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update 
 		<include refid="tableName"></include>
+		set
+			DR = 1 
 		where 
 			FHBUTTON_ID = #{FHBUTTON_ID}
-	</delete>
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+	</update>
 	
 	<!-- 修改 -->
 	<update id="edit" parameterType="pd">
@@ -53,6 +58,8 @@
 		FHBUTTON_ID = FHBUTTON_ID
 		where 
 		FHBUTTON_ID = #{FHBUTTON_ID}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
 	</update>
 	
 	<!-- 通过ID获取数据 -->
@@ -63,6 +70,8 @@
 		<include refid="tableName"></include>
 		where 
 			FHBUTTON_ID = #{FHBUTTON_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
 	</select>
 	
 	<!-- 列表 -->
@@ -81,6 +90,8 @@
 			)
 				
 		</if>
+			and PK_SOBOOKS = #{pd.PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
 	</select>
 	
 	<!-- 列表(全部) -->
@@ -89,6 +100,9 @@
 		<include refid="Field"></include>
 		from 
 		<include refid="tableName"></include>
+		where
+			PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
 	</select>
 	
 	<!-- 批量删除 -->

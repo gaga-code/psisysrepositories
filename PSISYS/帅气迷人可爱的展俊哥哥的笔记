@@ -1,6 +1,7 @@
 
 ############在主页面中新建一个页面#########################
 
+导入head.js一定要在头里面导入，否则会被强制退出
 <script type="text/javascript" src="static/js/myjs/head.js"></script>
 
 function edit(Id){

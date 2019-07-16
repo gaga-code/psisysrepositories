@@ -42,6 +42,27 @@ public class GoodsService implements GoodsManager{
 		}
 		return dictList;
 	}
+	/**
+	 * !!!入库单专用!!!
+	 * 
+	 * 获取所有数据并填充每条数据的子级列表(递归处理)
+	 * @param MENU_ID
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GoodsType> inOrderListAllDict(Map<String,String> parentIdAndPK_SOBOOKS) throws Exception {
+		List<GoodsType> dictList = this.listSubDictByParentId(parentIdAndPK_SOBOOKS);
+		Map<String,String> map = new HashMap<String, String>();
+		map.put("PK_SOBOOKS", parentIdAndPK_SOBOOKS.get("PK_SOBOOKS"));
+		for(GoodsType dict : dictList){
+			dict.setTreeurl("inorder/goodslist.do?GOODTYPE_ID="+dict.getGOODTYPE_ID());
+			//dict.setSubDict(this.listAllDict(dict.getGOODTYPE_ID()));
+			map.put("PARENTS", dict.getGOODTYPE_ID());
+			dict.setSubDict(this.inOrderListAllDict(map));
+			dict.setTarget("treeFrame");
+		}
+		return dictList;
+	}
 	
 	/**
 	 * 通过ID获取其子级列表
