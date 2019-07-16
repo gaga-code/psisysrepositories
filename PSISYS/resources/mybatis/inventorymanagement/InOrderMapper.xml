@@ -152,15 +152,16 @@
 					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 					<!--  or 
 					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-					or 
-					ADDRESS LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-					or 
-					SUBBRANCH LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-					or 
-					SUBHEADQUARTER LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-					or 
-					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') -->
+					 -->
 				)
+		</if>
+		<!-- 供应商ID -->
+		<if test="pd.SUPPLIER_ID != null and pd.SUPPLIER_ID != ''">
+			and pd.SUPPLIER_ID = a.SUPPLIER_ID;
+		</if>
+		<!-- 是否结算了的 -->
+		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
+			and pd.ISSETTLEMENTED = a.ISSETTLEMENTED;
 		</if>
 	</select>
 	
