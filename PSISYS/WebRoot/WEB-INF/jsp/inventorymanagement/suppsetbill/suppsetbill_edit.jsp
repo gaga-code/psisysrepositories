@@ -39,7 +39,13 @@
 									<a class="btn btn-mini btn-success" onclick="savesuppsetbill();">保存供应商结算单</a>
 									</c:if>
 									<c:if test="${QX.del == 1 }">
-									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a>
+									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'>批量删除</i></a>
+									</c:if>
+									<c:if test="${QX.SUPPSETBILLAPPROVAL == 1 }">
+									<a class="btn btn-mini btn-success" onclick="approvalAll('确定要审批选中的数据吗?');" title="批量审批" >批量审批</a>
+									</c:if>
+									<c:if test="${QX.SUPPSETBILLSET == 1 }">
+									<a class="btn btn-mini btn-success" onclick="settleAll('确定要结算选中的数据吗?');" title="批量结算" >批量结算</a>
 									</c:if>
 								</td>
 								
@@ -111,7 +117,7 @@
 							</tr>
 						</table>
 						</form>
-						<form action="suppsetbill/list.do" method="post" name="ListForm" id="ListForm">
+						<form action="suppsetbill/list.do" method="post" name="ListForm" id="InorderListForm">
 						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
 								<tr>
@@ -220,13 +226,13 @@
 									</c:if>
 									<c:if test="${QX.cha == 0 }">
 										<tr>
-											<td colspan="100" class="center">您无权查看</td>
+											<td colspan="100" class="center">您无权查看1</td>
 										</tr>
 									</c:if>
 								</c:when>
 								<c:otherwise>
 									<tr class="main_info">
-										<td colspan="100" class="center" >没有相关数据</td>
+										<td colspan="100" class="center" >没有相关数据1</td>
 									</tr>
 								</c:otherwise>
 							</c:choose>
@@ -239,7 +245,7 @@
 						</table>
 						</div>
 						</form>
-					
+						<Form id="reallyForm" type="hidden" ></Form>
 						</div>
 						<!-- /.col -->
 					</div>
@@ -303,43 +309,22 @@
 		$("#select_suppsetbill").on('change',function(e,params){
 			var sid = $("#select_suppsetbill").val();
 			if(sid == 0){
-				var list = <%=session.getAttribute("varList")%>
-				alert(list);
+				<%-- var list = <%=session.getAttribute("varList")%>
+				alert(list); --%>
+				
 			}else{
 				$.ajax({
 			        method:'POST',
-			        url:'supplier/listNameAndID',
-			        dataType:'json',
+			        url:'inorder/inOrderlistForSupp',
+			        data:{ISSETTLEMENTED:0,SUPPLIER_ID:sid},
+			        dataType:'html',
 			        success: function (res) {
-			            var html="<option value='0'>请选择供应商</option>";
-			            console.log(res);
-			            for (var i = 0; i < res.varList.length; i++) {
-			                if (sid == res.varList[i].SUPPLIER_ID) {
-			                    html += "<option  value='" + res.varList[i].SUPPLIER_ID + "' selected='selected' data-name='"+res.varList[i].SUPPLIERNAME+"'>" + res.varList[i].SUPPLIERNAME + "</option>";
-			                } else {
-			                    html += "<option  value='" + res.varList[i].SUPPLIER_ID + "' data-name='"+res.varList[i].SUPPLIERNAME+"'>"+ res.varList[i].SUPPLIERNAME + "</option>";
-			                }
-			            }
-			            $("#select_suppsetbill").html(html);
-			            $('#select_suppsetbill').trigger("chosen:updated");//重置下拉框  
-			            $('#select_suppsetbill').chosen();//下拉框检索框架
+			            $("#InorderListForm").html(res);
 			        }
 			    }); 
 			}
-		    alert(sid);
-		    /* $.ajax({
-		    	 	method:'POST',
-			        url:'inorder/listNameAndID',
-			        dataType:'json',
-			        success: function (res) {
-			        	
-			        }
-		    }); */
 		});
-		function changeSupplier(){
-			var sid = $("#select_suppsetbill").val();
-		    alert(sid);
-		} 
+		
 		
 		$(function() {
 			$("#LDATE").attr("disabled","disabled");
@@ -510,7 +495,7 @@
 			 diag.show();
 		}
 		
-		//批量操作
+		//批量删除
 		function makeAll(msg){
 			bootbox.confirm(msg, function(result) {
 				if(result) {
@@ -540,6 +525,96 @@
 							$.ajax({
 								type: "POST",
 								url: '<%=basePath%>suppsetbill/deleteAll.do?tm='+new Date().getTime(),
+						    	data: {DATA_IDS:str},
+								dataType:'json',
+								//beforeSend: validateData,
+								cache: false,
+								success: function(data){
+									 $.each(data.list, function(i, list){
+											tosearch();
+									 });
+								}
+							});
+						}
+					}
+				}
+			});
+		};
+		//批量审批
+		function approvalAll(msg){
+			bootbox.confirm(msg, function(result) {
+				if(result) {
+					var str = '';
+					for(var i=0;i < document.getElementsByName('ids').length;i++){
+					  if(document.getElementsByName('ids')[i].checked){
+					  	if(str=='') str += document.getElementsByName('ids')[i].value;
+					  	else str += ',' + document.getElementsByName('ids')[i].value;
+					  }
+					}
+					if(str==''){
+						bootbox.dialog({
+							message: "<span class='bigger-110'>您没有选择任何内容!</span>",
+							buttons: 			
+							{ "button":{ "label":"确定", "className":"btn-sm btn-success"}}
+						});
+						$("#zcheckbox").tips({
+							side:1,
+				            msg:'点这里全选',
+				            bg:'#AE81FF',
+				            time:8
+				        });
+						return;
+					}else{
+						if(msg == '确定要审批选中的数据吗?'){
+							top.jzts();
+							$.ajax({
+								type: "POST",
+								url: '<%=basePath%>suppsetbill/approvalAll.do?tm='+new Date().getTime(),
+						    	data: {DATA_IDS:str},
+								dataType:'json',
+								//beforeSend: validateData,
+								cache: false,
+								success: function(data){
+									 $.each(data.list, function(i, list){
+											tosearch();
+									 });
+								}
+							});
+						}
+					}
+				}
+			});
+		};
+		//批量结算
+		function settleAll(msg){
+			bootbox.confirm(msg, function(result) {
+				if(result) {
+					var str = '';
+					for(var i=0;i < document.getElementsByName('ids').length;i++){
+					  if(document.getElementsByName('ids')[i].checked){
+					  	if(str=='') str += document.getElementsByName('ids')[i].value;
+					  	else str += ',' + document.getElementsByName('ids')[i].value;
+					  }
+					}
+					if(str==''){
+						bootbox.dialog({
+							message: "<span class='bigger-110'>您没有选择任何内容!</span>",
+							buttons: 			
+							{ "button":{ "label":"确定", "className":"btn-sm btn-success"}}
+						});
+						$("#zcheckbox").tips({
+							side:1,
+				            msg:'点这里全选',
+				            bg:'#AE81FF',
+				            time:8
+				        });
+						return;
+					}else{
+						if(msg == '确定要结算选中的数据吗?'){
+							top.jzts();
+							$.ajax({
+								type: "POST",
+								url: '<%=basePath%>suppsetbill/settleAll.do?tm='+new Date().getTime(),
 						    	data: {DATA_IDS:str},
 								dataType:'json',
 								//beforeSend: validateData,

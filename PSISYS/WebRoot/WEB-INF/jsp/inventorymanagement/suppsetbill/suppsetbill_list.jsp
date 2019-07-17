@@ -17,16 +17,11 @@
 <!-- jsp文件头和头部 -->
 <%@ include file="../../system/index/top.jsp"%>
 <script type="text/javascript" src="static/js/myjs/head.js"></script>
-<!-- 模糊下拉框 -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="static/ace/js/bootstrap.js"></script>
-<script type="text/javascript" src="static/ace/js/bootstrap-select.min.js"></script>
-<script type="text/javascript" src="static/ace/js/defaults-zh_CN.min.js"></script>
 <!-- 日期框 -->
 <link rel="stylesheet" href="static/ace/css/datepicker.css" />
-<!-- 模糊下拉框 -->
-<link rel="stylesheet" href="static/ace/css/bootstrap.css" />
-<link rel="stylesheet" href="static/ace/css/bootstrap-select.min.css"/>
+
+
  
 </head>
 <body class="no-skin">
@@ -373,35 +368,7 @@
 			top.jzts();
 			$("#Form").submit();
 		}
-		$('.selectpicker').selectpicker({
-/*             noneSelectedText: '',
-            noneResultsText: '', */
-            liveSearch: true,
-            size:5   //设置select高度，同时显示5个值
-		});
-		$(window).on('load', function () {
-			/* var sid = $("#select_suppsetbill").val();
-		    $('.selectpicker').selectpicker('val', '');
-		    $('.selectpicker').selectpicker('refresh');
-		    $.ajax({
-		        method:'POST',
-		        url:'supplier/listNameAndID',
-		        dataType:'json',
-		        success: function (res) {
-		            var html="<option value='0'>请选择供应商</option>";
-		            console.log(res);
-		            for (var i = 0; i < res.varList.length; i++) {
-		                if (sid == res.varList[i].SUPPLIER_ID) {
-		                    html += "<option  value='" + res.varList[i].SUPPLIER_ID + "' selected='selected' data-name='"+res.varList[i].SUPPLIERNAME+"'>" + res.varList[i].SUPPLIERNAME + "</option>";
-		                } else {
-		                    html += "<option  value='" + res.varList[i].SUPPLIER_ID + "' data-name='"+res.varList[i].SUPPLIERNAME+"'>"+ res.varList[i].SUPPLIERNAME + "</option>";
-		                }
-		            }
-		            $("#select_article").html(html);
-		            $('.selectpicker').selectpicker('refresh');//加载select框选择器
-		        }
-		    }); */
-		});
+
 		$(function() {
 		
 			//日期框

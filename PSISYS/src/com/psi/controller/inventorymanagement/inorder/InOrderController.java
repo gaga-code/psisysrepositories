@@ -179,6 +179,33 @@ public class InOrderController extends BaseController {
 		return mv;
 	}
 	
+	/**列表
+	 * 为供应商结算单提供未结算且对应供应商的json数据
+	 * @param page
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/inOrderlistForSupp")
+	public ModelAndView inOrderlistForSupp(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表inorder");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+		page.setPd(pd);
+		List<PageData>	varList = inOrderService.listForSuppset(page);	//列出inorder列表
+		mv.setViewName("inventorymanagement/suppsetbill/suppsetbill_inorder_list");
+		mv.addObject("varList", varList);
+		mv.addObject("pd", pd);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		return mv;
+	}
+	
+	
+	
 	/**列表(弹窗选择用)
 	 * @param page
 	 * @throws Exception

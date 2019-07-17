@@ -85,6 +85,27 @@ public class SuppsetbillService implements SuppsetbillManager{
 		//表名和主键字段名
 		jdbcTempUtil.deleteAll(DATA_IDS, PK_SOBOOKS, "psi_suppsetbill", "SUPPSETBILL_ID");
 	}
+
+	/**
+	 * 
+	 * 批量审批
+	 * DATA_IDS   主键 
+	 * PK_SOBOOKS  帐套主键
+	 */
+	public void approvalAll(String substring, String string)throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+	/**
+	 * 
+	 * 批量结算
+	 * DATA_IDS   主键 
+	 * PK_SOBOOKS  帐套主键
+	 */
+	public void settleAll(String substring, String string)throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
 

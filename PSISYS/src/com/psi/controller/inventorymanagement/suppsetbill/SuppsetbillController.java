@@ -270,6 +270,65 @@ public class SuppsetbillController extends BaseController {
 		map.put("list", pdList);
 		return AppUtil.returnObject(pd, map);
 	}
+	/**批量审批
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/approvalAll")
+	@ResponseBody
+	public Object approvalAll() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"批量审批suppsetbill");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		PageData pd = new PageData();		
+		Map<String,Object> map = new HashMap<String,Object>();
+		pd = this.getPageData();
+		List<PageData> pdList = new ArrayList<PageData>();
+		String DATA_IDS = pd.getString("DATA_IDS");
+		if(null != DATA_IDS && !"".equals(DATA_IDS)){
+			String[] ids = DATA_IDS.split(",");
+			StringBuffer idstr = new StringBuffer("");
+			for(int i=0;i<ids.length;i++) {
+				idstr.append("'"+ids[i]+"',");
+			}
+			suppsetbillService.approvalAll(idstr.toString().substring(0,idstr.toString().length()-1),(String)pd.get("PK_SOBOOKS"));
+			pd.put("msg", "ok");
+		}else{
+			pd.put("msg", "no");
+		}
+		pdList.add(pd);
+		map.put("list", pdList);
+		return AppUtil.returnObject(pd, map);
+	}
+	/**批量结算
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/settleAll")
+	@ResponseBody
+	public Object settleAll() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"批量结算inorder");
+		//menuUrl 应该为进货单列表的！！！！！！！
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		PageData pd = new PageData();		
+		Map<String,Object> map = new HashMap<String,Object>();
+		pd = this.getPageData();
+		List<PageData> pdList = new ArrayList<PageData>();
+		String DATA_IDS = pd.getString("DATA_IDS");
+		if(null != DATA_IDS && !"".equals(DATA_IDS)){
+			String[] ids = DATA_IDS.split(",");
+			StringBuffer idstr = new StringBuffer("");
+			for(int i=0;i<ids.length;i++) {
+				idstr.append("'"+ids[i]+"',");
+			}
+			suppsetbillService.settleAll(idstr.toString().substring(0,idstr.toString().length()-1),(String)pd.get("PK_SOBOOKS"));
+			pd.put("msg", "ok");
+		}else{
+			pd.put("msg", "no");
+		}
+		pdList.add(pd);
+		map.put("list", pdList);
+		return AppUtil.returnObject(pd, map);
+	}
 	
 	 /**导出到excel
 	 * @param

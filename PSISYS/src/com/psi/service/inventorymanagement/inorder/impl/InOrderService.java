@@ -59,6 +59,15 @@ public class InOrderService implements InOrderManager{
 	public List<PageData> list(Page page)throws Exception{
 		return (List<PageData>)dao.findForList("InOrderMapper.datalistPage", page);
 	}
+	/**列表
+	 * @param page
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<PageData> listForSuppset(Page page)throws Exception{
+		return (List<PageData>)dao.findForList("InOrderMapper.datalistPageBySuppset", page);
+	}
+	
 	
 	/**列表(全部)
 	 * @param pd

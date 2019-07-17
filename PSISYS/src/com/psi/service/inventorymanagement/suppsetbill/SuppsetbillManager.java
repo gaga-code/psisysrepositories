@@ -52,6 +52,21 @@ public interface SuppsetbillManager{
 	 * @throws Exception
 	 */
 	public void deleteAll(String DATA_IDS,String PK_SOBOOKS)throws Exception;
+
+	/**
+	 * 批量审批
+	 * @param substring
+	 * @param string
+	 */
+	public void approvalAll(String substring, String string)throws Exception;
+	/**
+	 * 批量结算
+	 * @param substring
+	 * @param string
+	 */
+	public void settleAll(String substring, String string)throws Exception;
+	
+	
 	
 }
 

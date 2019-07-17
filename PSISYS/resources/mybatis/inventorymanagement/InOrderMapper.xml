@@ -157,11 +157,51 @@
 		</if>
 		<!-- 供应商ID -->
 		<if test="pd.SUPPLIER_ID != null and pd.SUPPLIER_ID != ''">
-			and pd.SUPPLIER_ID = a.SUPPLIER_ID;
+			and  a.SUPPLIER_ID= #{pd.SUPPLIER_ID}
 		</if>
 		<!-- 是否结算了的 -->
 		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
-			and pd.ISSETTLEMENTED = a.ISSETTLEMENTED;
+			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
+		</if>
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPageBySuppset" parameterType="page" resultType="pd">
+		select
+			a.INORDER_ID,
+			a.BILLCODE,
+			b.SUPPLIERNAME SUPPLIERNAME,
+			a.ALLAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.PAIDAMOUNT,
+			a.THISPAY,
+			a.ISSETTLEMENTED,
+			a.USER_ID,
+			a.NOTE
+		from 
+		<include refid="tableName"></include>a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					<!--  or 
+					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 -->
+				)
+		</if>
+		<!-- 供应商ID -->
+		<if test="pd.SUPPLIER_ID != null and pd.SUPPLIER_ID != ''">
+			and  a.SUPPLIER_ID= #{pd.SUPPLIER_ID}
+		</if>
+		<!-- 是否结算了的 -->
+		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
+			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
 		</if>
 	</select>
 	
