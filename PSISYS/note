@@ -69,3 +69,26 @@ $(document).ready(function(){
 	});		
 	
 9、new SimpleHash("SHA-1", pd.getString("USERNAME"), pd.getString("PASSWORD")).toString() 加密
+
+
+
+
+
+10、编码生成器的使用
+//在service层中新增保存某条单据中使用
+@Autowired
+private ProductBillCodeUtil productBillCodeUtil;
+String[] strs = ProductBillCodeUtil.getBillCode(Const.类型) //获取该编号类型的最大编号
+if(strs[1] == null){ //新增
+	PsiBillCode psiBillCode = new PsiBillCode();
+	psiBillCode.setCode_ID(this.get32UUID());
+	psiBillCode.setCodeType(Const.);
+	psiBillCode.setMaxNo("");
+	psiBillCode.setNOTE("进货单编号");
+	billCodeService.insertBillCode(psiBillCode);
+}else{//修改
+	PageData ppp = new PageData();
+	ppp.put("MaxNo",strs[0] );
+	ppp.put("Code_ID", strs[1]);
+	billCodeService.updateMaxNo(ppp);
+}

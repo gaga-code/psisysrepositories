@@ -6,6 +6,14 @@ import org.springframework.context.ApplicationContext;
  * 说明： 常量类   
  */
 public class Const {
+	public static final String BILLCODE_INORDER_PFIX = "4-00";           //进货单
+	public static final String BILLCODE_SUPPRETURN_PFIX = "5-00";        //退货单 
+	public static final String BILLCODE_SALEBILL_PFIX = "13-00";         //销售单
+	public static final String BILLCODE_SALERETURN_PFIX = "14-00";		  //销售退货单
+	public static final String BILLCODE_SUPPSETBILL_PFIX = "6-00";		  //供应商结算单
+	public static final String BILLCODE_CUSTONMERSETBILL_PFIX = "16-00"; //客户结算单
+	public static final String BILLCODE_STOCKCHECK_PFIX = "PD-00";       //库存盘点
+	public static final String BILLCODE_WHALLOCATE_PFIX = "DB-00";       //仓库调拨
 	
 	public static final String SESSION_PK_SOBOOKS = "PK_SOBOOKS";//账套主键
 	

@@ -32,6 +32,7 @@ import com.psi.util.Const;
 import com.psi.util.Jurisdiction;
 import com.psi.util.ObjectExcelView;
 import com.psi.util.PageData;
+import com.psi.util.enumproduct.EnumProductUtil;
 
 /**
  * 说明：客户管理
@@ -177,16 +178,7 @@ public class CustomerController extends BaseController {
 		mv.setViewName("basedata/customer/customer_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
-		List<HashMap> varListL = new ArrayList<HashMap>();
-		HashMap xianjin = new HashMap();
-		xianjin.put("LEVEL_ID", 1);
-		xianjin.put("TITLE","现金");
-		HashMap yuejie = new HashMap();
-		yuejie.put("LEVEL_ID", 2);
-		yuejie.put("TITLE","月结");
-		varListL.add(xianjin);
-		varListL.add(yuejie);
-		mv.addObject("varListL", varListL);
+		mv.addObject("varListL", EnumProductUtil.productDistributionModeList());
 		return mv;
 	}	
 	
@@ -203,16 +195,7 @@ public class CustomerController extends BaseController {
 		mv.setViewName("basedata/customer/customer_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
-		List<HashMap> varListL = new ArrayList<HashMap>();
-		HashMap xianjin = new HashMap();
-		xianjin.put("LEVEL_ID", 1);
-		xianjin.put("TITLE","现金");
-		HashMap yuejie = new HashMap();
-		yuejie.put("LEVEL_ID", 2);
-		yuejie.put("TITLE","月结");
-		varListL.add(xianjin);
-		varListL.add(yuejie);
-		mv.addObject("varListL", varListL);
+		mv.addObject("varListL", EnumProductUtil.productDistributionModeList());
 		return mv;
 	}	
 	
@@ -229,16 +212,7 @@ public class CustomerController extends BaseController {
 		mv.setViewName("basedata/customer/customer_view");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
-		List<HashMap> varListL = new ArrayList<HashMap>();
-		HashMap xianjin = new HashMap();
-		xianjin.put("LEVEL_ID", 1);
-		xianjin.put("TITLE","现金");
-		HashMap yuejie = new HashMap();
-		yuejie.put("LEVEL_ID", 2);
-		yuejie.put("TITLE","月结");
-		varListL.add(xianjin);
-		varListL.add(yuejie);
-		mv.addObject("varListL", varListL);
+		mv.addObject("varListL", EnumProductUtil.productDistributionModeList());
 		return mv;
 	}
 	

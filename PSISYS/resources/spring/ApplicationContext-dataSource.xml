@@ -33,6 +33,7 @@
     <bean id="jdbcTempUtil" class="com.psi.util.JdbcTempUtil">
     	<property name="jdbcTemplate" ref="jdbcTemplate"></property>
     </bean>
+    <bean id="productBillCodeUtil" class="com.psi.util.ProductBillCodeUtil"></bean>
 	<!-- 阿里 druid数据库连接池 -->
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">  
          <!-- 数据库基本信息配置 -->

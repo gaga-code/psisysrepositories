@@ -12,8 +12,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.james.mime4j.field.datetime.DateTime;
 import org.apache.shiro.session.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -26,11 +26,14 @@ import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
 import com.psi.entity.system.User;
 import com.psi.service.inventorymanagement.suppsetbill.SuppsetbillManager;
+import com.psi.service.system.BillCodePsi.BillCodeManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
 import com.psi.util.Jurisdiction;
 import com.psi.util.ObjectExcelView;
 import com.psi.util.PageData;
+import com.psi.util.ProductBillCodeUtil;
+import com.psi.util.enumproduct.EnumProductUtil;
 
 /**
  * 说明：供应商结算单
@@ -42,7 +45,10 @@ public class SuppsetbillController extends BaseController {
 	String menuUrl = "suppsetbill/list.do"; //菜单地址(权限用)
 	@Resource(name="suppsetbillService")
 	private SuppsetbillManager suppsetbillService;
+	@Resource(name="billCodeService")
+	private BillCodeManager billCodeService;
 
+	
 	
 	/**保存
 	 * @param
@@ -94,6 +100,9 @@ public class SuppsetbillController extends BaseController {
 		return mv;
 	}
 	
+	@Autowired
+	private ProductBillCodeUtil productBillCodeUtil;
+	
 	/**列表
 	 * @param page
 	 * @throws Exception
@@ -118,6 +127,7 @@ public class SuppsetbillController extends BaseController {
 			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
 		} 
 		page.setPd(pd);
+		
 		List<PageData>	suppSetList = suppsetbillService.list(page);	//列出suppsetbill列表
 		mv.setViewName("inventorymanagement/suppsetbill/suppsetbill_list");
 		mv.addObject("suppSetList", suppSetList);
@@ -174,16 +184,7 @@ public class SuppsetbillController extends BaseController {
 		mv.setViewName("inventorymanagement/suppsetbill/suppsetbill_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
-		List<HashMap> varListL = new ArrayList<HashMap>();
-		HashMap xianjin = new HashMap();
-		xianjin.put("LEVEL_ID", 1);
-		xianjin.put("TITLE","现金");
-		HashMap yuejie = new HashMap();
-		yuejie.put("LEVEL_ID", 2);
-		yuejie.put("TITLE","月结");
-		varListL.add(xianjin);
-		varListL.add(yuejie);
-		mv.addObject("varListL", varListL);
+		mv.addObject("varListL", EnumProductUtil.productDistributionModeList());
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
 	}	
@@ -201,16 +202,7 @@ public class SuppsetbillController extends BaseController {
 		mv.setViewName("inventorymanagement/suppsetbill/suppsetbill_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
-		List<HashMap> varListL = new ArrayList<HashMap>();
-		HashMap xianjin = new HashMap();
-		xianjin.put("LEVEL_ID", 1);
-		xianjin.put("TITLE","现金");
-		HashMap yuejie = new HashMap();
-		yuejie.put("LEVEL_ID", 2);
-		yuejie.put("TITLE","月结");
-		varListL.add(xianjin);
-		varListL.add(yuejie);
-		mv.addObject("varListL", varListL);
+		mv.addObject("varListL", EnumProductUtil.productDistributionModeList());
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
 	}	
@@ -228,16 +220,7 @@ public class SuppsetbillController extends BaseController {
 		mv.setViewName("inventorymanagement/suppsetbill/suppsetbill_view");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
-		List<HashMap> varListL = new ArrayList<HashMap>();
-		HashMap xianjin = new HashMap();
-		xianjin.put("LEVEL_ID", 1);
-		xianjin.put("TITLE","现金");
-		HashMap yuejie = new HashMap();
-		yuejie.put("LEVEL_ID", 2);
-		yuejie.put("TITLE","月结");
-		varListL.add(xianjin);
-		varListL.add(yuejie);
-		mv.addObject("varListL", varListL);
+		mv.addObject("varListL", EnumProductUtil.productDistributionModeList());
 		return mv;
 	}
 	

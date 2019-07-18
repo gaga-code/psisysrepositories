@@ -106,12 +106,6 @@
 											<td class='center'>${var.PAYABLEAMOUNT}</td>
 											<td class='center'>${var.PAYMENTAMOUNT}</td>
 											<td class='center'>${var.DISTRIBUTIONMODENAME }</td>
-											<%-- <c:if test="${var.DISTRIBUTIONMODE == 1 }">
-											   <td class='center'>${var.DISTRIBUTIONMODENAME }</td>
-											</c:if>
-											<c:if test="${var.DISTRIBUTIONMODE == 2 }">
-											   <td class='center'>月结</td>
-											</c:if> --%>
 											<td class='center'>${var.PSI_NAME}</td>
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">

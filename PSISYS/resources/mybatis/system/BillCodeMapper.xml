@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BillCodeMapper">
+
+	<!--表名 -->
+	<sql id="tableName">
+		sys_billcode
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		Code_ID,
+		CodeType,
+		MaxNo,
+		NOTE,
+ 		PK_SOBOOKS
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{Code_ID},
+ 		#{CodeType},
+ 		#{MaxNo},
+ 		#{NOTE},
+ 		#{PK_SOBOOKS}
+	</sql>
+	
+	
+	<!--新增 -->
+	<insert id="insertBillCode" parameterType="PsiBillCode">
+		insert into 
+			<include refid="tableName"></include> 
+		(
+			<include refid="Field"></include>
+		) values (
+			<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!--取最大ID-->
+	<select id="findMaxNoByCodeType" parameterType="pd" resultType="pd">
+	select 	MaxNo,Code_ID from 
+	  <include refid="tableName"></include>
+	   where  MaxNo = ( select MAX(MaxNo) maxNo  from 
+			 	 <include refid="tableName"></include>
+			  where
+			  		 CodeType = #{CodeType}
+					and PK_SOBOOKS = #{PK_SOBOOKS}
+					and IFNULL(dr,0)=0 
+			   );
+	</select>
+	<!--修改 -->
+	<update id="updateMaxNo" parameterType="pd">
+		update 
+		<include refid="tableName"></include> 
+		set 
+			MaxNo =#{MaxNo}
+		where 
+			Code_ID=#{Code_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+		  	and IFNULL(dr,0)=0 
+	</update>
+	
+	
+
+</mapper>
