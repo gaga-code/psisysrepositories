@@ -203,6 +203,7 @@
 		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
 			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
 		</if>
+		and a.BILLSTATUS = 2
 	</select>
 	
 	<!-- 列表(全部) -->
@@ -233,5 +234,16 @@
 		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
                  #{item}
 		</foreach>
+	</update>
+	<!-- *结算单反审进货单功能 使进货单的单据状态为审核不通过 -->
+	<update id="retrialInorder" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			BILLSTATUS = 3
+		where 
+		    INORDER_ID = #{INORDER_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
 	</update>
 </mapper>

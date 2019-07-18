@@ -154,6 +154,22 @@ public class InOrderController extends BaseController {
 		mv.setViewName("save_result");
 		return mv;
 	}
+	/**结算单反审进货单功能
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/retrialInorder")
+	@ResponseBody
+	public Object retrialInorder() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"修改inorder");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		inOrderService.retrialInorder(pd);
+		map.put("msg", "success");
+		return AppUtil.returnObject(new PageData(), map);
+	}
 	
 	/**列表
 	 * @param page
@@ -185,6 +201,24 @@ public class InOrderController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/inOrderlistForSupp")
+	@ResponseBody
+	public Object inOrderlistForSupp(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表inorder");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+		page.setPd(pd);
+		List<PageData>	varList = inOrderService.listForSuppset(page);	//列出inorder列表
+		map.put("varList", varList);
+		map.put("QX", Jurisdiction.getHC()); //按钮权限
+		return  AppUtil.returnObject(new PageData(), map);
+	}
+	/*@RequestMapping(value="/inOrderlistForSupp")
 	public ModelAndView inOrderlistForSupp(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表inorder");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
@@ -203,7 +237,7 @@ public class InOrderController extends BaseController {
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
 	}
-	
+*/	
 	
 	
 	/**列表(弹窗选择用)

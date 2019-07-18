@@ -109,6 +109,14 @@ public class InOrderService implements InOrderManager{
 		//表名和主键字段名
 		jdbcTempUtil.deleteAll(idstr.toString().substring(0,idstr.toString().length()-1), (String)Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS), "psi_inorder", "INORDER_ID");
 	}
+
+	/**结算单反审进货单功能
+	 * @param
+	 * @throws Exception
+	 */
+	public void retrialInorder(PageData pd) throws Exception {
+		dao.update("InOrderMapper.retrialInorder", pd);
+	}
 	
 }
 

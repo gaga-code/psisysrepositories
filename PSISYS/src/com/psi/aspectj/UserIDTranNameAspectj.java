@@ -39,32 +39,31 @@ public class UserIDTranNameAspectj {
 			if (((java.util.List) returnObj).isEmpty()) {
 				return returnObj;
 			} else {
+				boolean isNoneP = false;
 				for (Object o : (java.util.List) returnObj) {
 					if (o.getClass() == PageData.class) {
 						PageData pd = (PageData) o;
-						if(pd.get("DISTRIBUTIONMODE") == null) {
-							System.out.println(pd);
-						}
-						if(pd.get("DISTRIBUTIONMODE") != null) {
-							System.out.println(pd.get("DISTRIBUTIONMODE"));
-						}
 						if (pd.containsKey("USER_ID")) {
 							PageData pdf = transUserIdToUserName(pd);
-							System.out.println(pdf);
-						} else if (pd.get("DISTRIBUTIONMODE") != null) {
+							isNoneP = true;
+						} 
+						if (pd.containsKey("DISTRIBUTIONMODE") ) {
 							if (pd.get("DISTRIBUTIONMODE").equals("1")) {
 								pd.put("DISTRIBUTIONMODENAME", "现金");
 							} else if (pd.get("DISTRIBUTIONMODE").equals("2")) {
 								pd.put("DISTRIBUTIONMODENAME", "月结");
 							}
-							System.out.println(pd);
-						} else if (pd.get("SEX") != null) {
+							isNoneP = true;
+						} 
+						if (pd.containsKey("SEX")) {
 							if (pd.get("SEX").equals("1")) {
 								pd.put("SEXNAME", "男");
 							} else if (pd.get("SEX").equals("2")) {
 								pd.put("SEXNAME", "女");
 							}
-						} else if (pd.get("EDUCATION") != null) {
+							isNoneP = true;
+						} 
+						if (pd.containsKey("EDUCATION")) {
 							// 平凡、初中毕业、中专毕业、高中毕业、大学专科、大学本科
 							if (pd.get("EDUCATION").equals("1")) {
 								pd.put("EDUCATIONNAME", "平凡");
@@ -79,7 +78,9 @@ public class UserIDTranNameAspectj {
 							} else if (pd.get("EDUCATION").equals("6")) {
 								pd.put("EDUCATIONNAME", "大学本科");
 							} 
-						} else if (pd.get("BILLSTATUS") != null) {
+							isNoneP = true;
+						} 
+						if (pd.containsKey("BILLSTATUS")) {
 							if (pd.get("BILLSTATUS").equals("0")) {
 								pd.put("BILLSTATUSNAME", "自由");
 							}else if (pd.get("BILLSTATUS").equals("1")) {
@@ -87,7 +88,9 @@ public class UserIDTranNameAspectj {
 							} else if (pd.get("BILLSTATUS").equals("2")) {
 								pd.put("BILLSTATUSNAME", "已审核");
 							}
-						}else if (pd.get("BILLTYPE") != null) {
+							isNoneP = true;
+						}
+						if (pd.containsKey("BILLTYPE")) {
 							if (pd.get("BILLTYPE").equals("1")) {
 								pd.put("BILLTYPENAME", "进货单");
 							}else if (pd.get("BILLTYPE").equals("2")) {
@@ -101,7 +104,9 @@ public class UserIDTranNameAspectj {
 							}else if (pd.get("BILLTYPE").equals("6")) {
 								pd.put("BILLTYPENAME", "客户退货单");
 							}
-						}else {
+							isNoneP = true;
+						}
+						if(!isNoneP) {
 							return returnObj;
 						}
 					}else {
@@ -112,20 +117,23 @@ public class UserIDTranNameAspectj {
 		} else if (returnObj.getClass() == PageData.class) {
 			PageData pd = (PageData) returnObj;
 			if (pd.containsKey("USER_ID")) {
-				return transUserIdToUserName(pd);
-			}else if (pd.containsKey("DISTRIBUTIONMODE")) {
+				PageData pdf = transUserIdToUserName(pd);
+			} 
+			if (pd.containsKey("DISTRIBUTIONMODE") ) {
 				if (pd.get("DISTRIBUTIONMODE").equals("1")) {
 					pd.put("DISTRIBUTIONMODENAME", "现金");
 				} else if (pd.get("DISTRIBUTIONMODE").equals("2")) {
 					pd.put("DISTRIBUTIONMODENAME", "月结");
 				}
-			} else if (pd.containsKey("SEX")) {
+			} 
+			if (pd.containsKey("SEX")) {
 				if (pd.get("SEX").equals("1")) {
 					pd.put("SEXNAME", "男");
 				} else if (pd.get("SEX").equals("2")) {
 					pd.put("SEXNAME", "女");
 				}
-			} else if (pd.containsKey("EDUCATION")) {
+			} 
+			if (pd.containsKey("EDUCATION")) {
 				// 平凡、初中毕业、中专毕业、高中毕业、大学专科、大学本科
 				if (pd.get("EDUCATION").equals("1")) {
 					pd.put("EDUCATIONNAME", "平凡");
@@ -140,7 +148,8 @@ public class UserIDTranNameAspectj {
 				} else if (pd.get("EDUCATION").equals("6")) {
 					pd.put("EDUCATIONNAME", "大学本科");
 				} 
-			} else if (pd.containsKey("BILLSTATUS")) {
+			} 
+			if (pd.containsKey("BILLSTATUS")) {
 				if (pd.get("BILLSTATUS").equals("0")) {
 					pd.put("BILLSTATUSNAME", "自由");
 				}else if (pd.get("BILLSTATUS").equals("1")) {
@@ -148,7 +157,8 @@ public class UserIDTranNameAspectj {
 				} else if (pd.get("BILLSTATUS").equals("2")) {
 					pd.put("BILLSTATUSNAME", "已审核");
 				}
-			}else if (pd.containsKey("BILLTYPE")) {
+			}
+			if (pd.containsKey("BILLTYPE")) {
 				if (pd.get("BILLTYPE").equals("1")) {
 					pd.put("BILLTYPENAME", "进货单");
 				}else if (pd.get("BILLTYPE").equals("2")) {
@@ -162,8 +172,6 @@ public class UserIDTranNameAspectj {
 				}else if (pd.get("BILLTYPE").equals("6")) {
 					pd.put("BILLTYPENAME", "客户退货单");
 				}
-			}else {
-				return returnObj;
 			}
 		}
 		return returnObj;

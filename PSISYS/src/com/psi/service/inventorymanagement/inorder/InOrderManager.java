@@ -56,6 +56,12 @@ public interface InOrderManager{
 	 * @throws Exception
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception;
+    /**
+     * 结算单反审进货单功能
+     * @param pd
+     * @throws Exception
+     */
+	public void retrialInorder(PageData pd)throws Exception;
 	
 }
 
