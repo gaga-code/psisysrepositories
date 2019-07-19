@@ -1,6 +1,7 @@
 package com.psi.service.inventorymanagement.inorder.impl;
 
 import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,6 +117,31 @@ public class InOrderService implements InOrderManager{
 	 */
 	public void retrialInorder(PageData pd) throws Exception {
 		dao.update("InOrderMapper.retrialInorder", pd);
+	}
+
+	/**结算单结算一张进货单功能
+	 * @param
+	 * @throws Exception
+	 */
+	public PageData settleOneInOrder(PageData pd) throws Exception {
+		double canpaid = 0.0;
+		double unpaid = 0.0;
+		if(pd.containsKey("CANPAID")) {
+			canpaid = Double.parseDouble((String)pd.get("CANPAID"));
+		}
+		if(pd.containsKey("UNPAIDAMOUNT")) {
+			unpaid = Double.parseDouble((String)pd.get("UNPAIDAMOUNT"));
+		}
+		if(canpaid < unpaid) {//未结算
+			pd.put("ISSETTLEMENTED", 0);
+		}else {//能结算
+			pd.put("ISSETTLEMENTED", 1);
+		}
+		pd.put("UNPAIDAMOUNT", unpaid - canpaid);
+		pd.put("PAIDAMOUNT", Double.parseDouble((String)pd.get("PAIDAMOUNT")) + canpaid);
+		pd.put("THISPAY", canpaid);
+		dao.update("InOrderMapper.settleOneInOrder", pd);
+		return pd;
 	}
 	
 }

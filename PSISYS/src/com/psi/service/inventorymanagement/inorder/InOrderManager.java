@@ -62,6 +62,13 @@ public interface InOrderManager{
      * @throws Exception
      */
 	public void retrialInorder(PageData pd)throws Exception;
+
+	/**
+     * 结算单结算进货单功能
+     * @param pd
+     * @throws Exception
+     */
+	public PageData settleOneInOrder(PageData pd)throws Exception;
 	
 }
 

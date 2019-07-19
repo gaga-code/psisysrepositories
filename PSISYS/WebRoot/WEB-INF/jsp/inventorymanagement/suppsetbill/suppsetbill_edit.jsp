@@ -41,9 +41,6 @@
 									<c:if test="${QX.del == 1 }">
 									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'>批量删除</i></a>
 									</c:if>
-									<c:if test="${QX.SUPPSETBILLAPPROVAL == 1 }">
-									<a class="btn btn-mini btn-success" onclick="approvalAll('确定要审批选中的数据吗?');" title="批量审批" >批量审批</a>
-									</c:if>
 									<c:if test="${QX.SUPPSETBILLSET == 1 }">
 									<a class="btn btn-mini btn-success" onclick="settleAll('确定要结算选中的数据吗?');" title="批量结算" >批量结算</a>
 									</c:if>
@@ -55,24 +52,28 @@
 						<!-- 表头  -->
 						<table id="billhead" class="table table-striped table-bordered table-hover" style="margin-top:5px;">
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">供应商:</td>
-								<td style="vertical-align:top;padding-left:2px;">
-								 	<select class="chosen-select form-control" name="select_suppsetbill" id="select_suppsetbill" data-placeholder="请选择供应商" style="vertical-align:top;width: 120px;"  >
+								<td style="width:90px;text-align: right;padding-top: 1px;">供应商:</td>
+								<td style="vertical-align:top;">
+								 	<select class="chosen-select form-control" name="select_suppsetbill" id="select_suppsetbill" data-placeholder="请选择供应商" style="vertical-align:top;width: 98%;"  >
 									<option value=""></option>
 								  	</select>
 								</td>
 								<c:if test="${msg == edit }">
-								<td style="width:79px;text-align: right;padding-top: 13px;">录单日期:</td>
+								<td style="width:90px;text-align: right;padding-top: 1px;">录单日期:</td>
 								<td style="padding-left:2px;">${pd.LDATE}</td>
 								</c:if>
-								<td style="width:79px;text-align: right;padding-top: 13px;">单据编号:</td>
+								<c:if test="${msg == edit }">
+								<td style="width:90px;text-align: right;padding-top: 1px;">单据编号:</td>
 								<td><input type="text" name="BILLCODE" id="BILLCODE" value="${pd.BILLCODE }" maxlength="32" placeholder="这里输入单据编号" title="单据编号" style="width:98%;"  /></td>
-								<td style="width:79px;text-align: right;padding-top: 13px;">经手人:</td>
-								<td><input type="text" name="PSI_NAME" id="PSI_NAME" value="${pd.PSI_NAME }" maxlength="32" placeholder="这里输入经手人" title="经手人" style="width:98%;" /></td>
+								</c:if>
+								
+								<td style="width:90px;text-align: right;padding-top: 1px;">经手人:</td>
+								<td><input type="text" name="PSI_NAME" id="PSI_NAME" value="${pd.PSI_NAME }" maxlength="32" placeholder="这里输入经手人" title="经手人" style="width:98%;" readonly="readonly" /></td>
 								<input type="hidden" id="FROMUNIT" name="FROMUNIT" value="${pd.FROMUNIT}"   /> 
+								
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">经销方式:</td>
+								<td style="width:90px;text-align: right;padding-top: 1px;">经销方式:</td>
 								<td>
 									<select name="DISTRIBUTIONMODE" id="DISTRIBUTIONMODE" placeholder="请选择" title="经销方式" style="width:98%;background-color:#EBEBEB"  >
 									<c:forEach items="${varListL}" var="var">
@@ -80,41 +81,26 @@
 									</c:forEach>
 									</select>
 								</td>
-								<td style="width:79px;text-align: right;padding-top: 13px;">发票类型:</td>
+								<td style="width:90px;text-align: right;padding-top: 1px;">发票类型:</td>
 								<td><input type="text" name="INVOICETYPE" id="INVOICETYPE" value="${pd.INVOICETYPE }" maxlength="32" placeholder="这里输入发票类型" title="发票类型" style="width:98%;" /></td>
-								<td style="width:79px;text-align: right;padding-top: 13px;">票号:</td>
+								<td style="width:90px;text-align: right;padding-top: 1px;">票号:</td>
 								<td><input type="text" name="BILLNO" id="BILLNO" value="${pd.BILLNO }" maxlength="32" placeholder="这里输入票号" title="票号" style="width:98%;"  /></td>
-								<td style="width:79px;text-align: right;padding-top: 13px;">付款方式:</td>
-								<td><input type="text" name="PAYMETHOD" id="PAYMETHOD" value="${pd.PAYMETHOD }" maxlength="32" placeholder="这里输入付款方式" title="付款方式" style="width:98%;"  /></td>
-								
+								<td style="width:90px;text-align: right;padding-top: 1px;">付款方式:</td>
+								<input type="hidden" id="PAYMETHOD" name="PAYMETHOD" value="${pd.PAYMETHOD}"   /> 
+								<%-- <td><input type="text" name="PAYMETHOD" id="PAYMETHOD" value="${pd.PAYMETHOD }" maxlength="32" placeholder="这里输入付款方式" title="付款方式" style="width:98%;"  /></td> --%>
+								<td style="vertical-align:top;">
+								 	<select class="chosen-select form-control" name="select_paymethod" id="select_paymethod" data-placeholder="请选择付款方式" style="vertical-align:top;width: 98%;"  >
+								  	</select>
+								</td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">应付总金额:</td>
+								<td style="width:90px;text-align: right;padding-top: 1px;">应付总金额:</td>
 								<td><input type="number" name="PAYABLEALLAM" id="PAYABLEALLAM" value="${pd.PAYABLEALLAM }" maxlength="32" placeholder="这里输入应付总金额" title="应付总金额" style="width:98%;" readonly="readonly" /></td>
-								<td style="width:79px;text-align: right;padding-top: 13px;">实付金额:</td>
-								<td><input type="number" name="PAYMENTAMOUNT" id="PAYMENTAMOUNT" value="${pd.PAYMENTAMOUNT }" maxlength="32" placeholder="这里输入实付金额" title="实付金额" style="width:98%;" readonly="readonly" /></td>
-								<td style="width:79px;text-align: right;padding-top: 13px;">应付金额:</td>
+								<td style="width:90px;text-align: right;padding-top: 1px;">应付金额:</td>
 								<td><input type="number" name="PAYABLEAMOUNT" id="PAYABLEAMOUNT" value="${pd.PAYABLEAMOUNT }" maxlength="32" placeholder="这里输入应付金 额" title="应付金额" style="width:98%;" readonly="readonly" /></td>
-								<td style="width:79px;text-align: right;padding-top: 13px;">本次预付金额:</td>
-								<td><input type="number" name="THISPAYAMOUNT" id="THISPAYAMOUNT" value="${pd.THISPAYAMOUNT }" maxlength="32" placeholder="这里输入本次预付金额" title="本次预付金额" style="width:98%;" /></td>
-								
-								
-								
-							</tr>
-							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">免付金额:</td>
-								<td><input type="number" name="EXEMPAMOUNT" id="EXEMPAMOUNT" value="${pd.EXEMPAMOUNT }" maxlength="32" placeholder="这里输入免付金额" title="免付金额" style="width:98%;" /></td>
-								<td style="width:79px;text-align: right;padding-top: 13px;">可用预收款:</td>
-								<td><input type="number" name="APAYAMOUNT" id="APAYAMOUNT" value="${pd.APAYAMOUNT }" maxlength="32" placeholder="这里输入可用预收款" title="可用预收款" style="width:98%;" /></td>
-								
-								<td style="width:79px;text-align: right;padding-top: 13px;">收供应商费用1:</td>
-								<td><input type="number" name="SUPPCOST1" id="SUPPCOST1" value="${pd.SUPPCOST1 }" maxlength="32" placeholder="这里输入收供应商费用1" title="收供应商费用1" style="width:98%;" /></td>
-								<td style="width:79px;text-align: right;padding-top: 13px;">收供应商费用2:</td>
-								<td><input type="number" name="SUPPCOST2" id="SUPPCOST2" value="${pd.SUPPCOST2 }" maxlength="32" placeholder="这里输入收供应商费用2" title="收供应商费用2" style="width:98%;" /></td>
-								
-							</tr>
-							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">备注:</td>
+								<td style="width:90px;text-align: right;padding-top: 1px;">实付金额:</td>
+								<td><input type="number" name="PAYMENTAMOUNT" id="PAYMENTAMOUNT" value="${pd.PAYMENTAMOUNT }" maxlength="32" placeholder="这里输入实付金额" title="实付金额" style="width:98%;"  /></td>
+								<td style="width:90px;text-align: right;padding-top: 1px;">备注:</td>
 								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE }" maxlength="32" placeholder="这里输入备注" title="备注" style="width:98%;" /></td>
 							</tr>
 						</table>
@@ -143,12 +129,7 @@
 							
 							</tbody>
 						</table>
-						<div class="page-header position-relative">
-						<table style="width:100%;">
-							<tr>
-								</tr>
-						</table>
-						</div>
+						
 						</form>
 						<Form id="reallyForm" type="hidden" ></Form>
 						</div>
@@ -186,7 +167,8 @@
 		var inorderitemmap = new Map(); //进货单每个子项目的html代码
         var allamountmap=new Map();  //总金额
         var unpaidamountmap=new Map(); //未付金额
-        var paidamoutmap=new Map();  // 已付金额
+        var paidamoutmap=new Map();  // 已付金额 
+        var supphaspaidamount=0.0;   //已结算进货单的总额
 		$(top.hangge());//关闭加载状态
 		//检索
 		function tosearch(){
@@ -195,6 +177,8 @@
 		}
 		$(window).on('load', function () {
 			var sid = $("#FROMUNIT").val();
+			var payid = $("#PAYMETHOD").val();
+			//获取供应商列表
 		    $.ajax({
 		        method:'POST',
 		        url:'supplier/listNameAndID',
@@ -214,7 +198,28 @@
 		            $('#select_suppsetbill').chosen();//下拉框检索框架
 		        }
 		    }); 
+			//获取支付方式列表
+		    $.ajax({
+				method:'POST',
+				url:'payment/listjson',
+				dataType:'json',
+				success:function(res){
+					var html="<option value='0'>请选择付款方式</option>";
+		            console.log(res);
+		            for (var i = 0; i < res.varList.length; i++) {
+		                if (payid == res.varList[i].PAYMETHOD_ID) {
+		                    html += "<option  value='" + res.varList[i].PAYMETHOD_ID + "' selected='selected' data-name='"+res.varList[i].PAYMETHODNAME+"'>" + res.varList[i].PAYMETHODNAME + "</option>";
+		                } else {
+		                    html += "<option  value='" + res.varList[i].PAYMETHOD_ID + "' data-name='"+res.varList[i].PAYMETHODNAME+"'>"+ res.varList[i].PAYMETHODNAME + "</option>";
+		                }
+		            }
+		            $("#select_paymethod").html(html);
+		            $('#select_paymethod').trigger("chosen:updated");//重置下拉框  
+		            $('#select_paymethod').chosen();//下拉框检索框架
+				}
+			});
 		});
+		
 		$("#select_suppsetbill").on('change',function(e,params){
 			var sid = $("#select_suppsetbill").val();
 			if(sid == 0){
@@ -242,31 +247,32 @@
 			            	for(var i = 0; i < res.varList.length; i++){
 				            	var html = "";
 			            		if(res.QX.cha == 1){
-				            		
-				            		html +="<tr>";
+				            		html +="<tr id='"+res.varList[i].INORDER_ID+"'>";
 					            	html +="<td class='center'>";
 					            	html +="	<label class='pos-rel'><input type='checkbox' name='ids' value='"+res.varList[i].INORDER_ID+"' class='ace' /><span class='lbl'></span></label>";
 				            		html +="</td>";
 				            		html +="<td class='center' style='width: 30px;'>"+(i+1)+"</td>";
 				            		html +="<td class='center'>"+res.varList[i].BILLCODE+"</td>";
 				            		html +="<td class='center'>"+res.varList[i].SUPPLIERNAME+"</td>";
-				            		html +="<td class='center'>"+res.varList[i].ALLAMOUNT+"</td>";
-				            		html +="<td class='center'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
-				            		html +="<td class='center'>"+res.varList[i].PAIDAMOUNT+"</td>";
-				            		html +="<td class='center'>"+res.varList[i].THISPAY+"</td>";
-				            		html +="<td class='center'>"+res.varList[i].ISSETTLEMENTED+"</td>";
+				            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].ALLAMOUNT+"</td>";
+				            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
+				            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
+				            		html +="<td class='center' id='THISPAY'>"+res.varList[i].THISPAY+"</td>";
+				            		html +="<td class='center' id='ISSETTLEMENTED'>"+res.varList[i].ISSETTLEMENTED+"</td>";
 				            		html +="<td class='center'>"+res.varList[i].PSI_NAME+"</td>";
 				            		html +="<td class='center'>"+res.varList[i].NOTE+"</td>";
 				            		html +="<td class='center'>";
 				            		if(res.QX.edit != 1 && QX.del != 1){
 					            		html +="<span class='label label-large label-grey arrowed-in-right arrowed-in'><i class='ace-icon fa fa-lock' title='无权限'></i></span>";
 				            		}
-				            		html += "	<div class='hidden-sm hidden-xs btn-group'> ";
-									html += "		<a class='btn btn-xs btn-success' title='查看' onclick=\"view('"+res.varList[i].INORDER_ID+"');\"> ";
-									html += "			<i class='ace-icon fa fa-eye bigger-120' title='查看'></i> ";
-									html += "		</a> ";
-									if(res.QX.edit == 1){
-										html += "		<a class='btn btn-xs btn-success' title='编辑' onclick=\"retrial('"+res.varList[i].INORDER_ID+"');\"> ";
+				            		if(res.QX.SUPPSETBILLSET == 1 && res.varList[i].ISSETTLEMENTED == 0){
+					            		html += "	<div class='hidden-sm hidden-xs btn-group'> ";
+										html += "		<a class='btn btn-xs btn-success' title='结算' onclick=\"settleone('"+res.varList[i].INORDER_ID+"');\"> ";
+										html += "			<i class='ace-icon fa fa-eye bigger-120' title='结算'></i> ";
+										html += "		</a> ";
+				            		}
+									if(res.QX.RETRIALINORDERINSUPPSET == 1){
+										html += "		<a class='btn btn-xs btn-success' title='反审' onclick=\"retrial('"+res.varList[i].INORDER_ID+"');\"> ";
 										html += "			<i title='反审'>反审</i> ";
 										html += "		</a> ";
 									}
@@ -283,16 +289,18 @@
 									html += "			</button> ";
 									html += "";
 									html += "			<ul class='dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close'> ";
-									html += "				<li> ";
-									html += "					<a style='cursor:pointer;' onclick='view('"+res.varList[i].INORDER_ID+"');' class='tooltip-success' data-rel='tooltip' title='查看'> ";
-									html += "						<span class='green'> ";
-									html += "							<i class='ace-icon fa fa-eye bigger-120'></i> ";
-									html += "						</span> ";
-									html += "					</a> ";
-									html += "				</li> ";
-									if(res.QX.edit == 1){
+									if(res.QX.SUPPSETBILLSET == 1){
 										html += "				<li> ";
-										html += "					<a style='cursor:pointer;' onclick='edit('"+res.varList[i].INORDER_ID+"');' class='tooltip-success' data-rel='tooltip' title='修改'> ";
+										html += "					<a style='cursor:pointer;' onclick=\"settleone('"+res.varList[i].INORDER_ID+"');\" class='tooltip-success' data-rel='tooltip' title='结算'> ";
+										html += "						<span class='green'> ";
+										html += "							<i class='ace-icon fa fa-eye bigger-120'></i> ";
+										html += "						</span> ";
+										html += "					</a> ";
+										html += "				</li> ";
+									}
+									if(res.QX.RETRIALINORDERINSUPPSET == 1){
+										html += "				<li> ";
+										html += "					<a style='cursor:pointer;' onclick='retrial('"+res.varList[i].INORDER_ID+"');' class='tooltip-success' data-rel='tooltip' title='反审'> ";
 										html += "						<span class='green'> ";
 										html += "							<i class='ace-icon fa fa-pencil-square-o bigger-120'></i> ";
 										html += "						</span> ";
@@ -333,30 +341,55 @@
 			}
 		});
 		
-		<%-- $("#select_suppsetbill").on('change',function(e,params){
-			var sid = $("#select_suppsetbill").val();
-			if(sid == 0){
-				var list = <%=session.getAttribute("varList")%>
-				alert(list);
-				
-			}else{
-				$.ajax({
-			        method:'POST',
-			        url:'inorder/inOrderlistForSupp',
-			        data:{ISSETTLEMENTED:0,SUPPLIER_ID:sid},
-			        dataType:'html',
-			        success: function (res) {
-			            $("#InorderListForm").html(res);
-			        }
-			    }); 
-			}
-		}); --%>
-		
-		
-		
 		$(function() {
 			$("#LDATE").attr("disabled","disabled");
-		
+			
+			$('#PAYMENTAMOUNT').bind('input porpertychange',function(){
+	            if($("#select_paymethod").val() == '0' && $("#select_suppsetbill").val() == '0'){
+	            	$("#PAYMENTAMOUNT").tips({
+						side : 1,
+						msg : "请先选择供应商和付款方式",
+						bg : '#FF5080',
+						time : 3
+					});
+	            }else  if($("#select_suppsetbill").val() == '0' ){
+	            	$("#PAYMENTAMOUNT").tips({
+						side : 1,
+						msg : "请先选择供应商",
+						bg : '#FF5080',
+						time : 3
+					});
+	            }else  if($("#select_paymethod").val() == '0' ){
+	            	$("#PAYMENTAMOUNT").tips({
+						side : 1,
+						msg : "请先选择付款方式",
+						bg : '#FF5080',
+						time : 3
+					});
+	            }else{
+	            	if(parseInt($("#PAYABLEAMOUNT").val())+supphaspaidamount < parseInt($("#PAYMENTAMOUNT").val())){
+		            	$("#PAYMENTAMOUNT").tips({
+							side : 1,
+							msg : "付款多了",
+							bg : '#FF5080',
+							time : 3
+						});
+		            	$("#PAYMENTAMOUNT").val(parseInt($("#PAYABLEAMOUNT").val())+supphaspaidamount)
+		            }
+		            if(parseInt($("#PAYMENTAMOUNT").val()) < supphaspaidamount && supphaspaidamount != 0.0){
+		            	$("#PAYMENTAMOUNT").tips({
+							side : 1,
+							msg : "当前付款总额至少为已结算进货单的额度",
+							bg : '#FF5080',
+							time : 3
+						});
+		            	$(this).val(supphaspaidamount);
+		            }
+	            }
+	            
+	            
+	        });
+			
  			//日期框
 			$('.date-picker').datepicker({
 				autoclose: true,
@@ -504,7 +537,7 @@
             	unpaidam += value;
 			});
             $("#PAYABLEALLAM").val(allam);
-			$("#PAYMENTAMOUNT").val(paidam);
+			/* $("#PAYMENTAMOUNT").val(paidam); */
 			$("#PAYABLEAMOUNT").val(unpaidam);
 		}
 		
@@ -516,11 +549,6 @@
             $("#INVOICETYPE").val('');
 			$("#BILLNO").val('');
 			$("#PAYMETHOD").val('');
-            $("#THISPAYAMOUNT").val('');
-			$("#EXEMPAMOUNT").val('');
-			$("#APAYAMOUNT").val('');
-			$("#SUPPCOST1").val('');
-			$("#SUPPCOST2").val('');
 			$("#NOTE").val('');
 			inorderitemmap.clear();
 			allamountmap.clear();
@@ -544,6 +572,65 @@
 				}
 			});
 			 
+		}
+		//结算一张进货单
+		function settleone(Id){
+			/* supphaspaidamount allamountmap paidamoutmap */
+			var unpaid = unpaidamountmap.get(Id);
+			var allamount = allamountmap.get(Id);
+			var paidamout = paidamoutmap.get(Id);
+			var thispayamount = parseInt($("#PAYMENTAMOUNT").val());
+			if(thispayamount == 0.0){
+				$("#PAYMENTAMOUNT").tips({
+					side : 1,
+					msg : "供应商结算单的预付金额不可为空",
+					bg : '#FF5080',
+					time : 5
+				});
+			}
+			var canpaidamount = thispayamount-supphaspaidamount;  //可进行进货单结算的余额=结算单付款金额-已结算进货单总额 
+			if(canpaidamount == 0.0){
+				$("#PAYMENTAMOUNT").tips({
+					side : 1,
+					msg : "当前预付金额已用于结算了，请增加额度，才可进行接下来的进货单结算",
+					bg : '#FF5080',
+					time : 5
+				});
+			}else {
+				var nextinordercanpaid = 0.0;
+				if(canpaidamount <= unpaid){
+					nextinordercanpaid = canpaidamount;
+				}else{
+					nextinordercanpaid = unpaid;
+				}
+				
+				bootbox.confirm("确定要结算该进货单吗?", function(result) {
+					if(result) {
+						supphaspaidamount += nextinordercanpaid;
+						$.ajax({
+					        method:'POST',
+					        url:'inorder/settleOneInOrder',
+					        data:{INORDER_ID:Id,CANPAID:nextinordercanpaid,UNPAIDAMOUNT:unpaid,ALLAMOUNT:allamount,PAIDAMOUNT:paidamout},
+					        dataType:'json',
+					        success: function (res) {
+					        	if(res.msg == "success"){// UNPAIDAMOUNT  PAIDAMOUNT  THISPAY  ISSETTLEMENTED
+					        		$("#"+res.pd.INORDER_ID+" #UNPAIDAMOUNT").html(res.pd.UNPAIDAMOUNT);
+					        	    $("#"+res.pd.INORDER_ID+" #PAIDAMOUNT").html(res.pd.PAIDAMOUNT);
+					        		$("#"+res.pd.INORDER_ID+" #THISPAY").html(res.pd.THISPAY);
+					        		$("#"+res.pd.INORDER_ID+" #ISSETTLEMENTED").html(res.pd.ISSETTLEMENTED);
+					        		paidamoutmap.set(res.pd.INORDER_ID,paidamoutmap.get(res.pd.INORDER_ID)+res.pd.THISPAY);
+					        		unpaidamountmap.set(res.pd.INORDER_ID,unpaidamountmap.get(res.pd.INORDER_ID)-res.pd.THISPAY);
+					        		compu();
+					        	}else if(res.msg == "error"){
+					        		supphaspaidamount -= nextinordercanpaid;
+					        		
+					        	}
+					        }
+					    });
+					}
+				});
+			}
+			
 		}
 		//修改
 		function edit(Id){
@@ -634,51 +721,7 @@
 				}
 			});
 		};
-		//批量审批
-		function approvalAll(msg){
-			bootbox.confirm(msg, function(result) {
-				if(result) {
-					var str = '';
-					for(var i=0;i < document.getElementsByName('ids').length;i++){
-					  if(document.getElementsByName('ids')[i].checked){
-					  	if(str=='') str += document.getElementsByName('ids')[i].value;
-					  	else str += ',' + document.getElementsByName('ids')[i].value;
-					  }
-					}
-					if(str==''){
-						bootbox.dialog({
-							message: "<span class='bigger-110'>您没有选择任何内容!</span>",
-							buttons: 			
-							{ "button":{ "label":"确定", "className":"btn-sm btn-success"}}
-						});
-						$("#zcheckbox").tips({
-							side:1,
-				            msg:'点这里全选',
-				            bg:'#AE81FF',
-				            time:8
-				        });
-						return;
-					}else{
-						if(msg == '确定要审批选中的数据吗?'){
-							top.jzts();
-							$.ajax({
-								type: "POST",
-								url: '<%=basePath%>suppsetbill/approvalAll.do?tm='+new Date().getTime(),
-						    	data: {DATA_IDS:str},
-								dataType:'json',
-								//beforeSend: validateData,
-								cache: false,
-								success: function(data){
-									 $.each(data.list, function(i, list){
-											tosearch();
-									 });
-								}
-							});
-						}
-					}
-				}
-			});
-		};
+		
 		//批量结算
 		function settleAll(msg){
 			bootbox.confirm(msg, function(result) {

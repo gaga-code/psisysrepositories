@@ -113,6 +113,24 @@ public class PaymentController extends BaseController {
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
 	}
+	/**列表返回json数据
+	 * @param page
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/listjson" ,produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public Object listjson() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表支付方式");
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		List<PageData>	varList = paymentService.listAll(pd);	//列出列表
+		map.put("varList", varList);
+		map.put("QX", Jurisdiction.getHC());//按钮权限
+		return AppUtil.returnObject(new PageData(), map);
+	}
+	
+	
 	
 	/**去新增页面
 	 * @param

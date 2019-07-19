@@ -63,6 +63,9 @@
 									<c:if test="${QX.del == 1 }">
 									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a>
 									</c:if>
+									<c:if test="${QX.SUPPSETBILLAPPROVAL == 1 }">
+									<a class="btn btn-mini btn-success" onclick="approvalAll('确定要审批选中的数据吗?');" title="批量审批" >批量审批</a>
+									</c:if>
 								</td>
 								
 							</tr>
@@ -490,7 +493,51 @@
 			 };
 			 diag.show();
 		}
-		
+		//批量审批
+		function approvalAll(msg){
+			bootbox.confirm(msg, function(result) {
+				if(result) {
+					var str = '';
+					for(var i=0;i < document.getElementsByName('ids').length;i++){
+					  if(document.getElementsByName('ids')[i].checked){
+					  	if(str=='') str += document.getElementsByName('ids')[i].value;
+					  	else str += ',' + document.getElementsByName('ids')[i].value;
+					  }
+					}
+					if(str==''){
+						bootbox.dialog({
+							message: "<span class='bigger-110'>您没有选择任何内容!</span>",
+							buttons: 			
+							{ "button":{ "label":"确定", "className":"btn-sm btn-success"}}
+						});
+						$("#zcheckbox").tips({
+							side:1,
+				            msg:'点这里全选',
+				            bg:'#AE81FF',
+				            time:8
+				        });
+						return;
+					}else{
+						if(msg == '确定要审批选中的数据吗?'){
+							top.jzts();
+							$.ajax({
+								type: "POST",
+								url: '<%=basePath%>suppsetbill/approvalAll.do?tm='+new Date().getTime(),
+						    	data: {DATA_IDS:str},
+								dataType:'json',
+								//beforeSend: validateData,
+								cache: false,
+								success: function(data){
+									 $.each(data.list, function(i, list){
+											tosearch();
+									 });
+								}
+							});
+						}
+					}
+				}
+			});
+		};
 		//批量操作
 		function makeAll(msg){
 			bootbox.confirm(msg, function(result) {

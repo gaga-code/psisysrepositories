@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="InOrderMapper">
 	
+	
 	<!--表名 -->
 	<sql id="tableName">
 		psi_inorder
@@ -86,6 +87,21 @@
 			NOTE = #{NOTE},
 		where 
 		PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 结算一张进货单 -->
+	<update id="settleOneInOrder" parameterType="pd"  >
+		update
+		<include refid="tableName"></include>
+		set 
+			UNPAIDAMOUNT = #{UNPAIDAMOUNT},
+			THISPAY = #{THISPAY},
+			PAIDAMOUNT = #{PAIDAMOUNT},
+			ISSETTLEMENTED = #{ISSETTLEMENTED}
+		where 
+		    INORDER_ID = #{INORDER_ID}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
 		and IFNULL(dr,0)=0
 	</update>
 	

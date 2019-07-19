@@ -92,3 +92,14 @@ if(strs[1] == null){ //新增
 	ppp.put("Code_ID", strs[1]);
 	billCodeService.updateMaxNo(ppp);
 }
+
+
+11 消息提示框
+$("#msgdialog").attr("style","display:block;");
+$("#msgtocust").html("当前付款不足已结算进货单的未付总额");
+<div class="alert alert-warning alert-dismissable" id = "msgdialog" style ="display: none">
+<button type="button" class="close" data-dismiss="alert" aria-hidden="true" >
+	&times;
+</button>
+	<label id="msgtocust" value="消息">阿囧</label>
+</div>
