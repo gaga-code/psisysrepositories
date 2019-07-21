@@ -1,5 +1,6 @@
 package com.psi.service.inventorymanagement.inorder;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.psi.entity.Page;
@@ -69,6 +70,14 @@ public interface InOrderManager{
      * @throws Exception
      */
 	public PageData settleOneInOrder(PageData pd)throws Exception;
+
+	/**
+	 * 结算单批量结算进货单功能
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public List<HashMap> settleAllInOrder(PageData pd)throws Exception;
 	
 }
 

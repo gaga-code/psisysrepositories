@@ -14,8 +14,10 @@ import java.util.List;
  *	EDUCATION  学历：平凡、初中毕业、中专毕业、高中毕业、大学专科、大学本科
  *	          			1	   2       3         4        5         6   		
  *	
- *	BILLSTATUS  单据状态：未审核、已审核、结算未通过
- *		  				  1         2      3
+ *	BILLSTATUS  单据状态：未审核、已审核
+ *		  				  1         2      
+ *  ISSETTLEMENTED 结算状态：未结算 结算中 已结算
+ *                             1      2    3  
  *	
  *	BILLTYPE  单据类型：进货单、销售单、供应商结算单、客户结算单、供应商退货单、客户退货单
  *	                     1       2         3            4           5            6
@@ -159,5 +161,29 @@ public class EnumProductUtil {
 		varList.add(suppsetreturn);
 		varList.add(customerreturn);
 		return varList;
+	}
+	
+	/**
+	 * 返回结算状态list
+	 * ISSETTLEMENTED 结算状态：未结算 结算中 已结算
+	 *                              1   2     3      
+	 * @return
+	 */
+	public static List<HashMap> productISSETTLEMENTEDList(){
+		//单据状态
+				List<HashMap> varList = new ArrayList<HashMap>();
+				HashMap unsettle = new HashMap();
+				unsettle.put("LEVEL_ID", 1);
+				unsettle.put("TITLE","未结算");
+				HashMap settling = new HashMap();
+				settling.put("LEVEL_ID", 2);
+				settling.put("TITLE","结算中");
+				HashMap settled = new HashMap();
+				settled.put("LEVEL_ID", 3);
+				settled.put("TITLE","已结算");
+				varList.add(unsettle);
+				varList.add(settling);
+				varList.add(settled);
+				return varList;
 	}
 }

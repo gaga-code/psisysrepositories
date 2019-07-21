@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -191,6 +192,25 @@ public class InOrderController extends BaseController {
 		map.put("pd", pd);
 		return AppUtil.returnObject(new PageData(), map);
 	}
+	@RequestMapping(value="/settleAllInOrder")
+	@ResponseBody
+	public Object settleAllInOrder() {
+		logBefore(logger, Jurisdiction.getUsername()+"修改inorder");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		List<HashMap> varList = new ArrayList<HashMap>();
+		try {
+			varList = inOrderService.settleAllInOrder(pd);
+		}catch(Exception e) {
+			map.put("msg", "error");
+		}
+		map.put("msg", "success");
+		map.put("varList", varList);
+		return AppUtil.returnObject(new PageData(), map);
+	}
+	
 	
 	/**列表
 	 * @param page

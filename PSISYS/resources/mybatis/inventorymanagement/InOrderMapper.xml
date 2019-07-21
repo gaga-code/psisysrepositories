@@ -90,6 +90,8 @@
 		and IFNULL(dr,0)=0
 	</update>
 	
+	
+	
 	<!-- 结算一张进货单 -->
 	<update id="settleOneInOrder" parameterType="pd"  >
 		update
@@ -104,6 +106,23 @@
 		and PK_SOBOOKS = #{PK_SOBOOKS}
 		and IFNULL(dr,0)=0
 	</update>
+	
+	<!-- 批量结算进货单 -->
+<!-- 	<update id="batchSettleInOrder" parameterType="java.util.List">
+		<foreach collection="list" item="map" >
+			update
+				<include refid="tableName"></include>	
+			<set>
+			    UNPAIDAMOUNT = #{map.UNPAIDAMOUNT},
+				THISPAY = #{map.THISPAY},
+				PAIDAMOUNT = #{map.PAIDAMOUNT},
+				ISSETTLEMENTED = #{map.ISSETTLEMENTED}
+			</set>
+				where INORDER_ID = #{map.INORDER_ID}
+				and PK_SOBOOKS = #{map.PK_SOBOOKS}
+				and IFNULL(dr,0)=0
+		</foreach>
+	</update> -->
 	
 	<!-- 通过ID获取数据 -->
 	<select id="findById" parameterType="pd" resultType="pd">
@@ -215,7 +234,7 @@
 		<if test="pd.SUPPLIER_ID != null and pd.SUPPLIER_ID != ''">
 			and  a.SUPPLIER_ID= #{pd.SUPPLIER_ID}
 		</if>
-		<!-- 是否结算了的 -->
+		<!-- 结算状态 -->
 		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
 			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
 		</if>
@@ -257,6 +276,17 @@
 		<include refid="tableName"></include>
 		set 
 			BILLSTATUS = 3
+		where 
+		    INORDER_ID = #{INORDER_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	<!-- *结算单反审进货单功能 使进货单的单据状态为审核不通过 -->
+	<update id="updateSettleStatus" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			ISSETTLEMENTED = #{ISSETTLEMENTED}
 		where 
 		    INORDER_ID = #{INORDER_ID}
 		    and PK_SOBOOKS = #{PK_SOBOOKS}

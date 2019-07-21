@@ -1,5 +1,7 @@
 package com.psi.service.inventorymanagement.inorder.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -7,6 +9,8 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.psi.dao.DaoSupport;
 import com.psi.entity.Page;
 import com.psi.service.inventorymanagement.inorder.InOrderManager;
@@ -60,13 +64,22 @@ public class InOrderService implements InOrderManager{
 	public List<PageData> list(Page page)throws Exception{
 		return (List<PageData>)dao.findForList("InOrderMapper.datalistPage", page);
 	}
-	/**列表
+	/**
+	 * 结算单里获取进货单列表，并对每张进货单更改结算状态为 结算中 状态
 	 * @param page
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> listForSuppset(Page page)throws Exception{
-		return (List<PageData>)dao.findForList("InOrderMapper.datalistPageBySuppset", page);
+		List<PageData> list = (List<PageData>)dao.findForList("InOrderMapper.datalistPageBySuppset", page);
+		for(int i = 0; i < list.size(); i++) {
+			PageData pd = new PageData();
+			pd.put("PK_SOBOOKS", list.get(i).get("PK_SOBOOKS"));
+			pd.put("ISSETTLEMENTED", 2);//更改进货单状态，表示当前进货已处于结算中状态
+			pd.put("INORDER_ID",list.get(i).get("INORDER_ID"));
+			dao.update("InOrderMapper.updateSettleStatus", pd);
+		}
+		return list;
 	}
 	
 	
@@ -142,6 +155,42 @@ public class InOrderService implements InOrderManager{
 		pd.put("THISPAY", canpaid);
 		dao.update("InOrderMapper.settleOneInOrder", pd);
 		return pd;
+	}
+
+	/**结算单批量结算进货单功能
+	 * @param
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<HashMap> settleAllInOrder(PageData pd) throws Exception {
+		List<HashMap> list = new ArrayList<HashMap>();
+		String createArr = (String) pd.get("SettleList");
+		if(createArr!="" || createArr != null){
+			JSONArray pa = JSONArray.parseArray(createArr);
+			for(int i=0; i < pa.size(); i++) {
+				HashMap map = new HashMap();
+				String jsonString = JSONObject.toJSONString(pa.get(i));
+				int issettle = JSONObject.parseObject(jsonString).getIntValue("ISSETTLEMENTED");
+				Double thispay = JSONObject.parseObject(jsonString).getDouble("THISPAY");
+				Double paidam = JSONObject.parseObject(jsonString).getDouble("PAIDAMOUNT");
+				Double unpaid = JSONObject.parseObject(jsonString).getDouble("UNPAIDAMOUNT");
+				map.put("INORDER_ID", JSONObject.parseObject(jsonString).getString("INORDER_ID"));
+				map.put("THISPAY", thispay);
+				if(issettle == 1) {
+					map.put("UNPAIDAMOUNT", 0.0);
+					map.put("PAIDAMOUNT", paidam+thispay);
+				}else if(issettle == 0) {
+					map.put("UNPAIDAMOUNT",unpaid-thispay);
+					map.put("PAIDAMOUNT", paidam+thispay);
+				}
+				map.put("ALLAMOUNT", JSONObject.parseObject(jsonString).getString("ALLAMOUNT"));
+				map.put("ISSETTLEMENTED", issettle);
+				map.put("PK_SOBOOKS",Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS));
+				list.add(map);
+				dao.update("InOrderMapper.settleOneInOrder", map);
+			}
+		}
+		return list;
 	}
 	
 }
