@@ -153,8 +153,8 @@
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>";
 // 	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
 	                      +"</tr>";
@@ -199,7 +199,7 @@
 	        });
 	    	$("#goodslist").val(value);
 	    	
-	    	//console.log(value);
+	    	console.log(value);
 	    	//calculateTheTotalAmount(value);
 // 	        value = value.substr(0, value.length);
 // 	        ReceiveValue(value);
@@ -251,6 +251,8 @@
 	                var shuliang = value[3];
 	                if(danjia!= ''&& shuliang!= ''){
 	                	result = result + danjia * shuliang;
+	                	$("#simple-table tr").eq(i+1).children().eq(5).children().eq(0).val(danjia * shuliang);
+	                	console.log(i);
 	                }
 	            }
 	        }

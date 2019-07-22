@@ -48,14 +48,26 @@ public class InOrderService implements InOrderManager{
 	 */
 	public void save(PageData pd)throws Exception{
 		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_INORDER_PFIX); //获取该编号类型的最大编号
-		pd.put("BILLCODE", strs[0]);
+		pd.put("BILLCODE", Const.BILLCODE_INORDER_PFIX + strs[0]);
 		//保存商品
 		String goodslist = (String) pd.get("goodslist");
 		String[] split = goodslist.split("#");
-		for(int i = 0; i < split.length-1; i++) {
+		//遍历每行数据
+		for(int i = 0; i < split.length; i++) {
 			String[] agoods = split[i].split(",");
 			PageData pageData = new PageData();
-			pageData.put("", agoods[0]);
+			pageData.put("INORDERBODY_ID", UuidUtil.get32UUID());
+			pageData.put("INORDER_ID", pd.get("INORDER_ID"));
+			pageData.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
+			pageData.put("APPBILLNO", Const.BILLCODE_INORDER_PFIX+strs[0]);
+			
+			pageData.put("GOODCODE_ID", agoods[1]);
+			pageData.put("UNITPRICE_ID", agoods[2]);
+			pageData.put("PNUMBER", agoods[3]);
+			pageData.put("AMOUNT", agoods[5]);
+			pageData.put("NOTE", agoods[6]);
+			
+			dao.save("InOrderBodyMapper.save", pageData);
 		}
 		dao.save("InOrderMapper.save", pd);
 		//保存进货单编号

@@ -199,6 +199,7 @@
 		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
 			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
 		</if>
+		order by a.LASTTIME DESC
 	</select>
 	
 	
