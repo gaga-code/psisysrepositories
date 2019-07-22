@@ -49,18 +49,26 @@ public class InOrderService implements InOrderManager{
 	public void save(PageData pd)throws Exception{
 		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_INORDER_PFIX); //获取该编号类型的最大编号
 		pd.put("BILLCODE", strs[0]);
+		//保存商品
+		String goodslist = (String) pd.get("goodslist");
+		String[] split = goodslist.split("#");
+		for(int i = 0; i < split.length-1; i++) {
+			String[] agoods = split[i].split(",");
+			PageData pageData = new PageData();
+			pageData.put("", agoods[0]);
+		}
 		dao.save("InOrderMapper.save", pd);
 		//保存进货单编号
 		if(strs[1] == null){ //新增
 			PsiBillCode psiBillCode = new PsiBillCode();
 			psiBillCode.setCode_ID(UuidUtil.get32UUID());
 			psiBillCode.setCodeType(Const.BILLCODE_INORDER_PFIX);
-			psiBillCode.setMaxNo(strs[0].substring(4, 13));
+			psiBillCode.setMaxNo(strs[0]);
 			psiBillCode.setNOTE("进货单编号");
 			billCodeService.insertBillCode(psiBillCode);
 		}else{//修改
 			PageData ppp = new PageData();
-			ppp.put("MaxNo",strs[0].substring(4, 13));
+			ppp.put("MaxNo",strs[0]);
 			ppp.put("Code_ID", strs[1]);
 			billCodeService.updateMaxNo(ppp);
 		}

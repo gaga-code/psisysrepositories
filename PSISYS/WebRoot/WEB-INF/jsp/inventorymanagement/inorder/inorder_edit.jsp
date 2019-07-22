@@ -81,6 +81,8 @@
 									<th class="center">单价</th>
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
+									<th class="center">金额</th>
+									<th class="center">备注</th>
 									<th class="center">操作</th>
 								</tr>
 							</thead>
@@ -151,6 +153,8 @@
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>";
 // 	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
 	                      +"</tr>";
