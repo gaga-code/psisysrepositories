@@ -16,8 +16,8 @@ import java.util.List;
  *	
  *	BILLSTATUS  单据状态：未审核、已审核
  *		  				  1         2      
- *  ISSETTLEMENTED 结算状态：未结算 结算中 已结算
- *                             1      2    3  
+ *  ISSETTLEMENTED 结算状态：未结算  已结算 结算中
+ *                             0      1    2  
  *	
  *	BILLTYPE  单据类型：进货单、销售单、供应商结算单、客户结算单、供应商退货单、客户退货单
  *	                     1       2         3            4           5            6
@@ -165,22 +165,22 @@ public class EnumProductUtil {
 	
 	/**
 	 * 返回结算状态list
-	 * ISSETTLEMENTED 结算状态：未结算 结算中 已结算
-	 *                              1   2     3      
+	 * ISSETTLEMENTED 结算状态：未结算  已结算 结算中
+	 *                              0    1     2      
 	 * @return
 	 */
 	public static List<HashMap> productISSETTLEMENTEDList(){
 		//单据状态
 				List<HashMap> varList = new ArrayList<HashMap>();
 				HashMap unsettle = new HashMap();
-				unsettle.put("LEVEL_ID", 1);
+				unsettle.put("LEVEL_ID", 0);
 				unsettle.put("TITLE","未结算");
+				HashMap settled = new HashMap();
+				settled.put("LEVEL_ID", 1);
+				settled.put("TITLE","已结算");
 				HashMap settling = new HashMap();
 				settling.put("LEVEL_ID", 2);
 				settling.put("TITLE","结算中");
-				HashMap settled = new HashMap();
-				settled.put("LEVEL_ID", 3);
-				settled.put("TITLE","已结算");
 				varList.add(unsettle);
 				varList.add(settling);
 				varList.add(settled);

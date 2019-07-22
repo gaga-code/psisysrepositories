@@ -61,7 +61,6 @@ public class SuppsetbillController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("SUPPLIER_ID", this.get32UUID());		//主键
 		suppsetbillService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");

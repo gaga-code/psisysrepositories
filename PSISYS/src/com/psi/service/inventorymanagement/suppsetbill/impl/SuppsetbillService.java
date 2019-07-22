@@ -10,9 +10,15 @@ import org.springframework.stereotype.Service;
 
 import com.psi.dao.DaoSupport;
 import com.psi.entity.Page;
+import com.psi.entity.PsiBillCode;
 import com.psi.service.inventorymanagement.suppsetbill.SuppsetbillManager;
+import com.psi.service.system.BillCodePsi.BillCodeManager;
+import com.psi.util.Const;
+import com.psi.util.DateUtil;
 import com.psi.util.JdbcTempUtil;
 import com.psi.util.PageData;
+import com.psi.util.ProductBillCodeUtil;
+import com.psi.util.UuidUtil;
 
 /**
  * 说明：  供应商结算单
@@ -24,13 +30,36 @@ public class SuppsetbillService implements SuppsetbillManager{
 	private DaoSupport dao;
 	@Autowired
 	private JdbcTempUtil jdbcTempUtil;
-	
+	@Autowired
+	private ProductBillCodeUtil productBillCodeUtil;
+	@Resource(name="billCodeService")
+	private BillCodeManager billCodeService;
 	/**新增
 	 * @param pd
 	 * @throws Exception
 	 */
 	public void save(PageData pd)throws Exception{
+		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_SUPPSETBILL_PFIX); //获取该编号类型的最大编号
+		pd.put("SUPPSETBILL_ID", UuidUtil.get32UUID());
+		pd.put("BILLCODE",strs[0]);
+		pd.put("BILLTYPE", 3);
+		pd.put("LDATE", DateUtil.getTime().toString());
+		pd.put("BILLSTATUS", 1);
 		dao.save("SuppsetbillMapper.save", pd);
+		if(strs[1] == null){ //新增
+			PsiBillCode psiBillCode = new PsiBillCode();
+			psiBillCode.setCode_ID(UuidUtil.get32UUID());
+			psiBillCode.setCodeType(Const.BILLCODE_SUPPSETBILL_PFIX);
+			psiBillCode.setMaxNo(strs[0]);
+			psiBillCode.setNOTE("供应商结算单编号");
+			billCodeService.insertBillCode(psiBillCode);
+		}else{//修改
+			PageData ppp = new PageData();
+			ppp.put("MaxNo",strs[0]);
+			ppp.put("Code_ID", strs[1]);
+			billCodeService.updateMaxNo(ppp);
+		}
+		System.out.println(strs[0]);
 	}
 	
 	/**删除

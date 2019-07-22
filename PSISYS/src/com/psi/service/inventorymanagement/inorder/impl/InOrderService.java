@@ -72,13 +72,13 @@ public class InOrderService implements InOrderManager{
 	@SuppressWarnings("unchecked")
 	public List<PageData> listForSuppset(Page page)throws Exception{
 		List<PageData> list = (List<PageData>)dao.findForList("InOrderMapper.datalistPageBySuppset", page);
-		for(int i = 0; i < list.size(); i++) {
+		/*for(int i = 0; i < list.size(); i++) {
 			PageData pd = new PageData();
 			pd.put("PK_SOBOOKS", list.get(i).get("PK_SOBOOKS"));
 			pd.put("ISSETTLEMENTED", 2);//更改进货单状态，表示当前进货已处于结算中状态
 			pd.put("INORDER_ID",list.get(i).get("INORDER_ID"));
 			dao.update("InOrderMapper.updateSettleStatus", pd);
-		}
+		}*/
 		return list;
 	}
 	

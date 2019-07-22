@@ -40,7 +40,7 @@ public class ProductBillCodeUtil {
 		SimpleDateFormat format = new SimpleDateFormat("yyMMdd");
 		String date_pfix = format.format(new Date());
 		if(max_code != null && max_code.contains(date_pfix)) {
-			String uid_end = max_code.substring(6, 9);
+			String uid_end = max_code.substring(max_code.length()-3, max_code.length());
 			int endNum = Integer.parseInt(uid_end);
 			int tmpNum = 1000+endNum+1;
 			comment_code = date_pfix+ this.subStr(""+tmpNum, 1);
@@ -50,7 +50,7 @@ public class ProductBillCodeUtil {
 		if(pe == null) {
 			return new String[] {BillType+comment_code,null};
 		}else {
-			return new String[] {BillType+comment_code,(String) pe.get("Code_ID")};
+			return new String[] {comment_code,(String) pe.get("Code_ID")};
 		}
 	}
 	public String subStr(String str,int start) {
