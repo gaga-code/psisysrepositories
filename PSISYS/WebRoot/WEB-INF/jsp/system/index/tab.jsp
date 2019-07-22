@@ -23,6 +23,9 @@
 </body>
 <script type="text/javascript">
 
+function close(mid){
+	tab.close(mid);
+}
 function tabAddHandler(mid,mtitle,murl){
 	tab.update({
 		id :mid,

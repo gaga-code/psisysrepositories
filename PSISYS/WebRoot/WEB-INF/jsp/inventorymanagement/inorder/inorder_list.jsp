@@ -16,7 +16,6 @@
 <link rel="stylesheet" href="static/ace/css/chosen.css" />
 <!-- jsp文件头和头部 -->
 <%@ include file="../../system/index/top.jsp"%>
-<!-- <script src="/static/js/myjs/head.js"></script> -->
 <script type="text/javascript" src="static/js/myjs/head.js"></script>
 <!-- 日期框 -->
 <link rel="stylesheet" href="static/ace/css/datepicker.css" />
@@ -63,6 +62,9 @@
 									<th class="center">单据编号</th>
 									<th class="center">供应商</th>
 									<th class="center">总金额</th>
+									<th class="center">未付金额</th>
+									<th class="center">已付金额</th>
+									<th class="center">本次付款</th>
 									<th class="center">是否结算</th>
 									<th class="center">经手人</th>
 									<th class="center">备注</th>
@@ -84,7 +86,13 @@
 											<td class='center'>${var.BILLCODE}</td>
 											<td class='center'>${var.SUPPLIERNAME}</td>
 											<td class='center'>${var.ALLAMOUNT}</td>
+											<td class='center'>${var.UNPAIDAMOUNT}</td>
+											<td class='center'>${var.PAIDAMOUNT}</td>
+											<td class='center'>${var.THISPAY}</td>
 											<td class='center'>
+												<c:if test="${var.ISSETTLEMENTED == 2}">
+													结算中
+												</c:if>
 												<c:if test="${var.ISSETTLEMENTED == 1}">
 													已结算
 												</c:if>
@@ -184,7 +192,7 @@
 						</table>
 						</div>
 						</form>
-					
+						<form action="#" method="post" name="actionForm" id="actionForm"></form>
 						</div>
 						<!-- /.col -->
 					</div>
@@ -220,17 +228,23 @@
 		
 		//新增
 		function add(){
-			siMenu('z190','lm180','添加进货单','inorder/goAdd.do');
+			document.forms.actionForm.action="inorder/goAdd.do";
+	        document.forms.actionForm.submit();
+			//siMenu('z190','lm180','添加进货单','inorder/goAdd.do');
 		}
 		//修改
 		function edit(Id){
 			var url = 'inorder/goEdit.do?INORDER_ID='+Id;
-			siMenu('z191','lm181','修改进货单',url);
+			document.forms.actionForm.action=url;
+	        document.forms.actionForm.submit();
+			//siMenu('z191','lm181','修改进货单',url);
 		}
 		//查看
 		function view(Id){
 			var url = 'inorder/goView.do?INORDER_ID='+Id;
-			siMenu('z191','lm181','查看进货单',url);
+			document.forms.actionForm.action=url;
+	        document.forms.actionForm.submit();
+			//siMenu('z191','lm181','查看进货单',url);
 		}
 		
 		

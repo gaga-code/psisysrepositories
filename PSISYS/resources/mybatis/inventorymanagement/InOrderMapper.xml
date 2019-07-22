@@ -10,8 +10,8 @@
 	
 	<!-- 字段 -->
 	<sql id="Field">
-		PK_SOBOOKS,
 		INORDER_ID,
+		PK_SOBOOKS,
 		LDATE,
 		BILLCODE,
 		SUPPLIER_ID,
@@ -31,6 +31,7 @@
 	<!-- 字段值 -->
 	<sql id="FieldValue">
 		#{INORDER_ID},	
+		#{PK_SOBOOKS},
 		#{LDATE},	
 		#{BILLCODE},	
 		#{SUPPLIER_ID},	
@@ -44,8 +45,7 @@
 		#{THISPAY},	
 		#{SUBBRANCH},
 		#{NOTE},
-		#{ISSETTLEMENTED},
-		#{PK_SOBOOKS}
+		#{ISSETTLEMENTED}
 	</sql>
 	
 	<!-- 新增-->
@@ -65,7 +65,8 @@
 		<include refid="tableName"></include>
 		set DR = 1
 		where 
-			PK_SOBOOKS = #{PK_SOBOOKS}
+			INORDER_ID = #{INORDER_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
 	</update>
 	
 	<!-- 修改 -->

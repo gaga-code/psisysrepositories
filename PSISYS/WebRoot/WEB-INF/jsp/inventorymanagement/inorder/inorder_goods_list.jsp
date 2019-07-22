@@ -80,7 +80,7 @@
 											<td class="center">
 												<div class="hidden-md hidden-lg">
 													<div class="inline pos-rel">
-														<button class="btn btn-minier btn-primary dropdown-toggle" onclick="view('${var}');" data-toggle="dropdown" data-position="auto">
+														<button class="btn btn-minier btn-primary dropdown-toggle" onclick="view('${var.GOOD_ID}','${var.GOODNAME}','${var.BARCODE}','${var.UNITNAME}');" data-toggle="dropdown" data-position="auto">
 															选择
 														</button>
 													</div>
@@ -151,12 +151,15 @@
 		$(top.hangge());//关闭加载状态
 		
 		//选择商品
-		function view(goods){
+		function view(GOOD_ID,GOODNAME,BARCODE,UNITNAME){
 			 if(!window.localStorage){
 		             alert("浏览器不支持localstorage");
 		      }else{
 		             var storage=window.localStorage;
-		             localStorage.setItem("GoodsSelected",goods) ;
+		             localStorage.setItem("GOOD_ID",GOOD_ID) ;
+		             localStorage.setItem("GOODNAME",GOODNAME) ;
+		             localStorage.setItem("BARCODE",BARCODE) ;
+		             localStorage.setItem("UNITNAME",UNITNAME) ;
 			}
 			top.Dialog.close();//关闭窗口
 		}

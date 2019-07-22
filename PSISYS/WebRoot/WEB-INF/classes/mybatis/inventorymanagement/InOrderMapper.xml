@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="InOrderMapper">
 	
+	
 	<!--表名 -->
 	<sql id="tableName">
 		psi_inorder
@@ -9,8 +10,8 @@
 	
 	<!-- 字段 -->
 	<sql id="Field">
-		PK_SOBOOKS,
 		INORDER_ID,
+		PK_SOBOOKS,
 		LDATE,
 		BILLCODE,
 		SUPPLIER_ID,
@@ -30,6 +31,7 @@
 	<!-- 字段值 -->
 	<sql id="FieldValue">
 		#{INORDER_ID},	
+		#{PK_SOBOOKS},
 		#{LDATE},	
 		#{BILLCODE},	
 		#{SUPPLIER_ID},	
@@ -43,8 +45,7 @@
 		#{THISPAY},	
 		#{SUBBRANCH},
 		#{NOTE},
-		#{ISSETTLEMENTED},
-		#{PK_SOBOOKS}
+		#{ISSETTLEMENTED}
 	</sql>
 	
 	<!-- 新增-->
@@ -64,7 +65,8 @@
 		<include refid="tableName"></include>
 		set DR = 1
 		where 
-			PK_SOBOOKS = #{PK_SOBOOKS}
+			INORDER_ID = #{INORDER_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
 	</update>
 	
 	<!-- 修改 -->
@@ -88,6 +90,40 @@
 		PK_SOBOOKS = #{PK_SOBOOKS}
 		and IFNULL(dr,0)=0
 	</update>
+	
+	
+	
+	<!-- 结算一张进货单 -->
+	<update id="settleOneInOrder" parameterType="pd"  >
+		update
+		<include refid="tableName"></include>
+		set 
+			UNPAIDAMOUNT = #{UNPAIDAMOUNT},
+			THISPAY = #{THISPAY},
+			PAIDAMOUNT = #{PAIDAMOUNT},
+			ISSETTLEMENTED = #{ISSETTLEMENTED}
+		where 
+		    INORDER_ID = #{INORDER_ID}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 批量结算进货单 -->
+<!-- 	<update id="batchSettleInOrder" parameterType="java.util.List">
+		<foreach collection="list" item="map" >
+			update
+				<include refid="tableName"></include>	
+			<set>
+			    UNPAIDAMOUNT = #{map.UNPAIDAMOUNT},
+				THISPAY = #{map.THISPAY},
+				PAIDAMOUNT = #{map.PAIDAMOUNT},
+				ISSETTLEMENTED = #{map.ISSETTLEMENTED}
+			</set>
+				where INORDER_ID = #{map.INORDER_ID}
+				and PK_SOBOOKS = #{map.PK_SOBOOKS}
+				and IFNULL(dr,0)=0
+		</foreach>
+	</update> -->
 	
 	<!-- 通过ID获取数据 -->
 	<select id="findById" parameterType="pd" resultType="pd">
@@ -157,12 +193,53 @@
 		</if>
 		<!-- 供应商ID -->
 		<if test="pd.SUPPLIER_ID != null and pd.SUPPLIER_ID != ''">
-			and #{pd.SUPPLIER_ID} = a.SUPPLIER_ID;
+			and  a.SUPPLIER_ID= #{pd.SUPPLIER_ID}
 		</if>
 		<!-- 是否结算了的 -->
 		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
-			and #{pd.ISSETTLEMENTED} = a.ISSETTLEMENTED;
+			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
 		</if>
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPageBySuppset" parameterType="page" resultType="pd">
+		select
+			a.INORDER_ID,
+			a.BILLCODE,
+			b.SUPPLIERNAME SUPPLIERNAME,
+			a.ALLAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.PAIDAMOUNT,
+			a.THISPAY,
+			a.ISSETTLEMENTED,
+			a.USER_ID,
+			a.NOTE
+		from 
+		<include refid="tableName"></include>a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					<!--  or 
+					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 -->
+				)
+		</if>
+		<!-- 供应商ID -->
+		<if test="pd.SUPPLIER_ID != null and pd.SUPPLIER_ID != ''">
+			and  a.SUPPLIER_ID= #{pd.SUPPLIER_ID}
+		</if>
+		<!-- 结算状态 -->
+		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
+			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
+		</if>
+		and a.BILLSTATUS = 2
 	</select>
 	
 	<!-- 列表(全部) -->
@@ -193,5 +270,27 @@
 		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
                  #{item}
 		</foreach>
+	</update>
+	<!-- *结算单反审进货单功能 使进货单的单据状态为审核不通过 -->
+	<update id="retrialInorder" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			BILLSTATUS = 3
+		where 
+		    INORDER_ID = #{INORDER_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	<!-- *结算单反审进货单功能 使进货单的单据状态为审核不通过 -->
+	<update id="updateSettleStatus" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			ISSETTLEMENTED = #{ISSETTLEMENTED}
+		where 
+		    INORDER_ID = #{INORDER_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
 	</update>
 </mapper>

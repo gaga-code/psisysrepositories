@@ -13,11 +13,15 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.psi.dao.DaoSupport;
 import com.psi.entity.Page;
+import com.psi.entity.PsiBillCode;
 import com.psi.service.inventorymanagement.inorder.InOrderManager;
+import com.psi.service.system.BillCodePsi.BillCodeManager;
 import com.psi.util.Const;
 import com.psi.util.JdbcTempUtil;
 import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
+import com.psi.util.ProductBillCodeUtil;
+import com.psi.util.UuidUtil;
 
 /**
  * 说明： 进货单管理
@@ -32,12 +36,34 @@ public class InOrderService implements InOrderManager{
 	@Resource(name = "daoSupport")
 	private DaoSupport dao;
 	
+	@Autowired
+	private ProductBillCodeUtil productBillCodeUtil;
+	
+	@Resource(name="billCodeService")
+	private BillCodeManager billCodeService;
+	
 	/**新增
 	 * @param pd
 	 * @throws Exception
 	 */
 	public void save(PageData pd)throws Exception{
+		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_INORDER_PFIX); //获取该编号类型的最大编号
+		pd.put("BILLCODE", strs[0]);
 		dao.save("InOrderMapper.save", pd);
+		//保存进货单编号
+		if(strs[1] == null){ //新增
+			PsiBillCode psiBillCode = new PsiBillCode();
+			psiBillCode.setCode_ID(UuidUtil.get32UUID());
+			psiBillCode.setCodeType(Const.BILLCODE_INORDER_PFIX);
+			psiBillCode.setMaxNo(strs[0].substring(4, 13));
+			psiBillCode.setNOTE("进货单编号");
+			billCodeService.insertBillCode(psiBillCode);
+		}else{//修改
+			PageData ppp = new PageData();
+			ppp.put("MaxNo",strs[0].substring(4, 13));
+			ppp.put("Code_ID", strs[1]);
+			billCodeService.updateMaxNo(ppp);
+		}
 	}
 	
 	/**删除

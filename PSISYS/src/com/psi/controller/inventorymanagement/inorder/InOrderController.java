@@ -30,6 +30,7 @@ import com.psi.service.basedata.supplier.SupplierManager;
 import com.psi.service.inventorymanagement.inorder.InOrderManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
+import com.psi.util.DateUtil;
 import com.psi.util.Jurisdiction;
 import com.psi.util.ObjectExcelView;
 import com.psi.util.PageData;
@@ -109,17 +110,25 @@ public class InOrderController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/save")
-	public ModelAndView save() throws Exception{
+	public String save() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"新增inorder");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
-		ModelAndView mv = this.getModelAndView();
+//		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd.put("INORDER_ID", this.get32UUID());		//主键
+		pd.put("LDATE",DateUtil.getTime().toString());	//录入日期
+		pd.put("BILLSTATUS", 1);
+		pd.put("BILLTYPE", 1);
+		pd.put("UNPAIDAMOUNT", pd.get("ALLAMOUNT"));
+		pd.put("PAIDAMOUNT", 0);
+		pd.put("THISPAY", 0);
+		pd.put("ISSETTLEMENTED", 0);
 		inOrderService.save(pd);
-		mv.addObject("msg","success");
-		mv.setViewName("save_result");
-		return mv;
+//		mv.addObject("msg","success");
+//		mv.setViewName("save_result");
+//		mv.setViewName("inventorymanagement/inorder/inorder_list");
+		return "redirect:/inorder/list.do";
 	}
 	
 	/**删除
@@ -302,9 +311,6 @@ public class InOrderController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-//		pd.put("USERNAME", Jurisdiction.getUsername());	//用户名
-//		List<PageData>	varList = remarksService.listAll(pd);
-//		List<PageData>	varListL = levelService.listAll(pd);
 		Session session = Jurisdiction.getSession();
 		User user = (User)session.getAttribute(Const.SESSION_USER);
 		pd.put("PSI_NAME", user.getNAME());
