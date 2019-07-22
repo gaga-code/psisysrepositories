@@ -27,14 +27,15 @@
 					<form action="inorder/${msg }.do" name="Form" id="Form" method="post">
 						<input type="hidden" name="PK_SOBOOKS" id="PK_SOBOOKS" value="${pd.PK_SOBOOKS}"/>
 						<div id="zhongxin" style="padding-top: 13px;">
-						<table id="table_report" class="table table-striped table-bordered table-hover">
-							<h1>${pd.BILLTYPE}</h1>
-							<tr>
+						<tr>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<td style="text-align: center;" colspan="10"><font size="6">修改进货单</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 								<td style="text-align: center;" colspan="10">
-									<a class="btn btn-mini btn-primary" onclick="save();">保存</a>
+								<a class="btn btn-mini btn-primary" onclick="save();">保存</a>
 									<a class="btn btn-mini btn-danger" onclick="returnList();">取消</a>
 								</td>
 							</tr>
+						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
 <!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">单据编号:</td> -->
 <%-- 								<td><input type="text" name="BILLCODE" id="BILLCODE" value="${pd.BILLCODE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> --%>

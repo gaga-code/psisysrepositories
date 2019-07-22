@@ -185,7 +185,7 @@
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
 			and
 				(
-					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					a.NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 					<!--  or 
 					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 					 -->

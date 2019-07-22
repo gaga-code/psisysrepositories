@@ -92,6 +92,7 @@ public class InOrderService implements InOrderManager{
 	 */
 	public void delete(PageData pd)throws Exception{
 		dao.update("InOrderMapper.delete", pd);
+		dao.update("InOrderBodyMapper.delete", pd);
 	}
 	
 	/**修改
@@ -143,7 +144,9 @@ public class InOrderService implements InOrderManager{
 	 * @throws Exception
 	 */
 	public PageData findById(PageData pd)throws Exception{
-		return (PageData)dao.findForObject("InOrderMapper.findById", pd);
+		PageData result =  (PageData)dao.findForObject("InOrderMapper.findById", pd);
+		result.put("goodslist", (List<PageData>)dao.findForList("InOrderBodyMapper.findById", pd));
+		return result;
 	}
 	
 	/**批量删除
@@ -168,6 +171,7 @@ public class InOrderService implements InOrderManager{
 		}
 		//表名和主键字段名
 		jdbcTempUtil.deleteAll(idstr.toString().substring(0,idstr.toString().length()-1), (String)Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS), "psi_inorder", "INORDER_ID");
+		jdbcTempUtil.deleteAll(idstr.toString().substring(0,idstr.toString().length()-1), (String)Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS), "psi_inorder_body", "INORDER_ID");
 	}
 
 	/**结算单反审进货单功能

@@ -315,7 +315,7 @@ public class InOrderController extends BaseController {
 		User user = (User)session.getAttribute(Const.SESSION_USER);
 		pd.put("PSI_NAME", user.getNAME());
 		List<PageData> supplierList = supplierService.listAll(pd);	//列出supplier列表;
-		mv.setViewName("inventorymanagement/inorder/inorder_edit");
+		mv.setViewName("inventorymanagement/inorder/inorder_add");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
 		mv.addObject("supplierList", supplierList);
