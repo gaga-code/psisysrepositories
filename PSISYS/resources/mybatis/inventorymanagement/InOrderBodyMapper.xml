@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InOrderBodyMapper">
+	
+	
+	<!--表名 -->
+	<sql id="tableName">
+		psi_inorder_body
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		INORDERBODY_ID,
+		INORDER_ID,
+		GOODCODE_ID,
+		PNUMBER,
+		UNITPRICE_ID,
+		AMOUNT,
+		APPBILLNO,
+		NOTE,
+		PK_SOBOOKS
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{INORDERBODY_ID},	
+		#{INORDER_ID},
+		#{GOODCODE_ID},	
+		#{PNUMBER},	
+		#{UNITPRICE_ID},	
+		#{AMOUNT},	
+		#{APPBILLNO},	
+		#{NOTE},	
+		#{PK_SOBOOKS}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set DR = 1
+		where 
+			INORDER_ID = #{INORDER_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			LDATE = #{LDATE},
+			SUPPLIER_ID = #{SUPPLIER_ID},
+			WAREHOUSE_ID = #{WAREHOUSE_ID},
+			ALLAMOUNT = #{ALLAMOUNT},
+			BILLTYPE = #{BILLTYPE},
+			BILLSTATUS = #{BILLSTATUS},
+			PAIDAMOUNT = #{PAIDAMOUNT},
+			UNPAIDAMOUNT = #{UNPAIDAMOUNT},
+			THISPAY = #{THISPAY},
+			SUBBRANCH = #{SUBBRANCH},
+			ISSETTLEMENTED = #{ISSETTLEMENTED},
+			NOTE = #{NOTE},
+		where 
+		PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 结算一张进货单 -->
+	<update id="settleOneInOrder" parameterType="pd"  >
+		update
+		<include refid="tableName"></include>
+		set 
+			UNPAIDAMOUNT = #{UNPAIDAMOUNT},
+			THISPAY = #{THISPAY},
+			PAIDAMOUNT = #{PAIDAMOUNT},
+			ISSETTLEMENTED = #{ISSETTLEMENTED}
+		where 
+		    INORDER_ID = #{INORDER_ID}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			a.INORDERBODY_ID,
+			a.INORDER_ID,
+			a.GOODCODE_ID,
+			a.PNUMBER,
+			a.UNITPRICE_ID,
+			a.AMOUNT,
+			a.APPBILLNO,
+			a.NOTE,
+			b.GOODNAME,
+			c.NAME
+		from 
+		<include refid="tableName"></include> a
+		left join base_good b
+		on GOODCODE_ID = b.BARCODE		
+		left join cp_spunit c
+		on b.CUNIT_ID = c.SPUNIT_ID		
+		where 
+			a.INORDER_ID = #{INORDER_ID}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+			a.PK_SOBOOKS,
+			a.INORDER_ID,
+			a.LDATE,
+			a.BILLCODE,
+			a.SUPPLIER_ID,
+			a.USER_ID,
+			a.WAREHOUSE_ID,
+			a.ALLAMOUNT,
+			a.BILLTYPE,
+			a.BILLSTATUS,
+			a.PAIDAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.THISPAY,
+			a.SUBBRANCH,
+			a.NOTE,
+			a.ISSETTLEMENTED,
+			b.SUPPLIERNAME SUPPLIERNAME
+		from 
+		<include refid="tableName"></include>a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					<!--  or 
+					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 -->
+				)
+		</if>
+		<!-- 供应商ID -->
+		<if test="pd.SUPPLIER_ID != null and pd.SUPPLIER_ID != ''">
+			and  a.SUPPLIER_ID= #{pd.SUPPLIER_ID}
+		</if>
+		<!-- 是否结算了的 -->
+		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
+			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
+		</if>
+		order by CREATETIME DESC
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPageBySuppset" parameterType="page" resultType="pd">
+		select
+			a.INORDER_ID,
+			a.BILLCODE,
+			b.SUPPLIERNAME SUPPLIERNAME,
+			a.ALLAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.PAIDAMOUNT,
+			a.THISPAY,
+			a.ISSETTLEMENTED,
+			a.USER_ID,
+			a.NOTE
+		from 
+		<include refid="tableName"></include>a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					<!--  or 
+					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 -->
+				)
+		</if>
+		<!-- 供应商ID -->
+		<if test="pd.SUPPLIER_ID != null and pd.SUPPLIER_ID != ''">
+			and  a.SUPPLIER_ID= #{pd.SUPPLIER_ID}
+		</if>
+		<!-- 是否结算了的 -->
+		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
+			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
+		</if>
+		and a.BILLSTATUS = 2
+		order by CREATETIME DESC
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where
+			1=1
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+		<!-- <if test="USERNAME!=null and USERNAME!=''">
+			and USERNAME = #{USERNAME} 
+		</if> -->
+		<!-- <if test="days!=null and days!=''">几天内
+			and DATE_SUB(CURDATE(), INTERVAL ${days} DAY) &lt;= date(CTIME)
+		</if> -->
+	</select>
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		update 
+		<include refid="tableName"></include>
+		set DR = 1 
+		where 
+			INORDER_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</update>
+	<!-- *结算单反审进货单功能 使进货单的单据状态为审核不通过 -->
+	<update id="retrialInorder" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			BILLSTATUS = 3
+		where 
+		    INORDER_ID = #{INORDER_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+</mapper>
