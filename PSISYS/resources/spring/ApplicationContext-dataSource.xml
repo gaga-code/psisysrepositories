@@ -81,6 +81,10 @@
 			           rollback-for="java.lang.Exception" />
 			<tx:method name="save*" propagation="REQUIRED" read-only="false" 
 			           rollback-for="java.lang.Exception" />
+			<tx:method name="edit*" propagation="REQUIRED" read-only="false" 
+			           rollback-for="java.lang.Exception" />
+			<tx:method name="approval*" propagation="REQUIRED" read-only="false" 
+			           rollback-for="java.lang.Exception" />
 		</tx:attributes>
 	</tx:advice>
 	<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">   

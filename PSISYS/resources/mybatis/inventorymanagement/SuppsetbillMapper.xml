@@ -28,9 +28,39 @@
 	  PAYMETHOD,                                                   
 	  PAYABLEAMOUNT,                                               
 	  PAYMENTAMOUNT,                                               
-	  PAYABLEALLAM,                                                
+	  PAYABLEALLAM,  
+	  INORDER_IDS,                                              
 	  NOTE,                                                        
 	  PK_SOBOOKS
+	</sql>
+	
+	<sql id="FieldAll">
+			SUPPSETBILL_ID,                                              
+			  LDATE,                                                       
+			  BILLCODE,                                                    
+			  BILLTYPE,                                                    
+			  BILLSTATUS,                                                  
+			  USER_ID,                                                     
+			  FROMUNIT,                                                    
+			  DISTRIBUTIONMODE,                                            
+			  INVOICETYPE,                                                 
+			  BILLNO,                                                      
+			  PAYMETHOD,                                                   
+			  PAYABLEAMOUNT,                                               
+			  PAYMENTAMOUNT,                                               
+			  PAYABLEALLAM,
+			  SETTEDNUMANDID,  
+			  INORDER_IDS,                                              
+			  NOTE,                                                        
+			  PK_SOBOOKS,
+			  DEF1,
+			  DEF2,
+			  DEF3,
+			  DEF4,
+			  DEF5,
+			  CREATETIME,
+			  LASTTIME,
+			  DR
 	</sql>
 	
 	<!-- 字段值 -->
@@ -49,6 +79,7 @@
 	  #{PAYABLEAMOUNT},                                               
 	  #{PAYMENTAMOUNT},                                              
 	  #{PAYABLEALLAM},                                                
+	  #{INORDER_IDS},                                                
 	  #{NOTE},                                                        
 	  #{PK_SOBOOKS}  
 	</sql>
@@ -79,8 +110,7 @@
 	<update id="edit" parameterType="pd">
 		update
 		<include refid="tableName"></include>
-		set 
-			LDATE=#{LDATE},                                                                                                       
+		set                                                                                                       
 			FROMUNIT=#{FROMUNIT},                                                   
 			DISTRIBUTIONMODE=#{DISTRIBUTIONMODE},                                            
 			INVOICETYPE=#{INVOICETYPE},                                                 
@@ -90,15 +120,16 @@
 			PAYMENTAMOUNT=#{PAYMENTAMOUNT},                                              
 			PAYABLEALLAM=#{PAYABLEALLAM},                                                
 			NOTE=#{NOTE}
-		SUPPSETBILL_ID = SUPPSETBILL_ID
 		where 
-		SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			PK_SOBOOKS = #{PK_SOBOOKS} and
+			SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			and IFNULL(DR,0)=0
 	</update>
 	
 	<!-- 通过ID获取数据 -->
 	<select id="findById" parameterType="pd" resultType="pd">
 		select 
-		<include refid="Field"></include>
+		<include refid="FieldAll"></include>
 		from 
 		<include refid="tableName"></include>
 		where 
@@ -115,8 +146,9 @@
 				  a.BILLCODE,                                                    
 				  a.BILLTYPE,                                                    
 				  a.BILLSTATUS,                                                  
-				  a.USER_ID,                                                     
-				  s.SUPPLIERNAME as FROMUNIT,                                                    
+				  a.USER_ID,    
+				  a.FROMUNIT,                                                  
+				  s.SUPPLIERNAME as FROMUNITNAME,                                                    
 				  a.DISTRIBUTIONMODE,                                            
 				  a.INVOICETYPE,                                                 
 				  a.BILLNO,                                                      
@@ -151,6 +183,9 @@
 		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
 			and a.CREATETIME &lt;= #{pd.lastEnd} 
 		</if>
+		<if test="pd.billstatus!=null and pd.billstatus!='' ">
+			and a.BILLSTATUS = #{pd.billstatus} 
+		</if>
 		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
 			and IFNULL(a.DR,0)=0 
 		order by a.CREATETIME desc
@@ -171,6 +206,8 @@
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(DR,0)=0 
 	</select>
+	
+
 	
 	<!-- 批量删除 -->
 	<update id="deleteAll" parameterType="String">

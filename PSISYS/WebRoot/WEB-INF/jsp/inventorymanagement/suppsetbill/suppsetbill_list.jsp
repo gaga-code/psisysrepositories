@@ -48,8 +48,17 @@
 										</span>
 									</div>
 								</td>
+								<td style="vertical-align:top;padding-left:2px;">
+								 	<select  name="billstatus" id="billstatus" data-placeholder="请选择" style="vertical-align:top;width: 120px;">
+									<option value="">全部</option>								 	
+									<option value="1"  selected = "selected">未审核</option>
+									<option value="2">已审核</option>
+								  	</select>
+								</td>
 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
+								
+								
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
@@ -58,7 +67,7 @@
 								
 								<td style="vertical-align:top;padding-left:2px;">
 									<c:if test="${QX.add == 1 }">
-									<a class="btn btn-mini btn-success" onclick="addsuppsetbill();">新增供应商结算单</a>
+									<a class="btn btn-mini btn-success" onclick="add();">新增供应商结算单</a>
 									</c:if>
 									<c:if test="${QX.del == 1 }">
 									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a>
@@ -81,10 +90,13 @@
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">录单日期</th>
 									<th class="center">单据编号</th>
+									<th class="center">单据状态</th>
 									<th class="center">往来单位</th>
 									<th class="center">付款方式</th>
 									<th class="center">应付金额</th>
 									<th class="center">实付金额</th>
+									<th class="center">发票类型</th>
+									<th class="center">票号</th>
 									<th class="center">经销方式</th>
 									<th class="center">经手人</th>
 									<th class="center">操作</th>
@@ -97,17 +109,26 @@
 								<c:when test="${not empty suppSetList}">
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${suppSetList}" var="var" varStatus="vs">
-										<tr>
+										<tr id="${var.SUPPSETBILL_ID}" onclick=clickaction('${var.FROMUNIT}') >
 											<td class='center'>
-												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.SUPPSETBILL_ID}" class="ace" /><span class="lbl"></span></label>
+												<label class="pos-rel"><input type='checkbox' name='ids' id="suppcheckbox" value="${var.SUPPSETBILL_ID}" class="ace" /><span class="lbl"></span></label>
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.LDATE}</td>
 											<td class='center'>${var.BILLCODE}</td>
-											<td class='center'>${var.FROMUNIT}</td>
+											<c:if test="${var.BILLSTATUS == 1 }">
+											<td class='center'>未审核</td>
+											</c:if>
+											<c:if test="${var.BILLSTATUS == 2 }">
+											<td class='center'>已审核</td>
+											</c:if>
+											<td class='center'>${var.FROMUNITNAME}</td>
 											<td class='center'>${var.PAYMETHOD}</td>
 											<td class='center'>${var.PAYABLEAMOUNT}</td>
 											<td class='center'>${var.PAYMENTAMOUNT}</td>
+											<td class='center'>${var.INVOICETYPE}</td>
+											<td class='center'>${var.BILLNO}</td>
+											
 											<td class='center'>${var.DISTRIBUTIONMODENAME }</td>
 											<td class='center'>${var.PSI_NAME}</td>
 											<td class="center">
@@ -115,138 +136,11 @@
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
-													<a class="btn btn-xs btn-success" title="查看" onclick="view('${var.SUPPSETBILL_ID}');">
-														<i class="ace-icon fa fa-eye bigger-120" title="查看"></i>
+													<a class="btn btn-xs btn-success" title="审批" id="approvalone"  onclick="approvalone('${var.SUPPSETBILL_ID}','${var.PAYMENTAMOUNT}');">
+														<i class="ace-icon fa fa-eye bigger-120" title="审批"></i>
 													</a>
 													<c:if test="${QX.edit == 1 }">
-													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.SUPPSETBILL_ID}');">
-														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
-													</a>
-													</c:if>
-													<c:if test="${QX.del == 1 }">
-													<a class="btn btn-xs btn-danger" onclick="del('${var.SUPPSETBILL_ID}');">
-														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
-													</a>
-													</c:if>
-												</div>
-												<div class="hidden-md hidden-lg">
-													<div class="inline pos-rel">
-														<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-															<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-														</button>
-			
-														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-															<li>
-																<a style="cursor:pointer;" onclick="view('${var.SUPPSETBILL_ID}');" class="tooltip-success" data-rel="tooltip" title="查看">
-																	<span class="green">
-																		<i class="ace-icon fa fa-eye bigger-120"></i>
-																	</span>
-																</a>
-															</li>
-															<c:if test="${QX.edit == 1 }">
-															<li>
-																<a style="cursor:pointer;" onclick="edit('${var.SUPPSETBILL_ID}');" class="tooltip-success" data-rel="tooltip" title="修改">
-																	<span class="green">
-																		<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
-																	</span>
-																</a>
-															</li>
-															</c:if>
-															<c:if test="${QX.del == 1 }">
-															<li>
-																<a style="cursor:pointer;" onclick="del('${var.SUPPSETBILL_ID}');" class="tooltip-error" data-rel="tooltip" title="删除">
-																	<span class="red">
-																		<i class="ace-icon fa fa-trash-o bigger-120"></i>
-																	</span>
-																</a>
-															</li>
-															</c:if>
-														</ul>
-													</div>
-												</div>
-											</td>
-										</tr>
-									
-									</c:forEach>
-									</c:if>
-									<c:if test="${QX.cha == 0 }">
-										<tr>
-											<td colspan="100" class="center">您无权查看</td>
-										</tr>
-									</c:if>
-								</c:when>
-								<c:otherwise>
-									<tr class="main_info">
-										<td colspan="100" class="center" >没有相关数据</td>
-									</tr>
-								</c:otherwise>
-							</c:choose>
-							</tbody>
-						</table>
-						<div class="page-header position-relative">
-						<table style="width:100%;">
-							<tr>
-								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
-							</tr>
-						</table>
-						</div>
-						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
-							<thead>
-								<tr>
-									<th class="center" style="width:35px;">
-									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
-									</th>
-									<th class="center" style="width:50px;">序号</th>
-									<th class="center">供应商编号</th>
-									<th class="center">姓名</th>
-									<th class="center">手机</th>
-									<th class="center">建档时间</th>
-									<th class="center">地址</th>
-									<th class="center">经销方式</th>
-									<th class="center">经手人</th>
-<!-- 									<th class="center">消费记录</th>
-									<th class="center">跟踪记录</th> -->
-									<th class="center">备注</th>
-									<th class="center">操作</th>
-								</tr>
-							</thead>
-													
-							<tbody>
-							<!-- 开始循环 -->	
-							<c:choose>
-								<c:when test="${not empty varList}">
-									<c:if test="${QX.cha == 1 }">
-									<c:forEach items="${varList}" var="var" varStatus="vs">
-										<tr>
-											<td class='center'>
-												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.SUPPSETBILL_ID}" class="ace" /><span class="lbl"></span></label>
-											</td>
-											<td class='center' style="width: 30px;">${vs.index+1}</td>
-											<td class='center'>${var.SUPPLIERCODE}</td>
-											<td class='center'>${var.SUPPLIERNAME}</td>
-											<td class='center'>${var.PHONE}</td>
-											<td class='center'>${var.CREATETIME}</td>
-											<td class='center'>${var.ADDRESS}</td>
-											<c:if test="${var.DISTRIBUTIONMODE == 1 }">
-											   <td class='center'>现金</td>
-											</c:if>
-											<c:if test="${var.DISTRIBUTIONMODE == 2 }">
-											   <td class='center'>月结</td>
-											</c:if>
-											<td class='center'>${var.PSI_NAME}</td>
-<%-- 											<td class='center'><a style="cursor:pointer;" onclick="consume('${var.SUPPSETBILL_ID}')">[查看消费记录]</a></td>
-											<td class='center'><a style="cursor:pointer;" onclick="chaImg('${var.SUPPSETBILL_ID}')">[查看跟踪记录]</a></td> --%>
-											<td class='center'>${var.NOTE}</td>
-											<td class="center">
-												<c:if test="${QX.edit != 1 && QX.del != 1 }">
-												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
-												</c:if>
-												<div class="hidden-sm hidden-xs btn-group">
-													<a class="btn btn-xs btn-success" title="查看" onclick="view('${var.SUPPSETBILL_ID}');">
-														<i class="ace-icon fa fa-eye bigger-120" title="查看"></i>
-													</a>
-													<c:if test="${QX.edit == 1 }">
-													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.SUPPSETBILL_ID}');">
+													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.SUPPSETBILL_ID}','${var.BILLSTATUS}');">
 														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
 													</a>
 													</c:if>
@@ -318,8 +212,30 @@
 						</table>
 						</div>
 						</form>
-					
 						</div>
+						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
+							<thead>
+								<tr>
+									<th class="center" style="width:35px;">
+									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
+									</th>
+									<th class="center" style="width:50px;">序号</th>
+									<th class="center">单据编号</th>
+									<th class="center">供应商</th>
+									<th class="center">总金额</th>
+									<th class="center">未付金额</th>
+									<th class="center">已付金额</th>
+									<th class="center">本次付款</th>
+									<th class="center">结算状态</th>
+									<th class="center">经手人</th>
+									<th class="center">备注</th>
+									<th class="center" style="width:110px;">操作</th>
+								</tr>
+							</thead>
+							<tbody id="realtbody">
+							
+							</tbody>
+						</table>
 						<!-- /.col -->
 					</div>
 					<!-- /.row -->
@@ -368,6 +284,8 @@
 
 		$(function() {
 		
+			
+			
 			//日期框
 			$('.date-picker').datepicker({
 				autoclose: true,
@@ -420,8 +338,8 @@
 			 diag.Drag=true;
 			 diag.Title ="新增";
 			 diag.URL = '<%=basePath%>suppsetbill/goAdd.do';
-			 diag.Width = 450;
-			 diag.Height = 555;
+			 diag.Width = 1200;
+			 diag.Height = 1000;
 			 diag.Modal = false;				//有无遮罩窗口
 			 diag. ShowMaxButton = true;	//最大化按钮
 		     diag.ShowMinButton = true;		//最小化按钮
@@ -453,48 +371,74 @@
 		}
 		
 		//修改
-		function edit(Id){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="编辑";
-			 diag.URL = '<%=basePath%>suppsetbill/goEdit.do?SUPPSETBILL_ID='+Id;
-			 diag.Width = 450;
-			 diag.Height = 555;
-			 diag.Modal = false;				//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮 
-			 diag.CancelEvent = function(){ //关闭事件
-				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 tosearch();
-				}
-				diag.close();
-			 };
-			 diag.show();
+		function edit(Id,status){
+			if(status != 2){
+				top.jzts();
+				 var diag = new top.Dialog();
+				 diag.Drag=true;
+				 diag.Title ="编辑";
+				 diag.URL = '<%=basePath%>suppsetbill/goEdit.do?SUPPSETBILL_ID='+Id;
+				 diag.Width = 1200;
+				 diag.Height = 1000;
+				 diag.Modal = false;				//有无遮罩窗口
+				 diag. ShowMaxButton = true;	//最大化按钮
+			     diag.ShowMinButton = true;		//最小化按钮 
+				 diag.CancelEvent = function(){ //关闭事件
+					 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+						 tosearch();
+					}
+					diag.close();
+				 };
+				 diag.show();
+			}else{//suppcheckbox
+				$("#suppcheckbox").tips({
+					side : 1,
+					msg : "该单据已审核，无法修改！",
+					bg : '#FF5080',
+					time : 5
+				});
+				return ;
+			}
+			
+			 
 		}
 		
-		//查看
-		function view(Id){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="查看";
-			 diag.URL = '<%=basePath%>suppsetbill/goView.do?SUPPSETBILL_ID='+Id;
-			 diag.Width = 450;
-			 diag.Height = 650;
-			 diag.Modal = false;				//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮 
-			 diag.CancelEvent = function(){ //关闭事件
-				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 tosearch();
+		//单张审批
+		function approvalone(Id,paidam){
+			if(paidam == 0.0 || paidam == 0){
+				$("#"+Id+" #approvalone").tips({
+					side:1,
+		            msg:'结算单实付金额不可为0,审批无效',
+		            bg:'#AE81FF',
+		            time:8
+		        });
+				return;
+			}
+			bootbox.confirm("确定要审批吗?", function(result) {
+				if(result) {
+					top.jzts();
+					$.ajax({
+						type: "POST",
+						url: '<%=basePath%>suppsetbill/approvalone.do?tm='+new Date().getTime(),
+				    	data: {SUPPSETBILL_ID:Id},
+						dataType:'json',
+						cache: false,
+						success: function(data){
+							 $.each(data.list, function(i, list){
+									tosearch();
+							 });
+						}
+					});
 				}
-				diag.close();
-			 };
-			 diag.show();
+			});
+			
 		}
 		//批量审批
 		function approvalAll(msg){
+			//1、获取结算单id
+			//2、根据结算单的进货单主键获取进货单表头
+			//3、先对当前快照做一份备份，为了后面反审用
+			//4、根据结算单的实付金额对进货单依次结算
 			bootbox.confirm(msg, function(result) {
 				if(result) {
 					var str = '';
@@ -502,6 +446,16 @@
 					  if(document.getElementsByName('ids')[i].checked){
 					  	if(str=='') str += document.getElementsByName('ids')[i].value;
 					  	else str += ',' + document.getElementsByName('ids')[i].value;
+					  	if($("#"+document.getElementsByName('ids')[i].value+" #PAYMENTAMOUNT").val() == 0.0 || $("#"+document.getElementsByName('ids')[i].value+" #PAYMENTAMOUNT").val() == 0){
+					  		var billcode = $("#"+document.getElementsByName('ids')[i].value+" #BILLCODE").val()
+					  		$("#zcheckbox").tips({
+								side:1,
+					            msg:'单据编号为'+billcode+'的结算单实付金额不可为0,审批无效',
+					            bg:'#AE81FF',
+					            time:8
+					        });
+							return;
+					  	}
 					  }
 					}
 					if(str==''){
@@ -525,7 +479,6 @@
 								url: '<%=basePath%>suppsetbill/approvalAll.do?tm='+new Date().getTime(),
 						    	data: {DATA_IDS:str},
 								dataType:'json',
-								//beforeSend: validateData,
 								cache: false,
 								success: function(data){
 									 $.each(data.list, function(i, list){
@@ -587,6 +540,130 @@
 		//导出excel
 		function toExcel(){
 			window.location.href='<%=basePath%>suppsetbill/excel.do';
+		}
+		
+		function clickaction(Id){
+			var status = $("#billstatus").val();
+			var settlestatus = "";
+			if(status == 1){
+				settlestatus = 2;
+			}else if(status == 2){
+				settlestatus = 1;
+			}
+			$.ajax({
+		        method:'POST',
+		        url:'inorder/inOrderlistForSupp',
+		        data:{SUPPLIER_ID:Id,ISSETTLEMENTED:settlestatus},
+		        dataType:'json',
+		        success: function (res) {
+		        	printinorderhtml(res);
+		        }
+		    });
+		}
+		function printinorderhtml(res){
+			var strhtml = "";
+            if(res.varList.length == 0){
+            	strhtml +="<tr class='main_info'>";
+            	strhtml +="<td colspan='100' class='center' >没有相关数据</td>";
+            	strhtml +="</tr>";
+            	
+            }else{
+            	for(var i = 0; i < res.varList.length; i++){
+	            	var html = "";
+            		if(res.QX.cha == 1){
+	            		html +="<tr id='"+res.varList[i].INORDER_ID+"'>";
+		            	html +="<td class='center'>";
+		            	html +="	<label class='pos-rel'><input type='checkbox' name='ids' value='"+res.varList[i].INORDER_ID+"' class='ace' /><span class='lbl'></span></label>";
+	            		html +="</td>";
+	            		html +="<td class='center' style='width: 30px;'>"+(i+1)+"</td>";
+	            		html +="<td class='center'>"+res.varList[i].BILLCODE+"</td>";
+	            		html +="<td class='center'>"+res.varList[i].SUPPLIERNAME+"</td>";
+	            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].ALLAMOUNT+"</td>";
+	            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
+	            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
+	            		html +="<td class='center' id='THISPAY'>"+res.varList[i].THISPAY+"</td>";
+	            		if(res.varList[i].ISSETTLEMENTED == 2){
+		            		html +="<td class='center' id='ISSETTLEMENTEDName'>结算中</td>";
+		            		html +="<td class='center' id='ISSETTLEMENTED' style='display:none' >2</td>";
+	            		}else if(res.varList[i].ISSETTLEMENTED == 1){
+	            			html +="<td class='center' id='ISSETTLEMENTEDName'>已结算</td>";
+	            			html +="<td class='center' id='ISSETTLEMENTED' style='display:none' >1</td>";
+	            		}else if(res.varList[i].ISSETTLEMENTED == 0){
+	            			html +="<td class='center' id='ISSETTLEMENTEDName'>未结算</td>";
+	            			html +="<td class='center' id='ISSETTLEMENTED' style='display:none' >0</td>";
+	            		}
+	            		html +="<td class='center'>"+res.varList[i].PSI_NAME+"</td>";
+	            		html +="<td class='center'>"+res.varList[i].NOTE+"</td>";
+	            		html +="<td class='center'>";
+	            		if(res.QX.edit != 1 && QX.del != 1){
+		            		html +="<span class='label label-large label-grey arrowed-in-right arrowed-in'><i class='ace-icon fa fa-lock' title='无权限'></i></span>";
+	            		}
+	            		if(res.QX.SUPPSETBILLSET == 1 ){
+		            		html += "	<div class='hidden-sm hidden-xs btn-group'> ";
+							html += "		<a class='btn btn-xs btn-success' title='结算' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].INORDER_ID+"');\"> ";
+							html += "			<i class='ace-icon fa fa-eye bigger-120' title='结算'></i> ";
+							html += "		</a> ";
+	            		}
+						if(res.QX.RETRIALINORDERINSUPPSET == 1){
+							html += "		<a class='btn btn-xs btn-success' title='反审' id='retrialInorder' onclick=\"retrial('"+res.varList[i].INORDER_ID+"');\"> ";
+							html += "			<i title='反审'>反审</i> ";
+							html += "		</a> ";
+						}
+						if(res.QX.del == 1){
+							html += "		<a class='btn btn-xs btn-danger' id='delInorder' onclick=\"del('"+res.varList[i].INORDER_ID+"');\" > ";
+							html += "			<i class='ace-icon fa fa-trash-o bigger-120' title='删除'></i> ";
+							html += "		</a> ";
+						}
+						html += "	</div> ";
+						html += "	<div class='hidden-md hidden-lg'> ";
+						html += "		<div class='inline pos-rel'> ";
+						html += "			<button class='btn btn-minier btn-primary dropdown-toggle' data-toggle='dropdown' data-position='auto'> ";
+						html += "				<i class='ace-icon fa fa-cog icon-only bigger-110'></i> ";
+						html += "			</button> ";
+						html += "";
+						html += "			<ul class='dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close'> ";
+						if(res.QX.SUPPSETBILLSET == 1){
+							html += "				<li> ";
+							html += "					<a style='cursor:pointer;' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].INORDER_ID+"');\" class='tooltip-success' data-rel='tooltip' title='结算'> ";
+							html += "						<span class='green'> ";
+							html += "							<i class='ace-icon fa fa-eye bigger-120'></i> ";
+							html += "						</span> ";
+							html += "					</a> ";
+							html += "				</li> ";
+						}
+						if(res.QX.RETRIALINORDERINSUPPSET == 1){
+							html += "				<li> ";
+							html += "					<a style='cursor:pointer;' id='retrialInorder' onclick='retrial('"+res.varList[i].INORDER_ID+"');' class='tooltip-success' data-rel='tooltip' title='反审'> ";
+							html += "						<span class='green'> ";
+							html += "							<i class='ace-icon fa fa-pencil-square-o bigger-120'></i> ";
+							html += "						</span> ";
+							html += "					</a> ";
+							html += "				</li> ";
+						}
+						if(res.QX.del == 1){
+							html += "				<li> ";
+							html += "					<a style='cursor:pointer;' id='delInorder' onclick='del('"+res.varList[i].INORDER_ID+"');' class='tooltip-error' data-rel='tooltip' title='删除'> ";
+							html += "						<span class='red'> ";
+							html += "							<i class='ace-icon fa fa-trash-o bigger-120'></i> ";
+							html += "						</span> ";
+							html += "					</a> ";
+							html += "				</li> ";
+						}
+						html += "			</ul> ";
+						html += "		</div> ";
+						html += "	</div> ";
+						html += " </td>";
+						html += " </tr>";
+	            	}else if(res.QX.cha == 0){
+	            		html += "<tr> ";
+	            		html += "	<td colspan='100' class='center'>您无权查看</td> ";
+					    html += "</tr> ";
+	            	}
+            		strhtml += html;
+	            }
+            }
+            $("#realtbody").html("");
+            $("#realtbody").html(strhtml);
 		}
 	</script>
 

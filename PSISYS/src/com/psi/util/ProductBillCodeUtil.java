@@ -50,7 +50,7 @@ public class ProductBillCodeUtil {
 		if(pe == null) {
 			return new String[] {BillType+comment_code,null};
 		}else {
-			return new String[] {comment_code,(String) pe.get("Code_ID")};
+			return new String[] {BillType+comment_code,(String) pe.get("Code_ID")};
 		}
 	}
 	public String subStr(String str,int start) {

@@ -20,7 +20,6 @@
 <link rel="stylesheet" href="static/ace/css/datepicker.css" />
 </head>
 <body class="no-skin">
-
 	<!-- /section:basics/navbar.layout -->
 	<div class="main-container" id="main-container">
 		<!-- /section:basics/sidebar -->
@@ -32,11 +31,17 @@
 						<!-- 检索  -->
 						<form action="suppsetbill/${msg }.do" method="post" name="Form" id="Form">
 						<!-- 检索  -->
+						<div id="zhongxin" style="padding-top: 13px;">
+						<input type="hidden" id="msg" name="msg" value="${msg}"   /> 
+						<input type="hidden" id="suppsetbill_id" name="suppsetbill_id" value="${pd.SUPPSETBILL_ID}"   /> 
 						<table style="margin-top:5px;">
 							<tr>
 								<td style="vertical-align:top;padding-left:2px;">
-									<c:if test="${QX.add == 1 }">
+									<c:if test="${QX.add == 1 && msg == 'save' }">
 									<a class="btn btn-mini btn-success" onclick="savesuppsetbill();">保存供应商结算单</a>
+									</c:if>
+									<c:if test="${QX.add == 1 && msg == 'edit' }">
+									<a class="btn btn-mini btn-success" onclick="editsuppsetbill();">保存供应商结算单</a>
 									</c:if>
 									<c:if test="${QX.del == 1 }">
 									<a class="btn btn-mini btn-danger" id="delalldata" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'>批量删除</i></a>
@@ -44,6 +49,7 @@
 									<c:if test="${QX.SUPPSETBILLSET == 1 }">
 									<a class="btn btn-mini btn-success" onclick="settleAll('确定要结算选中的数据吗?');" title="批量结算" >批量结算</a>
 									</c:if>
+									<a class="btn btn-mini btn-danger" onclick="top.Dialog.close();">取消</a>
 								</td>
 								
 							</tr>
@@ -58,13 +64,13 @@
 									<option value=""></option>
 								  	</select>
 								</td>
-								<c:if test="${msg == edit }">
-								<td style="width:90px;text-align: right;padding-top: 1px;">录单日期:</td>
+								<c:if test="${msg == 'edit' }">
+								<td style="width:90px;text-align: right;padding-top: 1px;" >录单日期:</td>
 								<td style="padding-left:2px;">${pd.LDATE}</td>
 								</c:if>
-								<c:if test="${msg == edit }">
+								<c:if test="${msg == 'edit' }">
 								<td style="width:90px;text-align: right;padding-top: 1px;">单据编号:</td>
-								<td><input type="text" name="BILLCODE" id="BILLCODE" value="${pd.BILLCODE }" maxlength="32" placeholder="这里输入单据编号" title="单据编号" style="width:98%;"  /></td>
+								<td><input type="text" name="BILLCODE" id="BILLCODE" value="${pd.BILLCODE }" maxlength="32" readonly="readonly" placeholder="这里输入单据编号" title="单据编号" style="width:98%;"  /></td>
 								</c:if>
 								
 								<td style="width:90px;text-align: right;padding-top: 1px;">经手人:</td>
@@ -130,8 +136,9 @@
 							</tbody>
 						</table>
 						
-						</form>
-						<Form id="reallyForm" type="hidden" ></Form>
+						
+						</div>
+						<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img src="static/images/jiazai.gif" /><br/><h4 class="lighter block green">提交中...</h4></div>
 						</div>
 						<!-- /.col -->
 					</div>
@@ -164,6 +171,7 @@
 	<!--提示框-->
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
 	<script type="text/javascript">
+	$(top.hangge());
 		var inorderitemmap = new Map(); //进货单每个子项目的html代码
         var allamountmap=new Map();  //总金额
         var unpaidamountmap=new Map(); //未付金额
@@ -171,6 +179,7 @@
         var supphaspaidamount=0.0;   //已结算进货单的总额 
         var settledinordermap = new Map();  //结过算的进货单主键 
         var settleList = [];//结算进货单的数据
+        var msg = "";
 		$(top.hangge());//关闭加载状态
 		//检索
 		function tosearch(){
@@ -180,6 +189,10 @@
 		$(window).on('load', function () {
 			var sid = $("#FROMUNIT").val();
 			var payid = $("#PAYMETHOD").val();
+			msg = $("#msg").val();
+			
+			
+			
 			//获取供应商列表
 		    $.ajax({
 		        method:'POST',
@@ -220,11 +233,21 @@
 		            $('#select_paymethod').chosen();//下拉框检索框架
 				}
 			});
+			
+		    if(msg == "edit"){
+		    	cleanvalue();
+				printrealtbody(4,sid); //结算状态只有3种，4代表0未结算 和 2结算中
+			}
+			
 		});
 		
 		$("#select_suppsetbill").on('change',function(e,params){
 			var sid = $("#select_suppsetbill").val();
-			cleanvalue();
+			cleanAllvalue();
+			printrealtbody(0,sid);//新增时，获取未结算（0）的进货单
+		});
+		
+		function printrealtbody(settlestatus,sid){
 			if(sid == 0){
 				$("#realtbody").html("");
 				var strhtml="";
@@ -236,16 +259,14 @@
 				$.ajax({
 			        method:'POST',
 			        url:'inorder/inOrderlistForSupp',
-			        data:{ISSETTLEMENTED:0,SUPPLIER_ID:sid},
+			        data:{ISSETTLEMENTED:settlestatus,SUPPLIER_ID:sid},
 			        dataType:'json',
 			        success: function (res) {
 			            var strhtml = "";
-
 			            if(res.varList.length == 0){
 			            	strhtml +="<tr class='main_info'>";
 			            	strhtml +="<td colspan='100' class='center' >没有相关数据</td>";
 			            	strhtml +="</tr>";
-			            	
 			            }else{
 			            	for(var i = 0; i < res.varList.length; i++){
 				            	var html = "";
@@ -261,7 +282,17 @@
 				            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
 				            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
 				            		html +="<td class='center' id='THISPAY'>"+res.varList[i].THISPAY+"</td>";
-				            		html +="<td class='center' id='ISSETTLEMENTED'>"+res.varList[i].ISSETTLEMENTED+"</td>";
+				            		
+				            		if(res.varList[i].ISSETTLEMENTED == 2){
+					            		html +="<td class='center' id='ISSETTLEMENTEDName'>结算中</td>";
+					            		html +="<td class='center' id='ISSETTLEMENTED' style='display:none' >2</td>";
+				            		}else if(res.varList[i].ISSETTLEMENTED == 1){
+				            			html +="<td class='center' id='ISSETTLEMENTEDName'>已结算</td>";
+				            			html +="<td class='center' id='ISSETTLEMENTED' style='display:none' >1</td>";
+				            		}else if(res.varList[i].ISSETTLEMENTED == 0){
+				            			html +="<td class='center' id='ISSETTLEMENTEDName'>未结算</td>";
+				            			html +="<td class='center' id='ISSETTLEMENTED' style='display:none' >0</td>";
+				            		}
 				            		html +="<td class='center'>"+res.varList[i].PSI_NAME+"</td>";
 				            		html +="<td class='center'>"+res.varList[i].NOTE+"</td>";
 				            		html +="<td class='center'>";
@@ -347,7 +378,7 @@
 			        }
 			    }); 
 			}
-		});
+		}
 		
 		$(function() {
 			$("#LDATE").attr("disabled","disabled");
@@ -443,71 +474,6 @@
 			});
 		});
 		
-		//新增
-		function add(){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="新增";
-			 diag.URL = '<%=basePath%>suppsetbill/goAdd.do';
-			 diag.Width = 450;
-			 diag.Height = 555;
-			 diag.Modal = false;				//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮
-			 diag.CancelEvent = function(){ //关闭事件
-				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 if('${page.currentPage}' == '0'){
-						 tosearch();
-					 }else{
-						 tosearch();
-					 }
-				}
-				diag.close();
-			 };
-			 diag.show();
-		}
-		//新增供应商
-		function addsuppsetbill(){
-			var url = "suppsetbill/goAdd.do";
-			siMenu('z211','lm211','添加供应商',url);
-		}
-				
-		//跟踪记录
-		function chaImg(SUPPLIER_ID){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="跟踪记录";
-			 diag.URL = '<%=basePath%>supplierimg/list.do?SUPPLIER_ID='+SUPPLIER_ID;
-			 diag.Width = 800;
-			 diag.Height = 600;
-			 diag.Modal = false;			//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮
-			 diag.CancelEvent = function(){ //关闭事件
-				diag.close();
-			 };
-			 diag.show();
-		}
-		
-		//消费记录
-		function consume(SUPPLIER_ID){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="消费记录";
-			 diag.URL = '<%=basePath%>outku/list.do?SUPPLIER_ID='+SUPPLIER_ID;
-			 diag.Width = 800;
-			 diag.Height = 600;
-			 diag.Modal = false;			//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮
-			 diag.CancelEvent = function(){ //关闭事件
-				diag.close();
-			 };
-			 diag.show();
-		}
 				
 		//删除进货单
 		function del(Id){
@@ -556,8 +522,8 @@
 			
 		}
 		
-		//清空数值   
-		function cleanvalue(){
+		//清空所有数值    新增时调用到
+		function cleanAllvalue(){
             $("#PAYABLEALLAM").val('');
 			$("#PAYMENTAMOUNT").val('');
 			$("#PAYABLEAMOUNT").val('');
@@ -565,6 +531,18 @@
 			$("#BILLNO").val('');
 			$("#PAYMETHOD").val('');
 			$("#NOTE").val('');
+			inorderitemmap.clear();
+			allamountmap.clear();
+			paidamoutmap.clear();
+			unpaidamountmap.clear();
+			settledinordermap.clear();
+			supphaspaidamount = 0.0;
+			settleList = [];
+		}
+		//清空除了实付金额的其他数值       修改时调用到
+		function cleanvalue(){
+            $("#PAYABLEALLAM").val('');
+            $("#PAYABLEAMOUNT").val('');
 			inorderitemmap.clear();
 			allamountmap.clear();
 			paidamoutmap.clear();
@@ -638,7 +616,7 @@
 			        		$("#"+Id+" #UNPAIDAMOUNT").html(unpaid-nextinordercanpaid);
 			        	    $("#"+Id+" #PAIDAMOUNT").html(paidamout+nextinordercanpaid);
 			        		$("#"+Id+" #THISPAY").html(nextinordercanpaid);
-			        		$("#"+Id+" #ISSETTLEMENTED").html(0);
+			        		$("#"+Id+" #ISSETTLEMENTED").html(2);
 			        		settledinordermap.set(Id,nosettle);
 			        		paidamoutmap.set(Id,paidamoutmap.get(Id)+nextinordercanpaid);
 			        		unpaidamountmap.set(Id,unpaidamountmap.get(Id)-nextinordercanpaid);
@@ -765,7 +743,7 @@
 										  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(id)-unpaid);
 							        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(id)+unpaid);
 							        	  $("#"+id+" #THISPAY").html(unpaid);
-							        	  $("#"+id+" #ISSETTLEMENTED").html(0);
+							        	  $("#"+id+" #ISSETTLEMENTED").html(2);
 							        	  paidamoutmap.set(id,paidamoutmap.get(id)+unpaid);
 							              unpaidamountmap.set(id,unpaidamountmap.get(id)-unpaid);
 							              settledinordermap.set(id,1);
@@ -773,7 +751,7 @@
 										  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(id)-canpaidamount);
 							        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(id)+canpaidamount);
 							        	  $("#"+id+" #THISPAY").html(canpaidamount);
-							        	  $("#"+id+" #ISSETTLEMENTED").html(0);
+							        	  $("#"+id+" #ISSETTLEMENTED").html(2);
 							              settledinordermap.set(id,0);
 							        	  paidamoutmap.set(id,paidamoutmap.get(id)+canpaidamount);
 							              unpaidamountmap.set(id,unpaidamountmap.get(id)-canpaidamount);
@@ -914,7 +892,7 @@
 			});
 		};
 		
-		
+		//新增保存
 		function savesuppsetbill(){
 			if($("#select_suppsetbill").val() == 0){
 				$("#select_suppsetbill_name").tips({
@@ -981,13 +959,14 @@
 				return ;
 			}
 			var settleInOrder_ID = "";
-			for(var key in settledinordermap){
+			settledinordermap.forEach(function(value, key){
 				if(settleInOrder_ID == ""){
-					settleInOrder_ID += settledinordermap[key];
+					settleInOrder_ID += "'"+key+"'";
 				}else{
-					settleInOrder_ID += ","+settledinordermap[key];
+					settleInOrder_ID += ",'"+key+"'";
 				}
-			}
+			});
+			
 			/* select_suppsetbill DISTRIBUTIONMODE INVOICETYPE BILLNO select_paymethod PAYABLEALLAM PAYABLEAMOUNT PAYMENTAMOUNT NOTE */
 			var FROMUNIT= $("#select_suppsetbill").val();
 			var DISTRIBUTIONMODE= $("#DISTRIBUTIONMODE").val();
@@ -998,12 +977,13 @@
 			var PAYABLEAMOUNT= $("#PAYABLEAMOUNT").val();
 			var PAYMENTAMOUNT= $("#PAYMENTAMOUNT").val();
 			var NOTE= $("#NOTE").val() == null ?"":$("#NOTE").val();
-			
+			$("#zhongxin").hide();
+			$("#zhongxin2").show();
 			$.ajax({
 				type: "POST",
 				url: '<%=basePath%>suppsetbill/save.do?tm='+new Date().getTime(),
 		    	data: {
-		    		SETTLEINORDER_IDS:settleInOrder_ID,
+		    		INORDER_IDS:settleInOrder_ID,
 		    		FROMUNIT:FROMUNIT,
 		    		DISTRIBUTIONMODE:DISTRIBUTIONMODE,
 		    		INVOICETYPE:INVOICETYPE,
@@ -1016,7 +996,127 @@
 		    	},
 				dataType:'json',
 				success: function(data){
-					 alert("1");
+					 if(data.msg=="success" || data.msg==""){
+						 top.Dialog.close();
+					 }
+					 if(data.msg=="error"){
+						 $("#zhongxin2").hide();
+					 }
+				}
+			});
+		}
+		//修改保存
+		function editsuppsetbill(){
+			if($("#select_suppsetbill").val() == 0){
+				$("#select_suppsetbill_name").tips({
+					side : 1,
+					msg : "请先选择供应商，然后对其进货单进行结算",
+					bg : '#FF5080',
+					time : 5
+				});
+				return ;
+			}
+			if(settledinordermap.size == 0){
+				$("#zcheckbox").tips({
+					side : 1,
+					msg : "请先对进货单进行结算",
+					bg : '#FF5080',
+					time : 5
+				});
+				return ;
+			}
+			if($("#select_paymethod").val() == 0){
+				$("#select_paymethod_name").tips({
+					side : 1,
+					msg : "请先选择供应商，然后对其进货单进行结算",
+					bg : '#FF5080',
+					time : 5
+				});
+				return ;
+			}
+			
+			if($("#PAYABLEALLAM").val() == 0){
+				$("#PAYABLEALLAM").tips({
+					side : 1,
+					msg : "应付总金额不可为空，请选择供应商进行结算",
+					bg : '#FF5080',
+					time : 5
+				});
+				return ;
+			}
+			if($("#PAYABLEAMOUNT").val() == 0){
+				$("#PAYABLEAMOUNT").tips({
+					side : 1,
+					msg : "应付金额不可为空，请选择供应商进行结算",
+					bg : '#FF5080',
+					time : 5
+				});
+				return ;
+			}
+			if($("#PAYMENTAMOUNT").val() == 0){
+				$("#PAYMENTAMOUNT").tips({
+					side : 1,
+					msg : "实付金额不可为空，请选择供应商进行结算",
+					bg : '#FF5080',
+					time : 5
+				});
+				return ;
+			}
+			if($("#DISTRIBUTIONMODE").val() == 0){
+				$("#DISTRIBUTIONMODE").tips({
+					side : 1,
+					msg : "经销方式不可为空",
+					bg : '#FF5080',
+					time : 5
+				});
+				return ;
+			}
+			var settleInOrder_ID = "";
+			settledinordermap.forEach(function(value, key){
+				if(settleInOrder_ID == ""){
+					settleInOrder_ID += "'"+key+"'";
+				}else{
+					settleInOrder_ID += ",'"+key+"'";
+				}
+			});
+			
+			/* select_suppsetbill DISTRIBUTIONMODE INVOICETYPE BILLNO select_paymethod PAYABLEALLAM PAYABLEAMOUNT PAYMENTAMOUNT NOTE */
+			var FROMUNIT= $("#select_suppsetbill").val();
+			var DISTRIBUTIONMODE= $("#DISTRIBUTIONMODE").val();
+			var INVOICETYPE= $("#INVOICETYPE").val()==null?"":$("#INVOICETYPE").val();
+			var BILLNO= $("#BILLNO").val()==null?"":$("#BILLNO").val();
+			var PAYMETHOD= $("#select_paymethod").val();
+			var PAYABLEALLAM= $("#PAYABLEALLAM").val();
+			var PAYABLEAMOUNT= $("#PAYABLEAMOUNT").val();
+			var PAYMENTAMOUNT= $("#PAYMENTAMOUNT").val();
+			var NOTE= $("#NOTE").val() == null ?"":$("#NOTE").val();
+			var suppsetbill_id = $("#suppsetbill_id").val();
+			$("#zhongxin").hide();
+			$("#zhongxin2").show();
+			$.ajax({
+				type: "POST",
+				url: '<%=basePath%>suppsetbill/edit.do?tm='+new Date().getTime(),
+		    	data: {
+		    		INORDER_IDS:settleInOrder_ID,
+		    		FROMUNIT:FROMUNIT,
+		    		DISTRIBUTIONMODE:DISTRIBUTIONMODE,
+		    		INVOICETYPE:INVOICETYPE,
+		    		BILLNO:BILLNO,
+		    		PAYMETHOD:PAYMETHOD,
+		    		PAYABLEALLAM:PAYABLEALLAM,
+		    		PAYABLEAMOUNT:PAYABLEAMOUNT,
+		    		PAYMENTAMOUNT:PAYMENTAMOUNT,
+		    		NOTE:NOTE,
+		    		SUPPSETBILL_ID:suppsetbill_id
+		    	},
+				dataType:'json',
+				success: function(data){
+					 if(data.msg=="success" || data.msg==""){
+						 top.Dialog.close();
+					 }
+					 if(data.msg=="error"){
+						 $("#zhongxin2").hide();
+					 }
 				}
 			});
 		}

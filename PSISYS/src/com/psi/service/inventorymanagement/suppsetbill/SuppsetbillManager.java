@@ -58,13 +58,20 @@ public interface SuppsetbillManager{
 	 * @param substring
 	 * @param string
 	 */
-	public void approvalAll(String substring, String string)throws Exception;
+	public void approvalAll(String[] ids)throws Exception;
 	/**
 	 * 批量结算
 	 * @param substring
 	 * @param string
 	 */
 	public void settleAll(String substring, String string)throws Exception;
+
+	/**
+	 * 单张审批
+	 * @param pd
+	 * @throws Exception
+	 */
+	public void approvalone(PageData pd)throws Exception;
 	
 	
 	

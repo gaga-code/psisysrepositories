@@ -55,16 +55,20 @@ public class SuppsetbillController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/save")
-	public ModelAndView save() throws Exception{
+	@ResponseBody
+	public Object save() {
 		logBefore(logger, Jurisdiction.getUsername()+"新增suppsetbill");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
-		ModelAndView mv = this.getModelAndView();
+		Map<String,Object> map = new HashMap<String,Object>();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		suppsetbillService.save(pd);
-		mv.addObject("msg","success");
-		mv.setViewName("save_result");
-		return mv;
+		try {
+			suppsetbillService.save(pd);
+			map.put("msg","success");
+		}catch(Exception e) {
+			map.put("msg","error");
+		}
+		return AppUtil.returnObject(new PageData(), map);
 	}
 	
 	/**删除
@@ -87,16 +91,20 @@ public class SuppsetbillController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/edit")
-	public ModelAndView edit() throws Exception{
+	@ResponseBody
+	public Object edit() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"修改suppsetbill");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
-		ModelAndView mv = this.getModelAndView();
+		Map<String,Object> map = new HashMap<String,Object>();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		suppsetbillService.edit(pd);
-		mv.addObject("msg","success");
-		mv.setViewName("save_result");
-		return mv;
+		try {
+			suppsetbillService.edit(pd);
+			map.put("msg","success");
+		}catch(Exception e) {
+			map.put("msg","error");
+		}
+		return AppUtil.returnObject(new PageData(), map);
 	}
 	
 	@Autowired
@@ -125,6 +133,11 @@ public class SuppsetbillController extends BaseController {
 		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
 			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
 		} 
+		String billstatus = pd.getString("billstatus");
+		if(billstatus == null) {
+			billstatus = "1";
+		}
+		pd.put("billstatus", billstatus);
 		page.setPd(pd);
 		
 		List<PageData>	suppSetList = suppsetbillService.list(page);	//列出suppsetbill列表
@@ -268,11 +281,7 @@ public class SuppsetbillController extends BaseController {
 		String DATA_IDS = pd.getString("DATA_IDS");
 		if(null != DATA_IDS && !"".equals(DATA_IDS)){
 			String[] ids = DATA_IDS.split(",");
-			StringBuffer idstr = new StringBuffer("");
-			for(int i=0;i<ids.length;i++) {
-				idstr.append("'"+ids[i]+"',");
-			}
-			suppsetbillService.approvalAll(idstr.toString().substring(0,idstr.toString().length()-1),(String)pd.get("PK_SOBOOKS"));
+			suppsetbillService.approvalAll(ids);
 			pd.put("msg", "ok");
 		}else{
 			pd.put("msg", "no");
@@ -281,6 +290,29 @@ public class SuppsetbillController extends BaseController {
 		map.put("list", pdList);
 		return AppUtil.returnObject(pd, map);
 	}
+	/**单张审批
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/approvalone")
+	@ResponseBody
+	public Object aapprovalone() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"单张审批suppsetbill");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		PageData pd = new PageData();		
+		Map<String,Object> map = new HashMap<String,Object>();
+		pd = this.getPageData();
+		try {
+			suppsetbillService.approvalone(pd);
+			map.put("msg", "success");
+		}catch(Exception e) {
+			map.put("msg", "error");
+		}
+		return AppUtil.returnObject(pd, map);
+	}
+	
+	
+	
 	/**批量结算
 	 * @param
 	 * @throws Exception

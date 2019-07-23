@@ -33,6 +33,58 @@
 		#{NOTE},	
 		#{PK_SOBOOKS}
 	</sql>
+	<sql id="InBodyAllField">
+		INORDERBODY_ID,    
+		INORDER_ID,        
+		GOODCODE_ID,       
+		PNUMBER,           
+		UNITPRICE_ID,      
+		AMOUNT,            
+		APPBILLNO,         
+		DEFAULTE,          
+		SETTEDNUMANDID,    
+		PK_SOBOOKS,        
+		DEF1,              
+		DEF2,              
+		DEF3,              
+		DEF4,              
+		DEF5,              
+		CREATETIME,        
+		LASTTIME,          
+		DR
+	</sql>
+	<sql id="InBodyAllFieldValue">
+		#{INORDERBODY_ID}, 
+		#{INORDER_ID},     
+		#{GOODCODE_ID},    
+		#{PNUMBER},         
+		#{UNITPRICE_ID},    
+		#{AMOUNT},          
+		#{APPBILLNO},       
+		#{DEFAULTE},        
+		#{SETTEDNUMANDID},  
+		#{PK_SOBOOKS},      
+		#{DEF1},            
+		#{DEF2},            
+		#{DEF3},            
+		#{DEF4},            
+		#{DEF5},            
+		#{CREATETIME},      
+		#{LASTTIME},        
+		#{DR}
+	</sql>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findInBodyById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="InBodyAllField"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			INORDERBODY_ID = #{INORDERBODY_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
 	
 	<!-- 新增-->
 	<insert id="save" parameterType="pd">

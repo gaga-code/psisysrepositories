@@ -150,6 +150,17 @@ public class InOrderService implements InOrderManager{
 		}*/
 		return list;
 	}
+	/**
+	 * 根据表头主键查询主子表 ，所有字段，备份时调用到
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public PageData findAllById(PageData pd)throws Exception{
+		PageData result =  (PageData)dao.findForObject("InOrderMapper.findAllById", pd);
+		result.put("goodslist", (List<PageData>)dao.findForList("InOrderBodyMapper.findInBodyById", pd));
+		return result;
+	}
 	
 	
 	/**列表(全部)
