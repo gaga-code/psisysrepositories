@@ -304,7 +304,7 @@ public class InOrderService implements InOrderManager{
 			idstr.append("'"+arrayDATA_IDS[i]+"',");
 		}
 		//表名和主键字段名
-		jdbcTempUtil.shenpiAll(idstr.toString().substring(0,idstr.toString().length()-1), (String)Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS), "psi_inorder", "BILLSTATUS");
+		jdbcTempUtil.shenpiAll(idstr.toString().substring(0,idstr.toString().length()-1), (String)Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS), "psi_inorder", "INORDER_ID");
 
 	}
 	
