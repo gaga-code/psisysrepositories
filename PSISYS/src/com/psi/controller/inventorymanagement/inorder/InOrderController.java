@@ -206,45 +206,7 @@ public class InOrderController extends BaseController {
 		map.put("msg", "success");
 		return AppUtil.returnObject(new PageData(), map);
 	}
-	/**结算单结算一张进货单功能
-	 * @param
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/settleOneInOrder")
-	@ResponseBody
-	public Object settleOneInOrder(){
-		logBefore(logger, Jurisdiction.getUsername()+"修改inorder");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
-		Map<String,Object> map = new HashMap<String,Object>();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		try {
-			pd = inOrderService.settleOneInOrder(pd);
-		}catch(Exception e) {
-			map.put("msg", "error");
-		}
-		map.put("msg", "success");
-		map.put("pd", pd);
-		return AppUtil.returnObject(new PageData(), map);
-	}
-	@RequestMapping(value="/settleAllInOrder")
-	@ResponseBody
-	public Object settleAllInOrder() {
-		logBefore(logger, Jurisdiction.getUsername()+"修改inorder");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
-		Map<String,Object> map = new HashMap<String,Object>();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		List<HashMap> varList = new ArrayList<HashMap>();
-		try {
-			varList = inOrderService.settleAllInOrder(pd);
-		}catch(Exception e) {
-			map.put("msg", "error");
-		}
-		map.put("msg", "success");
-		map.put("varList", varList);
-		return AppUtil.returnObject(new PageData(), map);
-	}
+
 	
 	
 	/**列表
@@ -280,18 +242,13 @@ public class InOrderController extends BaseController {
 	 */
 	@RequestMapping(value="/inOrderlistForSupp")
 	@ResponseBody
-	public Object inOrderlistForSupp(Page page) throws Exception{
+	public Object inOrderlistForSupp() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表inorder");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		Map<String,Object> map = new HashMap<String,Object>();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String keywords = pd.getString("keywords");				//关键词检索条件
-		if(null != keywords && !"".equals(keywords)){
-			pd.put("keywords", keywords.trim());
-		}
-		page.setPd(pd);
-		List<PageData>	varList = inOrderService.listForSuppset(page);	//列出inorder列表
+		List<PageData>	varList = inOrderService.listForSuppset(pd);	//列出inorder列表
 		map.put("varList", varList);
 		map.put("QX", Jurisdiction.getHC()); //按钮权限
 		return  AppUtil.returnObject(new PageData(), map);

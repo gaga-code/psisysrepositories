@@ -60,4 +60,5 @@ public class JdbcTempUtil {
 	public void update(String sql) {
 		jdbcTemplate.execute(sql);
 	}
+	
 }

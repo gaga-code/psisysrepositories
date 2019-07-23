@@ -144,36 +144,21 @@
 	
 	
 	<!-- 结算一张进货单 -->
-	<update id="settleOneInOrder" parameterType="pd"  >
+	<update id="updateForSettle" parameterType="pd"  >
 		update
 		<include refid="tableName"></include>
 		set 
 			UNPAIDAMOUNT = #{UNPAIDAMOUNT},
 			THISPAY = #{THISPAY},
 			PAIDAMOUNT = #{PAIDAMOUNT},
-			ISSETTLEMENTED = #{ISSETTLEMENTED}
+			ISSETTLEMENTED = #{ISSETTLEMENTED},
+			SETTEDNUMANDID = #{SETTEDNUMANDID}
 		where 
 		    INORDER_ID = #{INORDER_ID}
 		and PK_SOBOOKS = #{PK_SOBOOKS}
 		and IFNULL(dr,0)=0
 	</update>
 	
-	<!-- 批量结算进货单 -->
-<!-- 	<update id="batchSettleInOrder" parameterType="java.util.List">
-		<foreach collection="list" item="map" >
-			update
-				<include refid="tableName"></include>	
-			<set>
-			    UNPAIDAMOUNT = #{map.UNPAIDAMOUNT},
-				THISPAY = #{map.THISPAY},
-				PAIDAMOUNT = #{map.PAIDAMOUNT},
-				ISSETTLEMENTED = #{map.ISSETTLEMENTED}
-			</set>
-				where INORDER_ID = #{map.INORDER_ID}
-				and PK_SOBOOKS = #{map.PK_SOBOOKS}
-				and IFNULL(dr,0)=0
-		</foreach>
-	</update> -->
 	
 	<!-- 通过ID获取数据 -->
 	<select id="findById" parameterType="pd" resultType="pd">
@@ -214,6 +199,17 @@
 		    and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
 	</select>
+	<select id="listForBySuppsetId" parameterType="pd" resultType="pd" >
+		select 
+			<include refid="InAllField"></include>
+		from
+		 <include refid="tableName"></include>
+		where 
+			 SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
@@ -307,6 +303,28 @@
 			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
 		</if>	
 		and a.BILLSTATUS = 2
+	</select>
+	
+	<select id="findByInOrderId" parameterType="pd" resultType="pd">
+		select
+			a.INORDER_ID,
+			a.BILLCODE,
+			b.SUPPLIERNAME SUPPLIERNAME,
+			a.ALLAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.PAIDAMOUNT,
+			a.THISPAY,
+			a.ISSETTLEMENTED,
+			a.USER_ID,
+			a.NOTE
+		from 
+		<include refid="tableName"></include>a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		and a.INORDER_ID = #{INORDER_ID}
 	</select>
 	
 	<!-- 列表(全部) -->

@@ -51,7 +51,7 @@
 								<td style="vertical-align:top;padding-left:2px;">
 								 	<select  name="billstatus" id="billstatus" data-placeholder="请选择" style="vertical-align:top;width: 120px;">
 									<option value="">全部</option>								 	
-									<option value="1"  selected = "selected">未审核</option>
+									<option value="1" >未审核</option>
 									<option value="2">已审核</option>
 								  	</select>
 								</td>
@@ -109,7 +109,7 @@
 								<c:when test="${not empty suppSetList}">
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${suppSetList}" var="var" varStatus="vs">
-										<tr id="${var.SUPPSETBILL_ID}" onclick=clickaction('${var.FROMUNIT}') >
+										<tr id="${var.SUPPSETBILL_ID}" onclick=clickaction('${var.SUPPSETBILL_ID}') >
 											<td class='center'>
 												<label class="pos-rel"><input type='checkbox' name='ids' id="suppcheckbox" value="${var.SUPPSETBILL_ID}" class="ace" /><span class="lbl"></span></label>
 											</td>
@@ -280,11 +280,12 @@
 		function tosearch(){
 			top.jzts();
 			$("#Form").submit();
+			
 		}
 
 		$(function() {
 		
-			
+			$("#billstatus option[text='未审核']").attr("selected", true); 
 			
 			//日期框
 			$('.date-picker').datepicker({
@@ -424,9 +425,23 @@
 						dataType:'json',
 						cache: false,
 						success: function(data){
-							 $.each(data.list, function(i, list){
-									tosearch();
-							 });
+							if(data.msg == "success"){
+								$("#"+Id+" #approvalone").tips({
+									side:1,
+						            msg:'审批成功',
+						            bg:'#AE81FF',
+						            time:8
+						        });
+								tosearch();
+							}else if(data.msg == "error"){
+								$("#"+Id+" #approvalone").tips({
+									side:1,
+						            msg:'审批失败',
+						            bg:'#AE81FF',
+						            time:8
+						        });
+								return;
+							}
 						}
 					});
 				}
@@ -473,7 +488,7 @@
 						return;
 					}else{
 						if(msg == '确定要审批选中的数据吗?'){
-							top.jzts();
+							/* top.jzts(); */
 							$.ajax({
 								type: "POST",
 								url: '<%=basePath%>suppsetbill/approvalAll.do?tm='+new Date().getTime(),
@@ -481,9 +496,12 @@
 								dataType:'json',
 								cache: false,
 								success: function(data){
-									 $.each(data.list, function(i, list){
-											tosearch();
-									 });
+									if(data.msg == "success"){
+										tosearch();
+									}else if(data.msg == "error"){
+										alert("审批失败")
+										return;
+									}
 								}
 							});
 						}
@@ -542,18 +560,11 @@
 			window.location.href='<%=basePath%>suppsetbill/excel.do';
 		}
 		
-		function clickaction(Id){
-			var status = $("#billstatus").val();
-			var settlestatus = "";
-			if(status == 1){
-				settlestatus = 2;
-			}else if(status == 2){
-				settlestatus = 1;
-			}
+		function clickaction(SuppsetBill_Id){
 			$.ajax({
 		        method:'POST',
 		        url:'inorder/inOrderlistForSupp',
-		        data:{SUPPLIER_ID:Id,ISSETTLEMENTED:settlestatus},
+		        data:{SUPPSETBILL_ID:SuppsetBill_Id},
 		        dataType:'json',
 		        success: function (res) {
 		        	printinorderhtml(res);

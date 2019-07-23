@@ -277,17 +277,18 @@ public class SuppsetbillController extends BaseController {
 		PageData pd = new PageData();		
 		Map<String,Object> map = new HashMap<String,Object>();
 		pd = this.getPageData();
-		List<PageData> pdList = new ArrayList<PageData>();
-		String DATA_IDS = pd.getString("DATA_IDS");
-		if(null != DATA_IDS && !"".equals(DATA_IDS)){
-			String[] ids = DATA_IDS.split(",");
-			suppsetbillService.approvalAll(ids);
-			pd.put("msg", "ok");
-		}else{
-			pd.put("msg", "no");
+		try{
+			String DATA_IDS = pd.getString("DATA_IDS");
+			if(null != DATA_IDS && !"".equals(DATA_IDS)){
+				String[] ids = DATA_IDS.split(",");
+				suppsetbillService.approvalAll(ids);
+				map.put("msg", "success");
+			}else{
+				map.put("msg", "error");
+			}
+		}catch(Exception e) {
+			map.put("msg", "error");
 		}
-		pdList.add(pd);
-		map.put("list", pdList);
 		return AppUtil.returnObject(pd, map);
 	}
 	/**单张审批

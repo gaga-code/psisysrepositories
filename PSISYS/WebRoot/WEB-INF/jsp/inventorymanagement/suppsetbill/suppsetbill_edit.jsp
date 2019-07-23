@@ -505,6 +505,11 @@
 			$('#realtbody').html("");
 			$('#realtbody').html(strhtml);
 			compu();
+			var unpaidam=0.0;
+            unpaidamountmap.forEach(function(value, key) {
+            	unpaidam += value;
+			});
+            $("#PAYABLEAMOUNT").val(unpaidam);
 		}
 		//统计额度
 		function compu(){
@@ -518,7 +523,7 @@
 			});
            
             $("#PAYABLEALLAM").val(allam);
-			/* $("#PAYMENTAMOUNT").val(paidam); */
+			/* $("#PAYABLEAMOUNT").val(paidam); */
 			
 		}
 		
@@ -736,27 +741,29 @@
 						}else{
 							if(msg == '确定要结算选中的数据吗?'){
 								for(var i=0;i < document.getElementsByName('ids').length;i++){
-									  var id = document.getElementsByName('ids')[i].value;
-									  var unpaid = unpaidamountmap.get(id);
-									  if(canpaidamount >= unpaid){//可结算的单
-										  canpaidamount -= unpaid;
-										  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(id)-unpaid);
-							        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(id)+unpaid);
-							        	  $("#"+id+" #THISPAY").html(unpaid);
-							        	  $("#"+id+" #ISSETTLEMENTED").html(2);
-							        	  paidamoutmap.set(id,paidamoutmap.get(id)+unpaid);
-							              unpaidamountmap.set(id,unpaidamountmap.get(id)-unpaid);
-							              settledinordermap.set(id,1);
-									  }else{//不可结算
-										  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(id)-canpaidamount);
-							        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(id)+canpaidamount);
-							        	  $("#"+id+" #THISPAY").html(canpaidamount);
-							        	  $("#"+id+" #ISSETTLEMENTED").html(2);
-							              settledinordermap.set(id,0);
-							        	  paidamoutmap.set(id,paidamoutmap.get(id)+canpaidamount);
-							              unpaidamountmap.set(id,unpaidamountmap.get(id)-canpaidamount);
-										  break;
-									  }
+									if(document.getElementsByName('ids')[i].checked){
+										  var id = document.getElementsByName('ids')[i].value;
+										  var unpaid = unpaidamountmap.get(id);
+										  if(canpaidamount >= unpaid){//可结算的单
+											  canpaidamount -= unpaid;
+											  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(id)-unpaid);
+								        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(id)+unpaid);
+								        	  $("#"+id+" #THISPAY").html(unpaid);
+								        	  $("#"+id+" #ISSETTLEMENTED").html(2);
+								        	  paidamoutmap.set(id,paidamoutmap.get(id)+unpaid);
+								              unpaidamountmap.set(id,unpaidamountmap.get(id)-unpaid);
+								              settledinordermap.set(id,1);
+										  }else{//不可结算
+											  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(id)-canpaidamount);
+								        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(id)+canpaidamount);
+								        	  $("#"+id+" #THISPAY").html(canpaidamount);
+								        	  $("#"+id+" #ISSETTLEMENTED").html(2);
+								              settledinordermap.set(id,0);
+								        	  paidamoutmap.set(id,paidamoutmap.get(id)+canpaidamount);
+								              unpaidamountmap.set(id,unpaidamountmap.get(id)-canpaidamount);
+											  break;
+										  }
+									}
 								}
 								compu();
 								supphaspaidamount += canback;
@@ -886,6 +893,11 @@
 							$('#realtbody').html("");
 							$('#realtbody').html(strhtml);
 							compu();
+							var unpaidam=0.0;
+				            unpaidamountmap.forEach(function(value, key) {
+				            	unpaidam += value;
+							});
+				            $("#PAYABLEAMOUNT").val(unpaidam);
 						}
 					}
 				}

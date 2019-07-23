@@ -104,6 +104,19 @@
 		where 
 			SUPPSETBILL_ID = #{SUPPSETBILL_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</update>
+	<!-- 删除-->
+	<update id="updateForSettle" parameterType="pd">
+		update 
+		<include refid="tableName"></include>
+		set
+			SETTEDNUMANDID = #{SETTEDNUMANDID},
+			BILLSTATUS = #{BILLSTATUS}
+		where 
+			SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
 	</update>
 	
 	<!-- 修改 -->

@@ -35,10 +35,18 @@ public interface InOrderManager{
 	 */
 	public List<PageData> list(Page page)throws Exception;
 	/**列表
-	 * @param page
+	 * @param pd
 	 * @throws Exception
 	 */
-	public List<PageData> listForSuppset(Page page)throws Exception;
+	public List<PageData> listForSuppset(PageData pd)throws Exception;
+	
+	/**
+	 * 根据供应商结算单主键获取其进货单，只有结算才会有
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> listForBySuppsetId(PageData pd)throws Exception;
 	
 	/**列表(全部)
 	 * @param pd
@@ -64,20 +72,6 @@ public interface InOrderManager{
      */
 	public void retrialInorder(PageData pd)throws Exception;
 
-	/**
-     * 结算单结算进货单功能
-     * @param pd
-     * @throws Exception
-     */
-	public PageData settleOneInOrder(PageData pd)throws Exception;
-
-	/**
-	 * 结算单批量结算进货单功能
-	 * @param pd
-	 * @return
-	 * @throws Exception
-	 */
-	public List<HashMap> settleAllInOrder(PageData pd)throws Exception;
 	
 	/**审批
 	 * @param pd
@@ -96,6 +90,21 @@ public interface InOrderManager{
 	 * @throws Exception
 	 */
 	public void fanshenAll(String[] arrayDATA_IDS)throws Exception;
+
+	/**
+	 * 
+	 * @param inorderandbodylist
+	 * @throws Exception
+	 */
+	public void settleInOrders(List<PageData> inorderandbodylist)throws Exception;
+
+	/**
+	 * 根据表头主键查询主子表 ，所有字段，备份时调用到
+	 * @param inorderandbody
+	 * @return
+	 * @throws Exception
+	 */
+	public PageData findAllById(PageData inorderandbody)throws Exception;
 	
 }
 

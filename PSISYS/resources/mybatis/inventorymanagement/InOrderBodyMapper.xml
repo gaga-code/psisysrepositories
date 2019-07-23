@@ -41,7 +41,7 @@
 		UNITPRICE_ID,      
 		AMOUNT,            
 		APPBILLNO,         
-		DEFAULTE,          
+		NOTE,          
 		SETTEDNUMANDID,    
 		PK_SOBOOKS,        
 		DEF1,              
@@ -61,7 +61,7 @@
 		#{UNITPRICE_ID},    
 		#{AMOUNT},          
 		#{APPBILLNO},       
-		#{DEFAULTE},        
+		#{NOTE},        
 		#{SETTEDNUMANDID},  
 		#{PK_SOBOOKS},      
 		#{DEF1},            
@@ -81,7 +81,7 @@
 		from 
 		<include refid="tableName"></include>
 		where 
-			INORDERBODY_ID = #{INORDERBODY_ID}
+			INORDER_ID = #{INORDER_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(DR,0)=0
 	</select>
@@ -105,6 +105,16 @@
 		where 
 			INORDER_ID = #{INORDER_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	<!-- 删除-->
+	<update id="updatebodysettleid" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set SETTEDNUMANDID = #{SETTEDNUMANDID}
+		where 
+			INORDERBODY_ID = #{INORDERBODY_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
 	</update>
 	
 	<!-- 修改 -->

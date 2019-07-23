@@ -1,6 +1,7 @@
 package com.psi.service.inventorymanagement.suppsetbill.impl;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 import com.psi.dao.DaoSupport;
 import com.psi.entity.Page;
 import com.psi.entity.PsiBillCode;
+import com.psi.service.inventorymanagement.inorder.InOrderManager;
 import com.psi.service.inventorymanagement.inorder.impl.InOrderService;
+import com.psi.service.inventorymanagement.inorderandsuppsetback.InOrderAndSuppsetBackManager;
 import com.psi.service.inventorymanagement.suppsetbill.SuppsetbillManager;
 import com.psi.service.system.BillCodePsi.BillCodeManager;
 import com.psi.util.Const;
@@ -36,8 +39,9 @@ public class SuppsetbillService implements SuppsetbillManager{
 	@Resource(name="billCodeService")
 	private BillCodeManager billCodeService;
 	@Resource(name="inOrderService")
-	private InOrderService inOrderService;
-	
+	private InOrderManager inOrderService;
+	@Resource(name="inOrderAndSuppsetBackService")
+	private InOrderAndSuppsetBackManager  inOrderAndSuppsetBackService;
 	/**新增
 	 * @param pd
 	 * @throws Exception
@@ -133,20 +137,12 @@ public class SuppsetbillService implements SuppsetbillManager{
 	 * PK_SOBOOKS  帐套主键
 	 */
 	public void approvalAll(String[] ids)throws Exception {
-		//1、获取结算单id
-		//2、根据结算单的进货单主键获取进货单表头
+		
 		for(int i = 0; i < ids.length; i++) {
 			PageData pd = new PageData();
 			pd.put("SUPPSETBILL_ID", ids[i]);
-			pd = (PageData)dao.findForObject("SuppsetbillMapper.findById", pd);
-			String inorder_ids = pd.getString("INORDER_IDS");
-			
+			approvalone(pd);
 		}
-		
-		//3、先对当前快照做一份备份，为了后面反审用
-		//4、根据结算单的实付金额对进货单依次结算
-		
-		
 	}
 	/**
 	 * 
@@ -161,21 +157,78 @@ public class SuppsetbillService implements SuppsetbillManager{
 
 	/**
 	 * 单张审批
+	 * 1、获取结算单id
+	 * 2、根据结算单的进货单主键获取进货单表头
+	 * 3、先对当前快照做一份备份，为了后面反审用
+	 * 4、根据结算单的实付金额对进货单依次结算
 	 * @param pd
 	 * @throws Exception
 	 */
 	public void approvalone(PageData pd) throws Exception {
+		
+		//================================================================1、进行备份===========================================================//
+		//查找结算单
 		pd = (PageData)dao.findForObject("SuppsetbillMapper.findById", pd);
 		String inorder_ids = pd.getString("INORDER_IDS");
 		String[] ioids = inorder_ids.split(",");
+//		List<>
+		List<PageData> inorderandbodylist = new ArrayList<PageData>();
 		for(int i = 0 ; i < ioids.length; i++) {
-			System.out.println(ioids[i]);
 			PageData inorderandbody = new PageData();
 			inorderandbody.put("INORDER_ID",ioids[i].substring(1, ioids[i].length()-1) );
-			inorderandbody = inOrderService.findById(inorderandbody);
+			inorderandbody = inOrderService.findAllById(inorderandbody);
 			
+			//备份进货单明细
+			List<PageData> inorderbodylist = (List<PageData>) inorderandbody.get("goodslist");
+			for(int j = 0; j<inorderbodylist.size();j++) {
+				inorderbodylist.get(j).put("INORDERBODYBACK_ID", UuidUtil.get32UUID());
+				inOrderAndSuppsetBackService.saveinbodyback(inorderbodylist.get(j));
+			}
+			inorderandbody.put("goodslist", inorderbodylist);
+			//备份进货单表头
+			inorderandbody.put("INORDERBACK_ID",  UuidUtil.get32UUID());
+			inOrderAndSuppsetBackService.saveinback(inorderandbody);
+			inorderandbodylist.add(inorderandbody);
 		}
-		
+		//备份结算单
+		String suppsetid = UuidUtil.get32UUID();
+		pd.put("SUPPSETBILLBACK_ID", suppsetid);
+		inOrderAndSuppsetBackService.savesuppback(pd);
+		//================================================================2、根据实付金额依次对进货单进行结算===========================================================//
+		Double thispay = (Double) pd.get("PAYMENTAMOUNT");//本次结算的实付金额
+		for(int k  = 0; k < inorderandbodylist.size(); k++) {
+			PageData headpd = inorderandbodylist.get(k);
+			String settleNum = (headpd.get("SETTEDNUMANDID") == null || "".equals(headpd.get("SETTEDNUMANDID")) )?"1":"2";
+			Double unpay = (Double)headpd.get("UNPAIDAMOUNT");
+			if(thispay >= unpay) {//全部结算完，状态为“已结算”
+				headpd.put("PAIDAMOUNT",(Double)headpd.get("PAIDAMOUNT") + unpay);
+				headpd.put("THISPAY",unpay);
+				headpd.put("UNPAIDAMOUNT", 0);
+				headpd.put("ISSETTLEMENTED", 1);
+				headpd.put("SETTEDNUMANDID",settleNum+"|"+headpd.get("INORDERBACK_ID") );
+				thispay -= unpay;
+			}else {//部分结算，状态为“未结算”
+				headpd.put("PAIDAMOUNT",(Double)headpd.get("PAIDAMOUNT") + thispay );
+				headpd.put("THISPAY",thispay);
+				headpd.put("UNPAIDAMOUNT", unpay-thispay);
+				headpd.put("ISSETTLEMENTED", 0);
+				headpd.put("SETTEDNUMANDID",settleNum+"|"+headpd.get("INORDERBACK_ID") );
+			}
+			//进货单的表体明细
+			List<PageData> inorderbodylist = (List<PageData>) headpd.get("goodslist");
+			for(int j = 0; j<inorderbodylist.size();j++) {
+				PageData bodypd = inorderbodylist.get(j);
+				bodypd.put("SETTEDNUMANDID", settleNum+"|"+bodypd.get("INORDERBODYBACK_ID"));
+				//更新表体的SETTEDNUMANDID字段
+				dao.update("InOrderBodyMapper.updatebodysettleid", bodypd);
+			}
+			//更新进货单表头
+			dao.update("InOrderMapper.updateForSettle", headpd);
+		}
+		//================================================================3、对结算单进行处理===========================================================//
+		pd.put("SETTEDNUMANDID", pd.get("SUPPSETBILLBACK_ID"));
+		pd.put("BILLSTATUS", "2");
+		dao.update("SuppsetbillMapper.updateForSettle", pd);
 	}
 	
 }

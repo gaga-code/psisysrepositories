@@ -94,6 +94,32 @@ public class InOrderService implements InOrderManager{
 		dao.update("InOrderMapper.delete", pd);
 		dao.update("InOrderBodyMapper.delete", pd);
 	}
+	/**
+	 * 批量结算进货单
+	 */
+	@Override
+	public void settleInOrders(List<PageData> inorderandbodylist) throws Exception {
+		for(int i = 0; i < inorderandbodylist.size(); i++) {
+			PageData pd = inorderandbodylist.get(i);
+			dao.update("InOrderMapper.updateForSettle", pd);
+		}
+		
+	}
+	
+	/**
+	 * 根据供应商结算单主键获取其进货单，只有结算才会有
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public List<PageData> listForBySuppsetId(PageData pd) throws Exception {
+		List<PageData> list = (List<PageData>)dao.findForList("InOrderMapper.listForBySuppsetId", pd);
+		for(int i = 0; i < list.size(); i++) {
+			list.get(i).put("bodylist", (List<PageData>)dao.findForList("InOrderBodyMapper.findById", list.get(i)));
+		}
+		return list;
+	}
 	
 	/**修改
 	 * @param pd
@@ -139,15 +165,16 @@ public class InOrderService implements InOrderManager{
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public List<PageData> listForSuppset(Page page)throws Exception{
-		List<PageData> list = (List<PageData>)dao.findForList("InOrderMapper.datalistPageBySuppset", page);
-		/*for(int i = 0; i < list.size(); i++) {
-			PageData pd = new PageData();
-			pd.put("PK_SOBOOKS", list.get(i).get("PK_SOBOOKS"));
-			pd.put("ISSETTLEMENTED", 2);//更改进货单状态，表示当前进货已处于结算中状态
-			pd.put("INORDER_ID",list.get(i).get("INORDER_ID"));
-			dao.update("InOrderMapper.updateSettleStatus", pd);
-		}*/
+	public List<PageData> listForSuppset(PageData pd)throws Exception{
+		pd = (PageData)dao.findForObject("SuppsetbillMapper.findById", pd);
+		String inorder_ids  = (String) pd.get("INORDER_IDS");
+		String[] ioids = inorder_ids.split(",");
+		List<PageData> list = new ArrayList<PageData>();
+		for(int i = 0 ; i < ioids.length; i++) {
+			PageData inorderandbody = new PageData();
+			inorderandbody.put("INORDER_ID",ioids[i].substring(1, ioids[i].length()-1) );
+			list.add((PageData)dao.findForObject("InOrderMapper.findByInOrderId", inorderandbody));
+		}
 		return list;
 	}
 	/**
@@ -158,7 +185,8 @@ public class InOrderService implements InOrderManager{
 	 */
 	public PageData findAllById(PageData pd)throws Exception{
 		PageData result =  (PageData)dao.findForObject("InOrderMapper.findAllById", pd);
-		result.put("goodslist", (List<PageData>)dao.findForList("InOrderBodyMapper.findInBodyById", pd));
+		List<PageData> list = (List<PageData>)dao.findForList("InOrderBodyMapper.findInBodyById", pd);
+		result.put("goodslist", list );
 		return result;
 	}
 	
