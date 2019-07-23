@@ -23,33 +23,37 @@
 				<div class="row">
 					<div class="col-xs-12">
 					
-					<form action="accountset/${msg }.do" name="Form" id="Form" method="post">
-						<input type="hidden" name="FHBUTTON_ID" id="FHBUTTON_ID" value="${pd.FHBUTTON_ID}"/>
+					<form action="warehouse/${msg }.do" name="Form" id="Form" method="post">
+						<input type="hidden" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WAREHOUSE_ID}"/>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;">仓库/货位编号:</td>
-								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入企业名称" title="企业名称" style="width:98%;"/></td>
+								<td><input type="text" name="WAREHOUSECODE" id="WAREHOUSECODE" value="${pd.WAREHOUSECODE}" maxlength="30"  style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;">仓库/货位名称:</td>
-								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入电话" title="电话" style="width:98%;"/></td>
+								<td><input type="text" name="WHNAME" id="WHNAME" value="${pd.WHNAME}" maxlength="30" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;">拼音编码:</td>
-								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入传真" title="传真" style="width:98%;"/></td>
+								<td><input type="text" name="YICODE" id="YICODE" value="${pd.YICODE}" maxlength="30" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;">位置:</td>
-								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入邮编" title="邮编" style="width:98%;"/></td>
+								<td><input type="text" name="POSITION" id="POSITION" value="${pd.POSITION}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
-							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">所属分支:</td>
-								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入法人代表" title="法人代表" style="width:98%;"/></td>
-							</tr>
+<!-- 							<tr> -->
+<!-- 								<td style="width:79px;text-align: right;padding-top: 13px;">所属分支:</td> -->
+<%-- 								<td><input type="text" name="SUBBRANCH" id="SUBBRANCH" value="${pd.SUBBRANCH}" maxlength="30" placeholder="这里输入法人代表" title="法人代表" style="width:98%;"/></td> --%>
+<!-- 							</tr> -->
 							<tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;">说明:</td>
-								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入电子邮件" title="电子邮件" style="width:98%;"/></td>
+								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="30"  style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:79px;text-align: right;padding-top: 13px;">经手人:</td>
+								<td><input type="text"   value="${pd.PSI_NAME}" maxlength="30"  style="width:98%;" readonly="readonly"/></td>
 							</tr>
 							<tr>
 								<td style="text-align: center;" colspan="10">

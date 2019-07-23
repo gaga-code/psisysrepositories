@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.shiro.session.Session;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -21,8 +22,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
+import com.psi.entity.system.User;
+import com.psi.service.basedata.warehouse.WarehouseManager;
 import com.psi.service.system.fhbutton.FhbuttonManager;
 import com.psi.util.AppUtil;
+import com.psi.util.Const;
 import com.psi.util.Jurisdiction;
 import com.psi.util.ObjectExcelView;
 import com.psi.util.PageData;
@@ -35,8 +39,8 @@ import com.psi.util.PageData;
 public class WarehouseController extends BaseController {
 	
 	String menuUrl = "warehouse/list.do"; //菜单地址(权限用)
-	@Resource(name="fhbuttonService")
-	private FhbuttonManager fhbuttonService;
+	@Resource(name="warehouseService")
+	private WarehouseManager warehouseService;
 	
 	/**保存
 	 * @param
@@ -49,8 +53,8 @@ public class WarehouseController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("FHBUTTON_ID", this.get32UUID());	//主键
-		fhbuttonService.save(pd);
+		pd.put("WAREHOUSE_ID", this.get32UUID());	//主键
+		warehouseService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -66,7 +70,7 @@ public class WarehouseController extends BaseController {
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		fhbuttonService.delete(pd);
+		warehouseService.delete(pd);
 		out.write("success");
 		out.close();
 	}
@@ -82,7 +86,7 @@ public class WarehouseController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		fhbuttonService.edit(pd);
+		warehouseService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -98,14 +102,14 @@ public class WarehouseController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-//		String keywords = pd.getString("keywords");				//关键词检索条件
-//		if(null != keywords && !"".equals(keywords)){
-//			pd.put("keywords", keywords.trim());
-//		}
-//		page.setPd(pd);
-//		List<PageData>	varList = fhbuttonService.list(page);	//列出列表
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+		page.setPd(pd);
+		List<PageData>	varList = warehouseService.list(page);	//列出列表
 		mv.setViewName("basedata/warehouse/warehouse_list");
-//		mv.addObject("varList", varList);
+		mv.addObject("varList", varList);
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
@@ -120,6 +124,9 @@ public class WarehouseController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		Session session = Jurisdiction.getSession();
+		User user = (User)session.getAttribute(Const.SESSION_USER);
+		pd.put("PSI_NAME", user.getNAME());
 		mv.setViewName("basedata/warehouse/warehouse_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
@@ -135,8 +142,8 @@ public class WarehouseController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd = fhbuttonService.findById(pd);	//根据ID读取
-		mv.setViewName("system/warehouse/warehouse_edit");
+		pd = warehouseService.findById(pd);	//根据ID读取
+		mv.setViewName("basedata/warehouse/warehouse_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
 		return mv;
@@ -162,7 +169,7 @@ public class WarehouseController extends BaseController {
 			for(int i=0;i<ids.length;i++) {
 				idstr.append("'"+ids[i]+"',");
 			}
-			fhbuttonService.deleteAll(idstr.toString().substring(0,idstr.toString().length()-1),(String)pd.get("PK_SOBOOKS"));
+			//fhbuttonService.deleteAll(idstr.toString().substring(0,idstr.toString().length()-1),(String)pd.get("PK_SOBOOKS"));
 			pd.put("msg", "ok");
 		}else{
 			pd.put("msg", "no");
@@ -189,7 +196,7 @@ public class WarehouseController extends BaseController {
 		titles.add("权限标识");	//2
 		titles.add("备注");	//3
 		dataMap.put("titles", titles);
-		List<PageData> varOList = fhbuttonService.listAll(pd);
+		List<PageData> varOList = warehouseService.listAll(pd);
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();

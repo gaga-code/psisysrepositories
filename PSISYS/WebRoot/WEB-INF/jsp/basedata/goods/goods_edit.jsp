@@ -34,42 +34,40 @@
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品名称:</td>
-								<td colspan="10"><input type="text" name="GOODNAME" id="GOODNAME" value="${pd.GOODNAME}" maxlength="255" placeholder="这里输入商品名称" title="商品名称" style="width:98%;"/></td>
-							</tr>
-							<tr>
+								<td><input type="text" name="GOODNAME" id="GOODNAME" value="${pd.GOODNAME}" maxlength="255"  style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品条码:</td>
-								<td colspan="10"><input type="text" name="BARCODE" id="BARCODE" value="${pd.BARCODE}" maxlength="255" placeholder="这里输入条码" title="商品名称" style="width:98%;"/></td>
+								<!-- <td colspan="10"> --><td><input type="text" name="BARCODE" id="BARCODE" value="${pd.BARCODE}" maxlength="255"  style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品分类编号:</td>
 								<td>
-									<select class="chosen-select form-control" name="GOODTYPE_ID" id="GOODTYPE_ID" data-placeholder="请选择商品分类编号" style="vertical-align:top;width:210px;" >
+									<select class="chosen-select form-control" name="GOODTYPE_ID" id="GOODTYPE_ID"  style="vertical-align:top;width:210px;" >
 										<option value="">无</option>
 										<c:forEach items="${goodsTypeList}" var="var">
 											<option value="${var.GOODTYPE_ID }" <c:if test="${var.GOODTYPE_ID == pd.GOODTYPE_ID }">selected</c:if>>${var.TYPENAME }</option>
 										</c:forEach>
 									</select>
 								</td>
-								<%-- <td><input type="text" name="GOODTYPE_ID" id="GOODTYPE_ID" value="${pd.GOODTYPE_ID}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td> --%>
+								<%-- <td><input type="text" name="GOODTYPE_ID" id="GOODTYPE_ID" value="${pd.GOODTYPE_ID}" maxlength="30"   style="width:98%;"/></td> --%>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品编号:</td>
-								<td><input type="text" name="GOODCODE" id="GOODCODE" value="${pd.GOODCODE}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="text" onblur="getByBm(this.value);" name="GOODCODE" id="GOODCODE" value="${pd.GOODCODE}" maxlength="30"  style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">简称:</td>
-								<td><input type="text" name="SIMPLENAME" id="SIMPLENAME" value="${pd.SIMPLENAME}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="text" name="SIMPLENAME" id="SIMPLENAME" value="${pd.SIMPLENAME}" maxlength="30"  style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
-								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;" readonly="readonly"/></td>
+								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="30"   style="width:98%;" readonly="readonly"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品规格:</td>
-								<td><input type="text" name="GOODSPECIF" id="GOODSPECIF" value="${pd.GOODSPECIF}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="text" name="GOODSPECIF" id="GOODSPECIF" value="${pd.GOODSPECIF}" maxlength="30"   style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">所属柜组:</td>
-								<td><input type="text" name="SUBGZ_ID" id="SUBGZ_ID" value="${pd.SUBGZ_ID}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="text" name="SUBGZ_ID" id="SUBGZ_ID" value="${pd.SUBGZ_ID}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">计量单位:</td>
 								<td>
-									<select class="chosen-select form-control" name="CUNIT_ID" id="CUNIT_ID" data-placeholder="请选择计量单位" style="vertical-align:top;width:210px;" >
+									<select class="chosen-select form-control" name="CUNIT_ID" id="CUNIT_ID" data-placeholder="请选择计量单位" oninput="getUNITPROPtips();" style="vertical-align:top;width:210px;" >
 										<option value="">无</option>
 										<c:forEach items="${spunitList}" var="var">
 											<option value="${var.SPUNIT_ID }" <c:if test="${var.SPUNIT_ID == pd.CUNIT_ID }">selected</c:if>>${var.NAME }</option>
@@ -78,7 +76,7 @@
 								</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">辅助单位:</td>
 								<td>
-									<select class="chosen-select form-control" name="FZUNIT_ID" id="FZUNIT_ID" data-placeholder="请选择计量单位" style="vertical-align:top;width:210px;" >
+									<select class="chosen-select form-control" name="FZUNIT_ID" id="FZUNIT_ID" data-placeholder="请选择计量单位" oninput="getUNITPROPtips();" style="vertical-align:top;width:210px;" >
 										<option value="">无</option>
 										<c:forEach items="${spunitList}" var="var">
 											<option value="${var.SPUNIT_ID }" <c:if test="${var.SPUNIT_ID == pd.FZUNIT_ID }">selected</c:if>>${var.NAME }</option>
@@ -87,48 +85,57 @@
 								</td>
 							</tr>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">商品型号:</td>
-								<td><input type="text" name="GOODTYPECODE" id="GOODTYPECODE" value="${pd.GOODTYPECODE}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">拼音编码:</td>
-								<td><input type="text" name="YICODE" id="YICODE" value="${pd.YICODE}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
-							</tr>
-							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">单位比例:</td>
-								<td><input type="text" name="UNITPROP" id="UNITPROP" value="${pd.UNITPROP}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
-								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="number" name="UNITPROP" id="UNITPROP" value="${pd.UNITPROP}" maxlength="30"   style="width:98%;" oninput="getUNITPROPtips();"/></td>
+								<td colspan="5"><input type="text" name="UNITPROPtips" id="UNITPROPtips" maxlength="30"  readonly="readonly" style="width:98%; color: red;"/></td>
 							</tr>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
-								<td colspan="10"><input type="text" name="SUPPLIER_ID" id="SUPPLIER_ID" value="${pd.SUPPLIER_ID}" maxlength="255" placeholder="这里输入商品名称" title="商品名称" style="width:98%;"/></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">商品型号:</td>
+								<td><input type="text" name="GOODTYPECODE" id="GOODTYPECODE" value="${pd.GOODTYPECODE}" maxlength="30"   style="width:98%;"/></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">拼音编码:</td>
+								<td><input type="text" name="YICODE" id="YICODE" value="${pd.YICODE}" maxlength="30"   style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">主供应商:</td>
+								<td>
+<%-- 								<input type="text" name="SUPPLIER_ID" id="SUPPLIER_ID" value="${pd.SUPPLIER_ID}" maxlength="255"  style="width:98%;"/> --%>
+									<select class="chosen-select form-control" name="SUPPLIER_ID" id="SUPPLIER_ID" data-placeholder="请选择供应商" style="vertical-align:top;width:98%;" >
+										<option value="">无</option>
+										<c:forEach items="${supplierList}" var="var">
+											<option value="${var.SUPPLIER_ID }" <c:if test="${var.SUPPLIER_ID == pd.SUPPLIER_ID }">selected</c:if>>${var.SUPPLIERNAME }</option>
+										</c:forEach>
+									</select>
+								</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
+								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">最后进价:</td>
-								<td><input type="number" name="LASTPPRICE" id="LASTPPRICE" value="${pd.LASTPPRICE}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="number" name="LASTPPRICE" id="LASTPPRICE" value="${pd.LASTPPRICE}" maxlength="30"   style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">成本价:</td>
-								<td><input type="number" name="CPRICE" id="CPRICE" value="${pd.CPRICE}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="number" name="CPRICE" id="CPRICE" value="${pd.CPRICE}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">零售价:</td>
-								<td><input type="number" name="RPRICE" id="RPRICE" value="${pd.RPRICE}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="number" name="RPRICE" id="RPRICE" value="${pd.RPRICE}" maxlength="30"   style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">最后辅助单位进价:</td>
-								<td><input type="number" name="LFZUPPRICE" id="LFZUPPRICE" value="${pd.LFZUPPRICE}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="number" name="LFZUPPRICE" id="LFZUPPRICE" value="${pd.LFZUPPRICE}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">辅助单位零售价:</td>
-								<td><input type="number" name="FZUCPRICE" id="FZUCPRICE" value="${pd.FZUCPRICE}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="number" name="FZUCPRICE" id="FZUCPRICE" value="${pd.FZUCPRICE}" maxlength="30"   style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">会员价:</td>
-								<td><input type="number" name="MPRICE" id="MPRICE" value="${pd.MPRICE}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="number" name="MPRICE" id="MPRICE" value="${pd.MPRICE}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">库存数量:</td>
-								<td colspan="10"><input type="number" name="STOCKNUM" id="STOCKNUM" value="${pd.STOCKNUM}" maxlength="255" placeholder="这里输入商品名称" title="商品名称" style="width:98%;"/></td>
+								<td colspan="10"><input type="number" name="STOCKNUM" id="STOCKNUM" value="${pd.STOCKNUM}" maxlength="255"  style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">库存上限:</td>
-								<td><input type="number" name="STOCKUPNUM" id="STOCKUPNUM" value="${pd.STOCKUPNUM}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="number" name="STOCKUPNUM" id="STOCKUPNUM" value="${pd.STOCKUPNUM}" maxlength="30"   style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">库存下限:</td>
-								<td><input type="number" name="STOCKDOWNNUM" id="STOCKDOWNNUM" value="${pd.STOCKDOWNNUM}" maxlength="30" placeholder="这里输入商品编码" title="商品编码" style="width:98%;"/></td>
+								<td><input type="number" name="STOCKDOWNNUM" id="STOCKDOWNNUM" value="${pd.STOCKDOWNNUM}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
 						</table>
 						</div>
@@ -174,6 +181,38 @@
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
 		<script type="text/javascript">
 		$(top.hangge());
+		//单位比例提示
+		function getUNITPROPtips(){
+			var danwei=$("#CUNIT_ID option:selected");//获取当前选择项.
+			danwei.val();//获取当前选择项的值
+			var fuzu=$("#FZUNIT_ID option:selected");//获取当前选择项.
+			fuzu.val();//获取当前选择项的值
+			if(fuzu.val() != '' && $("#UNITPROP").val()!='')
+				$("#UNITPROPtips").val($("#UNITPROP").val() +  danwei.text() +' = 1' + fuzu.text());
+		}
+		//通过商品编码读取数据
+		function getByBm(BIANMA){
+			if(""==BIANMA)return;
+			$.ajax({
+				type: "POST",
+				url: 'goods/getByBm.do',
+		    	data: {BIANMA:BIANMA,tm:new Date().getTime()},
+				dataType:'json',
+				cache: false,
+				success: function(data){
+					if("success" == data.result){
+						$("#GOODCODE").tips({
+							side:3,
+				            msg:'此编号已存在',
+				            bg:'#AE81FF',
+				            time:2
+				        });
+						$("#GOODCODE").focus();
+					}
+
+				}
+			});
+		}
 		//保存
 		function save(){
 			if($("#GOODNAME").val()==""){
@@ -184,6 +223,16 @@
 		            time:2
 		        });
 				$("#GOODNAME").focus();
+			return false;
+			}
+			if($("#BARCODE").val()==""){
+				$("#BARCODE").tips({
+					side:3,
+		            msg:'请输入条码',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				$("#BARCODE").focus();
 			return false;
 			}
 			if($("#GOODTYPE_ID").val()==""){
@@ -206,16 +255,36 @@
 				$("#GOODCODE").focus();
 			return false;
 			}
-			if($("#BARCODE").val()==""){
-				$("#BARCODE").tips({
+			if($("#CUNIT_ID").val()==""){
+				$("#CUNIT_ID").tips({
 					side:3,
-		            msg:'请输入条码',
+		            msg:'请选择单位',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#BARCODE").focus();
+				$("#CUNIT_ID").focus();
 			return false;
 			}
+			if($("#FZUNIT_ID").val()==""){
+				$("#FZUNIT_ID").tips({
+					side:3,
+		            msg:'请选择辅助单位',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				$("#FZUNIT_ID").focus();
+			return false;
+			}
+// 			if($("#SUPPLIER_ID").val()==""){
+// 				$("#SUPPLIER_ID").tips({
+// 					side:3,
+// 		            msg:'请选择供应商',
+// 		            bg:'#AE81FF',
+// 		            time:2
+// 		        });
+// 				$("#SUPPLIER_ID").focus();
+// 			return false;
+// 			}
 			if($("#LASTPPRICE").val()==""){
 				$("#LASTPPRICE").tips({
 					side:3,
@@ -296,14 +365,14 @@
 				$("#STOCKUPNUM").focus();
 			return false;
 			}
-			if($("#STOCKUPNUM").val()==""){
-				$("#STOCKUPNUM").tips({
+			if($("#STOCKDOWNNUM").val()==""){
+				$("#STOCKDOWNNUM").tips({
 					side:3,
 		            msg:'请输入库存下限',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#STOCKUPNUM").focus();
+				$("#STOCKDOWNNUM").focus();
 			return false;
 			}
 			

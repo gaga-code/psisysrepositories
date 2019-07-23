@@ -24,6 +24,7 @@ import com.psi.entity.Page;
 import com.psi.entity.system.User;
 import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.basedata.goodstype.GoodsTypeManager;
+import com.psi.service.basedata.supplier.SupplierManager;
 import com.psi.service.erp.spbrand.SpbrandManager;
 import com.psi.service.erp.sptype.SptypeManager;
 import com.psi.service.erp.spunit.SpunitManager;
@@ -58,6 +59,8 @@ public class GoodsController extends BaseController {
 	private SpunitManager spunitService;
 	@Resource(name="goodsTypeService")
 	private GoodsTypeManager goodsTypeService;
+	@Resource(name="supplierService")
+	private SupplierManager supplierService;
 	
 	/**保存
 	 * @param
@@ -224,11 +227,13 @@ public class GoodsController extends BaseController {
 		Session session = Jurisdiction.getSession();
 		User user = (User)session.getAttribute(Const.SESSION_USER);
 		pd.put("PSI_NAME", user.getNAME());	//用户主键
+		List<PageData> supplierList = supplierService.listAll(pd);  //供应商列表
 		List<PageData> goodsTypeList =  goodsTypeService.listAll(pd); 						//商品分类列表
 		List<PageData> spunitList = spunitService.listAll(Jurisdiction.getUsername()); 		//计量单位列表
 		mv.setViewName("basedata/goods/goods_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
+		mv.addObject("supplierList", supplierList);
 		mv.addObject("spunitList", spunitList);
 		mv.addObject("goodsTypeList", goodsTypeList);
 		return mv;
@@ -244,11 +249,13 @@ public class GoodsController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd = goodsService.findById(pd);	//根据ID读取
+		List<PageData> supplierList = supplierService.listAll(pd);  //供应商列表
 		List<PageData> spunitList = spunitService.listAll(Jurisdiction.getUsername()); 		//计量单位列表
 		List<PageData> goodsTypeList =  goodsTypeService.listAll(pd); 						//商品分类列表
 		mv.setViewName("basedata/goods/goods_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
+		mv.addObject("supplierList", supplierList);
 		mv.addObject("spunitList", spunitList);
 		mv.addObject("goodsTypeList", goodsTypeList);
 		return mv;
