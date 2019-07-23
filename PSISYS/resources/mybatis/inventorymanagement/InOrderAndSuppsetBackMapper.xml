@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="SuppsetbillMapper">
+<mapper namespace="InOrderAndSuppsetBackMapper">
 	
 	<!--表名 -->
 	<sql id="inBackTableName">
@@ -15,6 +15,7 @@
 		psi_suppsetbill_back
 	</sql>
 	<sql id="InAllField">
+		INORDERBACK_ID,
 		INORDER_ID,     
 		LDATE,          
 		BILLCODE,       
@@ -29,7 +30,7 @@
 		THISPAY,        
 		SUBBRANCH,      
 		SUPPSETBILL_ID, 
-		DEFAULTE,       
+		NOTE,       
 		ISSETTLEMENTED, 
 		SETTEDNUMANDID, 
 		PK_SOBOOKS,     
@@ -43,6 +44,7 @@
 		DR            
 	</sql>
 	<sql id="InBodyAllField">
+	INORDERBODYBACK_ID,
 		INORDERBODY_ID,    
 		INORDER_ID,        
 		GOODCODE_ID,       
@@ -50,7 +52,7 @@
 		UNITPRICE_ID,      
 		AMOUNT,            
 		APPBILLNO,         
-		DEFAULTE,          
+		NOTE,          
 		SETTEDNUMANDID,    
 		PK_SOBOOKS,        
 		DEF1,              
@@ -63,6 +65,7 @@
 		DR
 	</sql>
 	<sql id="SuppAllField">
+			SUPPSETBILLBACK_ID,
 			SUPPSETBILL_ID,                                              
 			  LDATE,                                                       
 			  BILLCODE,                                                    
@@ -92,6 +95,7 @@
 	</sql>
 	
 	<sql id="InAllFieldValue">
+		#{INORDERBACK_ID},
 		#{INORDER_ID},        
 		#{LDATE},             
 		#{BILLCODE},          
@@ -106,7 +110,7 @@
 		#{THISPAY},           
 		#{SUBBRANCH},         
 		#{SUPPSETBILL_ID},    
-		#{DEFAULTE},          
+		#{NOTE},          
 		#{ISSETTLEMENTED},    
 		#{SETTEDNUMANDID},    
 		#{PK_SOBOOKS},        
@@ -120,6 +124,7 @@
 		#{DR}                
 	</sql>
 	<sql id="InBodyAllFieldValue">
+		#{INORDERBODYBACK_ID},
 		#{INORDERBODY_ID}, 
 		#{INORDER_ID},     
 		#{GOODCODE_ID},    
@@ -127,7 +132,7 @@
 		#{UNITPRICE_ID},    
 		#{AMOUNT},          
 		#{APPBILLNO},       
-		#{DEFAULTE},        
+		#{NOTE},        
 		#{SETTEDNUMANDID},  
 		#{PK_SOBOOKS},      
 		#{DEF1},            
@@ -142,6 +147,7 @@
 	
 	<!-- 字段值 -->
 	<sql id="SuppAllFieldValue">
+		#{SUPPSETBILLBACK_ID},
 	    #{SUPPSETBILL_ID},     
 		#{LDATE},              
 		#{BILLCODE},           
@@ -188,19 +194,44 @@
 		set
 			DR = 1 
 		where 
-			SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			SUPPSETBILLBACK_ID = #{SUPPSETBILLBACK_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 	</update>
 	
 	<!-- 修改 -->
 	<update id="editsuppback" parameterType="pd">
 		update
-		<include refid="suppBackTableName"></include>
+			 SUPPSETBILL_ID=#{SUPPSETBILL_ID},                                              
+			  LDATE=#{LDATE},                                                       
+			  BILLCODE=#{BILLCODE},                                                    
+			  BILLTYPE=#{BILLTYPE},                                                    
+			  BILLSTATUS=#{BILLSTATUS},                                                  
+			  USER_ID=#{USER_ID},                                                     
+			  FROMUNIT=#{FROMUNIT},                                                    
+			  DISTRIBUTIONMODE=#{DISTRIBUTIONMODE},                                            
+			  INVOICETYPE=#{INVOICETYPE},                                                 
+			  BILLNO=#{BILLNO},                                                      
+			  PAYMETHOD=#{PAYMETHOD},                                                   
+			  PAYABLEAMOUNT=#{PAYABLEAMOUNT},                                               
+			  PAYMENTAMOUNT=#{PAYMENTAMOUNT},                                               
+			  PAYABLEALLAM=#{PAYABLEALLAM},
+			  SETTEDNUMANDID=#{SETTEDNUMANDID},  
+			  INORDER_IDS=#{INORDER_IDS},                                              
+			  NOTE=#{NOTE},                                                        
+			  PK_SOBOOKS=#{PK_SOBOOKS},
+			  DEF1=#{DEF1},
+			  DEF2=#{DEF2},
+			  DEF3=#{DEF3},
+			  DEF4=#{DEF4},
+			  DEF5=#{DEF5},
+			  CREATETIME=#{CREATETIME},
+			  LASTTIME=#{LASTTIME},
+			  DR=#{DR}
 		set                                                                                                       
 			<include refid="SuppAllFieldValue"></include>
 		where 
 			PK_SOBOOKS = #{PK_SOBOOKS} and
-			SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			SUPPSETBILLBACK_ID = #{SUPPSETBILLBACK_ID}
 			and IFNULL(DR,0)=0
 	</update>
 	
@@ -211,10 +242,14 @@
 		from 
 		<include refid="suppBackTableName"></include>
 		where 
-			SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			SUPPSETBILLBACK_ID = #{SUPPSETBILLBACK_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(DR,0)=0
 	</select>
+	
+	
+	<!-- 进货单 -->
+	
 	<!-- 新增-->
 	<insert id="saveinback" parameterType="pd">
 		insert into 
@@ -233,7 +268,7 @@
 		set
 			DR = 1 
 		where 
-			INORDER_ID = #{INORDER_ID}
+			INORDERBACK_ID = #{INORDERBACK_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 	</update>
 	
@@ -242,10 +277,35 @@
 		update
 		<include refid="inBackTableName"></include>
 		set                                                                                                       
-			<include refid="InAllFieldValue"></include>
+			INORDER_ID=#{INORDER_ID},     
+			LDATE=#{LDATE},          
+			BILLCODE=#{BILLCODE},       
+			SUPPLIER_ID=#{SUPPLIER_ID},    
+			USER_ID=#{USER_ID},        
+			WAREHOUSE_ID=#{WAREHOUSE_ID},   
+			ALLAMOUNT=#{ALLAMOUNT},      
+			BILLTYPE=#{BILLTYPE},       
+			BILLSTATUS=#{BILLSTATUS},     
+			PAIDAMOUNT=#{PAIDAMOUNT},     
+			UNPAIDAMOUNT=#{UNPAIDAMOUNT},   
+			THISPAY=#{THISPAY},        
+			SUBBRANCH=#{SUBBRANCH},      
+			SUPPSETBILL_ID=#{SUPPSETBILL_ID}, 
+			NOTE=#{NOTE},       
+			ISSETTLEMENTED=#{ISSETTLEMENTED}, 
+			SETTEDNUMANDID=#{SETTEDNUMANDID}, 
+			PK_SOBOOKS=#{PK_SOBOOKS},     
+			DEF1=#{DEF1},           
+			DEF2=#{DEF2},           
+			DEF3=#{DEF3},           
+			DEF4=#{DEF4},           
+			DEF5=#{DEF5},           
+			CREATETIME=#{CREATETIME},     
+			LASTTIME=#{LASTTIME},       
+			DR=#{DR}  
 		where 
 			PK_SOBOOKS = #{PK_SOBOOKS} and
-			INORDER_ID = #{INORDER_ID}
+			INORDERBACK_ID = #{INORDERBACK_ID}
 			and IFNULL(DR,0)=0
 	</update>
 	
@@ -256,7 +316,7 @@
 		from 
 		<include refid="inBackTableName"></include>
 		where 
-			INORDER_ID = #{INORDER_ID}
+			INORDERBACK_ID = #{INORDERBACK_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(DR,0)=0
 	</select>
@@ -284,7 +344,7 @@
 		set
 			DR = 1 
 		where 
-			INORDERBODY_ID = #{INORDERBODY_ID}
+			INORDERBODYBACK_ID = #{INORDERBODYBACK_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 	</update>
 	
@@ -293,10 +353,27 @@
 		update
 		<include refid="inBodyBackTableName"></include>
 		set                                                                                                       
-			<include refid="InBodyAllFieldValue"></include>
+			INORDERBODY_ID=#{INORDERBODY_ID},    
+			INORDER_ID=#{INORDER_ID},        
+			GOODCODE_ID=#{GOODCODE_ID},       
+			PNUMBER=#{PNUMBER},           
+			UNITPRICE_ID=#{UNITPRICE_ID},      
+			AMOUNT=#{AMOUNT},            
+			APPBILLNO=#{APPBILLNO},         
+			NOTE=#{NOTE},          
+			SETTEDNUMANDID=#{SETTEDNUMANDID},    
+			PK_SOBOOKS=#{PK_SOBOOKS},        
+			DEF1=#{DEF1},              
+			DEF2=#{DEF2},              
+			DEF3=#{DEF3},              
+			DEF4=#{DEF4},              
+			DEF5=#{DEF5},              
+			CREATETIME=#{CREATETIME},        
+			LASTTIME=#{LASTTIME},          
+			DR=#{DR}
 		where 
 			PK_SOBOOKS = #{PK_SOBOOKS} and
-			INORDERBODY_ID = #{INORDERBODY_ID}
+			INORDERBODYBACK_ID = #{INORDERBODYBACK_ID}
 			and IFNULL(DR,0)=0
 	</update>
 	
@@ -307,7 +384,7 @@
 		from 
 		<include refid="inBodyBackTableName"></include>
 		where 
-			INORDERBODY_ID = #{INORDERBODY_ID}
+			INORDERBODYBACK_ID = #{INORDERBODYBACK_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(DR,0)=0
 	</select>

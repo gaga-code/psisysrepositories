@@ -139,6 +139,9 @@
 													<a class="btn btn-xs btn-success" title="审批" id="approvalone"  onclick="approvalone('${var.SUPPSETBILL_ID}','${var.PAYMENTAMOUNT}');">
 														<i class="ace-icon fa fa-eye bigger-120" title="审批"></i>
 													</a>
+													<a class="btn btn-xs btn-danger" onclick="unapprovalone('${var.SUPPSETBILL_ID}');">
+														<i class="ace-icon fa fa-trash-o bigger-120" title="反审"></i>
+													</a>
 													<c:if test="${QX.edit == 1 }">
 													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.SUPPSETBILL_ID}','${var.BILLSTATUS}');">
 														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
