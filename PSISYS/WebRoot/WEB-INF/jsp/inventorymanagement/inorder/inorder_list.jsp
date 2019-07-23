@@ -46,24 +46,24 @@
 									<select class="chosen-select form-control" name="SUPPLIER_ID" id="SUPPLIER_ID" data-placeholder="选择供应商" style="vertical-align:top;width:98%;" >
 										<option value="">选择供应商</option>
 										<c:forEach items="${supplierList}" var="var">
-											<option value="${var.SUPPLIER_ID }">${var.SUPPLIERNAME }</option>  <!-- <c:if test="${var.SUPPLIER_ID == pd.SUPPLIER_ID }">selected</c:if> -->
+											<option value="${var.SUPPLIER_ID }" <c:if test="${var.SUPPLIER_ID == pd.SUPPLIER_ID }">selected</c:if>>${var.SUPPLIERNAME }</option>  <!-- <c:if test="${var.SUPPLIER_ID == pd.SUPPLIER_ID }">selected</c:if> -->
 										</c:forEach>
 									</select>
 								</td>
 								<td>
 									<select class="chosen-select form-control" name="ISSETTLEMENTED" id="ISSETTLEMENTED" data-placeholder="选择结算状态" style="vertical-align:top;width:98%;" >
 										<option value="">选择结算状态</option>
-										<option value="0">未结算</option>
-										<option value="1">已结算</option>
-										<option value="2">正在结算</option>
+										<option value="0" <c:if test="${'0' == pd.ISSETTLEMENTED }">selected</c:if>>未结算</option>
+										<option value="1" <c:if test="${'1' == pd.ISSETTLEMENTED }">selected</c:if>>已结算</option>
+										<option value="2" <c:if test="${'2' == pd.ISSETTLEMENTED }">selected</c:if>>正在结算</option>
 									</select>
 								</td>
 								<td>
 									<select class="chosen-select form-control" name="BILLSTATUS" id="BILLSTATUS" data-placeholder="选择审核状态" style="vertical-align:top;width:98%;" >
 										<option value="">选择审核状态</option>
-										<option value="1">未审核</option>
-										<option value="2">已审核</option>
-										<option value="3">结算未通过</option>
+										<option value="1" <c:if test="${'1' == pd.BILLSTATUS }">selected</c:if>>未审核</option>
+										<option value="2" <c:if test="${'2' == pd.BILLSTATUS }">selected</c:if>>已审核</option>
+										<option value="3" <c:if test="${'3' == pd.BILLSTATUS }">selected</c:if>>结算未通过</option>
 									</select>
 								</td>
 <%-- 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td> --%>
@@ -89,10 +89,11 @@
 									<th class="center">未付金额</th>
 									<th class="center">已付金额</th>
 									<th class="center">本次付款</th>
-									<th class="center">是否结算</th>
+									<th class="center">结算状态</th>
+									<th class="center">审核状态</th>
 									<th class="center">经手人</th>
 									<th class="center">备注</th>
-									<th class="center" style="width:110px;">操作</th>
+									<th class="center">操作</th><!-- style="width:150px;" -->
 								</tr>
 							</thead>
 													
@@ -124,6 +125,17 @@
 													未结算
 												</c:if>
 											</td>
+											<td class='center'>
+												<c:if test="${var.BILLSTATUS == 1}">
+													未审核
+												</c:if>
+												<c:if test="${var.BILLSTATUS == 2}">
+													已审核
+												</c:if>
+												<c:if test="${var.BILLSTATUS == 3}">
+													结算未通过
+												</c:if>
+											</td>
 											<td class='center'>${var.PSI_NAME}</td>
 											<td class='center'>${var.NOTE}</td>
 											<td class="center">
@@ -131,19 +143,25 @@
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
+													<c:if test="${QX.InOrderfanshenApproval == 1 }"><c:if test="${var.ISSETTLEMENTED == 0 || var.ISSETTLEMENTED == 2}"><c:if test="${var.BILLSTATUS == 2}">
+													<a class="btn btn-mini btn-danger"  style="height:26px;" onclick="fanshen('${var.INORDER_ID}');">反审</a>
+													</c:if></c:if></c:if>
+													<c:if test="${QX.InOrdershenpiApproval == 1 }"><c:if test="${var.BILLSTATUS != 2}">
+													<a class="btn btn-mini btn-success" style="height:26px;" onclick="shenpi('${var.INORDER_ID}');">审批</a>
+													</c:if></c:if>
 													<a class="btn btn-xs btn-success" title="查看" onclick="view('${var.INORDER_ID}');">
 														<i class="ace-icon fa fa-eye bigger-120" title="查看"></i>
 													</a>
-													<c:if test="${QX.edit == 1 }">
+													<c:if test="${QX.edit == 1 }"><c:if test="${var.BILLSTATUS != 2}">
 													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.INORDER_ID}');">
 														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
 													</a>
-													</c:if>
-													<c:if test="${QX.del == 1 }">
+													</c:if></c:if>
+													<c:if test="${QX.del == 1 }"><c:if test="${var.BILLSTATUS != 2}">
 													<a class="btn btn-xs btn-danger" onclick="del('${var.INORDER_ID}');">
 														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
 													</a>
-													</c:if>
+													</c:if></c:if>
 												</div>
 												<div class="hidden-md hidden-lg">
 													<div class="inline pos-rel">
@@ -207,8 +225,11 @@
 									<a class="btn btn-mini btn-success" onclick="add();">新增</a>
 									<!-- <a class="btn btn-mini btn-success" onclick="add();">新增</a> -->
 									</c:if>
-									<c:if test="${QX.del == 1 }">
-									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a>
+									<c:if test="${QX.del == 1 }"><c:if test="${'1' == pd.BILLSTATUS || '3' == pd.BILLSTATUS}">
+									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" >批量删除</i></a>
+									</c:if></c:if>
+									<c:if test="${'1' == pd.BILLSTATUS || '3' == pd.BILLSTATUS}">
+									<a class="btn btn-mini btn-success" onclick="shenpiAll('确定要批量审批选中的数据吗?');" title="批量审批" >批量审批</a>
 									</c:if>
 								</td>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
@@ -270,6 +291,7 @@
 	        document.forms.actionForm.submit();
 			//siMenu('z191','lm181','查看进货单',url);
 		}
+		
 		
 		
 		//检索
@@ -374,73 +396,71 @@
 			});
 		}
 		
-			//新增
-<%-- 		function add(){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="新增";
-			 diag.URL = '<%=basePath%>inorder/goAdd.do';
-			 diag.Width = 600;
-			 diag.Height = 700;
-			 diag.Modal = false;				//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮
-			 diag.CancelEvent = function(){ //关闭事件
-				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 if('${page.currentPage}' == '0'){
-						 tosearch();
-					 }else{
-						 tosearch();
-					 }
+		//审批
+		function shenpi(Id){
+			top.jzts();
+			var url = "<%=basePath%>inorder/shenpi.do?INORDER_ID="+Id+"&tm="+new Date().getTime();
+			$.get(url,function(data){
+				tosearch();
+			});
+		}
+		//反审
+		function fanshen(Id){
+			bootbox.confirm("确定要反审吗?", function(result) {
+				if(result) {
+					top.jzts();
+					var url = "<%=basePath%>inorder/fanshen.do?INORDER_ID="+Id+"&tm="+new Date().getTime();
+					$.get(url,function(data){
+						tosearch();
+					});
 				}
-				diag.close();
-			 };
-			 diag.show();
-		} --%>
-		
-		//修改
-		<%-- function edit(Id){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="编辑";
-			 diag.URL = '<%=basePath%>inorder/goEdit.do?INORDER_ID='+Id;
-			 diag.Width = 600;
-			 diag.Height = 700;
-			 diag.Modal = false;				//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮 
-			 diag.CancelEvent = function(){ //关闭事件
-				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 tosearch();
+			});
+		}
+		//批量审批
+		function shenpiAll(msg){
+			bootbox.confirm(msg, function(result) {
+				if(result) {
+					var str = '';
+					for(var i=0;i < document.getElementsByName('ids').length;i++){
+					  if(document.getElementsByName('ids')[i].checked){
+					  	if(str=='') str += document.getElementsByName('ids')[i].value;
+					  	else str += ',' + document.getElementsByName('ids')[i].value;
+					  }
+					}
+					if(str==''){
+						bootbox.dialog({
+							message: "<span class='bigger-110'>您没有选择任何内容!</span>",
+							buttons: 			
+							{ "button":{ "label":"确定", "className":"btn-sm btn-success"}}
+						});
+						$("#zcheckbox").tips({
+							side:1,
+				            msg:'点这里全选',
+				            bg:'#AE81FF',
+				            time:8
+				        });
+						return;
+					}else{
+						if(msg == '确定要批量审批选中的数据吗?'){
+							top.jzts();
+							$.ajax({
+								type: "POST",
+								url: '<%=basePath%>inorder/shenpiAll.do?tm='+new Date().getTime(),
+						    	data: {DATA_IDS:str},
+								dataType:'json',
+								//beforeSend: validateData,
+								cache: false,
+								success: function(data){
+									 $.each(data.list, function(i, list){
+											tosearch();
+									 });
+								}
+							});
+						}
+					}
 				}
-				diag.close();
-			 };
-			 diag.show();
-		} --%>
-		
-		//查看
-		<%-- function view(Id){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="查看";
-			 diag.URL = '<%=basePath%>inorder/goView.do?INORDER_ID='+Id;
-			 diag.Width = 450;
-			 diag.Height = 500;
-			 diag.Modal = false;				//有无遮罩窗口
-			 diag. ShowMaxButton = true;	//最大化按钮
-		     diag.ShowMinButton = true;		//最小化按钮 
-			 diag.CancelEvent = function(){ //关闭事件
-				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 tosearch();
-				}
-				diag.close();
-			 };
-			 diag.show();
-		} --%>
-		
+			});
+		};
 		//批量操作
 		function makeAll(msg){
 			bootbox.confirm(msg, function(result) {

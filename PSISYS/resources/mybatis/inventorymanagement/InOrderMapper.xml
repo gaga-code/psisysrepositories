@@ -360,4 +360,25 @@
 		    and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
 	</update>
+	
+	<!-- 审批-->
+	<update id="shenpi" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set BILLSTATUS = 2
+		where 
+			INORDER_ID = #{INORDER_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	<!-- 反审-->
+	<update id="fanshen" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set BILLSTATUS = 1
+		where 
+			INORDER_ID = #{INORDER_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
 </mapper>

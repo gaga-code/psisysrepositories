@@ -48,7 +48,7 @@ public class InOrderService implements InOrderManager{
 	 */
 	public void save(PageData pd)throws Exception{
 		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_INORDER_PFIX); //获取该编号类型的最大编号
-		pd.put("BILLCODE", Const.BILLCODE_INORDER_PFIX + strs[0]);
+		pd.put("BILLCODE", strs[0]);
 		//保存商品
 		String goodslist = (String) pd.get("goodslist");
 		String[] split = goodslist.split("#");
@@ -59,7 +59,7 @@ public class InOrderService implements InOrderManager{
 			pageData.put("INORDERBODY_ID", UuidUtil.get32UUID());
 			pageData.put("INORDER_ID", pd.get("INORDER_ID"));
 			pageData.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
-			pageData.put("APPBILLNO", Const.BILLCODE_INORDER_PFIX+strs[0]);
+			pageData.put("APPBILLNO", strs[0]);
 			
 			pageData.put("GOODCODE_ID", agoods[1]);
 			pageData.put("UNITPRICE_ID", agoods[2]);
@@ -274,6 +274,38 @@ public class InOrderService implements InOrderManager{
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * 审批进货单
+	 */
+	@Override
+	public void shenpi(PageData pd) throws Exception {
+		dao.update("InOrderMapper.shenpi", pd);
+	}
+
+	/**
+	 * 反审进货单
+	 */
+	@Override
+	public void fanshen(PageData pd) throws Exception {
+		dao.update("InOrderMapper.fanshen", pd);
+	}
+
+	/**
+	 * 批量审批
+	 * DATA_IDS   主键 
+	 * PK_SOBOOKS  帐套主键
+	 */
+	@Override
+	public void fanshenAll(String[] arrayDATA_IDS) throws Exception {
+		StringBuffer idstr = new StringBuffer("");
+		for(int i = 0; i < arrayDATA_IDS.length; i++) {
+			idstr.append("'"+arrayDATA_IDS[i]+"',");
+		}
+		//表名和主键字段名
+		jdbcTempUtil.shenpiAll(idstr.toString().substring(0,idstr.toString().length()-1), (String)Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS), "psi_inorder", "BILLSTATUS");
+
 	}
 	
 }

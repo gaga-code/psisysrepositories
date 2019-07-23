@@ -79,5 +79,23 @@ public interface InOrderManager{
 	 */
 	public List<HashMap> settleAllInOrder(PageData pd)throws Exception;
 	
+	/**审批
+	 * @param pd
+	 * @throws Exception
+	 */
+	public void shenpi(PageData pd)throws Exception;
+	
+	/**反审
+	 * @param pd
+	 * @throws Exception
+	 */
+	public void fanshen(PageData pd)throws Exception;
+
+	/**批量审批
+	 * @param arrayDATA_IDS
+	 * @throws Exception
+	 */
+	public void fanshenAll(String[] arrayDATA_IDS)throws Exception;
+	
 }
 

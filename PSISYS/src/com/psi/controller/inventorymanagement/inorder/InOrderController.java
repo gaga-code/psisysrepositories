@@ -146,6 +146,36 @@ public class InOrderController extends BaseController {
 		out.write("success");
 		out.close();
 	}
+	/**审批
+	 * @param out
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/shenpi")
+	public void shenpi(PrintWriter out) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"审批inorder");
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
+		inOrderService.shenpi(pd);
+		out.write("success");
+		out.close();
+	}
+	/**反审
+	 * @param out
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/fanshen")
+	public void fanshen(PrintWriter out) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"反审inorder");
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
+		inOrderService.fanshen(pd);
+		out.write("success");
+		out.close();
+	}
 	
 	/**修改
 	 * @param
@@ -360,6 +390,32 @@ public class InOrderController extends BaseController {
 //		mv.addObject("varListL", varListL);
 		return mv;
 	}
+	
+	 /**批量审批
+		 * @param
+		 * @throws Exception
+		 */
+		@RequestMapping(value="/shenpiAll")
+		@ResponseBody
+		public Object shenpiAll() throws Exception{
+			logBefore(logger, Jurisdiction.getUsername()+"批量审批inorder");
+			//if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
+			PageData pd = new PageData();		
+			Map<String,Object> map = new HashMap<String,Object>();
+			pd = this.getPageData();
+			List<PageData> pdList = new ArrayList<PageData>();
+			String DATA_IDS = pd.getString("DATA_IDS");
+			if(null != DATA_IDS && !"".equals(DATA_IDS)){
+				String ArrayDATA_IDS[] = DATA_IDS.split(",");
+				inOrderService.fanshenAll(ArrayDATA_IDS);
+				pd.put("msg", "ok");
+			}else{
+				pd.put("msg", "no");
+			}
+			pdList.add(pd);
+			map.put("list", pdList);
+			return AppUtil.returnObject(pd, map);
+		}
 	
 	 /**批量删除
 	 * @param
