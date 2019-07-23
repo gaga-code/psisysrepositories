@@ -62,7 +62,7 @@
 		THISPAY,        
 		SUBBRANCH,      
 		SUPPSETBILL_ID, 
-		DEFAULTE,       
+		NOTE,       
 		ISSETTLEMENTED, 
 		SETTEDNUMANDID, 
 		PK_SOBOOKS,     
@@ -92,7 +92,7 @@
 		#{THISPAY},           
 		#{SUBBRANCH},         
 		#{SUPPSETBILL_ID},    
-		#{DEFAULTE},          
+		#{NOTE},          
 		#{ISSETTLEMENTED},    
 		#{SETTEDNUMANDID},    
 		#{PK_SOBOOKS},        
@@ -202,7 +202,7 @@
 		where 
 			a.INORDER_ID = #{INORDER_ID}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
-			and IFNULL(a.dr,0)=0
+			and IFNULL(dr,0)=0
 	</select>
 	<select id="findAllById" parameterType="pd" resultType="pd" >
 		select 
