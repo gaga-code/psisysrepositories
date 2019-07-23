@@ -74,21 +74,14 @@
 		update
 		<include refid="tableName"></include>
 		set 
-			LDATE = #{LDATE},
-			SUPPLIER_ID = #{SUPPLIER_ID},
 			WAREHOUSE_ID = #{WAREHOUSE_ID},
+			SUPPLIER_ID = #{SUPPLIER_ID},
 			ALLAMOUNT = #{ALLAMOUNT},
-			BILLTYPE = #{BILLTYPE},
-			BILLSTATUS = #{BILLSTATUS},
-			PAIDAMOUNT = #{PAIDAMOUNT},
-			UNPAIDAMOUNT = #{UNPAIDAMOUNT},
-			THISPAY = #{THISPAY},
-			SUBBRANCH = #{SUBBRANCH},
-			ISSETTLEMENTED = #{ISSETTLEMENTED},
-			NOTE = #{NOTE},
+			NOTE = #{NOTE}
 		where 
-		PK_SOBOOKS = #{PK_SOBOOKS}
-		and IFNULL(dr,0)=0
+			INORDER_ID = #{INORDER_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
 	</update>
 	
 	
@@ -198,6 +191,10 @@
 		<!-- 是否结算了的 -->
 		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
 			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
+		</if>
+		<!-- 审核状态 -->
+		<if test="pd.BILLSTATUS != null and pd.BILLSTATUS != ''">
+			and  a.BILLSTATUS = #{pd.BILLSTATUS}
 		</if>
 		order by a.LASTTIME DESC
 	</select>

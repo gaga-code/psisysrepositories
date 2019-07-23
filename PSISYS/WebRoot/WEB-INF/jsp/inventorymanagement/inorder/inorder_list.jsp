@@ -42,8 +42,32 @@
 										</span>
 									</div>
 								</td>
-								<%-- <td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
-								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td> --%>
+								<td>
+									<select class="chosen-select form-control" name="SUPPLIER_ID" id="SUPPLIER_ID" data-placeholder="选择供应商" style="vertical-align:top;width:98%;" >
+										<option value="">选择供应商</option>
+										<c:forEach items="${supplierList}" var="var">
+											<option value="${var.SUPPLIER_ID }">${var.SUPPLIERNAME }</option>  <!-- <c:if test="${var.SUPPLIER_ID == pd.SUPPLIER_ID }">selected</c:if> -->
+										</c:forEach>
+									</select>
+								</td>
+								<td>
+									<select class="chosen-select form-control" name="ISSETTLEMENTED" id="ISSETTLEMENTED" data-placeholder="选择结算状态" style="vertical-align:top;width:98%;" >
+										<option value="">选择结算状态</option>
+										<option value="0">未结算</option>
+										<option value="1">已结算</option>
+										<option value="2">正在结算</option>
+									</select>
+								</td>
+								<td>
+									<select class="chosen-select form-control" name="BILLSTATUS" id="BILLSTATUS" data-placeholder="选择审核状态" style="vertical-align:top;width:98%;" >
+										<option value="">选择审核状态</option>
+										<option value="1">未审核</option>
+										<option value="2">已审核</option>
+										<option value="3">结算未通过</option>
+									</select>
+								</td>
+<%-- 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td> --%>
+<%-- 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td> --%>
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>

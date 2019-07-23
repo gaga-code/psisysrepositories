@@ -24,8 +24,9 @@
 				<div class="row">
 					<div class="col-xs-12">
 					
-					<form action="inorder/${msg }.do" name="Form" id="Form" method="post">
+					<form action="inorder/edit.do" name="Form" id="Form" method="post">
 						<input type="hidden" name="PK_SOBOOKS" id="PK_SOBOOKS" value="${pd.PK_SOBOOKS}"/>
+						<input type="hidden" name="INORDER_ID" id="INORDER_ID" value="${pd.INORDER_ID}"/>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<tr>
 								&nbsp;&nbsp;&nbsp;&nbsp;
@@ -37,18 +38,18 @@
 							</tr>
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-<!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">单据编号:</td> -->
-<%-- 								<td><input type="text" name="BILLCODE" id="BILLCODE" value="${pd.BILLCODE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> --%>
-<!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">录入日期:</td> -->
-<%-- 								<td><input type="text" name="LDATE" id="LDATE" value="${pd.LDATE}" maxlength="1000"  style="width:98%;" readonly="readonly"/></td> --%>
+								<td style="width:75px;text-align: right;padding-top: 13px;">单据编号:</td>
+								<td><input type="text" name="BILLCODE" id="BILLCODE" value="${pd.BILLCODE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">录入日期:</td>
+								<td><input type="text" name="LDATE" id="LDATE" value="${pd.LDATE}" maxlength="1000"  style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">单据状态:</td>
-								<td><input type="text" name="BILLSTATUS" id="BILLSTATUS" value="未审批" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
+								<td><input type="text" name="BILLSTATUS" id="BILLSTATUS" value="${pd.BILLSTATUSNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
 								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
-								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="0" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
+								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="${pd.ALLAMOUNT }" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
 								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WAREHOUSE_ID}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
@@ -64,15 +65,15 @@
 								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
 							</tr>
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
-							<%-- <tr>
+							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">已付金额:</td>
-								<td><input type="text" name="PAIDAMOUNT" id="PAIDAMOUNT" value="${pd.PAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
+								<td><input type="text" name="PAIDAMOUNT" id="PAIDAMOUNT" value="${pd.PAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">未付金额:</td>
-								<td><input type="number" name="UNPAIDAMOUNT" id="UNPAIDAMOUNT" value="${pd.UNPAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">本次付款:</td>
-								<td><input type="text" name="THISPAY" id="THISPAY" value="${pd.THISPAY}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
+								<td><input type="number" name="UNPAIDAMOUNT" id="UNPAIDAMOUNT" value="${pd.UNPAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
+<!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">本次付款:</td> -->
+<%-- 								<td><input type="text" name="THISPAY" id="THISPAY" value="${pd.THISPAY}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> --%>
 								
-							</tr> --%>
+							</tr> 
 						</table>
 						<table name="goodstable" id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
@@ -158,6 +159,37 @@
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>";
 // 	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
+	                      +"</tr>";
+	        //这里的行数减2，是因为要减去底部的一行和顶部的一行，剩下的为开始要插入行的索引
+	                      $("#simple-table tr:eq(" + (rowLength - 2) + ")").after(insertStr); //将新拼接的一行插入到当前行的下面
+	         //为新添加的行里面的控件添加新的id属性。
+	         $("#" + rowId + " td:eq(0)").children().eq(0).attr("id", "UrbanDepNo" + flag);
+	         $("#" + rowId + " td:eq(1)").children().eq(0).attr("id", "LocNo" + flag);
+	         $("#" + rowId + " td:eq(2)").children().eq(0).attr("id", "RoadSectionName" + flag);
+	         $("#" + rowId + " td:eq(3)").children().eq(0).attr("id", "StStartRoad" + flag);
+	         $("#" + rowId + " td:eq(3)").children().eq(1).attr("id", "EndRoad" + flag);
+	         //每插入一行，flag自增一次
+	         flag++;
+			
+		}
+		
+		//插入已存在的商品数据（初始化时调用）
+		function insertOldRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,UNITPRICE_ID,PNUMBER,AMOUNT,NOTE) {
+			 //获取表格有多少行
+	        var rowLength = $("#simple-table tr").length;
+	        //这里的rowId就是row加上标志位的组合。是每新增一行的tr的id。
+	        var rowId = "row" + flag;
+	      //每次往下标为flag+1的下面添加tr,因为append是往标签内追加。所以用after
+	        var insertStr = "<tr id=" + rowId + ">"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'value='"+PNUMBER+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' value='"+NOTE+"'/></td>"
+	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>";
+//	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
 	                      +"</tr>";
 	        //这里的行数减2，是因为要减去底部的一行和顶部的一行，剩下的为开始要插入行的索引
 	                      $("#simple-table tr:eq(" + (rowLength - 2) + ")").after(insertStr); //将新拼接的一行插入到当前行的下面
@@ -316,7 +348,12 @@
 	        document.forms.actionForm.submit();
 		}
 
-		
+		$(function(){
+// 			insertOldRow('2','999999','1','1','9.0','9','81.0','9');
+			<c:forEach items="${pd.goodslist}" var="t">
+				insertOldRow('${t.GOOD_ID}','${t.GOODNAME}','${t.GOODCODE_ID}','${t.NAME}','${t.UNITPRICE_ID}','${t.PNUMBER}','${t.AMOUNT}','${t.NOTE}');
+			</c:forEach>
+		});
 		</script>
 </body>
 </html>

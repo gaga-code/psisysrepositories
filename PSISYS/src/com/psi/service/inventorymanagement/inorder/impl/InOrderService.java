@@ -100,6 +100,28 @@ public class InOrderService implements InOrderManager{
 	 * @throws Exception
 	 */
 	public void edit(PageData pd)throws Exception{
+		//----------------编辑商品-------
+		//删除本来的数据
+		dao.update("InOrderBodyMapper.delete", pd);
+		//重新加入商品
+		String goodslist = (String) pd.get("goodslist");
+		String[] split = goodslist.split("#");
+		for(int i = 0; i < split.length; i++) {
+			String[] agoods = split[i].split(",");
+			PageData pageData = new PageData();
+			pageData.put("INORDERBODY_ID", UuidUtil.get32UUID());
+			pageData.put("INORDER_ID", pd.get("INORDER_ID"));
+			pageData.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
+			pageData.put("APPBILLNO", pd.get("BILLCODE"));
+			
+			pageData.put("GOODCODE_ID", agoods[1]);
+			pageData.put("UNITPRICE_ID", agoods[2]);
+			pageData.put("PNUMBER", agoods[3]);
+			pageData.put("AMOUNT", agoods[5]);
+			pageData.put("NOTE", agoods[6]);
+			
+			dao.save("InOrderBodyMapper.save", pageData);
+		}
 		dao.update("InOrderMapper.edit", pd);
 	}
 	

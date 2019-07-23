@@ -152,17 +152,13 @@ public class InOrderController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/edit")
-	public ModelAndView edit() throws Exception{
+	public String edit() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"修改inorder");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
-		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
 		inOrderService.edit(pd);
-		mv.addObject("msg","success");
-		mv.setViewName("save_result");
-		return mv;
+		return "redirect:/inorder/list.do";
 	}
 	/**结算单反审进货单功能
 	 * @param
@@ -237,11 +233,13 @@ public class InOrderController extends BaseController {
 			pd.put("keywords", keywords.trim());
 		}
 		page.setPd(pd);
+		List<PageData> supplierList = supplierService.listAll(pd);	//列出supplier列表;
 		List<PageData>	varList = inOrderService.list(page);	//列出inorder列表
-		mv.setViewName("inventorymanagement/inorder/inorder_list");
+		mv.addObject("supplierList", supplierList);
 		mv.addObject("varList", varList);
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		mv.setViewName("inventorymanagement/inorder/inorder_list");
 		return mv;
 	}
 	
@@ -333,12 +331,11 @@ public class InOrderController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd = inOrderService.findById(pd);	//根据ID读取
-//		pd.put("USERNAME", Jurisdiction.getUsername());	//用户名
-//		List<PageData>	varList = remarksService.listAll(pd);
-//		List<PageData>	varListL = levelService.listAll(pd);
+		List<PageData> supplierList = supplierService.listAll(pd);	//列出supplier列表;
 		mv.setViewName("inventorymanagement/inorder/inorder_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
+		mv.addObject("supplierList", supplierList);
 //		mv.addObject("varList", varList);
 //		mv.addObject("varListL", varListL);
 		return mv;
