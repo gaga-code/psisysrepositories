@@ -87,19 +87,19 @@ public interface InOrderManager{
 	 * @param pd
 	 * @throws Exception
 	 */
-	public void shenpi(PageData pd)throws Exception;
+	public void updateshenpi(PageData pd)throws Exception;
 	
 	/**反审
 	 * @param pd
 	 * @throws Exception
 	 */
-	public void fanshen(PageData pd)throws Exception;
+	public void updatefanshen(PageData pd)throws Exception;
 
 	/**批量审批
 	 * @param arrayDATA_IDS
 	 * @throws Exception
 	 */
-	public void shenpiAll(PageData pd)throws Exception;
+	public void updateshenpiAll(PageData pd)throws Exception;
 
 	/**
 	 * 

@@ -160,7 +160,7 @@ public class InOrderController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
-		inOrderService.shenpi(pd);
+		inOrderService.updateshenpi(pd);
 		out.write("success");
 		out.close();
 	}
@@ -175,7 +175,7 @@ public class InOrderController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
-		inOrderService.fanshen(pd);
+		inOrderService.updatefanshen(pd);
 		out.write("success");
 		out.close();
 	}
@@ -396,7 +396,7 @@ public class InOrderController extends BaseController {
 			String DATA_IDS = pd.getString("DATA_IDS");
 			if(null != DATA_IDS && !"".equals(DATA_IDS)){
 //				String ArrayDATA_IDS[] = DATA_IDS.split(",");
-				inOrderService.shenpiAll(pd);
+				inOrderService.updateshenpiAll(pd);
 				pd.put("msg", "ok");
 			}else{
 				pd.put("msg", "no");

@@ -18,6 +18,7 @@
 		AMOUNT,
 		APPBILLNO,
 		NOTE,
+		BARCODE,
 		PK_SOBOOKS
 	</sql>
 	
@@ -31,6 +32,7 @@
 		#{AMOUNT},	
 		#{APPBILLNO},	
 		#{NOTE},	
+		#{BARCODE},	
 		#{PK_SOBOOKS}
 	</sql>
 	<sql id="InBodyAllField">
@@ -42,6 +44,7 @@
 		AMOUNT,            
 		APPBILLNO,         
 		NOTE,          
+		BARCODE,          
 		SETTEDNUMANDID,    
 		PK_SOBOOKS,        
 		DEF1,              
@@ -62,6 +65,7 @@
 		#{AMOUNT},          
 		#{APPBILLNO},       
 		#{NOTE},        
+		#{BARCODE},        
 		#{SETTEDNUMANDID},  
 		#{PK_SOBOOKS},      
 		#{DEF1},            
@@ -118,27 +122,6 @@
 	</update>
 	
 	<!-- 修改 -->
-	<update id="edit" parameterType="pd">
-		update
-		<include refid="tableName"></include>
-		set 
-			LDATE = #{LDATE},
-			SUPPLIER_ID = #{SUPPLIER_ID},
-			WAREHOUSE_ID = #{WAREHOUSE_ID},
-			ALLAMOUNT = #{ALLAMOUNT},
-			BILLTYPE = #{BILLTYPE},
-			BILLSTATUS = #{BILLSTATUS},
-			PAIDAMOUNT = #{PAIDAMOUNT},
-			UNPAIDAMOUNT = #{UNPAIDAMOUNT},
-			THISPAY = #{THISPAY},
-			SUBBRANCH = #{SUBBRANCH},
-			ISSETTLEMENTED = #{ISSETTLEMENTED},
-			NOTE = #{NOTE},
-		where 
-		PK_SOBOOKS = #{PK_SOBOOKS}
-		and IFNULL(dr,0)=0
-	</update>
-	<!-- 修改 -->
 	<update id="inorderbodysnapshotedit" parameterType="pd">
 		update
 		<include refid="tableName"></include>
@@ -150,6 +133,7 @@
 			AMOUNT=#{AMOUNT},            
 			APPBILLNO=#{APPBILLNO},         
 			NOTE=#{NOTE},          
+			BARCODE=#{BARCODE},          
 			SETTEDNUMANDID=#{SETTEDNUMANDID},    
 			PK_SOBOOKS=#{PK_SOBOOKS},        
 			DEF1=#{DEF1},              
@@ -191,107 +175,19 @@
 			a.AMOUNT,
 			a.APPBILLNO,
 			a.NOTE,
+			a.BARCODE,
 			b.GOODNAME,
 			c.NAME
 		from 
 		<include refid="tableName"></include> a
 		left join base_good b
-		on GOODCODE_ID = b.BARCODE		
+		on a.GOODCODE_ID = b.GOODCODE		
 		left join cp_spunit c
 		on b.CUNIT_ID = c.SPUNIT_ID		
 		where 
 			a.INORDER_ID = #{INORDER_ID}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0
-	</select>
-	
-	<!-- 列表 -->
-	<select id="datalistPage" parameterType="page" resultType="pd">
-		select
-			a.PK_SOBOOKS,
-			a.INORDER_ID,
-			a.LDATE,
-			a.BILLCODE,
-			a.SUPPLIER_ID,
-			a.USER_ID,
-			a.WAREHOUSE_ID,
-			a.ALLAMOUNT,
-			a.BILLTYPE,
-			a.BILLSTATUS,
-			a.PAIDAMOUNT,
-			a.UNPAIDAMOUNT,
-			a.THISPAY,
-			a.SUBBRANCH,
-			a.NOTE,
-			a.ISSETTLEMENTED,
-			b.SUPPLIERNAME SUPPLIERNAME
-		from 
-		<include refid="tableName"></include>a
-		left join base_supplier b
-		on a.SUPPLIER_ID = b.SUPPLIER_ID
-		where 1=1
-		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
-		and IFNULL(a.dr,0)=0
-		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
-			and
-				(
-					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-					<!--  or 
-					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-					 -->
-				)
-		</if>
-		<!-- 供应商ID -->
-		<if test="pd.SUPPLIER_ID != null and pd.SUPPLIER_ID != ''">
-			and  a.SUPPLIER_ID= #{pd.SUPPLIER_ID}
-		</if>
-		<!-- 是否结算了的 -->
-		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
-			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
-		</if>
-		order by CREATETIME DESC
-	</select>
-	
-	
-	<!-- 列表 -->
-	<select id="datalistPageBySuppset" parameterType="page" resultType="pd">
-		select
-			a.INORDER_ID,
-			a.BILLCODE,
-			b.SUPPLIERNAME SUPPLIERNAME,
-			a.ALLAMOUNT,
-			a.UNPAIDAMOUNT,
-			a.PAIDAMOUNT,
-			a.THISPAY,
-			a.ISSETTLEMENTED,
-			a.USER_ID,
-			a.NOTE
-		from 
-		<include refid="tableName"></include>a
-		left join base_supplier b
-		on a.SUPPLIER_ID = b.SUPPLIER_ID
-		where 1=1
-		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
-		and IFNULL(a.dr,0)=0
-		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
-			and
-				(
-					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-					<!--  or 
-					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-					 -->
-				)
-		</if>
-		<!-- 供应商ID -->
-		<if test="pd.SUPPLIER_ID != null and pd.SUPPLIER_ID != ''">
-			and  a.SUPPLIER_ID= #{pd.SUPPLIER_ID}
-		</if>
-		<!-- 是否结算了的 -->
-		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
-			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
-		</if>
-		and a.BILLSTATUS = 2
-		order by CREATETIME DESC
 	</select>
 	
 	<!-- 列表(全部) -->

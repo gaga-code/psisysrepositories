@@ -227,11 +227,14 @@
 			a.NOTE,
 			a.ISSETTLEMENTED,
 			a.SUPPSETBILL_ID,
-			b.SUPPLIERNAME 
+			b.SUPPLIERNAME,
+			c.WHNAME 
 		from 
 		<include refid="tableName"></include> a
 		left join base_supplier b
 		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		left join base_warehouse c
+		on a.WAREHOUSE_ID = c.WAREHOUSE_ID
 		where 
 			a.INORDER_ID = #{INORDER_ID}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}

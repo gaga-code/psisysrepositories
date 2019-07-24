@@ -123,6 +123,19 @@
 			and IFNULL(dr,0)=0
 	</update>
 	
+	<!-- 修改库存和最后进价 -->
+	<update id="editStocknumAndLastprice" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			LASTPPRICE=#{LASTPPRICE},	
+			STOCKNUM=#{STOCKNUM}
+		where 
+			GOODCODE = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
 	<!-- 修改库存 -->
 	<update id="editKuCun" parameterType="pd">
 		update
@@ -143,6 +156,18 @@
 		<include refid="tableName"></include>
 		where 
 			GOOD_ID = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	
+	<!-- 通过 商品编号 获取数据 -->
+	<select id="findByGOODCODE" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			GOODCODE = #{GOOD_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
 	</select>
