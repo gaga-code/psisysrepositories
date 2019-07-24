@@ -69,9 +69,9 @@
 									<c:if test="${QX.add == 1 }">
 									<a class="btn btn-mini btn-success" onclick="add();">新增供应商结算单</a>
 									</c:if>
-									<c:if test="${QX.del == 1 }">
+									<%-- <c:if test="${QX.del == 1 }">
 									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a>
-									</c:if>
+									</c:if> --%>
 									<c:if test="${QX.SUPPSETBILLAPPROVAL == 1 }">
 									<a class="btn btn-mini btn-success" onclick="approvalAll('确定要审批选中的数据吗?');" title="批量审批" >批量审批</a>
 									</c:if>
@@ -136,20 +136,21 @@
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
-													<a class="btn btn-xs btn-success" title="审批" id="approvalone"  onclick="approvalone('${var.SUPPSETBILL_ID}','${var.PAYMENTAMOUNT}');">
-														<i class="ace-icon fa fa-eye bigger-120" title="审批"></i>
-													</a>
-													<a class="btn btn-xs btn-danger" onclick="unapprovalone('${var.SUPPSETBILL_ID}');">
-														<i class="ace-icon fa fa-trash-o bigger-120" title="反审"></i>
-													</a>
 													<c:if test="${QX.edit == 1 }">
+													<a class="btn btn-xs btn-success" title="审批" id="approvalone"  onclick="approvalone('${var.SUPPSETBILL_ID}','${var.PAYMENTAMOUNT}','${var.BILLSTATUS}');">
+														<i  title="审批">审批</i>
+													</a>
+													<a class="btn btn-xs btn-danger" onclick="unapprovalone('${var.SUPPSETBILL_ID}','${var.BILLSTATUS}');">
+														<i  title="反审">反审</i>
+													</a>
+													
 													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.SUPPSETBILL_ID}','${var.BILLSTATUS}');">
-														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
+														<i title="编辑">编辑</i>
 													</a>
 													</c:if>
 													<c:if test="${QX.del == 1 }">
-													<a class="btn btn-xs btn-danger" onclick="del('${var.SUPPSETBILL_ID}');">
-														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
+													<a class="btn btn-xs btn-danger" id="delone" onclick="del('${var.SUPPSETBILL_ID}','${var.BILLSTATUS}');">
+														<i title="删除">删除</i>
 													</a>
 													</c:if>
 												</div>
@@ -160,16 +161,23 @@
 														</button>
 			
 														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+															<c:if test="${QX.edit == 1 }">
 															<li>
-																<a style="cursor:pointer;" onclick="view('${var.SUPPSETBILL_ID}');" class="tooltip-success" data-rel="tooltip" title="查看">
+																<a style="cursor:pointer;" onclick="approvalone('${var.SUPPSETBILL_ID}','${var.PAYMENTAMOUNT}','${var.BILLSTATUS}');" class="tooltip-success" data-rel="tooltip" title="审批" id="approvalone">
 																	<span class="green">
 																		<i class="ace-icon fa fa-eye bigger-120"></i>
 																	</span>
 																</a>
 															</li>
-															<c:if test="${QX.edit == 1 }">
 															<li>
-																<a style="cursor:pointer;" onclick="edit('${var.SUPPSETBILL_ID}');" class="tooltip-success" data-rel="tooltip" title="修改">
+																<a style="cursor:pointer;" onclick="unapprovalone('${var.SUPPSETBILL_ID}','${var.BILLSTATUS}');" class="tooltip-success" data-rel="tooltip" title="反审" id="approvalone">
+																	<span class="green">
+																		<i class="ace-icon fa fa-eye bigger-120"></i>
+																	</span>
+																</a>
+															</li>
+															<li>
+																<a style="cursor:pointer;" onclick="edit('${var.SUPPSETBILL_ID}','${var.BILLSTATUS}');" class="tooltip-success" data-rel="tooltip" title="修改">
 																	<span class="green">
 																		<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
 																	</span>
@@ -178,7 +186,7 @@
 															</c:if>
 															<c:if test="${QX.del == 1 }">
 															<li>
-																<a style="cursor:pointer;" onclick="del('${var.SUPPSETBILL_ID}');" class="tooltip-error" data-rel="tooltip" title="删除">
+																<a style="cursor:pointer;" onclick="del('${var.SUPPSETBILL_ID}','${var.BILLSTATUS}');" class="tooltip-error" data-rel="tooltip" title="删除">
 																	<span class="red">
 																		<i class="ace-icon fa fa-trash-o bigger-120"></i>
 																	</span>
@@ -219,9 +227,9 @@
 						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
 								<tr>
-									<th class="center" style="width:35px;">
+									<!-- <th class="center" style="width:35px;">
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
-									</th>
+									</th> -->
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">单据编号</th>
 									<th class="center">供应商</th>
@@ -232,7 +240,7 @@
 									<th class="center">结算状态</th>
 									<th class="center">经手人</th>
 									<th class="center">备注</th>
-									<th class="center" style="width:110px;">操作</th>
+									<!-- <th class="center" style="width:110px;">操作</th> -->
 								</tr>
 							</thead>
 							<tbody id="realtbody">
@@ -287,7 +295,7 @@
 		}
 
 		$(function() {
-		
+			
 			$("#billstatus option[text='未审核']").attr("selected", true); 
 			
 			//日期框
@@ -362,7 +370,17 @@
 		
 				
 		//删除
-		function del(Id){
+		function del(Id,BILLSTATUS){
+			if(BILLSTATUS == 2){
+				$("#"+Id+" #delone").tips({
+					side:1,
+		            msg:'已审核的供应商结算单不可以删除',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
+			
 			bootbox.confirm("确定要删除吗?", function(result) {
 				if(result) {
 					top.jzts();
@@ -406,17 +424,56 @@
 			
 			 
 		}
-		function unapprovalone(Id){
+		function unapprovalone(Id,BILLSTATUS){
 			//1、先判断结算单里的进货单是否有二次结算的单，如果有，该单不能反审
-			
+			if(BILLSTATUS != 2){
+				$("#"+Id+" #unapprovalone").tips({
+					side:1,
+		            msg:'未审核不可进行反审',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
+			bootbox.confirm("确定要反审吗?", function(result) {
+				if(result) {
+					top.jzts();
+					$.ajax({
+						type: "POST",
+						url: '<%=basePath%>suppsetbill/unapprovalone.do?tm='+new Date().getTime(),
+				    	data: {SUPPSETBILL_ID:Id},
+						dataType:'json',
+						cache: false,
+						success: function(data){
+							if(data.msg == "success"){
+								
+								tosearch();
+							}else {
+								alert(data.msg);
+								top.hangge();
+								return;
+							}
+						}
+					});
+				}
+			});
 		}
 		
 		//单张审批
-		function approvalone(Id,paidam){
+		function approvalone(Id,paidam,BILLSTATUS){
 			if(paidam == 0.0 || paidam == 0){
 				$("#"+Id+" #approvalone").tips({
 					side:1,
 		            msg:'结算单实付金额不可为0,审批无效',
+		            bg:'#AE81FF',
+		            time:8
+		        });
+				return;
+			}
+			if(BILLSTATUS == 2){
+				$("#"+Id+" #approvalone").tips({
+					side:1,
+		            msg:'已审批，不可重复审批',
 		            bg:'#AE81FF',
 		            time:8
 		        });
@@ -590,9 +647,11 @@
 	            	var html = "";
             		if(res.QX.cha == 1){
 	            		html +="<tr id='"+res.varList[i].INORDER_ID+"'>";
+            			/* 
 		            	html +="<td class='center'>";
 		            	html +="	<label class='pos-rel'><input type='checkbox' name='ids' value='"+res.varList[i].INORDER_ID+"' class='ace' /><span class='lbl'></span></label>";
 	            		html +="</td>";
+	            		 */
 	            		html +="<td class='center' style='width: 30px;'>"+(i+1)+"</td>";
 	            		html +="<td class='center'>"+res.varList[i].BILLCODE+"</td>";
 	            		html +="<td class='center'>"+res.varList[i].SUPPLIERNAME+"</td>";
@@ -612,7 +671,9 @@
 	            		}
 	            		html +="<td class='center'>"+res.varList[i].PSI_NAME+"</td>";
 	            		html +="<td class='center'>"+res.varList[i].NOTE+"</td>";
-	            		html +="<td class='center'>";
+	            		
+	            		
+	            		/* html +="<td class='center'>";
 	            		if(res.QX.edit != 1 && QX.del != 1){
 		            		html +="<span class='label label-large label-grey arrowed-in-right arrowed-in'><i class='ace-icon fa fa-lock' title='无权限'></i></span>";
 	            		}
@@ -671,6 +732,8 @@
 						html += "		</div> ";
 						html += "	</div> ";
 						html += " </td>";
+						 */
+						
 						html += " </tr>";
 	            	}else if(res.QX.cha == 0){
 	            		html += "<tr> ";

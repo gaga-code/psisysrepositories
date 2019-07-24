@@ -95,6 +95,42 @@
 		)
 	</insert>
 	
+	<!-- 快照修改 -->
+	<update id="snapshotedit" parameterType="pd" >
+		update
+		 <include refid="tableName"></include>
+		set
+		 	LDATE=#{LDATE},                                                       
+			  BILLCODE=#{BILLCODE},                                                    
+			  BILLTYPE=#{BILLTYPE},                                                    
+			  BILLSTATUS=#{BILLSTATUS},                                                  
+			  USER_ID=#{USER_ID},                                                     
+			  FROMUNIT=#{FROMUNIT},                                                    
+			  DISTRIBUTIONMODE=#{DISTRIBUTIONMODE},                                            
+			  INVOICETYPE=#{INVOICETYPE},                                                 
+			  BILLNO=#{BILLNO},                                                      
+			  PAYMETHOD=#{PAYMETHOD},                                                   
+			  PAYABLEAMOUNT=#{PAYABLEAMOUNT},                                               
+			  PAYMENTAMOUNT=#{PAYMENTAMOUNT},                                               
+			  PAYABLEALLAM=#{PAYABLEALLAM},
+			  SETTEDNUMANDID=#{SETTEDNUMANDID},  
+			  INORDER_IDS=#{INORDER_IDS},                                              
+			  NOTE=#{NOTE},                                                        
+			  PK_SOBOOKS=#{PK_SOBOOKS},
+			  DEF1=#{DEF1},
+			  DEF2=#{DEF2},
+			  DEF3=#{DEF3},
+			  DEF4=#{DEF4},
+			  DEF5=#{DEF5},
+			  CREATETIME=#{CREATETIME},
+			  LASTTIME=#{LASTTIME},
+			  DR=#{DR}
+		where 
+		 	 SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</update>
+	
 	<!-- 删除-->
 	<update id="delete" parameterType="pd">
 		update 

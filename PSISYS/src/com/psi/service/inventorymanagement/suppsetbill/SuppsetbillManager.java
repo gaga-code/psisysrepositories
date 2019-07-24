@@ -72,6 +72,13 @@ public interface SuppsetbillManager{
 	 * @throws Exception
 	 */
 	public void approvalone(PageData pd)throws Exception;
+
+	/**
+	 * 单张反审
+	 * @param pd
+	 * @throws Exception
+	 */
+	public void unapprovalone(PageData pd)throws Exception;
 	
 	
 	

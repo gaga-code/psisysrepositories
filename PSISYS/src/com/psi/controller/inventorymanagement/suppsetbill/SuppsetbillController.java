@@ -311,6 +311,26 @@ public class SuppsetbillController extends BaseController {
 		}
 		return AppUtil.returnObject(pd, map);
 	}
+	/**单张反审
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/unapprovalone")
+	@ResponseBody
+	public Object unapprovalone() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"单张反审suppsetbill");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		PageData pd = new PageData();		
+		Map<String,Object> map = new HashMap<String,Object>();
+		pd = this.getPageData();
+		try {
+			suppsetbillService.unapprovalone(pd);
+			map.put("msg", "success");
+		}catch(Exception e) {
+			map.put("msg", e.getMessage());
+		}
+		return AppUtil.returnObject(pd, map);
+	}
 	
 	
 	

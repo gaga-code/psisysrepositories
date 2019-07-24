@@ -13,7 +13,6 @@ import com.psi.dao.DaoSupport;
 import com.psi.entity.Page;
 import com.psi.entity.PsiBillCode;
 import com.psi.service.inventorymanagement.inorder.InOrderManager;
-import com.psi.service.inventorymanagement.inorder.impl.InOrderService;
 import com.psi.service.inventorymanagement.inorderandsuppsetback.InOrderAndSuppsetBackManager;
 import com.psi.service.inventorymanagement.suppsetbill.SuppsetbillManager;
 import com.psi.service.system.BillCodePsi.BillCodeManager;
@@ -76,8 +75,10 @@ public class SuppsetbillService implements SuppsetbillManager{
 			PageData inorderpd = new PageData();
 			inorderpd.put("INORDER_ID",ioids[i].substring(1, ioids[i].length()-1) );
 			inorderpd = inOrderService.findById(inorderpd);
-			if(inorderpd.get("SUPPSETBILL_ID")==null || inorderpd.get("SUPPSETBILL_ID") == "") {
+			if(inorderpd.get("SUPPSETBILL_ID")==null || inorderpd.get("SUPPSETBILL_ID") == "" || "".equals(inorderpd.get("SUPPSETBILL_ID")) ) {
 				inorderpd.put("SUPPSETBILL_ID",pd.getString("SUPPSETBILL_ID"));
+			}else if(((String)inorderpd.get("SUPPSETBILL_ID")).contains(pd.getString("SUPPSETBILL_ID"))){
+				//无操作
 			}else {
 				inorderpd.put("SUPPSETBILL_ID", inorderpd.get("SUPPSETBILL_ID")+","+pd.getString("SUPPSETBILL_ID"));
 			}
@@ -95,7 +96,32 @@ public class SuppsetbillService implements SuppsetbillManager{
 	 * @throws Exception
 	 */
 	public void delete(PageData pd)throws Exception{
+		pd = (PageData)dao.findForObject("SuppsetbillMapper.findById", pd);
+		String inorder_ids = pd.getString("INORDER_IDS");
+		String[] ioids = inorder_ids.split(",");
+		for(int i = 0; i < ioids.length; i++) {
+			PageData inorderpd = new PageData();
+			inorderpd.put("INORDER_ID",ioids[i].substring(1, ioids[i].length()-1) );
+			inorderpd = inOrderService.findById(inorderpd);
+			String suppid = inorderpd.getString("SUPPSETBILL_ID");
+			if(suppid.contains(pd.getString("SUPPSETBILL_ID"))) {
+				String[] split = suppid.split(",");
+				String newsuppid="";
+				for(String str:split) {
+					if(!str.equalsIgnoreCase(pd.getString("SUPPSETBILL_ID"))) {
+						newsuppid+=str+",";
+					}
+				}
+				if(newsuppid != "") {
+					newsuppid = newsuppid.substring(0,newsuppid.length()-1);
+				}
+				inorderpd.put("SUPPSETBILL_ID", newsuppid);
+				inorderpd.put("ISSETTLEMENTED", "2");
+				inOrderService.editFromSupp(inorderpd);
+			}
+		}
 		dao.delete("SuppsetbillMapper.delete", pd);
+		
 	}
 	
 	/**修改
@@ -112,6 +138,8 @@ public class SuppsetbillService implements SuppsetbillManager{
 			inorderpd = inOrderService.findById(inorderpd);
 			if(inorderpd.get("SUPPSETBILL_ID")==null || inorderpd.get("SUPPSETBILL_ID") == "") {
 				inorderpd.put("SUPPSETBILL_ID",pd.getString("SUPPSETBILL_ID"));
+			}else if(((String)inorderpd.get("SUPPSETBILL_ID")).contains(pd.getString("SUPPSETBILL_ID"))){
+				//无操作
 			}else {
 				inorderpd.put("SUPPSETBILL_ID", inorderpd.get("SUPPSETBILL_ID")+","+pd.getString("SUPPSETBILL_ID"));
 			}
@@ -195,15 +223,18 @@ public class SuppsetbillService implements SuppsetbillManager{
 		//================================================================1、进行备份===========================================================//
 		//查找结算单
 		pd = (PageData)dao.findForObject("SuppsetbillMapper.findById", pd);
+		String cursuppid = pd.getString("SUPPSETBILL_ID");
 		String inorder_ids = pd.getString("INORDER_IDS");
 		String[] ioids = inorder_ids.split(",");
-//		List<>
 		List<PageData> inorderandbodylist = new ArrayList<PageData>();
 		for(int i = 0 ; i < ioids.length; i++) {
 			PageData inorderandbody = new PageData();
 			inorderandbody.put("INORDER_ID",ioids[i].substring(1, ioids[i].length()-1) );
 			inorderandbody = inOrderService.findAllById(inorderandbody);
-			
+			String inorder = inorderandbody.getString("SUPPSETBILL_ID");
+			if(!inorder.contains(cursuppid)) {
+				inorderandbody.put("SUPPSETBILL_ID", inorder+","+cursuppid);
+			}
 			//备份进货单明细
 			List<PageData> inorderbodylist = (List<PageData>) inorderandbody.get("goodslist");
 			for(int j = 0; j<inorderbodylist.size();j++) {
@@ -235,38 +266,11 @@ public class SuppsetbillService implements SuppsetbillManager{
 				headpd.put("SETTEDNUMANDID",INORDERBACK_ID);
 				thispay -= unpay;
 			}else {//部分结算，状态为“未结算”
-				String last = "";
-				String SETTEDNUMANDID = "";
-				String laststr = (String) headpd.get("SETTEDNUMANDID");//上一个的备份1id|1id
-				settleNum = (laststr == null || "".equals(laststr) )?1:Integer.parseInt(laststr.split("&")[0].split("|")[0])+1;
-				if(settleNum == 1) {
-					SETTEDNUMANDID=settleNum+"|"+ INORDERBACK_ID+"&"+settleNum+"|"+ INORDERBACK_ID;
-				}else {
-					
-					String curstr = settleNum+"|"+INORDERBACK_ID;//当前2id
-					SETTEDNUMANDID=curstr+"&"+curstr;//2id&2id
-					last = laststr.split("&")[0]+"&"+curstr; //上一个 1id&2id
-					String lastbackId = laststr.split("&")[0].split("|")[1];//上一个备份id
-					
-					//更新上一个备份里的SETTEDNUMANDID字段，来判断之后是否有再次结算
-					PageData lastinorderbackpd = new PageData();
-					lastinorderbackpd.put("INORDERBACK_ID", lastbackId);
-					lastinorderbackpd = inOrderAndSuppsetBackService.findInBackById(lastinorderbackpd);
-					lastinorderbackpd.put("SETTEDNUMANDID", last);
-					inOrderAndSuppsetBackService.editinback(lastinorderbackpd);
-					
-					//更新当前一个备份里的SETTEDNUMANDID字段
-					PageData curinorderbackpd = new PageData();
-					curinorderbackpd.put("INORDERBACK_ID", INORDERBACK_ID);
-					curinorderbackpd = inOrderAndSuppsetBackService.findInBackById(curinorderbackpd);
-					inOrderAndSuppsetBackService.editinback(curinorderbackpd);
-				}
-				
 				headpd.put("PAIDAMOUNT",(Double)headpd.get("PAIDAMOUNT") + thispay );
 				headpd.put("THISPAY",thispay);
 				headpd.put("UNPAIDAMOUNT", unpay-thispay);
 				headpd.put("ISSETTLEMENTED", 0);
-				headpd.put("SETTEDNUMANDID",SETTEDNUMANDID);
+				headpd.put("SETTEDNUMANDID",INORDERBACK_ID);
 			}
 			//进货单的表体明细
 			List<PageData> inorderbodylist = (List<PageData>) headpd.get("goodslist");
@@ -280,9 +284,78 @@ public class SuppsetbillService implements SuppsetbillManager{
 			dao.update("InOrderMapper.updateForSettle", headpd);
 		}
 		//================================================================3、对结算单进行处理===========================================================//		
-		pd.put("SETTEDNUMANDID","1"+"|"+pd.get("SUPPSETBILLBACK_ID"));
+		pd.put("SETTEDNUMANDID",pd.get("SUPPSETBILLBACK_ID"));
 		pd.put("BILLSTATUS", "2");
 		dao.update("SuppsetbillMapper.updateForSettle", pd);
+	}
+
+	/**
+	 * 单张反审
+	 * @param pd
+	 * @throws Exception
+	 */
+	@Override
+	public void unapprovalone(PageData pd) throws Exception {
+		//====================================先做校验，判断是否有进货单存在多次结算情况========================================
+		pd = (PageData)dao.findForObject("SuppsetbillMapper.findById", pd);
+		String inorder_ids = pd.getString("INORDER_IDS");
+		String[] ioids = inorder_ids.split(",");
+		PageData inorderpd = new PageData();
+		inorderpd.put("INORDER_ID",ioids[ioids.length-1].substring(1, ioids[ioids.length-1].length()-1) );
+		inorderpd = inOrderService.findById(inorderpd);
+		String ids = (String)inorderpd.get("SUPPSETBILL_ID");
+		if(ids.isEmpty()) {
+			throw new Exception("该结算单有问题");
+		}
+		String[] split = ids.split(",");
+		for(int i = 0; i < split.length; i++) {
+			if(split[i].equals(pd.getString("SUPPSETBILL_ID"))) {
+				if(i != split.length-1) {
+					PageData supp = new PageData();
+					supp.put("SUPPSETBILL_ID", split[i+1]);//查找下一张供应商结算单是否审核
+					supp = (PageData)dao.findForObject("SuppsetbillMapper.findById", supp);
+					if(supp.get("BILLSTATUS").equals("2")) {//下一张结算单已审核，则进if
+						String billcode = (String) supp.get("BILLCODE");
+						throw new Exception("该结算单里的进货单有出现多次次结算情况，请先反审单据编号为"+billcode+"的结算单");
+					}else {
+						break;
+					}
+				}
+			}
+		}
+		
+		//=================================进行真正的反审操作，也就是恢复审批前的快照============================================
+		//1、查找结算单、进货单以及明细的快照主键 SETTEDNUMANDID
+		String suppbackid = pd.getString("SETTEDNUMANDID");//结算单的快照主键
+		List<String> inorderbackidlist = new ArrayList<String>();//进货单的快照主键
+		List<String> inorderbodybackidlist = new ArrayList<String>();//进货明细单的快照主键
+		for(int i = 0 ; i < ioids.length; i++) {
+			PageData inorderandbody = new PageData();
+			inorderandbody.put("INORDER_ID",ioids[i].substring(1, ioids[i].length()-1) );
+			inorderandbody = inOrderService.findAllById(inorderandbody);
+			inorderbackidlist.add(inorderandbody.getString("SETTEDNUMANDID"));
+			List<PageData> inorderbodylist = (List<PageData>) inorderandbody.get("goodslist");
+			for(int j = 0; j<inorderbodylist.size();j++) {
+				inorderbodybackidlist.add(inorderbodylist.get(j).getString("SETTEDNUMANDID"));
+			}
+		}
+		PageData suppback = new PageData();
+		suppback.put("SUPPSETBILLBACK_ID", suppbackid);
+		suppback = inOrderAndSuppsetBackService.findSuppBackById(suppback);
+		dao.update("SuppsetbillMapper.snapshotedit", suppback);
+		
+		for(int i = 0 ; i < inorderbackidlist.size(); i++) {
+			PageData inorderback = new PageData();
+			inorderback.put("INORDERBACK_ID", inorderbackidlist.get(i));
+			inorderback=inOrderAndSuppsetBackService.findInBackById(inorderback);
+			dao.update("InOrderMapper.inordersnapshotedit", inorderback);
+		}
+		for(int i = 0 ; i < inorderbodybackidlist.size(); i++) {
+			PageData inbodyback = new PageData();
+			inbodyback.put("INORDERBODYBACK_ID", inorderbodybackidlist.get(i));
+			inbodyback=inOrderAndSuppsetBackService.findInBodyBackById(inbodyback);
+			dao.update("inorderbodysnapshotedit", inbodyback);
+		}
 	}
 	
 }
