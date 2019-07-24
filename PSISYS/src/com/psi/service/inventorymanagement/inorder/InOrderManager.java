@@ -99,7 +99,7 @@ public interface InOrderManager{
 	 * @param arrayDATA_IDS
 	 * @throws Exception
 	 */
-	public void shenpiAll(String[] arrayDATA_IDS)throws Exception;
+	public void shenpiAll(PageData pd)throws Exception;
 
 	/**
 	 * 

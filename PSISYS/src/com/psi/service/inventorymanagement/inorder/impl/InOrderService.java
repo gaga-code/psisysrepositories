@@ -326,16 +326,27 @@ public class InOrderService implements InOrderManager{
 		PageData head =  (PageData)dao.findForObject("InOrderMapper.findById", pd);
 		//通过进货单ID获取该进货单的商品信息
 		List<PageData> goodslist = (List<PageData>)dao.findForList("InOrderBodyMapper.findById", pd);
+		
 		//依次把商品数量添加到 仓库-商品 表中和商品的总数量中
 		for (PageData pageData : goodslist) {
-			//1.先查看 仓库-商品 表中是否包含相应的 仓库-商品
-			PageData aGood =  (PageData)dao.findForObject("Warehouse_Good_Mapper.findByWarehouseAndGood", pd);
-			
+			//把商品的编号加入到查询条件
+			head.put("GOOD_ID", pageData.get("GOODCODE_ID"));
+			//先查看 仓库-商品 表中是否包含相应的 仓库-商品
+			PageData aGood =  (PageData)dao.findForObject("Warehouse_Good_Mapper.findByWarehouseAndGood", head);
 			//有，把数量更新
+			if(aGood != null) {
+				//把仓库中的库存加上进货单商品的数量
+				head.put("STOCK", (Integer)aGood.get("STOCK") + (Integer)pageData.get("PNUMBER"));
+				dao.update("Warehouse_Good_Mapper.edit", head);
+			}
 			//没有，新增数据
+			else {
+				head.put("WAREHOUSE_GOOD_ID", UuidUtil.get32UUID());
+				head.put("STOCK", pageData.get("PNUMBER"));
+				dao.save("Warehouse_Good_Mapper.save", head);
+			}
 			
 		}
-		
 	}
 
 	/**
@@ -346,10 +357,19 @@ public class InOrderService implements InOrderManager{
 		//把进货单的状态改为未审核
 		dao.update("InOrderMapper.fanshen", pd);
 		//获取进货单表头数据
-		PageData result =  (PageData)dao.findForObject("InOrderMapper.findById", pd);
+		PageData head =  (PageData)dao.findForObject("InOrderMapper.findById", pd);
 		//通过进货单ID获取该进货单的商品信息
-		result.put("goodslist", (List<PageData>)dao.findForList("InOrderBodyMapper.findById", pd));
-			//依次把商品数量从 仓库-商品 表中和商品的总数量中 减去
+		List<PageData> goodslist = (List<PageData>)dao.findForList("InOrderBodyMapper.findById", pd);
+		
+		//依次把商品数量在 仓库-商品 表中删去
+		for (PageData pageData : goodslist) {
+			head.put("GOOD_ID", pageData.get("GOODCODE_ID"));
+			//获取原来的库存
+			PageData aGood =  (PageData)dao.findForObject("Warehouse_Good_Mapper.findByWarehouseAndGood", head);
+			//把仓库中的库存减去进货单商品的数量
+			head.put("STOCK", (Integer)aGood.get("STOCK") - (Integer)pageData.get("PNUMBER"));
+			dao.update("Warehouse_Good_Mapper.edit", head);
+		}
 	}
 
 	/**
@@ -358,14 +378,26 @@ public class InOrderService implements InOrderManager{
 	 * PK_SOBOOKS  帐套主键
 	 */
 	@Override
-	public void shenpiAll(String[] arrayDATA_IDS) throws Exception {
-		StringBuffer idstr = new StringBuffer("");
-		for(int i = 0; i < arrayDATA_IDS.length; i++) {
-			idstr.append("'"+arrayDATA_IDS[i]+"',");
+	public void shenpiAll(PageData pd) throws Exception {
+		
+		//循环遍历进货单
+		String DATA_IDS = pd.getString("DATA_IDS");
+		String ArrayDATA_IDS[] = DATA_IDS.split(",");
+		for (String string : ArrayDATA_IDS) {
+			pd.put("INORDER_ID", string);
+			shenpi(pd);
 		}
-		//表名和主键字段名
-		jdbcTempUtil.shenpiAll(idstr.toString().substring(0,idstr.toString().length()-1), (String)Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS), "psi_inorder", "INORDER_ID");
-
+		
+		
+//		StringBuffer idstr = new StringBuffer("");
+//		for(int i = 0; i < arrayDATA_IDS.length; i++) {
+//			idstr.append("'"+arrayDATA_IDS[i]+"',");
+//		}
+		//更新进货单的审批状态
+//		jdbcTempUtil.shenpiAllOrder(idstr.toString().substring(0,idstr.toString().length()-1), (String)Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS), "psi_inorder", "INORDER_ID");
+		
+		//更新库存的数量
+		
 	}
 
 	@Override

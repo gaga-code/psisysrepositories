@@ -45,18 +45,6 @@ public class JdbcTempUtil {
 		jdbcTemplate.execute(sql);
 	}
 
-	/**
-	 * 批量审批
-	 * @param DATA_IDS 主键
-	 * @param PK_SOBOOKS 帐套主键
-	 * @param tableName 表名
-	 * @param IDColumn  审批状态字段名
-	 */
-	public void shenpiAll(String DATA_IDS,String PK_SOBOOKS,String tableName,String IDColumn) {
-		String sql = "update "+tableName+" set BILLSTATUS = 2 where "+IDColumn+" in ("+DATA_IDS+") and PK_SOBOOKS='"+PK_SOBOOKS+"' and IFNULL(DR,0)=0 ";
-		jdbcTemplate.execute(sql);
-	}
-	
 	public void update(String sql) {
 		jdbcTemplate.execute(sql);
 	}
