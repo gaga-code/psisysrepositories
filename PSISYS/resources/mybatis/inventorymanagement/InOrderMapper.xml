@@ -141,6 +141,41 @@
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
 	</update>
+	<update id="inordersnapshotedit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set
+			LDATE=#{LDATE},          
+			BILLCODE=#{BILLCODE},       
+			SUPPLIER_ID=#{SUPPLIER_ID},    
+			USER_ID=#{USER_ID},        
+			WAREHOUSE_ID=#{WAREHOUSE_ID},   
+			ALLAMOUNT=#{ALLAMOUNT},      
+			BILLTYPE=#{BILLTYPE},       
+			BILLSTATUS=#{BILLSTATUS},     
+			PAIDAMOUNT=#{PAIDAMOUNT},     
+			UNPAIDAMOUNT=#{UNPAIDAMOUNT},   
+			THISPAY=#{THISPAY},        
+			SUBBRANCH=#{SUBBRANCH},      
+			SUPPSETBILL_ID=#{SUPPSETBILL_ID}, 
+			NOTE=#{NOTE},       
+			ISSETTLEMENTED=#{ISSETTLEMENTED}, 
+			SETTEDNUMANDID=#{SETTEDNUMANDID}, 
+			PK_SOBOOKS=#{PK_SOBOOKS},     
+			DEF1=#{DEF1},           
+			DEF2=#{DEF2},           
+			DEF3=#{DEF3},           
+			DEF4=#{DEF4},           
+			DEF5=#{DEF5},           
+			CREATETIME=#{CREATETIME},     
+			LASTTIME=#{LASTTIME},       
+			DR=#{DR}  
+		where 
+			INORDER_ID = #{INORDER_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
 	<!-- 修改 -->
 	<update id="editFromSupp" parameterType="pd">
 		update

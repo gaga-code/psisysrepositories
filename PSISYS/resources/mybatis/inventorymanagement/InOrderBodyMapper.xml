@@ -138,7 +138,33 @@
 		PK_SOBOOKS = #{PK_SOBOOKS}
 		and IFNULL(dr,0)=0
 	</update>
-	
+	<!-- 修改 -->
+	<update id="inorderbodysnapshotedit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set
+			INORDER_ID=#{INORDER_ID},        
+			GOODCODE_ID=#{GOODCODE_ID},       
+			PNUMBER=#{PNUMBER},           
+			UNITPRICE_ID=#{UNITPRICE_ID},      
+			AMOUNT=#{AMOUNT},            
+			APPBILLNO=#{APPBILLNO},         
+			NOTE=#{NOTE},          
+			SETTEDNUMANDID=#{SETTEDNUMANDID},    
+			PK_SOBOOKS=#{PK_SOBOOKS},        
+			DEF1=#{DEF1},              
+			DEF2=#{DEF2},              
+			DEF3=#{DEF3},              
+			DEF4=#{DEF4},              
+			DEF5=#{DEF5},              
+			CREATETIME=#{CREATETIME},        
+			LASTTIME=#{LASTTIME},          
+			DR=#{DR}
+		where 
+		PK_SOBOOKS = #{PK_SOBOOKS}
+		and INORDERBODY_ID=#{INORDERBODY_ID}
+		and IFNULL(dr,0)=0
+	</update>
 	<!-- 结算一张进货单 -->
 	<update id="settleOneInOrder" parameterType="pd"  >
 		update
