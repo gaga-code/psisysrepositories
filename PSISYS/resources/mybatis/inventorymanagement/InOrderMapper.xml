@@ -141,7 +141,18 @@
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
 	</update>
-	
+	<!-- 修改 -->
+	<update id="editFromSupp" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			SUPPSETBILL_ID = #{SUPPSETBILL_ID},
+			ISSETTLEMENTED = #{ISSETTLEMENTED}
+		where 
+			INORDER_ID = #{INORDER_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
 	
 	
 	<!-- 结算一张进货单 -->
@@ -180,6 +191,7 @@
 			a.SUBBRANCH,
 			a.NOTE,
 			a.ISSETTLEMENTED,
+			a.SUPPSETBILL_ID,
 			b.SUPPLIERNAME 
 		from 
 		<include refid="tableName"></include> a

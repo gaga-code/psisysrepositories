@@ -178,6 +178,17 @@ public class InOrderService implements InOrderManager{
 		return list;
 	}
 	/**
+	 * 结算单新增功能里的供应商选择拉出进货单
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<PageData> listForSuppAdd(Page page)throws Exception{
+		List<PageData> list = (List<PageData>)dao.findForList("InOrderMapper.datalistPageBySuppset", page);
+		return list;
+	}
+	/**
 	 * 根据表头主键查询主子表 ，所有字段，备份时调用到
 	 * @param pd
 	 * @return
@@ -355,6 +366,11 @@ public class InOrderService implements InOrderManager{
 		//表名和主键字段名
 		jdbcTempUtil.shenpiAll(idstr.toString().substring(0,idstr.toString().length()-1), (String)Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS), "psi_inorder", "INORDER_ID");
 
+	}
+
+	@Override
+	public void editFromSupp(PageData pd) throws Exception {
+		dao.update("InOrderMapper.editFromSupp", pd);
 	}
 	
 }

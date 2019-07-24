@@ -258,7 +258,7 @@
 			}else{
 				$.ajax({
 			        method:'POST',
-			        url:'inorder/inOrderlistForSupp',
+			        url:'inorder/inOrderlistForSuppAdd',
 			        data:{ISSETTLEMENTED:settlestatus,SUPPLIER_ID:sid},
 			        dataType:'json',
 			        success: function (res) {
@@ -678,9 +678,9 @@
 		
 		//批量结算
 		function settleAll(msg){
-			var thispayamount = parseInt($("#PAYMENTAMOUNT").val());
+			var thispayamount = $("#PAYMENTAMOUNT").val();
 			
-			if(thispayamount == 0.0){
+			if(thispayamount == 0.0 || thispayamount == null ){
 				$("#PAYMENTAMOUNT").tips({
 					side : 1,
 					msg : "供应商结算单的实付金额不可为空",

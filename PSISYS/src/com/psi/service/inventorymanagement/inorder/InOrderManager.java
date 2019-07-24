@@ -29,6 +29,8 @@ public interface InOrderManager{
 	 */
 	public void edit(PageData pd)throws Exception;
 	
+	public void editFromSupp(PageData pd)throws Exception;
+	
 	/**列表
 	 * @param page
 	 * @throws Exception
@@ -39,6 +41,14 @@ public interface InOrderManager{
 	 * @throws Exception
 	 */
 	public List<PageData> listForSuppset(PageData pd)throws Exception;
+	
+	/**
+	 * 结算单新增功能里的供应商选择拉出进货单
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> listForSuppAdd(Page page)throws Exception;
 	
 	/**
 	 * 根据供应商结算单主键获取其进货单，只有结算才会有

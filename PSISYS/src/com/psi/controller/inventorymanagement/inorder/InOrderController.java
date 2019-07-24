@@ -238,7 +238,7 @@ public class InOrderController extends BaseController {
 		return mv;
 	}
 	
-	/**列表
+	/**列表点击事件用到
 	 * 为供应商结算单提供未结算且对应供应商的json数据
 	 * @param page
 	 * @throws Exception
@@ -252,6 +252,31 @@ public class InOrderController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		List<PageData>	varList = inOrderService.listForSuppset(pd);	//列出inorder列表
+		map.put("varList", varList);
+		map.put("QX", Jurisdiction.getHC()); //按钮权限
+		return  AppUtil.returnObject(new PageData(), map);
+	}
+	
+	/**
+	 * 新增时调用到
+	 * 为供应商结算单提供未结算且对应供应商的json数据
+	 * @param page
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/inOrderlistForSuppAdd")
+	@ResponseBody
+	public Object inOrderlistForSuppAdd(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表inorder");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+		page.setPd(pd);
+		List<PageData>	varList = inOrderService.listForSuppAdd(page);	//列出inorder列表
 		map.put("varList", varList);
 		map.put("QX", Jurisdiction.getHC()); //按钮权限
 		return  AppUtil.returnObject(new PageData(), map);

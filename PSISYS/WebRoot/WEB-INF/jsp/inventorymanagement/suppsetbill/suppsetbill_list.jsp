@@ -406,6 +406,10 @@
 			
 			 
 		}
+		function unapprovalone(Id){
+			//1、先判断结算单里的进货单是否有二次结算的单，如果有，该单不能反审
+			
+		}
 		
 		//单张审批
 		function approvalone(Id,paidam){
@@ -678,7 +682,7 @@
             }
             $("#realtbody").html("");
             $("#realtbody").html(strhtml);
-		}
+		};
 	</script>
 
 
