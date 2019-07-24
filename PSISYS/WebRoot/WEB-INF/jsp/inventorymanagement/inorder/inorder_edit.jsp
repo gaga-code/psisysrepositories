@@ -51,7 +51,15 @@
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
 								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="${pd.ALLAMOUNT }" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WAREHOUSE_ID}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
+								<td>
+									<select class="chosen-select form-control" name="WAREHOUSE_ID" id="WAREHOUSE_ID"  style="vertical-align:top;width:98%;" >
+										<option value="">无</option>
+										<c:forEach items="${warehouseList}" var="var">
+											<option value="${var.WAREHOUSE_ID }" <c:if test="${var.WAREHOUSE_ID == pd.WAREHOUSE_ID }">selected</c:if>>${var.WHNAME }</option>
+										</c:forEach>
+									</select>
+								</td>
+<%-- 								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WAREHOUSE_ID}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td> --%>
 								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
 								<td>
 									<select class="chosen-select form-control" name="SUPPLIER_ID" id="SUPPLIER_ID" data-placeholder="请选择供应商" style="vertical-align:top;width:98%;" >
@@ -67,7 +75,7 @@
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">已付金额:</td>
-								<td><input type="text" name="PAIDAMOUNT" id="PAIDAMOUNT" value="${pd.PAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
+								<td><input type="number" name="PAIDAMOUNT" id="PAIDAMOUNT" value="${pd.PAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">未付金额:</td>
 								<td><input type="number" name="UNPAIDAMOUNT" id="UNPAIDAMOUNT" value="${pd.UNPAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 <!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">本次付款:</td> -->
@@ -291,7 +299,7 @@
 	        }
 	       // console.log(value);
 	        $("#ALLAMOUNT").val(result);
-	        
+	        $("#UNPAIDAMOUNT").val($("#ALLAMOUNT").val() - $("#PAIDAMOUNT").val());
 	    }
 	  
 	  
@@ -337,6 +345,15 @@
 				$("#MONEY").val(0);
 			} */
 			GetValue();
+			if($("#ALLAMOUNT").val() < $("#PAIDAMOUNT").val()){
+				$("#ALLAMOUNT").tips({
+					side:3,
+		            msg:'总金额不能少于已付金额',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+			return false;
+			}
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();

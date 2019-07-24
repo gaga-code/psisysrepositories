@@ -27,6 +27,7 @@ import com.psi.entity.Page;
 import com.psi.entity.system.User;
 import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.basedata.supplier.SupplierManager;
+import com.psi.service.basedata.warehouse.WarehouseManager;
 import com.psi.service.inventorymanagement.inorder.InOrderManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
@@ -39,7 +40,7 @@ import com.psi.util.Tools;
 import net.sf.json.JSONArray;
 
 /**
- * 说明：账套管理
+ * 说明：进货单管理
  */
 @Controller
 @RequestMapping(value="/inorder")
@@ -52,6 +53,8 @@ public class InOrderController extends BaseController {
 	private GoodsManager goodsService;
 	@Resource(name="supplierService")
 	private SupplierManager supplierService;
+	@Resource(name="warehouseService")
+	private WarehouseManager warehouseService;
 	
 	/**
 	 * 打开添加商品
@@ -300,10 +303,12 @@ public class InOrderController extends BaseController {
 		User user = (User)session.getAttribute(Const.SESSION_USER);
 		pd.put("PSI_NAME", user.getNAME());
 		List<PageData> supplierList = supplierService.listAll(pd);	//列出supplier列表;
+		List<PageData> warehouseList = warehouseService.listAll(pd);	//列出仓库列表;
 		mv.setViewName("inventorymanagement/inorder/inorder_add");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
 		mv.addObject("supplierList", supplierList);
+		mv.addObject("warehouseList", warehouseList);
 //		mv.addObject("varListL", varListL);
 		return mv;
 	}	
@@ -318,11 +323,13 @@ public class InOrderController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd = inOrderService.findById(pd);	//根据ID读取
+		List<PageData> warehouseList = warehouseService.listAll(pd);	//列出仓库列表;
 		List<PageData> supplierList = supplierService.listAll(pd);	//列出supplier列表;
 		mv.setViewName("inventorymanagement/inorder/inorder_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
 		mv.addObject("supplierList", supplierList);
+		mv.addObject("warehouseList", warehouseList);
 //		mv.addObject("varList", varList);
 //		mv.addObject("varListL", varListL);
 		return mv;
@@ -364,7 +371,7 @@ public class InOrderController extends BaseController {
 			String DATA_IDS = pd.getString("DATA_IDS");
 			if(null != DATA_IDS && !"".equals(DATA_IDS)){
 				String ArrayDATA_IDS[] = DATA_IDS.split(",");
-				inOrderService.fanshenAll(ArrayDATA_IDS);
+				inOrderService.shenpiAll(ArrayDATA_IDS);
 				pd.put("msg", "ok");
 			}else{
 				pd.put("msg", "no");

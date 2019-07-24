@@ -309,7 +309,22 @@ public class InOrderService implements InOrderManager{
 	 */
 	@Override
 	public void shenpi(PageData pd) throws Exception {
+		//把进货单的状态改为已审核
 		dao.update("InOrderMapper.shenpi", pd);
+		//获取进货单表头数据
+		PageData head =  (PageData)dao.findForObject("InOrderMapper.findById", pd);
+		//通过进货单ID获取该进货单的商品信息
+		List<PageData> goodslist = (List<PageData>)dao.findForList("InOrderBodyMapper.findById", pd);
+		//依次把商品数量添加到 仓库-商品 表中和商品的总数量中
+		for (PageData pageData : goodslist) {
+			//1.先查看 仓库-商品 表中是否包含相应的 仓库-商品
+			PageData aGood =  (PageData)dao.findForObject("Warehouse_Good_Mapper.findByWarehouseAndGood", pd);
+			
+			//有，把数量更新
+			//没有，新增数据
+			
+		}
+		
 	}
 
 	/**
@@ -317,7 +332,13 @@ public class InOrderService implements InOrderManager{
 	 */
 	@Override
 	public void fanshen(PageData pd) throws Exception {
+		//把进货单的状态改为未审核
 		dao.update("InOrderMapper.fanshen", pd);
+		//获取进货单表头数据
+		PageData result =  (PageData)dao.findForObject("InOrderMapper.findById", pd);
+		//通过进货单ID获取该进货单的商品信息
+		result.put("goodslist", (List<PageData>)dao.findForList("InOrderBodyMapper.findById", pd));
+			//依次把商品数量从 仓库-商品 表中和商品的总数量中 减去
 	}
 
 	/**
@@ -326,7 +347,7 @@ public class InOrderService implements InOrderManager{
 	 * PK_SOBOOKS  帐套主键
 	 */
 	@Override
-	public void fanshenAll(String[] arrayDATA_IDS) throws Exception {
+	public void shenpiAll(String[] arrayDATA_IDS) throws Exception {
 		StringBuffer idstr = new StringBuffer("");
 		for(int i = 0; i < arrayDATA_IDS.length; i++) {
 			idstr.append("'"+arrayDATA_IDS[i]+"',");
