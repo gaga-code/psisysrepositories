@@ -379,6 +379,7 @@
 			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
 		</if>	
 		and a.BILLSTATUS = 2
+		order by a.LASTTIME DESC
 	</select>
 	
 	<select id="findBySalebillId" parameterType="pd" resultType="pd">
