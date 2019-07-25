@@ -195,7 +195,7 @@
 	</update>
 	
 	<!-- 修改 -->
-	<update id="editFromSupp" parameterType="pd">
+	<update id="editFromCustomer" parameterType="pd">
 		update
 		<include refid="tableName"></include>
 		set 
@@ -272,7 +272,7 @@
 		    and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
 	</select>
-	<select id="listForBySuppsetId" parameterType="pd" resultType="pd" >
+	<select id="listForByCustomersetId" parameterType="pd" resultType="pd" >
 		select 
 			<include refid="InAllField"></include>
 		from
@@ -322,7 +322,7 @@
 					 -->
 				)
 		</if>
-		<!-- 供应商ID -->
+		<!-- 客户ID -->
 		<if test="pd.CUSTOMER_ID != null and pd.CUSTOMER_ID != ''">
 			and  a.CUSTOMER_ID= #{pd.CUSTOMER_ID}
 		</if>
@@ -339,7 +339,7 @@
 	
 	
 	<!-- 列表 -->
-	<select id="datalistPageBySuppset" parameterType="page" resultType="pd">
+	<select id="datalistPageByCustomerset" parameterType="page" resultType="pd">
 		select
 			a.SALEBILL_ID,
 			a.BILLCODE,
@@ -367,7 +367,7 @@
 					 -->
 				)
 		</if>
-		<!-- 供应商ID -->
+		<!-- 客户ID -->
 		<if test="pd.CUSTOMER_ID != null and pd.CUSTOMER_ID != ''">
 			and  a.CUSTOMER_ID= #{pd.CUSTOMER_ID}
 		</if>

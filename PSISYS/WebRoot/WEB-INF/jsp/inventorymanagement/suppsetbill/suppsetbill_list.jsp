@@ -93,6 +93,7 @@
 									<th class="center">单据状态</th>
 									<th class="center">往来单位</th>
 									<th class="center">付款方式</th>
+									<th class="center">总金额</th>
 									<th class="center">应付金额</th>
 									<th class="center">实付金额</th>
 									<th class="center">发票类型</th>
@@ -124,6 +125,7 @@
 											</c:if>
 											<td class='center'>${var.FROMUNITNAME}</td>
 											<td class='center'>${var.PAYMETHOD}</td>
+											<td class='center'>${var.PAYABLEALLAM}</td>
 											<td class='center'>${var.PAYABLEAMOUNT}</td>
 											<td class='center'>${var.PAYMENTAMOUNT}</td>
 											<td class='center'>${var.INVOICETYPE}</td>

@@ -131,6 +131,24 @@ public class CustomerController extends BaseController {
 		return mv;
 	}
 	
+	/**
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/listNameAndID" ,produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public Object listNameAndID()throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表customer");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		
+		List<PageData> varList = customerService.listAll(pd);	//列出customer列表
+		map.put("varList", varList);
+		return AppUtil.returnObject(pd, map);
+	}
+	
 	/**列表(弹窗选择用)
 	 * @param page
 	 * @throws Exception

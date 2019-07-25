@@ -114,8 +114,8 @@ public class SalebillService implements SalebillManager{
 	 * @throws Exception
 	 */
 	@Override
-	public List<PageData> listForBySuppsetId(PageData pd) throws Exception {
-		List<PageData> list = (List<PageData>)dao.findForList("SalebillMapper.listForBySuppsetId", pd);
+	public List<PageData> listForByCustomersetId(PageData pd) throws Exception {
+		List<PageData> list = (List<PageData>)dao.findForList("SalebillMapper.listForByCustomersetId", pd);
 		for(int i = 0; i < list.size(); i++) {
 			list.get(i).put("bodylist", (List<PageData>)dao.findForList("SalebillBodyMapper.findById", list.get(i)));
 		}
@@ -163,20 +163,20 @@ public class SalebillService implements SalebillManager{
 		return (List<PageData>)dao.findForList("SalebillMapper.datalistPage", page);
 	}
 	/**
-	 * 结算单里获取销售单列表，并对每张销售单更改结算状态为 结算中 状态
+	 * 结算单里获取销售单列表
 	 * @param page
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public List<PageData> listForSuppset(PageData pd)throws Exception{
-		pd = (PageData)dao.findForObject("SuppsetbillMapper.findById", pd);
-		String inorder_ids  = (String) pd.get("INORDER_IDS");
-		String[] ioids = inorder_ids.split(",");
+	public List<PageData> listForCustomer(PageData pd)throws Exception{
+		pd = (PageData)dao.findForObject("CustomersetbillMapper.findById", pd);
+		String SALEBILL_IDS  = (String) pd.get("SALEBILL_IDS");
+		String[] sbids = SALEBILL_IDS.split(",");
 		List<PageData> list = new ArrayList<PageData>();
-		for(int i = 0 ; i < ioids.length; i++) {
-			PageData inorderandbody = new PageData();
-			inorderandbody.put("INORDER_ID",ioids[i].substring(1, ioids[i].length()-1) );
-			list.add((PageData)dao.findForObject("SalebillMapper.findBySalebillId", inorderandbody));
+		for(int i = 0 ; i < sbids.length; i++) {
+			PageData salebillandbody = new PageData();
+			salebillandbody.put("INORDER_ID",sbids[i].substring(1, sbids[i].length()-1) );
+			list.add((PageData)dao.findForObject("SalebillMapper.findBySalebillId", salebillandbody));
 		}
 		return list;
 	}
@@ -187,8 +187,8 @@ public class SalebillService implements SalebillManager{
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public List<PageData> listForSuppAdd(Page page)throws Exception{
-		List<PageData> list = (List<PageData>)dao.findForList("SalebillMapper.datalistPageBySuppset", page);
+	public List<PageData> listForCustomerAdd(Page page)throws Exception{
+		List<PageData> list = (List<PageData>)dao.findForList("SalebillMapper.datalistPageByCustomerset", page);
 		return list;
 	}
 	/**
@@ -427,8 +427,8 @@ public class SalebillService implements SalebillManager{
 	}
 
 	@Override
-	public void editFromSupp(PageData pd) throws Exception {
-		dao.update("SalebillMapper.editFromSupp", pd);
+	public void editFromCustomer(PageData pd) throws Exception {
+		dao.update("SalebillMapper.editFromCustomer", pd);
 	}
 	
 }

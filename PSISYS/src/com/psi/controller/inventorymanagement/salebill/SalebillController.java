@@ -18,15 +18,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
 import com.psi.entity.system.User;
+import com.psi.service.basedata.customer.CustomerManager;
 import com.psi.service.basedata.goods.GoodsManager;
-import com.psi.service.basedata.supplier.SupplierManager;
 import com.psi.service.basedata.warehouse.WarehouseManager;
 import com.psi.service.inventorymanagement.salebill.SalebillManager;
 import com.psi.util.AppUtil;
@@ -51,8 +50,8 @@ public class SalebillController extends BaseController {
 	private SalebillManager salebillService;
 	@Resource(name="goodsService")
 	private GoodsManager goodsService;
-	@Resource(name="supplierService")
-	private SupplierManager supplierService;
+	@Resource(name="customerService")
+	private CustomerManager customerService;
 	@Resource(name="warehouseService")
 	private WarehouseManager warehouseService;
 	
@@ -228,9 +227,9 @@ public class SalebillController extends BaseController {
 			pd.put("keywords", keywords.trim());
 		}
 		page.setPd(pd);
-		List<PageData> supplierList = supplierService.listAll(pd);	//列出supplier列表;
+		List<PageData> customerList = customerService.listAll(pd);	//列出customer列表;
 		List<PageData>	varList = salebillService.list(page);	//列出salebill列表
-		mv.addObject("supplierList", supplierList);
+		mv.addObject("customerList", customerList);
 		mv.addObject("varList", varList);
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
@@ -243,15 +242,15 @@ public class SalebillController extends BaseController {
 	 * @param page
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/salebilllistForSupp")
+	@RequestMapping(value="/salebilllistForCustomer")
 	@ResponseBody
-	public Object salebilllistForSupp() throws Exception{
+	public Object salebilllistForCustomer() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表salebill");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		Map<String,Object> map = new HashMap<String,Object>();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		List<PageData>	varList = salebillService.listForSuppset(pd);	//列出salebill列表
+		List<PageData>	varList = salebillService.listForCustomer(pd);	//列出salebill列表
 		map.put("varList", varList);
 		map.put("QX", Jurisdiction.getHC()); //按钮权限
 		return  AppUtil.returnObject(new PageData(), map);
@@ -263,9 +262,9 @@ public class SalebillController extends BaseController {
 	 * @param page
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/salebilllistForSuppAdd")
+	@RequestMapping(value="/salebilllistForCustomerAdd")
 	@ResponseBody
-	public Object salebilllistForSuppAdd(Page page) throws Exception{
+	public Object salebilllistForCustomerAdd(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表salebill");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -276,7 +275,7 @@ public class SalebillController extends BaseController {
 			pd.put("keywords", keywords.trim());
 		}
 		page.setPd(pd);
-		List<PageData>	varList = salebillService.listForSuppAdd(page);	//列出salebill列表
+		List<PageData>	varList = salebillService.listForCustomerAdd(page);	//列出salebill列表
 		map.put("varList", varList);
 		map.put("QX", Jurisdiction.getHC()); //按钮权限
 		return  AppUtil.returnObject(new PageData(), map);
@@ -327,12 +326,12 @@ public class SalebillController extends BaseController {
 		Session session = Jurisdiction.getSession();
 		User user = (User)session.getAttribute(Const.SESSION_USER);
 		pd.put("PSI_NAME", user.getNAME());
-		List<PageData> supplierList = supplierService.listAll(pd);	//列出supplier列表;
+		List<PageData> customerList = customerService.listAll(pd);	//列出customer列表;
 		List<PageData> warehouseList = warehouseService.listAll(pd);	//列出仓库列表;
 		mv.setViewName("inventorymanagement/salebill/salebill_add");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
-		mv.addObject("supplierList", supplierList);
+		mv.addObject("customerList", customerList);
 		mv.addObject("warehouseList", warehouseList);
 //		mv.addObject("varListL", varListL);
 		return mv;
@@ -349,11 +348,11 @@ public class SalebillController extends BaseController {
 		pd = this.getPageData();
 		pd = salebillService.findById(pd);	//根据ID读取
 		List<PageData> warehouseList = warehouseService.listAll(pd);	//列出仓库列表;
-		List<PageData> supplierList = supplierService.listAll(pd);	//列出supplier列表;
+		List<PageData> customerList = customerService.listAll(pd);	//列出customer列表;
 		mv.setViewName("inventorymanagement/salebill/salebill_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
-		mv.addObject("supplierList", supplierList);
+		mv.addObject("customerList", customerList);
 		mv.addObject("warehouseList", warehouseList);
 //		mv.addObject("varList", varList);
 //		mv.addObject("varListL", varListL);
