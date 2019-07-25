@@ -171,12 +171,14 @@ public class InOrderService implements InOrderManager{
 	public List<PageData> listForSuppset(PageData pd)throws Exception{
 		pd = (PageData)dao.findForObject("SuppsetbillMapper.findById", pd);
 		String inorder_ids  = (String) pd.get("INORDER_IDS");
-		String[] ioids = inorder_ids.split(",");
 		List<PageData> list = new ArrayList<PageData>();
-		for(int i = 0 ; i < ioids.length; i++) {
-			PageData inorderandbody = new PageData();
-			inorderandbody.put("INORDER_ID",ioids[i].substring(1, ioids[i].length()-1) );
-			list.add((PageData)dao.findForObject("InOrderMapper.findByInOrderId", inorderandbody));
+		if(inorder_ids != "" && !"".equals(inorder_ids) && inorder_ids != null) {
+			String[] ioids = inorder_ids.split(",");
+			for(int i = 0 ; i < ioids.length; i++) {
+				PageData inorderandbody = new PageData();
+				inorderandbody.put("INORDER_ID",ioids[i].substring(1, ioids[i].length()-1) );
+				list.add((PageData)dao.findForObject("InOrderMapper.findByInOrderId", inorderandbody));
+			}
 		}
 		return list;
 	}

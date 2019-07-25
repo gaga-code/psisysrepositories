@@ -629,15 +629,15 @@
 		function clickaction(CUSTOMERSETBILL_ID){
 			$.ajax({
 		        method:'POST',
-		        url:'inorder/inOrderlistForCustomer',
+		        url:'salebill/salebilllistForCustomer',
 		        data:{CUSTOMERSETBILL_ID:CUSTOMERSETBILL_ID},
 		        dataType:'json',
 		        success: function (res) {
-		        	printinorderhtml(res);
+		        	printsalebillhtml(res);
 		        }
 		    });
 		}
-		function printinorderhtml(res){
+		function printsalebillhtml(res){
 			var strhtml = "";
             if(res.varList.length == 0){
             	strhtml +="<tr class='main_info'>";
@@ -648,15 +648,15 @@
             	for(var i = 0; i < res.varList.length; i++){
 	            	var html = "";
             		if(res.QX.cha == 1){
-	            		html +="<tr id='"+res.varList[i].INORDER_ID+"'>";
+	            		html +="<tr id='"+res.varList[i].SALEBILL_ID+"'>";
             			/* 
 		            	html +="<td class='center'>";
-		            	html +="	<label class='pos-rel'><input type='checkbox' name='ids' value='"+res.varList[i].INORDER_ID+"' class='ace' /><span class='lbl'></span></label>";
+		            	html +="	<label class='pos-rel'><input type='checkbox' name='ids' value='"+res.varList[i].SALEBILL_ID+"' class='ace' /><span class='lbl'></span></label>";
 	            		html +="</td>";
 	            		 */
 	            		html +="<td class='center' style='width: 30px;'>"+(i+1)+"</td>";
 	            		html +="<td class='center'>"+res.varList[i].BILLCODE+"</td>";
-	            		html +="<td class='center'>"+res.varList[i].CUSTOMERLIERNAME+"</td>";
+	            		html +="<td class='center'>"+res.varList[i].CUATOMERNAME+"</td>";
 	            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].ALLAMOUNT+"</td>";
 	            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
 	            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
@@ -681,17 +681,17 @@
 	            		}
 	            		if(res.QX.CUSTOMERSETBILLSET == 1 ){
 		            		html += "	<div class='hidden-sm hidden-xs btn-group'> ";
-							html += "		<a class='btn btn-xs btn-success' title='结算' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].INORDER_ID+"');\"> ";
+							html += "		<a class='btn btn-xs btn-success' title='结算' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].SALEBILL_ID+"');\"> ";
 							html += "			<i class='ace-icon fa fa-eye bigger-120' title='结算'></i> ";
 							html += "		</a> ";
 	            		}
 						if(res.QX.RETRIALINORDERINCUSTOMERSET == 1){
-							html += "		<a class='btn btn-xs btn-success' title='反审' id='retrialInorder' onclick=\"retrial('"+res.varList[i].INORDER_ID+"');\"> ";
+							html += "		<a class='btn btn-xs btn-success' title='反审' id='retrialInorder' onclick=\"retrial('"+res.varList[i].SALEBILL_ID+"');\"> ";
 							html += "			<i title='反审'>反审</i> ";
 							html += "		</a> ";
 						}
 						if(res.QX.del == 1){
-							html += "		<a class='btn btn-xs btn-danger' id='delInorder' onclick=\"del('"+res.varList[i].INORDER_ID+"');\" > ";
+							html += "		<a class='btn btn-xs btn-danger' id='delInorder' onclick=\"del('"+res.varList[i].SALEBILL_ID+"');\" > ";
 							html += "			<i class='ace-icon fa fa-trash-o bigger-120' title='删除'></i> ";
 							html += "		</a> ";
 						}
@@ -705,7 +705,7 @@
 						html += "			<ul class='dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close'> ";
 						if(res.QX.CUSTOMERSETBILLSET == 1){
 							html += "				<li> ";
-							html += "					<a style='cursor:pointer;' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].INORDER_ID+"');\" class='tooltip-success' data-rel='tooltip' title='结算'> ";
+							html += "					<a style='cursor:pointer;' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].SALEBILL_ID+"');\" class='tooltip-success' data-rel='tooltip' title='结算'> ";
 							html += "						<span class='green'> ";
 							html += "							<i class='ace-icon fa fa-eye bigger-120'></i> ";
 							html += "						</span> ";
@@ -714,7 +714,7 @@
 						}
 						if(res.QX.RETRIALINORDERINCUSTOMERSET == 1){
 							html += "				<li> ";
-							html += "					<a style='cursor:pointer;' id='retrialInorder' onclick='retrial('"+res.varList[i].INORDER_ID+"');' class='tooltip-success' data-rel='tooltip' title='反审'> ";
+							html += "					<a style='cursor:pointer;' id='retrialInorder' onclick='retrial('"+res.varList[i].SALEBILL_ID+"');' class='tooltip-success' data-rel='tooltip' title='反审'> ";
 							html += "						<span class='green'> ";
 							html += "							<i class='ace-icon fa fa-pencil-square-o bigger-120'></i> ";
 							html += "						</span> ";
@@ -723,7 +723,7 @@
 						}
 						if(res.QX.del == 1){
 							html += "				<li> ";
-							html += "					<a style='cursor:pointer;' id='delInorder' onclick='del('"+res.varList[i].INORDER_ID+"');' class='tooltip-error' data-rel='tooltip' title='删除'> ";
+							html += "					<a style='cursor:pointer;' id='delInorder' onclick='del('"+res.varList[i].SALEBILL_ID+"');' class='tooltip-error' data-rel='tooltip' title='删除'> ";
 							html += "						<span class='red'> ";
 							html += "							<i class='ace-icon fa fa-trash-o bigger-120'></i> ";
 							html += "						</span> ";

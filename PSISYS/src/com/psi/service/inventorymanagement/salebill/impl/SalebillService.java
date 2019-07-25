@@ -172,12 +172,14 @@ public class SalebillService implements SalebillManager{
 	public List<PageData> listForCustomer(PageData pd)throws Exception{
 		pd = (PageData)dao.findForObject("CustomersetbillMapper.findById", pd);
 		String SALEBILL_IDS  = (String) pd.get("SALEBILL_IDS");
-		String[] sbids = SALEBILL_IDS.split(",");
 		List<PageData> list = new ArrayList<PageData>();
-		for(int i = 0 ; i < sbids.length; i++) {
-			PageData salebillandbody = new PageData();
-			salebillandbody.put("INORDER_ID",sbids[i].substring(1, sbids[i].length()-1) );
-			list.add((PageData)dao.findForObject("SalebillMapper.findBySalebillId", salebillandbody));
+		if(SALEBILL_IDS != "" && !"".equals(SALEBILL_IDS) && SALEBILL_IDS != null) {
+			String[] sbids = SALEBILL_IDS.split(",");
+			for(int i = 0 ; i < sbids.length; i++) {
+				PageData salebillandbody = new PageData();
+				salebillandbody.put("SALEBILL_ID",sbids[i].substring(1, sbids[i].length()-1) );
+				list.add((PageData)dao.findForObject("SalebillMapper.findBySalebillId", salebillandbody));
+			}
 		}
 		return list;
 	}

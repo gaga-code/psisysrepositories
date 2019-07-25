@@ -354,7 +354,7 @@ public class SuppsetbillService implements SuppsetbillManager{
 			PageData inbodyback = new PageData();
 			inbodyback.put("INORDERBODYBACK_ID", inorderbodybackidlist.get(i));
 			inbodyback=inOrderAndSuppsetBackService.findInBodyBackById(inbodyback);
-			dao.update("inorderbodysnapshotedit", inbodyback);
+			dao.update("InOrderBodyMapper.inorderbodysnapshotedit", inbodyback);
 		}
 	}
 	
