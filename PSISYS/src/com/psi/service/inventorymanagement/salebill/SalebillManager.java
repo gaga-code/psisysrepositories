@@ -115,6 +115,13 @@ public interface SalebillManager{
 	 * @throws Exception
 	 */
 	public PageData findAllById(PageData inorderandbody)throws Exception;
+
+	/**
+	 * 检查指定库存是否存在指定商品
+	 * @param pd  仓库ID  商品编号GOOD_ID
+	 * @return
+	 */
+	public Integer getStock(PageData pd)throws Exception;
 	
 }
 

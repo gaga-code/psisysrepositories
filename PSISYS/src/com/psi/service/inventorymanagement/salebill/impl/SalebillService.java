@@ -1,6 +1,8 @@
 package com.psi.service.inventorymanagement.salebill.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -137,8 +139,8 @@ public class SalebillService implements SalebillManager{
 		for(int i = 0; i < split.length; i++) {
 			String[] agoods = split[i].split(",");
 			PageData pageData = new PageData();
-			pageData.put("INORDERBODY_ID", UuidUtil.get32UUID());
-			pageData.put("INORDER_ID", pd.get("INORDER_ID"));
+			pageData.put("FGROUP_ID", UuidUtil.get32UUID());
+			pageData.put("SALEBILL_ID", pd.get("SALEBILL_ID"));
 			pageData.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
 			pageData.put("APPBILLNO", pd.get("BILLCODE"));
 			
@@ -147,8 +149,9 @@ public class SalebillService implements SalebillManager{
 			pageData.put("UNITPRICE_ID", agoods[2]);
 			pageData.put("PNUMBER", agoods[3]);
 			pageData.put("AMOUNT", agoods[5]);
-			pageData.put("NOTE", agoods[6]);
-			pageData.put("GOODCODE_ID", agoods[7]);
+			pageData.put("ISFREE", agoods[6]);
+			pageData.put("NOTE", agoods[7]);
+			pageData.put("GOODCODE_ID", agoods[8]);
 			
 			dao.save("SalebillBodyMapper.save", pageData);
 		}
@@ -341,30 +344,34 @@ public class SalebillService implements SalebillManager{
 			//=========================操作商品表===================
 			//更新最后进价 和 库存总数量
 			PageData aGoods =  (PageData)dao.findForObject("GoodsMapper.findByGOODCODE", head);
-			head.put("LASTPPRICE", pageData.get("UNITPRICE_ID"));
-			head.put("STOCKNUM", (Integer)aGoods.get("STOCKNUM") + (Integer)pageData.get("PNUMBER"));
+			head.put("LASTPPRICE", aGoods.get("LASTPPRICE"));//销售时不修改进价
+			head.put("STOCKNUM", (Integer)aGoods.get("STOCKNUM") - (Integer)pageData.get("PNUMBER"));
 			dao.update("GoodsMapper.editStocknumAndLastprice", head);
 			
-			//=========================操作进价表===================
+			//=========================操作售价表===================
 			//直接插入一条价格数据
-			head.put("INCOMERECORD_ID", UuidUtil.get32UUID());
-			head.put("INCOME", pageData.get("UNITPRICE_ID"));
-			dao.save("IncomerecordMapper.save", head);
+			head.put("SALEPRECORD_ID", UuidUtil.get32UUID());
+			head.put("SALECOME", pageData.get("UNITPRICE_ID"));
+			SimpleDateFormat sdf = new SimpleDateFormat();// 格式化时间 
+	        sdf.applyPattern("yyyy-MM-dd"); 
+	        Date date = new Date();// 获取当前时间 
+			head.put("SALEDATE", sdf.format(date).toString());//日期
+			dao.save("SalePriceRecordMapper.save", head);
 			
 			//=========================操作库存表===================
 			//先查看 仓库-商品 表中是否包含相应的 仓库-商品
-			PageData aGood =  (PageData)dao.findForObject("Warehouse_Good_Mapper.findByWarehouseAndGood", head);
+			PageData aGood =  (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", head);
 			//有，把数量更新
 			if(aGood != null) {
 				//把仓库中的库存加上销售单商品的数量
-				head.put("STOCK", (Integer)aGood.get("STOCK") + (Integer)pageData.get("PNUMBER"));
-				dao.update("Warehouse_Good_Mapper.edit", head);
+				head.put("STOCK", (Integer)aGood.get("STOCK") - (Integer)pageData.get("PNUMBER"));
+				dao.update("StockMapper.edit", head);
 			}
-			//没有，新增数据
+			//没有，出错！
 			else {
-				head.put("WAREHOUSE_GOOD_ID", UuidUtil.get32UUID());
-				head.put("STOCK", pageData.get("PNUMBER"));
-				dao.save("Warehouse_Good_Mapper.save", head);
+//				head.put("WAREHOUSE_GOOD_ID", UuidUtil.get32UUID());
+//				head.put("STOCK", pageData.get("PNUMBER"));
+//				dao.save("StockMapper.save", head);
 			}
 			
 		}
@@ -382,22 +389,23 @@ public class SalebillService implements SalebillManager{
 		//通过销售单ID获取该销售单的商品信息
 		List<PageData> goodslist = (List<PageData>)dao.findForList("SalebillBodyMapper.findById", pd);
 		
-		//依次把商品数量在 仓库-商品 表中删去
+		//依次把商品数量在 仓库-商品 表中增加
 		for (PageData pageData : goodslist) {
 			head.put("GOOD_ID", pageData.get("GOODCODE_ID"));
 			//获取原来的库存
-			PageData aGood =  (PageData)dao.findForObject("Warehouse_Good_Mapper.findByWarehouseAndGood", head);
+			PageData aGood =  (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", head);
 			
 			//=========================操作商品表===================
 			//更新最后进价 和 库存总数量
 			PageData aGoods =  (PageData)dao.findForObject("GoodsMapper.findByGOODCODE", head);
-			head.put("STOCKNUM", (Integer)aGoods.get("STOCKNUM") - (Integer)pageData.get("PNUMBER"));
+			head.put("LASTPPRICE", aGoods.get("LASTPPRICE"));//销售时不修改进价
+			head.put("STOCKNUM", (Integer)aGoods.get("STOCKNUM") + (Integer)pageData.get("PNUMBER"));
 			dao.update("GoodsMapper.editStocknumAndLastprice", head);
 			
 			//=========================操作库存表===================
-			//把仓库中的库存减去销售单商品的数量
-			head.put("STOCK", (Integer)aGood.get("STOCK") - (Integer)pageData.get("PNUMBER"));
-			dao.update("Warehouse_Good_Mapper.edit", head);
+			//把仓库中的库存增加销售单商品的数量
+			head.put("STOCK", (Integer)aGood.get("STOCK") + (Integer)pageData.get("PNUMBER"));
+			dao.update("StockMapper.edit", head);
 		}
 	}
 
@@ -432,6 +440,19 @@ public class SalebillService implements SalebillManager{
 	@Override
 	public void editFromCustomer(PageData pd) throws Exception {
 		dao.update("SalebillMapper.editFromCustomer", pd);
+	}
+
+	/**
+	 * 检查指定库存是否存在指定商品
+	 * @param pd  仓库ID  商品编号GOOD_ID
+	 * @return
+	 * @throws Exception 
+	 */
+	@Override
+	public Integer getStock(PageData pd) throws Exception {
+		PageData result = (PageData)dao.findForObject("StockMapper.getStock", pd);
+		Integer num = (Integer) result.get("STOCK");
+		return num;
 	}
 	
 }

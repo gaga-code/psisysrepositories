@@ -76,8 +76,9 @@ public class GoodsService implements GoodsManager{
 		List<GoodsType> dictList = this.listSubDictByParentId(parentIdAndPK_SOBOOKS);
 		Map<String,String> map = new HashMap<String, String>();
 		map.put("PK_SOBOOKS", parentIdAndPK_SOBOOKS.get("PK_SOBOOKS"));
+		map.put("WAREHOUSE_ID", parentIdAndPK_SOBOOKS.get("WAREHOUSE_ID"));
 		for(GoodsType dict : dictList){
-			dict.setTreeurl("salebill/goodslist.do?GOODTYPE_ID="+dict.getGOODTYPE_ID());
+			dict.setTreeurl("salebill/goodslist.do?GOODTYPE_ID="+dict.getGOODTYPE_ID()+"&WAREHOUSE_ID=" + parentIdAndPK_SOBOOKS.get("WAREHOUSE_ID"));
 			//dict.setSubDict(this.listAllDict(dict.getGOODTYPE_ID()));
 			map.put("PARENTS", dict.getGOODTYPE_ID());
 			dict.setSubDict(this.salebillListAllDict(map));

@@ -13,6 +13,8 @@
 	<!-- jsp文件头和头部 -->
 	<%@ include file="../../system/index/top.jsp"%>
 	<script type="text/javascript" src="static/js/myjs/head.js"></script>
+		<!-- 日期框 -->
+	<link rel="stylesheet" href="static/ace/css/datepicker.css" />
 </head>
 <body class="no-skin">
 <!-- /section:basics/navbar.layout -->
@@ -26,7 +28,7 @@
 					
 					<form action="salebill/edit.do" name="Form" id="Form" method="post">
 						<input type="hidden" name="PK_SOBOOKS" id="PK_SOBOOKS" value="${pd.PK_SOBOOKS}"/>
-						<input type="hidden" name="INORDER_ID" id="INORDER_ID" value="${pd.INORDER_ID}"/>
+						<input type="hidden" name="SALEBILL_ID" id="SALEBILL_ID" value="${pd.SALEBILL_ID}"/>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<tr>
 								&nbsp;&nbsp;&nbsp;&nbsp;
@@ -60,12 +62,12 @@
 									</select>
 								</td>
 <%-- 								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WAREHOUSE_ID}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td> --%>
-								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">客户:</td>
 								<td>
-									<select class="chosen-select form-control" name="SUPPLIER_ID" id="SUPPLIER_ID" data-placeholder="请选择供应商" style="vertical-align:top;width:98%;" >
+									<select class="chosen-select form-control" name="CUSTOMER_ID" id="CUSTOMER_ID" data-placeholder="请选择供应商" style="vertical-align:top;width:98%;" >
 										<option value="">无</option>
-										<c:forEach items="${supplierList}" var="var">
-											<option value="${var.SUPPLIER_ID }" <c:if test="${var.SUPPLIER_ID == pd.SUPPLIER_ID }">selected</c:if>>${var.SUPPLIERNAME }</option>
+										<c:forEach items="${customerList}" var="var">
+											<option value="${var.CUSTOMER_ID }" <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if>>${var.CUATOMERNAME }</option>
 										</c:forEach>
 									</select>
 								</td>
@@ -78,10 +80,17 @@
 								<td><input type="number" name="PAIDAMOUNT" id="PAIDAMOUNT" value="${pd.PAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">未付金额:</td>
 								<td><input type="number" name="UNPAIDAMOUNT" id="UNPAIDAMOUNT" value="${pd.UNPAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">客户订单号:</td>
+								<td><input type="text" name="CUSBILLNO" id="CUSBILLNO"  maxlength="1000"  style="width:98%;" value="${pd.CUSBILLNO}"/></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;padding-left: 0px;padding-right: 0px;">送货地址:</td>
+								<td><input type="text" name="TOADDRESS" id="TOADDRESS"  maxlength="1000" style="width:98%;" value="${pd.TOADDRESS}" /></td>
 <!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">本次付款:</td> -->
 <%-- 								<td><input type="text" name="THISPAY" id="THISPAY" value="${pd.THISPAY}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> --%>
-								
 							</tr> 
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">结款日期:</td>
+								<td style="padding-left:2px;"><input class="span10 date-picker" name="PAYDATE" id="PAYDATE"  value="${pd.PAYDATE}" type="text" data-date-format="yyyy-mm-dd"  style="width:98%;" /></td>
+							</tr>
 						</table>
 						<table name="goodstable" id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
@@ -92,6 +101,7 @@
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
 									<th class="center">金额</th>
+									<th class="center">赠送</th>
 									<th class="center">备注</th>
 									<th class="center">操作</th>
 								</tr>
@@ -132,6 +142,8 @@
 	<script src="static/js/jquery.cookie.js" type="text/javascript"></script>
 	<!--提示框-->
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
+	<!-- 日期框 -->
+	<script src="static/ace/js/date-time/bootstrap-datepicker.js"></script>
 		<script type="text/javascript">
 		$(top.hangge());
 		
@@ -164,6 +176,7 @@
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
+	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
@@ -182,25 +195,53 @@
 			
 		}
 		
+		//-----------------点击赠送复选框--------    
+		function exe(checkboxId){
+			var vals = $("#"+ checkboxId).val();
+			if(vals=='0'){
+				$("#"+ checkboxId).val('1');
+	        }
+	        if(vals=='1'){
+			 	$("#"+ checkboxId).val('0');
+	        }
+	        calculateTheTotalAmount();
+		}
+		
 		//插入已存在的商品数据（初始化时调用）
-		function insertOldRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,UNITPRICE_ID,PNUMBER,AMOUNT,NOTE,GOODCODE) {
+		function insertOldRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,UNITPRICE_ID,PNUMBER,AMOUNT,NOTE,GOODCODE,ISFREE) {
 			 //获取表格有多少行
 	        var rowLength = $("#simple-table tr").length;
 	        //这里的rowId就是row加上标志位的组合。是每新增一行的tr的id。
 	        var rowId = "row" + flag;
 	      //每次往下标为flag+1的下面添加tr,因为append是往标签内追加。所以用after
-	        var insertStr = "<tr id=" + rowId + ">"
+	      	if(ISFREE == '1'){
+	        	var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'value='"+PNUMBER+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
+	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='1' checked='checked' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' value='"+NOTE+"'/></td>"
 	                      + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
 //	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
 	                      +"</tr>";
+	      	}else{
+	      		var insertStr = "<tr id=" + rowId + ">"
+		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
+		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
+		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'value='"+PNUMBER+"'/></td>"
+		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
+		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
+		                + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
+		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' value='"+NOTE+"'/></td>"
+		                + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
+		                + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
+		                +"</tr>";
+	      	}
 	        //这里的行数减2，是因为要减去底部的一行和顶部的一行，剩下的为开始要插入行的索引
 	                      $("#simple-table tr:eq(" + (rowLength - 2) + ")").after(insertStr); //将新拼接的一行插入到当前行的下面
 	         //为新添加的行里面的控件添加新的id属性。
@@ -292,10 +333,12 @@
 	                var value = Str[i].split(',');
 	                var danjia = value[2];
 	                var shuliang = value[3];
+	                var free = value[6];
 	                if(danjia!= ''&& shuliang!= ''){
-	                	result = result + danjia * shuliang;
+	                	if(free == '0'){
+		                	result = result + danjia * shuliang;
+	                	}
 	                	$("#simple-table tr").eq(i+1).children().eq(5).children().eq(0).val(danjia * shuliang);
-	                	console.log(i);
 	                }
 	            }
 	        }
@@ -371,8 +414,13 @@
 
 		$(function(){
 // 			insertOldRow('2','999999','1','1','9.0','9','81.0','9');
+			//日期框
+			$('.date-picker').datepicker({
+				autoclose: true,
+				todayHighlight: true
+			});
 			<c:forEach items="${pd.goodslist}" var="t">
-				insertOldRow('${t.GOOD_ID}','${t.GOODNAME}','${t.BARCODE}','${t.NAME}','${t.UNITPRICE_ID}','${t.PNUMBER}','${t.AMOUNT}','${t.NOTE}','${t.GOODCODE_ID}');
+				insertOldRow('${t.GOOD_ID}','${t.GOODNAME}','${t.BARCODE}','${t.NAME}','${t.UNITPRICE_ID}','${t.PNUMBER}','${t.AMOUNT}','${t.NOTE}','${t.GOODCODE_ID}','${t.ISFREE}');
 			</c:forEach>
 		});
 		</script>

@@ -352,18 +352,18 @@ public class InOrderService implements InOrderManager{
 			
 			//=========================操作库存表===================
 			//先查看 仓库-商品 表中是否包含相应的 仓库-商品
-			PageData aGood =  (PageData)dao.findForObject("Warehouse_Good_Mapper.findByWarehouseAndGood", head);
+			PageData aGood =  (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", head);
 			//有，把数量更新
 			if(aGood != null) {
 				//把仓库中的库存加上进货单商品的数量
 				head.put("STOCK", (Integer)aGood.get("STOCK") + (Integer)pageData.get("PNUMBER"));
-				dao.update("Warehouse_Good_Mapper.edit", head);
+				dao.update("StockMapper.edit", head);
 			}
 			//没有，新增数据
 			else {
 				head.put("WAREHOUSE_GOOD_ID", UuidUtil.get32UUID());
 				head.put("STOCK", pageData.get("PNUMBER"));
-				dao.save("Warehouse_Good_Mapper.save", head);
+				dao.save("StockMapper.save", head);
 			}
 			
 		}
@@ -385,18 +385,19 @@ public class InOrderService implements InOrderManager{
 		for (PageData pageData : goodslist) {
 			head.put("GOOD_ID", pageData.get("GOODCODE_ID"));
 			//获取原来的库存
-			PageData aGood =  (PageData)dao.findForObject("Warehouse_Good_Mapper.findByWarehouseAndGood", head);
+			PageData aGood =  (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", head);
 			
 			//=========================操作商品表===================
 			//更新最后进价 和 库存总数量
 			PageData aGoods =  (PageData)dao.findForObject("GoodsMapper.findByGOODCODE", head);
+			head.put("LASTPPRICE", aGoods.get("LASTPPRICE"));
 			head.put("STOCKNUM", (Integer)aGoods.get("STOCKNUM") - (Integer)pageData.get("PNUMBER"));
 			dao.update("GoodsMapper.editStocknumAndLastprice", head);
 			
 			//=========================操作库存表===================
 			//把仓库中的库存减去进货单商品的数量
 			head.put("STOCK", (Integer)aGood.get("STOCK") - (Integer)pageData.get("PNUMBER"));
-			dao.update("Warehouse_Good_Mapper.edit", head);
+			dao.update("StockMapper.edit", head);
 		}
 	}
 

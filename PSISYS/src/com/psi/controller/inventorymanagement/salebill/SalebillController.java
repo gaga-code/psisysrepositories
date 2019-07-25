@@ -56,6 +56,30 @@ public class SalebillController extends BaseController {
 	private WarehouseManager warehouseService;
 	
 	/**
+	 * 检查指定库存是否存在指定商品checkstock
+	 * 通过商品编号和仓库ID来查，商品编号在JSP以GOOD_ID名字来传到后台
+	 */
+	@RequestMapping(value="/checkstock")
+	@ResponseBody
+	public Object checkStock() {
+		logBefore(logger, Jurisdiction.getUsername()+"检查库存");
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		try {
+			Integer num = salebillService.getStock(pd);
+			if(num == null || num <= 0) {
+				map.put("msg","error");
+			}else {
+				map.put("msg","success");
+				map.put("stockNum",num);
+			}
+		}catch(Exception e) {
+			map.put("msg","error");
+		}
+		return AppUtil.returnObject(new PageData(), map);
+	}
+	/**
 	 * 打开添加商品
 	 * @throws Exception 
 	 */
@@ -68,6 +92,7 @@ public class SalebillController extends BaseController {
 			Map<String,String> map = new HashMap<String, String>();
 			map.put("PK_SOBOOKS", pd.getString("PK_SOBOOKS"));
 			map.put("PARENTS", "0");
+			map.put("WAREHOUSE_ID", pd.getString("WAREHOUSE_ID"));
 			JSONArray arr = JSONArray.fromObject(goodsService.salebillListAllDict(map));
 			String json = arr.toString();
 			json = json.replaceAll("GOODTYPE_ID", "id").replaceAll("PARENTS", "pId").replaceAll("TYPENAME", "name").replaceAll("subDict", "nodes").replaceAll("hasDict", "checked").replaceAll("treeurl", "url");

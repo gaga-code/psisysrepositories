@@ -58,7 +58,7 @@
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
 								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="0" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td>
+								<td id="tishi">
 									<select class="chosen-select form-control" name="WAREHOUSE_ID" id="WAREHOUSE_ID"  style="vertical-align:top;width:98%;" >
 										<option value="">无</option>
 										<c:forEach items="${warehouseList}" var="var">
@@ -113,7 +113,7 @@
 							<tr></tr>
 							</tbody>
 						</table>
-						<a class="btn btn-mini btn-primary" onclick="addgoods();">添加商品</a>
+						<a id="addgoods" class="btn btn-mini btn-primary" onclick="addgoods();">添加商品</a>
 						</div>
 						<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img src="static/images/jiazai.gif" /><br/><h4 class="lighter block green">提交中...</h4></div>
 					</form>
@@ -180,7 +180,7 @@
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\");'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
@@ -191,14 +191,41 @@
 	        //这里的行数减2，是因为要减去底部的一行和顶部的一行，剩下的为开始要插入行的索引
 	                      $("#simple-table tr:eq(" + (rowLength - 2) + ")").after(insertStr); //将新拼接的一行插入到当前行的下面
 	         //为新添加的行里面的控件添加新的id属性。
-	         $("#" + rowId + " td:eq(0)").children().eq(0).attr("id", "UrbanDepNo" + flag);
-	         $("#" + rowId + " td:eq(1)").children().eq(0).attr("id", "LocNo" + flag);
-	         $("#" + rowId + " td:eq(2)").children().eq(0).attr("id", "RoadSectionName" + flag);
-	         $("#" + rowId + " td:eq(3)").children().eq(0).attr("id", "StStartRoad" + flag);
-	         $("#" + rowId + " td:eq(3)").children().eq(1).attr("id", "EndRoad" + flag);
 	         //每插入一行，flag自增一次
 	         flag++;
 			
+		}
+		
+		//商品数量修改时，判断是否超过了库存量
+		function checkstocknum(goodsnumID, GOOD_ID){
+			
+			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
+			console.log("test");
+			$.ajax({
+				type: "POST",
+				url: '<%=basePath%>salebill/checkstock.do?tm='+new Date().getTime(),
+		    	data: {"GOOD_ID":GOOD_ID, "WAREHOUSE_ID":WAREHOUSE_ID},
+				dataType:'json',
+				cache: false,
+				success: function(data){
+					if(data.msg == "success"){//存在商品
+						if(data.stockNum >= $("#"+goodsnumID).val()){
+							return ;
+						}else{
+							$("#"+goodsnumID).tips({
+								side:3,
+					            msg:'仓库中商品数量不足，当前库存为' + data.stockNum,
+					            bg:'#AE81FF',
+					            time:5
+					        });
+							$("#"+goodsnumID).focus();
+						}
+					}else {
+						return false;
+					}
+				}
+			});
+			calculateTheTotalAmount()
 		}
 		
 		//-----------------点击赠送复选框--------    
@@ -292,7 +319,6 @@
 	                var danjia = value[2];
 	                var shuliang = value[3];
 	                var free = value[6];
-	                console.log(free);
 	                if(danjia!= ''&& shuliang!= ''){
 	                	if(free == '0'){
 		                	result = result + danjia * shuliang;
@@ -308,11 +334,25 @@
 	  
 	  
 		function addgoods(){
+			
+			//如果没有选择仓库，不能选择商品
+			var wh = $("#WAREHOUSE_ID").val();
+			if(wh ==""){
+				$("#tishi").tips({
+					side:3,
+		            msg:'请先选择仓库',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				//$("#WAREHOUSE_ID").focus();
+				return false;
+			}
+			
 			top.jzts();
 			var diag = new top.Dialog();
 			diag.Drag=true;
 			diag.Title ="查看商品信息";
-			diag.URL = '<%=basePath%>salebill/goaddgoods.do';
+			diag.URL = '<%=basePath%>salebill/goaddgoods.do?WAREHOUSE_ID=' + wh;
 			diag.Width = 1000;
 			diag.Height = 800;
 			diag.Modal = true;				//有无遮罩窗口

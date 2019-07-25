@@ -43,13 +43,17 @@
 								<td style="width:75px;text-align: right;padding-top: 13px;">录入日期:</td>
 								<td><input type="text" name="LDATE" id="LDATE" value="${pd.LDATE}" maxlength="1000"  style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">单据状态:</td>
-								<td><input type="text" name="BILLSTATUS" id="BILLSTATUS" value="未审批" maxlength="1000" placeholder="单据状态"   style="width:98%;" readonly="readonly"/></td>
+								<td><input type="text" name="BILLSTATUS" id="BILLSTATUS" value="${pd.BILLSTATUSNAME}" maxlength="1000" placeholder="单据状态"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
 								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 							</tr>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
-								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="${pd.ALLAMOUNT}" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">结算状态:</td>
+								<td>
+										 <c:if test="${'0' == pd.ISSETTLEMENTED }"><input type="text" value="未结算" style="width:98%;" readonly="readonly"/></c:if>
+										 <c:if test="${'1' == pd.ISSETTLEMENTED }"><input type="text" value="已结算" style="width:98%;" readonly="readonly"/></c:if>
+										 <c:if test="${'2' == pd.ISSETTLEMENTED }"><input type="text" value="正在结算" style="width:98%;" readonly="readonly"/></c:if>
+								</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
 								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WHNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
@@ -67,6 +71,8 @@
 							</tr>
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
+								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="${pd.ALLAMOUNT}" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">已付金额:</td>
 								<td><input type="text" name="PAIDAMOUNT" id="PAIDAMOUNT" value="${pd.PAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"  readonly="readonly" style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">未付金额:</td>
@@ -74,6 +80,12 @@
 								<td style="width:75px;text-align: right;padding-top: 13px;">本次付款:</td>
 								<td><input type="text" name="THISPAY" id="THISPAY" value="${pd.THISPAY}" maxlength="1000" placeholder="这里输入备注" readonly="readonly"  style="width:98%;"/></td>
 								
+							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">客户订单号:</td>
+								<td><input type="text" name="CUSBILLNO" id="CUSBILLNO"  maxlength="1000"  style="width:98%;" value="${pd.CUSBILLNO}" readonly="readonly" /></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;padding-left: 0px;padding-right: 0px;">送货地址:</td>
+								<td><input type="text" name="TOADDRESS" id="TOADDRESS" readonly="readonly"  maxlength="1000" style="width:98%;" value="${pd.TOADDRESS}" /></td>
 							</tr>
 						</table>
 						<table name="goodstable" id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
@@ -85,6 +97,7 @@
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
 									<th class="center">金额</th>
+									<th class="center">赠送</th>
 									<th class="center">备注</th>
 <!-- 									<th class="center">操作</th> -->
 								</tr>
@@ -104,6 +117,12 @@
 											<td class='center'>${var.PNUMBER}</td>
 											<td class='center'>${var.NAME}</td>
 											<td class='center'>${var.AMOUNT}</td>
+											<c:if test="${var.ISFREE == '1' }">
+												<td class='center'>是</td>
+											</c:if>
+											<c:if test="${var.ISFREE == '0' }">
+												<td class='center'>否</td>
+											</c:if>
 											<td class='center'>${var.NOTE}</td>
 										</tr>
 									
@@ -173,23 +192,40 @@
 // 	        fourthCell = $("#row0 td:eq(3)").html();
 // 	    });
 	
-		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME) {
+		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,ISFREE) {
 			 //获取表格有多少行
 	        var rowLength = $("#simple-table tr").length;
 	        //这里的rowId就是row加上标志位的组合。是每新增一行的tr的id。
 	        var rowId = "row" + flag;
 	      //每次往下标为flag+1的下面添加tr,因为append是往标签内追加。所以用after
-	        var insertStr = "<tr id=" + rowId + ">"
+	        if(ISFREE == '1'){
+	        	var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'value='"+PNUMBER+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
-	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
-	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>";
-// 	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
+	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='1' checked='checked' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' value='"+NOTE+"'/></td>"
+	                      + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
+	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
+//	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
 	                      +"</tr>";
+	      	}else{
+	      		var insertStr = "<tr id=" + rowId + ">"
+		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
+		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
+		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'value='"+PNUMBER+"'/></td>"
+		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
+		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
+		                + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' readonly='readonly' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
+		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' value='"+NOTE+"'/></td>"
+		                + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
+		                + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
+		                +"</tr>";
+	      	}
 	        //这里的行数减2，是因为要减去底部的一行和顶部的一行，剩下的为开始要插入行的索引
 	                      $("#simple-table tr:eq(" + (rowLength - 2) + ")").after(insertStr); //将新拼接的一行插入到当前行的下面
 	         //为新添加的行里面的控件添加新的id属性。
@@ -201,6 +237,18 @@
 	         //每插入一行，flag自增一次
 	         flag++;
 			
+		}
+		
+		//-----------------点击赠送复选框--------    
+		function exe(checkboxId){
+			var vals = $("#"+ checkboxId).val();
+			if(vals=='0'){
+				$("#"+ checkboxId).val('1');
+	        }
+	        if(vals=='1'){
+			 	$("#"+ checkboxId).val('0');
+	        }
+	        calculateTheTotalAmount();
 		}
 		
 		//-----------------删除一行，根据行ID删除-start--------    

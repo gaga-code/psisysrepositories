@@ -31,7 +31,7 @@
 						<div class="col-xs-12">
 							
 						<!-- 检索  -->
-						<form action="salebill/goodslist.do" method="post" name="Form" id="Form">
+						<form action="salebill/goodslist.do?" method="post" name="Form" id="Form">
 						<table style="margin-top:5px;">
 							<tr>
 								<td>
@@ -48,7 +48,7 @@
 							</tr>
 						</table>
 						<!-- 检索  -->
-					
+						<input type="hidden" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WAREHOUSE_ID}"/>
 						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
 								<tr>
@@ -145,24 +145,42 @@
 	<!--提示框-->
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
 	
-	<script src="static/js/jquery-1.7.2.js" type="text/javascript"></script> 
+<!-- 	<script src="static/js/jquery-1.7.2.js" type="text/javascript"></script>  -->
 	<script src="static/js/jquery.cookie.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		$(top.hangge());//关闭加载状态
 		
 		//选择商品
 		function view(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE){
-			 if(!window.localStorage){
-		             alert("浏览器不支持localstorage");
-		      }else{
-		             var storage=window.localStorage;
-		             localStorage.setItem("GOOD_ID",GOOD_ID);
-		             localStorage.setItem("GOODNAME",GOODNAME);
-		             localStorage.setItem("BARCODE",BARCODE);
-		             localStorage.setItem("UNITNAME",UNITNAME);
-		             localStorage.setItem("GOODCODE",GOODCODE);
-			}
-			top.Dialog.close();//关闭窗口
+			
+			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
+			
+			//发送ajax请求到后台核对仓库是否有此商品
+			$.ajax({
+				type: "POST",
+				url: '<%=basePath%>salebill/checkstock.do?tm='+new Date().getTime(),
+		    	data: {"GOOD_ID":GOODCODE, "WAREHOUSE_ID":WAREHOUSE_ID},
+				dataType:'json',
+				cache: false,
+				success: function(data){
+					if(data.msg == "success"){//存在商品
+						if(!window.localStorage){
+					    	 alert("浏览器不支持localstorage");
+					    }else{
+				             var storage=window.localStorage;
+				             localStorage.setItem("GOOD_ID",GOOD_ID);
+				             localStorage.setItem("GOODNAME",GOODNAME);
+				             localStorage.setItem("BARCODE",BARCODE);
+				             localStorage.setItem("UNITNAME",UNITNAME);
+				             localStorage.setItem("GOODCODE",GOODCODE);
+						}
+						top.Dialog.close();//关闭窗口
+					}else {
+						alert("此仓库中没有此商品");
+						return;
+					}
+				}
+			});
 		}
 		
 		//检索
