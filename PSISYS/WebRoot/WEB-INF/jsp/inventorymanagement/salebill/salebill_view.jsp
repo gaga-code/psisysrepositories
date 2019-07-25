@@ -30,10 +30,10 @@
 						
 							<tr>
 								&nbsp;&nbsp;&nbsp;&nbsp;
-								<td style="text-align: center;" colspan="10"><font size="6">进货单详情</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<td style="text-align: center;" colspan="10"><font size="6">销售单详情</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 								<td style="text-align: center;" colspan="10">
 <!-- 									<a class="btn btn-mini btn-primary" onclick="save();">保存</a> -->
-									<a class="btn btn-mini btn-danger" onclick="returnList();">返回进货单列表</a>
+									<a class="btn btn-mini btn-danger" onclick="returnList();">返回销售单列表</a>
 								</td>
 							</tr>
 						<table id="table_report" class="table table-striped table-bordered table-hover">
@@ -149,8 +149,8 @@
 	<!-- 页面底部js¨ -->
 	<%@ include file="../../system/index/foot.jsp"%>
 
-	<script src="https://libs.baidu.com/jquery/1.4.2/jquery.min.js"></script>
-	<script src="static/js/jquery-1.7.2.js" type="text/javascript"></script> 
+<!-- 	<script src="https://libs.baidu.com/jquery/1.4.2/jquery.min.js"></script> -->
+<!-- 	<script src="static/js/jquery-1.7.2.js" type="text/javascript"></script>  -->
 	<script src="static/js/jquery.cookie.js" type="text/javascript"></script>
 	<!--提示框-->
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>

@@ -43,10 +43,10 @@
 									</div>
 								</td>
 								<td>
-									<select class="chosen-select form-control" name="SUPPLIER_ID" id="SUPPLIER_ID" data-placeholder="选择供应商" style="vertical-align:top;width:98%;" >
-										<option value="">选择供应商</option>
-										<c:forEach items="${supplierList}" var="var">
-											<option value="${var.SUPPLIER_ID }" <c:if test="${var.SUPPLIER_ID == pd.SUPPLIER_ID }">selected</c:if>>${var.SUPPLIERNAME }</option>  <!-- <c:if test="${var.SUPPLIER_ID == pd.SUPPLIER_ID }">selected</c:if> -->
+									<select class="chosen-select form-control" name="CUSTOMER_ID" id="CUSTOMER_ID" data-placeholder="选择供应商" style="vertical-align:top;width:98%;" >
+										<option value="">选择客户</option>
+										<c:forEach items="${customerList}" var="var">
+											<option value="${var.CUSTOMER_ID }" <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if>>${var.CUATOMERNAME }</option>  <!-- <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if> -->
 										</c:forEach>
 									</select>
 								</td>
@@ -84,7 +84,7 @@
 									</th>
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">单据编号</th>
-									<th class="center">供应商</th>
+									<th class="center">客户</th>
 									<th class="center">总金额</th>
 									<th class="center">未付金额</th>
 									<th class="center">已付金额</th>
@@ -105,11 +105,11 @@
 									<c:forEach items="${varList}" var="var" varStatus="vs">
 										<tr>
 											<td class='center'>
-												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.INORDER_ID}" class="ace" /><span class="lbl"></span></label>
+												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.SALEBILL_ID}" class="ace" /><span class="lbl"></span></label>
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.BILLCODE}</td>
-											<td class='center'>${var.SUPPLIERNAME}</td>
+											<td class='center'>${var.CUATOMERNAME}</td>
 											<td class='center'>${var.ALLAMOUNT}</td>
 											<td class='center'>${var.UNPAIDAMOUNT}</td>
 											<td class='center'>${var.PAIDAMOUNT}</td>
@@ -144,21 +144,21 @@
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
 													<c:if test="${QX.InOrderfanshenApproval == 1 }"><c:if test="${var.ISSETTLEMENTED == 0 || var.ISSETTLEMENTED == 2}"><c:if test="${var.BILLSTATUS == 2}">
-													<a class="btn btn-mini btn-danger"  style="height:26px;" onclick="fanshen('${var.INORDER_ID}');">反审</a>
+													<a class="btn btn-mini btn-danger"  style="height:26px;" onclick="fanshen('${var.SALEBILL_ID}');">反审</a>
 													</c:if></c:if></c:if>
 													<c:if test="${QX.InOrdershenpiApproval == 1 }"><c:if test="${var.BILLSTATUS != 2}">
-													<a class="btn btn-mini btn-success" style="height:26px;" onclick="shenpi('${var.INORDER_ID}');">审批</a>
+													<a class="btn btn-mini btn-success" style="height:26px;" onclick="shenpi('${var.SALEBILL_ID}');">审批</a>
 													</c:if></c:if>
-													<a class="btn btn-xs btn-success" title="查看" onclick="view('${var.INORDER_ID}');">
+													<a class="btn btn-xs btn-success" title="查看" onclick="view('${var.SALEBILL_ID}');">
 														<i class="ace-icon fa fa-eye bigger-120" title="查看"></i>
 													</a>
 													<c:if test="${QX.edit == 1 }"><c:if test="${var.BILLSTATUS != 2}">
-													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.INORDER_ID}');">
+													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.SALEBILL_ID}');">
 														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
 													</a>
 													</c:if></c:if>
 													<c:if test="${QX.del == 1 }"><c:if test="${var.BILLSTATUS != 2}">
-													<a class="btn btn-xs btn-danger" onclick="del('${var.INORDER_ID}');">
+													<a class="btn btn-xs btn-danger" onclick="del('${var.SALEBILL_ID}');">
 														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
 													</a>
 													</c:if></c:if>
@@ -171,7 +171,7 @@
 			
 														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 															<li>
-																<a style="cursor:pointer;" onclick="view('${var.INORDER_ID}');" class="tooltip-success" data-rel="tooltip" title="查看">
+																<a style="cursor:pointer;" onclick="view('${var.SALEBILL_ID}');" class="tooltip-success" data-rel="tooltip" title="查看">
 																	<span class="green">
 																		<i class="ace-icon fa fa-eye bigger-120"></i>
 																	</span>
@@ -179,7 +179,7 @@
 															</li>
 															<c:if test="${QX.edit == 1 }">
 															<li>
-																<a style="cursor:pointer;" onclick="edit('${var.INORDER_ID}');" class="tooltip-success" data-rel="tooltip" title="修改">
+																<a style="cursor:pointer;" onclick="edit('${var.SALEBILL_ID}');" class="tooltip-success" data-rel="tooltip" title="修改">
 																	<span class="green">
 																		<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
 																	</span>
@@ -188,7 +188,7 @@
 															</c:if>
 															<c:if test="${QX.del == 1 }">
 															<li>
-																<a style="cursor:pointer;" onclick="del('${var.INORDER_ID}');" class="tooltip-error" data-rel="tooltip" title="删除">
+																<a style="cursor:pointer;" onclick="del('${var.SALEBILL_ID}');" class="tooltip-error" data-rel="tooltip" title="删除">
 																	<span class="red">
 																		<i class="ace-icon fa fa-trash-o bigger-120"></i>
 																	</span>
@@ -279,14 +279,14 @@
 		}
 		//修改
 		function edit(Id){
-			var url = 'salebill/goEdit.do?INORDER_ID='+Id;
+			var url = 'salebill/goEdit.do?SALEBILL_ID='+Id;
 			document.forms.actionForm.action=url;
 	        document.forms.actionForm.submit();
 			//siMenu('z191','lm181','修改进货单',url);
 		}
 		//查看
 		function view(Id){
-			var url = 'salebill/goView.do?INORDER_ID='+Id;
+			var url = 'salebill/goView.do?SALEBILL_ID='+Id;
 			document.forms.actionForm.action=url;
 	        document.forms.actionForm.submit();
 			//siMenu('z191','lm181','查看进货单',url);
@@ -348,12 +348,12 @@
 		
 				
 		//跟踪记录
-		function chaImg(INORDER_ID){
+		function chaImg(SALEBILL_ID){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="跟踪记录";
-			 diag.URL = '<%=basePath%>customerimg/list.do?INORDER_ID='+INORDER_ID;
+			 diag.URL = '<%=basePath%>customerimg/list.do?SALEBILL_ID='+SALEBILL_ID;
 			 diag.Width = 800;
 			 diag.Height = 650;
 			 diag.Modal = false;			//有无遮罩窗口
@@ -366,12 +366,12 @@
 		}
 		
 		//消费记录
-		function consume(INORDER_ID){
+		function consume(SALEBILL_ID){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="消费记录";
-			 diag.URL = '<%=basePath%>outku/list.do?INORDER_ID='+INORDER_ID;
+			 diag.URL = '<%=basePath%>outku/list.do?SALEBILL_ID='+SALEBILL_ID;
 			 diag.Width = 800;
 			 diag.Height = 600;
 			 diag.Modal = false;			//有无遮罩窗口
@@ -388,7 +388,7 @@
 			bootbox.confirm("确定要删除吗?", function(result) {
 				if(result) {
 					top.jzts();
-					var url = "<%=basePath%>salebill/delete.do?INORDER_ID="+Id+"&tm="+new Date().getTime();
+					var url = "<%=basePath%>salebill/delete.do?SALEBILL_ID="+Id+"&tm="+new Date().getTime();
 					$.get(url,function(data){
 						tosearch();
 					});
@@ -399,7 +399,7 @@
 		//审批
 		function shenpi(Id){
 			top.jzts();
-			var url = "<%=basePath%>salebill/shenpi.do?INORDER_ID="+Id+"&tm="+new Date().getTime();
+			var url = "<%=basePath%>salebill/shenpi.do?SALEBILL_ID="+Id+"&tm="+new Date().getTime();
 			$.get(url,function(data){
 				tosearch();
 			});
@@ -409,7 +409,7 @@
 			bootbox.confirm("确定要反审吗?", function(result) {
 				if(result) {
 					top.jzts();
-					var url = "<%=basePath%>salebill/fanshen.do?INORDER_ID="+Id+"&tm="+new Date().getTime();
+					var url = "<%=basePath%>salebill/fanshen.do?SALEBILL_ID="+Id+"&tm="+new Date().getTime();
 					$.get(url,function(data){
 						tosearch();
 					});

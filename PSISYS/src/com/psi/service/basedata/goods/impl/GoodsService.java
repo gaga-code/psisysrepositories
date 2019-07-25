@@ -80,7 +80,7 @@ public class GoodsService implements GoodsManager{
 			dict.setTreeurl("salebill/goodslist.do?GOODTYPE_ID="+dict.getGOODTYPE_ID());
 			//dict.setSubDict(this.listAllDict(dict.getGOODTYPE_ID()));
 			map.put("PARENTS", dict.getGOODTYPE_ID());
-			dict.setSubDict(this.inOrderListAllDict(map));
+			dict.setSubDict(this.salebillListAllDict(map));
 			dict.setTarget("treeFrame");
 		}
 		return dictList;

@@ -30,7 +30,7 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<tr>
 								&nbsp;&nbsp;&nbsp;&nbsp;
-								<td style="text-align: center;" colspan="10"><font size="6">修改进货单</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<td style="text-align: center;" colspan="10"><font size="6">修改销售单</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 								<td style="text-align: center;" colspan="10">
 								<a class="btn btn-mini btn-primary" onclick="save();">保存</a>
 									<a class="btn btn-mini btn-danger" onclick="returnList();">取消</a>
@@ -127,8 +127,8 @@
 	<!-- 页面底部js¨ -->
 	<%@ include file="../../system/index/foot.jsp"%>
 
-	<script src="https://libs.baidu.com/jquery/1.4.2/jquery.min.js"></script>
-	<script src="static/js/jquery-1.7.2.js" type="text/javascript"></script> 
+<!-- 	<script src="https://libs.baidu.com/jquery/1.4.2/jquery.min.js"></script> -->
+<!-- 	<script src="static/js/jquery-1.7.2.js" type="text/javascript"></script>  -->
 	<script src="static/js/jquery.cookie.js" type="text/javascript"></script>
 	<!--提示框-->
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>

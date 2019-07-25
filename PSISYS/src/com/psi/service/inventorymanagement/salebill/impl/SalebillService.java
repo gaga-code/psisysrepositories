@@ -56,8 +56,8 @@ public class SalebillService implements SalebillManager{
 		for(int i = 0; i < split.length; i++) {
 			String[] agoods = split[i].split(",");
 			PageData pageData = new PageData();
-			pageData.put("INORDERBODY_ID", UuidUtil.get32UUID());
-			pageData.put("INORDER_ID", pd.get("INORDER_ID"));
+			pageData.put("FGROUP_ID", UuidUtil.get32UUID());
+			pageData.put("SALEBILL_ID", pd.get("SALEBILL_ID"));
 			pageData.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
 			pageData.put("APPBILLNO", strs[0]);
 			
@@ -65,8 +65,9 @@ public class SalebillService implements SalebillManager{
 			pageData.put("UNITPRICE_ID", agoods[2]);
 			pageData.put("PNUMBER", agoods[3]);
 			pageData.put("AMOUNT", agoods[5]);
-			pageData.put("NOTE", agoods[6]);
-			pageData.put("GOODCODE_ID", agoods[7]);
+			pageData.put("ISFREE", agoods[6]);
+			pageData.put("NOTE", agoods[7]);
+			pageData.put("GOODCODE_ID", agoods[8]);
 			
 			dao.save("SalebillBodyMapper.save", pageData);
 		}
@@ -75,7 +76,7 @@ public class SalebillService implements SalebillManager{
 		if(strs[1] == null){ //新增
 			PsiBillCode psiBillCode = new PsiBillCode();
 			psiBillCode.setCode_ID(UuidUtil.get32UUID());
-			psiBillCode.setCodeType(Const.BILLCODE_INORDER_PFIX);
+			psiBillCode.setCodeType(Const.BILLCODE_SALEBILL_PFIX);
 			psiBillCode.setMaxNo(strs[0]);
 			psiBillCode.setNOTE("销售单编号");
 			billCodeService.insertBillCode(psiBillCode);

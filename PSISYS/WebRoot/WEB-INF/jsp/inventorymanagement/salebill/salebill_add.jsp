@@ -12,6 +12,11 @@
 	<base href="<%=basePath%>">
 	<!-- jsp文件头和头部 -->
 	<%@ include file="../../system/index/top.jsp"%>
+	<!-- 下拉框 -->
+	<link rel="stylesheet" href="static/ace/css/chosen.css" />
+	<!-- 日期框 -->
+	<link rel="stylesheet" href="static/ace/css/datepicker.css" />
+	
 	<script type="text/javascript" src="static/js/myjs/head.js"></script>
 </head>
 <body class="no-skin">
@@ -27,7 +32,7 @@
 					<form action="salebill/${msg }.do" name="Form" id="Form" method="post">
 						<input type="hidden" name="PK_SOBOOKS" id="PK_SOBOOKS" value="${pd.PK_SOBOOKS}"/>
 						<div id="zhongxin" style="padding-top: 13px;">&nbsp;&nbsp;&nbsp;&nbsp;
-							<td style="text-align: center;" colspan="10"><font size="6">添加进货单</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<td style="text-align: center;" colspan="10"><font size="6">添加销售单</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<tr>
 								<td style="text-align: center;" colspan="10">
 									<a class="btn btn-mini btn-primary" onclick="save();">保存</a>
@@ -44,6 +49,10 @@
 								<td><input type="text" name="BILLSTATUS" id="BILLSTATUS" value="未审批" maxlength="1000"    style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
 								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="1000"    style="width:98%;" readonly="readonly"/></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">客户订单号:</td>
+								<td><input type="text" name="CUSBILLNO" id="CUSBILLNO"  maxlength="1000"  style="width:98%;" /></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;padding-left: 0px;padding-right: 0px;">送货地址:</td>
+								<td><input type="text" name="TOADDRESS" id="TOADDRESS"  maxlength="1000" style="width:98%;" /></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
@@ -58,17 +67,21 @@
 									</select>
 								</td>
 <%-- 								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WAREHOUSE_ID}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td> --%>
-								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">客户:</td>
 								<td>
-									<select class="chosen-select form-control" name="SUPPLIER_ID" id="SUPPLIER_ID"  style="vertical-align:top;width:98%;" >
+									<select class="chosen-select form-control" name="CUSTOMER_ID" id="CUSTOMER_ID"  style="vertical-align:top;width:98%;" >
 										<option value="">无</option>
-										<c:forEach items="${supplierList}" var="var">
-											<option value="${var.SUPPLIER_ID }" <c:if test="${var.SUPPLIER_ID == pd.SUPPLIER_ID }">selected</c:if>>${var.SUPPLIERNAME }</option>
+										<c:forEach items="${customerList}" var="var">
+											<option value="${var.CUSTOMER_ID }" <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if>>${var.CUATOMERNAME }</option>
 										</c:forEach>
 									</select>
 								</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
-								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
+								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000"   style="width:98%;"/></td>
+							</tr>
+							<tr>
+							<td style="width:75px;text-align: right;padding-top: 13px;">结款日期:</td>
+							<td style="padding-left:2px;"><input class="span10 date-picker" name="PAYDATE" id="PAYDATE"  value="${pd.PAYDATE}" type="text" data-date-format="yyyy-mm-dd"  style="width:98%;" /></td>
 							</tr>
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<%-- <tr>
@@ -90,6 +103,7 @@
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
 									<th class="center">金额</th>
+									<th class="center">赠送</th>
 									<th class="center">备注</th>
 									<th class="center">操作</th>
 								</tr>
@@ -124,12 +138,19 @@
 
 	<!-- 页面底部js¨ -->
 	<%@ include file="../../system/index/foot.jsp"%>
-
-	<script src="https://libs.baidu.com/jquery/1.4.2/jquery.min.js"></script>
-	<script src="static/js/jquery-1.7.2.js" type="text/javascript"></script> 
+	
+	<!-- ace scripts -->
+	<script src="static/ace/js/ace/ace.js"></script>
+	<!-- 日期框 -->
+	<script src="static/ace/js/date-time/bootstrap-datepicker.js"></script>
+	
+<!-- 	<script src="https://libs.baidu.com/jquery/1.4.2/jquery.min.js"></script> -->
+<!-- 	<script src="static/js/jquery-1.7.2.js" type="text/javascript"></script>  -->
 	<script src="static/js/jquery.cookie.js" type="text/javascript"></script>
 	<!--提示框-->
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
+	<!-- 下拉框 -->
+	<script src="static/ace/js/chosen.jquery.js"></script>
 		<script type="text/javascript">
 		$(top.hangge());
 		
@@ -162,6 +183,7 @@
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
+	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
@@ -177,6 +199,18 @@
 	         //每插入一行，flag自增一次
 	         flag++;
 			
+		}
+		
+		//-----------------点击赠送复选框--------    
+		function exe(checkboxId){
+			var vals = $("#"+ checkboxId).val();
+			if(vals=='0'){
+				$("#"+ checkboxId).val('1');
+	        }
+	        if(vals=='1'){
+			 	$("#"+ checkboxId).val('0');
+	        }
+	        calculateTheTotalAmount();
 		}
 		
 		//-----------------删除一行，根据行ID删除-start--------    
@@ -257,10 +291,13 @@
 	                var value = Str[i].split(',');
 	                var danjia = value[2];
 	                var shuliang = value[3];
+	                var free = value[6];
+	                console.log(free);
 	                if(danjia!= ''&& shuliang!= ''){
-	                	result = result + danjia * shuliang;
+	                	if(free == '0'){
+		                	result = result + danjia * shuliang;
+	                	}
 	                	$("#simple-table tr").eq(i+1).children().eq(5).children().eq(0).val(danjia * shuliang);
-	                	console.log(i);
 	                }
 	            }
 	        }
@@ -325,7 +362,38 @@
 	        document.forms.actionForm.submit();
 		}
 
-		
+		$(function() {
+			//日期框
+			$('.date-picker').datepicker({
+				autoclose: true,
+				todayHighlight: true
+			});
+			//下拉框
+			if(!ace.vars['touch']) {
+				$('.chosen-select').chosen({allow_single_deselect:true}); 
+				$(window)
+				.off('resize.chosen')
+				.on('resize.chosen', function() {
+					$('.chosen-select').each(function() {
+						 var $this = $(this);
+						 $this.next().css({'width': $this.parent().width()});
+					});
+				}).trigger('resize.chosen');
+				$(document).on('settings.ace.chosen', function(e, event_name, event_val) {
+					if(event_name != 'sidebar_collapsed') return;
+					$('.chosen-select').each(function() {
+						 var $this = $(this);
+						 $this.next().css({'width': $this.parent().width()});
+					});
+				});
+				$('#chosen-multiple-style .btn').on('click', function(e){
+					var target = $(this).find('input[type=radio]');
+					var which = parseInt(target.val());
+					if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
+					 else $('#form-field-select-4').removeClass('tag-input-style');
+				});
+			}
+		});
 		</script>
 </body>
 </html>

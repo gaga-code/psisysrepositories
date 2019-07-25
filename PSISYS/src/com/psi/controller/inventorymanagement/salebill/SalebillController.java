@@ -118,7 +118,7 @@ public class SalebillController extends BaseController {
 //		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("INORDER_ID", this.get32UUID());		//主键
+		pd.put("SALEBILL_ID", this.get32UUID());		//主键
 		pd.put("LDATE",DateUtil.getTime().toString());	//录入日期
 		pd.put("BILLSTATUS", 1);
 		pd.put("BILLTYPE", 1);
