@@ -66,9 +66,10 @@
 <%-- 										</c:forEach> --%>
 <!-- 									</select> -->
 <!-- 								</td> -->
-								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
-								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
-							</tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">结款日期:</td>
+								<td style="padding-left:2px;"><input class="span10 date-picker" name="PAYDATE" id="PAYDATE"  value="${pd.PAYDATE}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:98%;" /></td>
+							
+								</tr>
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
@@ -84,6 +85,8 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">客户订单号:</td>
 								<td><input type="text" name="CUSBILLNO" id="CUSBILLNO"  maxlength="1000"  style="width:98%;" value="${pd.CUSBILLNO}" readonly="readonly" /></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
+								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;padding-left: 0px;padding-right: 0px;">送货地址:</td>
 								<td><input type="text" name="TOADDRESS" id="TOADDRESS" readonly="readonly"  maxlength="1000" style="width:98%;" value="${pd.TOADDRESS}" /></td>
 							</tr>

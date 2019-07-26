@@ -42,6 +42,8 @@
 										</span>
 									</div>
 								</td>
+								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
+								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
 								<td>
 									<select class="chosen-select form-control" name="CUSTOMER_ID" id="CUSTOMER_ID" data-placeholder="选择供应商" style="vertical-align:top;width:98%;" >
 										<option value="">选择客户</option>

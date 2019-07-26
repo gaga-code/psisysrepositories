@@ -53,7 +53,7 @@
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
 								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="${pd.ALLAMOUNT }" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td>
+								<td id="tishi">
 									<select class="chosen-select form-control" name="WAREHOUSE_ID" id="WAREHOUSE_ID"  style="vertical-align:top;width:98%;" >
 										<option value="">无</option>
 										<c:forEach items="${warehouseList}" var="var">
@@ -63,16 +63,16 @@
 								</td>
 <%-- 								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WAREHOUSE_ID}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td> --%>
 								<td style="width:75px;text-align: right;padding-top: 13px;">客户:</td>
-								<td>
-									<select class="chosen-select form-control" name="CUSTOMER_ID" id="CUSTOMER_ID" data-placeholder="请选择供应商" style="vertical-align:top;width:98%;" >
+								<td id="CUSTOMER_select">
+									<select class="chosen-select form-control" name="CUSTOMER_ID" id="CUSTOMER_ID" style="vertical-align:top;width:98%;" >
 										<option value="">无</option>
 										<c:forEach items="${customerList}" var="var">
 											<option value="${var.CUSTOMER_ID }" <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if>>${var.CUATOMERNAME }</option>
 										</c:forEach>
 									</select>
 								</td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
-								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">结款日期:</td>
+								<td style="padding-left:2px;"><input class="span10 date-picker" name="PAYDATE" id="PAYDATE"  value="${pd.PAYDATE}" type="text" data-date-format="yyyy-mm-dd"  style="width:98%;" /></td>
 							</tr>
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<tr>
@@ -82,14 +82,12 @@
 								<td><input type="number" name="UNPAIDAMOUNT" id="UNPAIDAMOUNT" value="${pd.UNPAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">客户订单号:</td>
 								<td><input type="text" name="CUSBILLNO" id="CUSBILLNO"  maxlength="1000"  style="width:98%;" value="${pd.CUSBILLNO}"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;padding-left: 0px;padding-right: 0px;">送货地址:</td>
-								<td><input type="text" name="TOADDRESS" id="TOADDRESS"  maxlength="1000" style="width:98%;" value="${pd.TOADDRESS}" /></td>
-<!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">本次付款:</td> -->
-<%-- 								<td><input type="text" name="THISPAY" id="THISPAY" value="${pd.THISPAY}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> --%>
+								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
+								<td colspan="10"><input  type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
 							</tr> 
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">结款日期:</td>
-								<td style="padding-left:2px;"><input class="span10 date-picker" name="PAYDATE" id="PAYDATE"  value="${pd.PAYDATE}" type="text" data-date-format="yyyy-mm-dd"  style="width:98%;" /></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;padding-left: 0px;padding-right: 0px;">送货地址:</td>
+								<td><input type="text" name="TOADDRESS" id="TOADDRESS"  maxlength="1000" style="width:98%;" value="${pd.TOADDRESS}" /></td>
 							</tr>
 						</table>
 						<table name="goodstable" id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
@@ -163,7 +161,7 @@
 // 	        fourthCell = $("#row0 td:eq(3)").html();
 // 	    });
 	
-		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE) {
+		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE) {
 			 //获取表格有多少行
 	        var rowLength = $("#simple-table tr").length;
 	        //这里的rowId就是row加上标志位的组合。是每新增一行的tr的id。
@@ -172,8 +170,8 @@
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+RPRICE+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\");'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
@@ -185,14 +183,40 @@
 	        //这里的行数减2，是因为要减去底部的一行和顶部的一行，剩下的为开始要插入行的索引
 	                      $("#simple-table tr:eq(" + (rowLength - 2) + ")").after(insertStr); //将新拼接的一行插入到当前行的下面
 	         //为新添加的行里面的控件添加新的id属性。
-	         $("#" + rowId + " td:eq(0)").children().eq(0).attr("id", "UrbanDepNo" + flag);
-	         $("#" + rowId + " td:eq(1)").children().eq(0).attr("id", "LocNo" + flag);
-	         $("#" + rowId + " td:eq(2)").children().eq(0).attr("id", "RoadSectionName" + flag);
-	         $("#" + rowId + " td:eq(3)").children().eq(0).attr("id", "StStartRoad" + flag);
-	         $("#" + rowId + " td:eq(3)").children().eq(1).attr("id", "EndRoad" + flag);
 	         //每插入一行，flag自增一次
 	         flag++;
+		}
+		
+		//商品数量修改时，判断是否超过了库存量
+		function checkstocknum(goodsnumID, GOOD_ID){
 			
+			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
+			console.log("test");
+			$.ajax({
+				type: "POST",
+				url: '<%=basePath%>salebill/checkstock.do?tm='+new Date().getTime(),
+		    	data: {"GOOD_ID":GOOD_ID, "WAREHOUSE_ID":WAREHOUSE_ID},
+				dataType:'json',
+				cache: false,
+				success: function(data){
+					if(data.msg == "success"){//存在商品
+						if(data.stockNum >= $("#"+goodsnumID).val()){
+							return ;
+						}else{
+							$("#"+goodsnumID).tips({
+								side:3,
+					            msg:'仓库中商品数量不足，当前库存为' + data.stockNum,
+					            bg:'#AE81FF',
+					            time:5
+					        });
+							$("#"+goodsnumID).focus();
+						}
+					}else {
+						return false;
+					}
+				}
+			});
+			calculateTheTotalAmount()
 		}
 		
 		//-----------------点击赠送复选框--------    
@@ -219,7 +243,7 @@
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'value='"+PNUMBER+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\");' value='"+PNUMBER+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='1' checked='checked' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
@@ -233,7 +257,7 @@
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
 		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
-		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'value='"+PNUMBER+"'/></td>"
+		                + "<td class='center'><input type='number' maxlength='100' style='width:100px'id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\");' value='"+PNUMBER+"'/></td>"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
 		                + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
@@ -245,11 +269,6 @@
 	        //这里的行数减2，是因为要减去底部的一行和顶部的一行，剩下的为开始要插入行的索引
 	                      $("#simple-table tr:eq(" + (rowLength - 2) + ")").after(insertStr); //将新拼接的一行插入到当前行的下面
 	         //为新添加的行里面的控件添加新的id属性。
-	         $("#" + rowId + " td:eq(0)").children().eq(0).attr("id", "UrbanDepNo" + flag);
-	         $("#" + rowId + " td:eq(1)").children().eq(0).attr("id", "LocNo" + flag);
-	         $("#" + rowId + " td:eq(2)").children().eq(0).attr("id", "RoadSectionName" + flag);
-	         $("#" + rowId + " td:eq(3)").children().eq(0).attr("id", "StStartRoad" + flag);
-	         $("#" + rowId + " td:eq(3)").children().eq(1).attr("id", "EndRoad" + flag);
 	         //每插入一行，flag自增一次
 	         flag++;
 			
@@ -311,6 +330,18 @@
 	  //计算总金额
 	    function calculateTheTotalAmount() {
 		  
+	    	var wh = $("#WAREHOUSE_ID").val();
+			if(wh ==""){
+				$("#tishi").tips({
+					side:3,
+		            msg:'请选择仓库',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				//$("#WAREHOUSE_ID").focus();
+				return false;
+			}
+		  
 	    	var value = "";
 	    	$("#simple-table tr").each(function(i) {
 	            if (i >= 1) {
@@ -347,13 +378,57 @@
 	        $("#UNPAIDAMOUNT").val($("#ALLAMOUNT").val() - $("#PAIDAMOUNT").val());
 	    }
 	  
+	  //判断商品单价和数量是否为空
+	  function checkGoodsPriceAndNum(){
+		  var value = "";
+	    	$("#simple-table tr").each(function(i) {
+	            if (i >= 1) {
+	                $(this).children().each(function(j) {
+	                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+	                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+	                        if ($(this).children().length > 1) {
+	                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+	                        }
+	                    }
+	                });
+	                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
+	            }
+	        });
+		  	var str = value;
+	        var Str = str.split('#');
+	        var result = 0;
+	        if (Str[0] != "") {
+	            for (var i = 0; i < Str.length - 1; i++) {
+	                var value = Str[i].split(',');
+	                var danjia = value[2];
+	                var shuliang = value[3];
+	                if(danjia == '' || shuliang == ''){
+	                	alert("商品的单价和数量不能为空！");
+	                	return '0';
+	                }
+	            }
+	        }
+	  }
 	  
 		function addgoods(){
+			//如果没有选择仓库，不能选择商品
+			var wh = $("#WAREHOUSE_ID").val();
+			if(wh ==""){
+				$("#tishi").tips({
+					side:3,
+		            msg:'请先选择仓库',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				//$("#WAREHOUSE_ID").focus();
+				return false;
+			}
+			
 			top.jzts();
 			var diag = new top.Dialog();
 			diag.Drag=true;
 			diag.Title ="查看商品信息";
-			diag.URL = '<%=basePath%>salebill/goaddgoods.do';
+			diag.URL = '<%=basePath%>salebill/goaddgoods.do?WAREHOUSE_ID=' + wh;
 			diag.Width = 1000;
 			diag.Height = 800;
 			diag.Modal = true;				//有无遮罩窗口
@@ -364,13 +439,15 @@
 			    var BARCODE=localStorage.getItem("BARCODE");
 			    var UNITNAME=localStorage.getItem("UNITNAME");
 			    var GOODCODE=localStorage.getItem("GOODCODE");
+			    var RPRICE=localStorage.getItem("RPRICE");
 			    window.localStorage.removeItem("GOOD_ID");
 			    window.localStorage.removeItem("GOODNAME");
 			    window.localStorage.removeItem("BARCODE");
 			    window.localStorage.removeItem("UNITNAME");
 			    window.localStorage.removeItem("GOODCODE");
+			    window.localStorage.removeItem("RPRICE");
 			    if( GOOD_ID != null)
-			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE);
+			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE);
 				diag.close();
 			};
 			diag.show();
@@ -378,20 +455,54 @@
 		
 		//保存
 		function save(){
-			if($("#ENTERPRISENAME").val()==""){
-				$("#ENTERPRISENAME").tips({
+			
+			var wh = $("#WAREHOUSE_ID").val();
+			if(wh ==""){
+				$("#tishi").tips({
 					side:3,
-		            msg:'请输入企业名称',
+		            msg:'请选择仓库',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#ENTERPRISENAME").focus();
+				return false;
+			}
+			
+			if($("#CUSTOMER_ID").val()==""){
+				$("#CUSTOMER_select").tips({
+					side:3,
+		            msg:'请选择客户',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+			return false;
+			}
+			if($("#PAYDATE").val()==""){
+				$("#PAYDATE").tips({
+					side:3,
+		            msg:'请选择结款日期',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				$("#PAYDATE").focus();
 			return false;
 			}
 			/* if($("#MONEY").val()==""){
 				$("#MONEY").val(0);
 			} */
+			var check = checkGoodsPriceAndNum();
+			if(check == '0'){
+				return false;
+			}
 			GetValue();
+			if($("#goodslist").val()=="#"){
+				$("#addgoods").tips({
+					side:3,
+		            msg:'请选择商品',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+			return false;
+			}
 			if($("#ALLAMOUNT").val() < $("#PAIDAMOUNT").val()){
 				$("#ALLAMOUNT").tips({
 					side:3,

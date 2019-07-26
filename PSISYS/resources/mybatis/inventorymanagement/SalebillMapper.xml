@@ -322,6 +322,13 @@
 					 -->
 				)
 		</if>
+		<!-- 录单日期日期条件 -->
+		<if test="pd.lastStart!=null and pd.lastStart!=''">
+			and a.LDATE &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and a.LDATE &lt;= #{pd.lastEnd} 
+		</if>
 		<!-- 客户ID -->
 		<if test="pd.CUSTOMER_ID != null and pd.CUSTOMER_ID != ''">
 			and  a.CUSTOMER_ID= #{pd.CUSTOMER_ID}

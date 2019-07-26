@@ -421,7 +421,7 @@ public class SalebillService implements SalebillManager{
 		String DATA_IDS = pd.getString("DATA_IDS");
 		String ArrayDATA_IDS[] = DATA_IDS.split(",");
 		for (String string : ArrayDATA_IDS) {
-			pd.put("INORDER_ID", string);
+			pd.put("SALEBILL_ID", string);
 			updateshenpi(pd);
 		}
 		

@@ -80,7 +80,7 @@
 											<td class="center">
 												<div class="hidden-md hidden-lg">
 													<div class="inline pos-rel">
-														<button class="btn btn-minier btn-primary dropdown-toggle" onclick="view('${var.GOOD_ID}','${var.GOODNAME}','${var.BARCODE}','${var.UNITNAME}','${var.GOODCODE}');" data-toggle="dropdown" data-position="auto">
+														<button class="btn btn-minier btn-primary dropdown-toggle" onclick="view('${var.GOOD_ID}','${var.GOODNAME}','${var.BARCODE}','${var.UNITNAME}','${var.GOODCODE}','${var.RPRICE}');" data-toggle="dropdown" data-position="auto">
 															选择
 														</button>
 													</div>
@@ -151,7 +151,7 @@
 		$(top.hangge());//关闭加载状态
 		
 		//选择商品
-		function view(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE){
+		function view(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE){
 			
 			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
 			
@@ -173,6 +173,7 @@
 				             localStorage.setItem("BARCODE",BARCODE);
 				             localStorage.setItem("UNITNAME",UNITNAME);
 				             localStorage.setItem("GOODCODE",GOODCODE);
+				             localStorage.setItem("RPRICE",RPRICE);
 						}
 						top.Dialog.close();//关闭窗口
 					}else {
