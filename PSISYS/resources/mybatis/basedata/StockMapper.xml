@@ -137,6 +137,66 @@
 		and IFNULL(DR,0)=0 
 	</select>
 	
+	<!-- 库存列表 -->
+	<select id="stocklistPage" parameterType="page" resultType="pd">
+		select
+			a.STOCK,
+			b.GOODCODE,
+			b.GOOD_ID,
+			b.GOODNAME,
+			b.GOODTYPECODE,
+			b.GOODSPECIF,
+			b.BARCODE,
+			b.UNITPROP,
+			b.CPRICE,
+			b.SUBGZ_ID,
+			b.STOCKUPNUM,
+			b.STOCKDOWNNUM,
+			b.SUPPLIER_ID,
+			c.WHNAME,
+			d.TYPENAME,
+			e.NAME CUNITNAME,
+			f.NAME FZUNITNAME
+		from 
+			<include refid="tableName"></include>a
+			left join base_good b
+			on a.GOOD_ID = b.GOODCODE
+			left join base_warehouse c
+			on a.WAREHOUSE_ID = c.WAREHOUSE_ID
+			left join base_goodtype d
+			on b.GOODTYPE_ID = d.GOODTYPE_ID
+			left join cp_spunit e
+			on b.CUNIT_ID = e.SPUNIT_ID
+			left join cp_spunit f
+			on b.FZUNIT_ID = f.SPUNIT_ID
+		where 1=1 
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+		and
+			(
+				b.GOODNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			)
+		</if>
+		<!-- 仓库筛选 -->
+		<if test="pd.WAREHOUSE_ID!= null and pd.WAREHOUSE_ID != ''">
+		and	a.WAREHOUSE_ID = #{pd.WAREHOUSE_ID}
+		</if>
+		<!-- 商品筛选 -->
+		<if test="pd.GOOD_ID!= null and pd.GOOD_ID != ''">
+		and	a.GOOD_ID = #{pd.GOOD_ID}
+		</if>
+		<!-- 日期筛选 -->
+		<if test="pd.lastStart!=null and pd.lastStart!=''">
+			and a.LASTTIME &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and a.LASTTIME &lt;= #{pd.lastEnd} 
+		</if>
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.DR,0)=0 
+		
+		ORDER BY a.WAREHOUSE_ID,a.GOOD_ID,a.STOCK DESC
+	</select>
+	
 	<!-- 列表(全部) -->
 	<select id="listAll" parameterType="pd" resultType="pd">
 		select
