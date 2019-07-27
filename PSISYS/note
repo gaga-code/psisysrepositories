@@ -114,3 +114,8 @@ $("#msgtocust").html("当前付款不足已结算进货单的未付总额");
 </button>
 	<label id="msgtocust" value="消息">阿囧</label>
 </div>
+
+
+12 操作日志
+FHLOG.save(Jurisdiction.getUsername(), "删除系统用户："+pd);
+
