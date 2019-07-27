@@ -6,6 +6,8 @@ import org.springframework.context.ApplicationContext;
  * 说明： 常量类   
  */
 public class Const {
+	public static final String OVERDATE = "1";           //积压过久的天数
+
 	public static final String BILLCODE_INORDER_PFIX = "4-00";           //进货单
 	public static final String BILLCODE_SUPPRETURN_PFIX = "5-00";        //退货单 
 	public static final String BILLCODE_SALEBILL_PFIX = "13-00";         //销售单

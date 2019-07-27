@@ -184,6 +184,18 @@
 		<if test="pd.GOOD_ID!= null and pd.GOOD_ID != ''">
 		and	a.GOOD_ID = #{pd.GOOD_ID}
 		</if>
+		<!-- 超过上限 -->
+		<if test="pd.STOCKSTATE0!= null and pd.STOCKSTATE0!=''">
+			and	b.STOCKNUM > b.STOCKUPNUM
+		</if>
+		<!-- 低于下限 -->
+		<if test="pd.STOCKSTATE1!= null and pd.STOCKSTATE1!=''">
+			and	b.STOCKDOWNNUM > b.STOCKNUM
+		</if>
+		<!-- 积压过久      当前时间   -  某商品库存最后修改日期  >  XXX天  -->
+		<if test="pd.STOCKSTATE2!= null and pd.STOCKSTATE2!='' ">
+			and DATEDIFF(now(),STR_TO_DATE(     (SELECT MAX(LASTTIME) FROM base_stock z WHERE z.GOOD_ID = a.GOOD_ID )      , '%Y-%m-%d %H:%i:%s')) > #{pd.OVERDATE}
+		</if>
 		<!-- 日期筛选 -->
 		<if test="pd.lastStart!=null and pd.lastStart!=''">
 			and a.LASTTIME &gt;= #{pd.lastStart} 
