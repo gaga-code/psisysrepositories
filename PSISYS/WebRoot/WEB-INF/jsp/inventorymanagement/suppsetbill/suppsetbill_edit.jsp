@@ -40,7 +40,7 @@
 									<c:if test="${QX.add == 1 && msg == 'save' }">
 									<a class="btn btn-mini btn-success" onclick="savesuppsetbill();">保存供应商结算单</a>
 									</c:if>
-									<c:if test="${QX.add == 1 && msg == 'edit' }">
+									<c:if test="${QX.edit == 1 && msg == 'edit' }">
 									<a class="btn btn-mini btn-success" onclick="editsuppsetbill();">保存供应商结算单</a>
 									</c:if>
 									<c:if test="${QX.del == 1 }">

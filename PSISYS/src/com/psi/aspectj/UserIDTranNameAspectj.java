@@ -44,8 +44,16 @@ public class UserIDTranNameAspectj {
 					if(o!=null) {
 						if (o.getClass() == PageData.class) {
 							PageData pd = (PageData) o;
+							if(pd.containsKey("INOUTCOMETYPE_ID")) {
+								PageData pdf = transIOCTypeToName(pd);
+								isNoneP = true;
+							}
 							if (pd.containsKey("USER_ID")) {
 								PageData pdf = transUserIdToUserName(pd);
+								isNoneP = true;
+							} 
+							if (pd.containsKey("PAYMETHOD_ID")) {
+								PageData pdf = transPayMethodIdToPayMethodName(pd);
 								isNoneP = true;
 							} 
 							if (pd.containsKey("DISTRIBUTIONMODE") ) {
@@ -121,6 +129,9 @@ public class UserIDTranNameAspectj {
 			}
 		} else if (returnObj.getClass() == PageData.class) {
 			PageData pd = (PageData) returnObj;
+			if (pd.containsKey("PAYMETHOD_ID")) {
+				PageData pdf = transPayMethodIdToPayMethodName(pd);
+			}
 			if (pd.containsKey("USER_ID")) {
 				PageData pdf = transUserIdToUserName(pd);
 			} 
@@ -182,6 +193,7 @@ public class UserIDTranNameAspectj {
 		return returnObj;
 	}
 	
+	
 	@Autowired
 	private JdbcTempUtil jdbcTempUtil;
 	/**
@@ -192,6 +204,26 @@ public class UserIDTranNameAspectj {
 	private PageData transUserIdToUserName(PageData pd) {
 		String NAME = jdbcTempUtil.transIDtoString("sys_user", "USER_ID", (String) pd.get("USER_ID"), "NAME");
 		pd.put("PSI_NAME", NAME);
+		return pd;
+	}
+	/**
+	 * 支付方式主键 转 名称
+	 * @param pd 
+	 * @return
+	 */
+	private PageData transPayMethodIdToPayMethodName(PageData pd) {
+		String NAME = jdbcTempUtil.transIDtoString("base_paymethod", "PAYMETHOD_ID", (String) pd.get("PAYMETHOD_ID"), "PAYMETHODNAME");
+		pd.put("PAYMETHOD_NAME", NAME);
+		return pd;
+	}
+	/**
+	 * 收入支出方式 主键转名称
+	 * @param pd
+	 * @return
+	 */
+	private PageData transIOCTypeToName(PageData pd) {
+		String TYPENAME = jdbcTempUtil.transIDtoString("base_inoutcometype", "INOUTCOMETYPE_ID", (String) pd.get("INOUTCOMETYPE_ID"), "TYPENAME");
+		pd.put("INOUTCOMETYPE_NAME", TYPENAME);
 		return pd;
 	}
 	/**

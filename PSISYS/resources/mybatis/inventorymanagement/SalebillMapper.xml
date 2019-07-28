@@ -218,6 +218,7 @@
 			PAIDAMOUNT = #{PAIDAMOUNT},
 			ISSETTLEMENTED = #{ISSETTLEMENTED},
 			CUSTOMERSETBILL_ID = #{CUSTOMERSETBILL_ID},
+			LDATE = #{LDATE},
 			SETTEDNUMANDID = #{SETTEDNUMANDID}
 		where 
 		    SALEBILL_ID = #{SALEBILL_ID}
@@ -343,6 +344,62 @@
 		</if>
 		order by a.LASTTIME DESC
 	</select>
+	<!-- 列表 -->
+	<select id="datalistPageForPassTimeSaleBill" parameterType="page" resultType="pd">
+		select
+			a.PK_SOBOOKS,
+			a.SALEBILL_ID,
+			a.LDATE,
+			a.BILLCODE,
+			a.CUSTOMER_ID,
+			a.USER_ID,
+			a.WAREHOUSE_ID,
+			a.ALLAMOUNT,
+			a.BILLTYPE,
+			a.BILLSTATUS,
+			a.PAIDAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.THISPAY,
+			a.SUBBRANCH,
+			a.PAYDATE,
+			a.CUSBILLNO,
+			a.TOADDRESS,
+			a.NOTE,
+			a.ISSETTLEMENTED,
+			b.CUATOMERNAME CUATOMERNAME
+		from 
+		<include refid="tableName"></include>a
+		left join base_customer b
+		on a.CUSTOMER_ID = b.CUSTOMER_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					a.NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					<!--  or 
+					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 -->
+				)
+		</if>
+		<!-- 录单日期日期条件 -->
+		<if test="pd.lastStart!=null and pd.lastStart!=''">
+			and a.LDATE &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and a.LDATE &lt;= #{pd.lastEnd} 
+		</if>
+		<!-- 客户ID -->
+		<if test="pd.CUSTOMER_ID != null and pd.CUSTOMER_ID != ''">
+			and  a.CUSTOMER_ID= #{pd.CUSTOMER_ID}
+		</if>
+		<!-- 超期： 当前时间-结款日期>客户账期 -->
+		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > b.FREETIME
+		and a.ISSETTLEMENTED =1
+		and a.BILLSTATUS = 2
+		order by a.LASTTIME DESC
+	</select>
 	
 	
 	<!-- 列表 -->
@@ -402,7 +459,7 @@
 			a.USER_ID,
 			a.NOTE
 		from 
-		<include refid="tableName"></include>a
+		<include refid="tableName"></include> a
 		left join base_customer b
 		on a.CUSTOMER_ID = b.CUSTOMER_ID
 		where 1=1

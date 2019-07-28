@@ -1,4 +1,4 @@
-package com.psi.service.inventorymanagement.salebill.impl;
+package com.psi.service.psifinance.expense.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.psi.dao.DaoSupport;
 import com.psi.entity.Page;
 import com.psi.entity.PsiBillCode;
-import com.psi.service.inventorymanagement.salebill.SalebillManager;
+import com.psi.service.psifinance.expense.ExpenseManager;
 import com.psi.service.system.BillCodePsi.BillCodeManager;
 import com.psi.util.Const;
 import com.psi.util.JdbcTempUtil;
@@ -26,10 +26,10 @@ import com.psi.util.ProductBillCodeUtil;
 import com.psi.util.UuidUtil;
 
 /**
- * 说明： 销售单管理
+ * 说明： 费用开支单管理
  */
-@Service("salebillService")
-public class SalebillService implements SalebillManager{
+@Service("expenseService")
+public class ExpenseService implements ExpenseManager{
 	
 	//用于批量删除
 	@Autowired
@@ -49,38 +49,30 @@ public class SalebillService implements SalebillManager{
 	 * @throws Exception
 	 */
 	public void save(PageData pd)throws Exception{
-		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_SALEBILL_PFIX); //获取该编号类型的最大编号
+		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_EXPENSE_PFIX); //获取该编号类型的最大编号
 		pd.put("BILLCODE", strs[0]);
-		//保存商品
-		String goodslist = (String) pd.get("goodslist");
-		String[] split = goodslist.split("#");
+		//保存费用开支明细
+		String expensebodylist = (String) pd.get("expensebodylist");
+		String[] split = expensebodylist.split("#");
 		//遍历每行数据
 		for(int i = 0; i < split.length; i++) {
-			String[] agoods = split[i].split(",");
+			String[] aexpen = split[i].split(",");
 			PageData pageData = new PageData();
-			pageData.put("FGROUP_ID", UuidUtil.get32UUID());
-			pageData.put("SALEBILL_ID", pd.get("SALEBILL_ID"));
-			pageData.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
-			pageData.put("APPBILLNO", strs[0]);
-			
-			pageData.put("BARCODE", agoods[1]);
-			pageData.put("UNITPRICE_ID", agoods[2]);
-			pageData.put("PNUMBER", agoods[3]);
-			pageData.put("AMOUNT", agoods[5]);
-			pageData.put("ISFREE", agoods[6]);
-			pageData.put("NOTE", agoods[7]);
-			pageData.put("GOODCODE_ID", agoods[8]);
-			
-			dao.save("SalebillBodyMapper.save", pageData);
+			pageData.put("EXPENSEBODY_ID", UuidUtil.get32UUID());
+			pageData.put("EXPENSE_ID", pd.get("EXPENSE_ID"));
+			pageData.put("INOUTCOMETYPE_ID", aexpen[1]);
+			pageData.put("AMOUNT", aexpen[2]);
+			pageData.put("NOTE", aexpen[3]);
+			dao.save("ExpenseBodyMapper.save", pageData);
 		}
-		dao.save("SalebillMapper.save", pd);
-		//保存销售单编号
+		dao.save("ExpenseMapper.save", pd);
+		//保存费用开支单编号
 		if(strs[1] == null){ //新增
 			PsiBillCode psiBillCode = new PsiBillCode();
 			psiBillCode.setCode_ID(UuidUtil.get32UUID());
-			psiBillCode.setCodeType(Const.BILLCODE_SALEBILL_PFIX);
+			psiBillCode.setCodeType(Const.BILLCODE_EXPENSE_PFIX);
 			psiBillCode.setMaxNo(strs[0]);
-			psiBillCode.setNOTE("销售单编号");
+			psiBillCode.setNOTE("费用开支单编号");
 			billCodeService.insertBillCode(psiBillCode);
 		}else{//修改
 			PageData ppp = new PageData();
@@ -95,7 +87,7 @@ public class SalebillService implements SalebillManager{
 	 * @throws Exception
 	 */
 	public void delete(PageData pd)throws Exception{
-		dao.update("SalebillMapper.delete", pd);
+		dao.update("ExpenseMapper.delete", pd);
 		dao.update("SalebillBodyMapper.delete", pd);
 	}
 	/**
@@ -105,7 +97,7 @@ public class SalebillService implements SalebillManager{
 	public void settleSalebills(List<PageData> inorderandbodylist) throws Exception {
 		for(int i = 0; i < inorderandbodylist.size(); i++) {
 			PageData pd = inorderandbodylist.get(i);
-			dao.update("SalebillMapper.updateForSettle", pd);
+			dao.update("ExpenseMapper.updateForSettle", pd);
 		}
 		
 	}
@@ -118,7 +110,7 @@ public class SalebillService implements SalebillManager{
 	 */
 	@Override
 	public List<PageData> listForByCustomersetId(PageData pd) throws Exception {
-		List<PageData> list = (List<PageData>)dao.findForList("SalebillMapper.listForByCustomersetId", pd);
+		List<PageData> list = (List<PageData>)dao.findForList("ExpenseMapper.listForByCustomersetId", pd);
 		for(int i = 0; i < list.size(); i++) {
 			list.get(i).put("bodylist", (List<PageData>)dao.findForList("SalebillBodyMapper.findById", list.get(i)));
 		}
@@ -131,31 +123,21 @@ public class SalebillService implements SalebillManager{
 	 */
 	public void edit(PageData pd)throws Exception{
 		//----------------编辑商品-------
-		//删除本来的数据
-		dao.update("SalebillBodyMapper.delete", pd);
-		//重新加入商品
-		String goodslist = (String) pd.get("goodslist");
-		String[] split = goodslist.split("#");
+		//保存费用开支明细
+		String expensebodylist = (String) pd.get("expensebodylist");
+		String[] split = expensebodylist.split("#");
+		//遍历每行数据
 		for(int i = 0; i < split.length; i++) {
-			String[] agoods = split[i].split(",");
+			String[] aexpen = split[i].split(",");
 			PageData pageData = new PageData();
-			pageData.put("FGROUP_ID", UuidUtil.get32UUID());
-			pageData.put("SALEBILL_ID", pd.get("SALEBILL_ID"));
-			pageData.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
-			pageData.put("APPBILLNO", pd.get("BILLCODE"));
-			
-			
-			pageData.put("BARCODE", agoods[1]);
-			pageData.put("UNITPRICE_ID", agoods[2]);
-			pageData.put("PNUMBER", agoods[3]);
-			pageData.put("AMOUNT", agoods[5]);
-			pageData.put("ISFREE", agoods[6]);
-			pageData.put("NOTE", agoods[7]);
-			pageData.put("GOODCODE_ID", agoods[8]);
-			
-			dao.save("SalebillBodyMapper.save", pageData);
+			pageData.put("EXPENSEBODY_ID", aexpen[0]);
+			pageData = (PageData) dao.findForObject("ExpenseBodyMapper.findById", pageData);
+			pageData.put("INOUTCOMETYPE_ID", aexpen[2]);
+			pageData.put("AMOUNT", aexpen[4]);
+			pageData.put("NOTE", aexpen[5]);
+			dao.update("ExpenseBodyMapper.edit", pageData);
 		}
-		dao.update("SalebillMapper.edit", pd);
+		dao.update("ExpenseMapper.edit", pd);
 	}
 	
 	/**列表
@@ -164,7 +146,7 @@ public class SalebillService implements SalebillManager{
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> list(Page page)throws Exception{
-		return (List<PageData>)dao.findForList("SalebillMapper.datalistPage", page);
+		return (List<PageData>)dao.findForList("ExpenseMapper.datalistPage", page);
 	}
 	/**
 	 * 结算单里获取销售单列表
@@ -181,7 +163,7 @@ public class SalebillService implements SalebillManager{
 			for(int i = 0 ; i < sbids.length; i++) {
 				PageData salebillandbody = new PageData();
 				salebillandbody.put("SALEBILL_ID",sbids[i].substring(1, sbids[i].length()-1) );
-				list.add((PageData)dao.findForObject("SalebillMapper.findBySalebillId", salebillandbody));
+				list.add((PageData)dao.findForObject("ExpenseMapper.findBySalebillId", salebillandbody));
 			}
 		}
 		return list;
@@ -194,7 +176,7 @@ public class SalebillService implements SalebillManager{
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> listForCustomerAdd(Page page)throws Exception{
-		List<PageData> list = (List<PageData>)dao.findForList("SalebillMapper.datalistPageByCustomerset", page);
+		List<PageData> list = (List<PageData>)dao.findForList("ExpenseMapper.datalistPageByCustomerset", page);
 		return list;
 	}
 	/**
@@ -204,9 +186,9 @@ public class SalebillService implements SalebillManager{
 	 * @throws Exception
 	 */
 	public PageData findAllById(PageData pd)throws Exception{
-		PageData result =  (PageData)dao.findForObject("SalebillMapper.findAllById", pd);
+		PageData result =  (PageData)dao.findForObject("ExpenseMapper.findAllById", pd);
 		List<PageData> list = (List<PageData>)dao.findForList("SalebillBodyMapper.findInBodyById", pd);
-		result.put("goodslist", list );
+		result.put("expensebodylist", list );
 		return result;
 	}
 	
@@ -217,7 +199,7 @@ public class SalebillService implements SalebillManager{
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> listAll(PageData pd)throws Exception{
-		return (List<PageData>)dao.findForList("SalebillMapper.listAll", pd);
+		return (List<PageData>)dao.findForList("ExpenseMapper.listAll", pd);
 	}
 	
 	/**通过id获取数据
@@ -225,8 +207,8 @@ public class SalebillService implements SalebillManager{
 	 * @throws Exception
 	 */
 	public PageData findById(PageData pd)throws Exception{
-		PageData result =  (PageData)dao.findForObject("SalebillMapper.findById", pd);
-		result.put("goodslist", (List<PageData>)dao.findForList("SalebillBodyMapper.findById", pd));
+		PageData result =  (PageData)dao.findForObject("ExpenseMapper.findById", pd);
+		result.put("expensebodylist", (List<PageData>)dao.findForList("ExpenseBodyMapper.findByHeadId", pd));
 		return result;
 	}
 	
@@ -235,7 +217,7 @@ public class SalebillService implements SalebillManager{
 	 * @throws Exception
 	 */
 //	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
-//		dao.update("SalebillMapper.deleteAll", ArrayDATA_IDS);
+//		dao.update("ExpenseMapper.deleteAll", ArrayDATA_IDS);
 //	}
 	
 	
@@ -260,7 +242,7 @@ public class SalebillService implements SalebillManager{
 	 * @throws Exception
 	 */
 	public void retrialInorder(PageData pd) throws Exception {
-		dao.update("SalebillMapper.retrialInorder", pd);
+		dao.update("ExpenseMapper.retrialInorder", pd);
 	}
 
 	/**结算单结算一张销售单功能
@@ -284,7 +266,7 @@ public class SalebillService implements SalebillManager{
 		pd.put("UNPAIDAMOUNT", unpaid - canpaid);
 		pd.put("PAIDAMOUNT", Double.parseDouble((String)pd.get("PAIDAMOUNT")) + canpaid);
 		pd.put("THISPAY", canpaid);
-		dao.update("SalebillMapper.settleOneSalebill", pd);
+		dao.update("ExpenseMapper.settleOneSalebill", pd);
 		return pd;
 	}
 
@@ -318,7 +300,7 @@ public class SalebillService implements SalebillManager{
 				map.put("ISSETTLEMENTED", issettle);
 				map.put("PK_SOBOOKS",Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS));
 				list.add(map);
-				dao.update("SalebillMapper.settleOneSalebill", map);
+				dao.update("ExpenseMapper.settleOneSalebill", map);
 			}
 		}
 		return list;
@@ -330,9 +312,9 @@ public class SalebillService implements SalebillManager{
 	@Override
 	public void updateshenpi(PageData pd) throws Exception {
 		//把销售单的状态改为已审核
-		dao.update("SalebillMapper.shenpi", pd);
+		dao.update("ExpenseMapper.shenpi", pd);
 		//获取销售单表头数据
-		PageData head =  (PageData)dao.findForObject("SalebillMapper.findById", pd);
+		PageData head =  (PageData)dao.findForObject("ExpenseMapper.findById", pd);
 		//通过销售单ID获取该销售单的商品信息
 		List<PageData> goodslist = (List<PageData>)dao.findForList("SalebillBodyMapper.findById", pd);
 		
@@ -383,9 +365,9 @@ public class SalebillService implements SalebillManager{
 	@Override
 	public void updatefanshen(PageData pd) throws Exception {
 		//把销售单的状态改为未审核
-		dao.update("SalebillMapper.fanshen", pd);
+		dao.update("ExpenseMapper.fanshen", pd);
 		//获取销售单表头数据
-		PageData head =  (PageData)dao.findForObject("SalebillMapper.findById", pd);
+		PageData head =  (PageData)dao.findForObject("ExpenseMapper.findById", pd);
 		//通过销售单ID获取该销售单的商品信息
 		List<PageData> goodslist = (List<PageData>)dao.findForList("SalebillBodyMapper.findById", pd);
 		
@@ -439,7 +421,7 @@ public class SalebillService implements SalebillManager{
 
 	@Override
 	public void editFromCustomer(PageData pd) throws Exception {
-		dao.update("SalebillMapper.editFromCustomer", pd);
+		dao.update("ExpenseMapper.editFromCustomer", pd);
 	}
 
 	/**
@@ -457,8 +439,9 @@ public class SalebillService implements SalebillManager{
 
 	@Override
 	public List<PageData> listForPassTimeSaleBill(Page page) throws Exception {
-		return (List<PageData>)dao.findForList("SalebillMapper.datalistPageForPassTimeSaleBill", page);
+		return (List<PageData>)dao.findForList("ExpenseMapper.datalistPageForPassTimeSaleBill", page);
 	}
+
 	
 }
 

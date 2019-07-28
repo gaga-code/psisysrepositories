@@ -116,7 +116,7 @@ public class CustomersetbillService implements CustomersetbillManager{
 					}
 					salebillpd.put("CUSTOMERSETBILL_ID", newsuppid);
 					salebillpd.put("CUSTOMERSETBILL_ID", suppid);
-					salebillpd.put("ISSETTLEMENTED", "2");
+					salebillpd.put("ISSETTLEMENTED", "0");
 					salebillService.editFromCustomer(salebillpd);
 				}
 			}
@@ -272,6 +272,9 @@ public class CustomersetbillService implements CustomersetbillManager{
 				headpd.put("UNPAIDAMOUNT", unpay-thispay);
 				headpd.put("ISSETTLEMENTED", 0);
 				headpd.put("SETTEDNUMANDID",SALEBILLBACK_ID);
+			}
+			if(headpd.getString("CUSTOMERSETBILL_ID").split(",").length==1) {
+				headpd.put("LDATE", DateUtil.getTime().toString());
 			}
 			//销售单的表体明细
 			List<PageData> salebillbodylist = (List<PageData>) headpd.get("goodslist");

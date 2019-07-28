@@ -1,4 +1,4 @@
-package com.psi.service.inventorymanagement.salebill;
+package com.psi.service.psifinance.expense;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,9 +7,9 @@ import com.psi.entity.Page;
 import com.psi.util.PageData;
 
 /**
- * 说明： 销售单管理
+ * 说明： 费用开支单管理
  */
-public interface SalebillManager{
+public interface ExpenseManager{
 
 	/**新增
 	 * @param pd
@@ -127,6 +127,6 @@ public interface SalebillManager{
 	 * @return
 	 */
 	public Integer getStock(PageData pd)throws Exception;
-	
+
 }
 

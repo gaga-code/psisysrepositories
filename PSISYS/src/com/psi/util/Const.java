@@ -16,6 +16,7 @@ public class Const {
 	public static final String BILLCODE_CUSTONMERSETBILL_PFIX = "16-00"; //客户结算单
 	public static final String BILLCODE_STOCKCHECK_PFIX = "PD-00";       //库存盘点
 	public static final String BILLCODE_WHALLOCATE_PFIX = "DB-00";       //仓库调拨
+	public static final String BILLCODE_EXPENSE_PFIX = "EX-00";       //费用开支单
 	
 	public static final String SESSION_PK_SOBOOKS = "PK_SOBOOKS";//账套主键
 	
