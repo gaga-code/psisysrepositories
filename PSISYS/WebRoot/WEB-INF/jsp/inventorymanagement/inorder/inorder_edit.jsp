@@ -151,7 +151,7 @@
 // 	        fourthCell = $("#row0 td:eq(3)").html();
 // 	    });
 	
-		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE) {
+		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE) {
 			 //获取表格有多少行
 	        var rowLength = $("#simple-table tr").length;
 	        //这里的rowId就是row加上标志位的组合。是每新增一行的tr的id。
@@ -160,7 +160,7 @@
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+CPRICE+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
@@ -321,13 +321,15 @@
 			    var BARCODE=localStorage.getItem("BARCODE");
 			    var UNITNAME=localStorage.getItem("UNITNAME");
 			    var GOODCODE=localStorage.getItem("GOODCODE");
+			    var CPRICE=localStorage.getItem("CPRICE");
 			    window.localStorage.removeItem("GOOD_ID");
 			    window.localStorage.removeItem("GOODNAME");
 			    window.localStorage.removeItem("BARCODE");
 			    window.localStorage.removeItem("UNITNAME");
 			    window.localStorage.removeItem("GOODCODE");
+			    window.localStorage.removeItem("CPRICE");
 			    if( GOOD_ID != null)
-			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE);
+			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE);
 				diag.close();
 			};
 			diag.show();
