@@ -59,82 +59,7 @@ public class ExpenseController extends BaseController {
 	@Resource(name="inOutComeTypeService")
 	private InOutComeTypeManager inOutComeTypeService;
 	
-	/**
-	 * 检查指定库存是否存在指定商品checkstock
-	 * 通过商品编号和仓库ID来查，商品编号在JSP以GOOD_ID名字来传到后台
-	 */
-	@RequestMapping(value="/checkstock")
-	@ResponseBody
-	public Object checkStock() {
-		logBefore(logger, Jurisdiction.getUsername()+"检查库存");
-		Map<String,Object> map = new HashMap<String,Object>();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		try {
-			Integer num = expenseService.getStock(pd);
-			if(num == null || num <= 0) {
-				map.put("msg","error");
-			}else {
-				map.put("msg","success");
-				map.put("stockNum",num);
-			}
-		}catch(Exception e) {
-			map.put("msg","error");
-		}
-		return AppUtil.returnObject(new PageData(), map);
-	}
-	/**
-	 * 打开添加商品
-	 * @throws Exception 
-	 */
-	@RequestMapping(value="/goaddgoods")
-	public ModelAndView addgoods(Model model,String GOODTYPE_ID) throws Exception {
-		ModelAndView mv = this.getModelAndView();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		/*try{
-			Map<String,String> map = new HashMap<String, String>();
-			map.put("PK_SOBOOKS", pd.getString("PK_SOBOOKS"));
-			map.put("PARENTS", "0");
-			map.put("WAREHOUSE_ID", pd.getString("WAREHOUSE_ID"));
-			JSONArray arr = JSONArray.fromObject(goodsService.expenseListAllDict(map));
-			String json = arr.toString();
-			json = json.replaceAll("GOODTYPE_ID", "id").replaceAll("PARENTS", "pId").replaceAll("TYPENAME", "name").replaceAll("subDict", "nodes").replaceAll("hasDict", "checked").replaceAll("treeurl", "url");
-			model.addAttribute("zTreeNodes", json);
-			mv.addObject("GOODTYPE_ID",GOODTYPE_ID);
-			mv.addObject("pd", pd);	
-			mv.setViewName("psifinance/expense/expense_goods_ztree");
-		} catch(Exception e){
-			logger.error(e.toString(), e);
-		}*/
-		return mv;
-	}
-	/**
-	 * 商品列表（添加商品用）
-	 * @param page
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/goodslist")
-	public ModelAndView goodslist(Page page) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"列表Goods");
-		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
-		ModelAndView mv = this.getModelAndView();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		String keywords = pd.getString("keywords");				//关键词检索条件
-		if(null != keywords && !"".equals(keywords)){
-			pd.put("keywords", keywords.trim());
-		}
-		pd.put("GOODTYPE_ID", pd.get("id"));
-		pd.put("USERNAME", "admin".equals(Jurisdiction.getUsername())?"":Jurisdiction.getUsername());
-		page.setPd(pd);
-		List<PageData>	varList = goodsService.list(page);	//列出Goods列表
-		mv.setViewName("psifinance/expense/expense_goods_list");
-		mv.addObject("varList", varList);
-		mv.addObject("pd", pd);
-		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
-		return mv;
-	}
+	
 	
 	/**保存
 	 * @param
@@ -168,38 +93,7 @@ public class ExpenseController extends BaseController {
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
 		expenseService.delete(pd);
-		out.write("success");
-		out.close();
-	}
-	/**审批
-	 * @param out
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/shenpi")
-	public void shenpi(PrintWriter out) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"审批expense");
-		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
-		expenseService.updateshenpi(pd);
-		out.write("success");
-		out.close();
-	}
-	/**反审
-	 * @param out
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/fanshen")
-	public void fanshen(PrintWriter out) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"反审expense");
-		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
-		expenseService.updatefanshen(pd);
 		out.write("success");
 		out.close();
 	}
@@ -216,22 +110,6 @@ public class ExpenseController extends BaseController {
 		pd = this.getPageData();
 		expenseService.edit(pd);
 		return "redirect:/expense/list.do";
-	}
-	/**结算单反审销售单功能
-	 * @param
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/retrialInorder")
-	@ResponseBody
-	public Object retrialInorder() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"修改expense");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
-		Map<String,Object> map = new HashMap<String,Object>();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		expenseService.retrialInorder(pd);
-		map.put("msg", "success");
-		return AppUtil.returnObject(new PageData(), map);
 	}
 
 	
@@ -269,49 +147,6 @@ public class ExpenseController extends BaseController {
 		return mv;
 	}
 	
-	/**列表点击事件用到
-	 * 为供应商结算单提供未结算且对应供应商的json数据
-	 * @param page
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/expenselistForCustomer")
-	@ResponseBody
-	public Object expenselistForCustomer() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"列表expense");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
-		Map<String,Object> map = new HashMap<String,Object>();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		List<PageData>	varList = expenseService.listForCustomer(pd);	//列出expense列表
-		map.put("varList", varList);
-		map.put("QX", Jurisdiction.getHC()); //按钮权限
-		return  AppUtil.returnObject(new PageData(), map);
-	}
-	
-	/**
-	 * 新增时调用到
-	 * 为供应商结算单提供未结算且对应供应商的json数据
-	 * @param page
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/expenselistForCustomerAdd")
-	@ResponseBody
-	public Object expenselistForCustomerAdd(Page page) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"列表expense");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
-		Map<String,Object> map = new HashMap<String,Object>();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		String keywords = pd.getString("keywords");				//关键词检索条件
-		if(null != keywords && !"".equals(keywords)){
-			pd.put("keywords", keywords.trim());
-		}
-		page.setPd(pd);
-		List<PageData>	varList = expenseService.listForCustomerAdd(page);	//列出expense列表
-		map.put("varList", varList);
-		map.put("QX", Jurisdiction.getHC()); //按钮权限
-		return  AppUtil.returnObject(new PageData(), map);
-	}
 	
 	/**列表(弹窗选择用)
 	 * @param page
@@ -406,32 +241,6 @@ public class ExpenseController extends BaseController {
 		mv.addObject("pd", pd);
 		return mv;
 	}
-	
-	 /**批量审批
-		 * @param
-		 * @throws Exception
-		 */
-		@RequestMapping(value="/shenpiAll")
-		@ResponseBody
-		public Object shenpiAll() throws Exception{
-			logBefore(logger, Jurisdiction.getUsername()+"批量审批expense");
-			//if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
-			PageData pd = new PageData();		
-			Map<String,Object> map = new HashMap<String,Object>();
-			pd = this.getPageData();
-			List<PageData> pdList = new ArrayList<PageData>();
-			String DATA_IDS = pd.getString("DATA_IDS");
-			if(null != DATA_IDS && !"".equals(DATA_IDS)){
-//				String ArrayDATA_IDS[] = DATA_IDS.split(",");
-				expenseService.updateshenpiAll(pd);
-				pd.put("msg", "ok");
-			}else{
-				pd.put("msg", "no");
-			}
-			pdList.add(pd);
-			map.put("list", pdList);
-			return AppUtil.returnObject(pd, map);
-		}
 	
 	 /**批量删除
 	 * @param

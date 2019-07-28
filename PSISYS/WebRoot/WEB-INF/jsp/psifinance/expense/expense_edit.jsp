@@ -53,10 +53,12 @@
 							</tr>
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
+								<c:if test="${msg == 'edit' }">
 								<td style="width:75px;text-align: right;padding-top: 13px;">单据编号:</td> 
  								<td><input type="text" name="BILLCODE" id="BILLCODE" value="${pd.BILLCODE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> 
 								<td style="width:75px;text-align: right;padding-top: 13px;">录入日期:</td> 
  								<td><input type="text" name="LDATE" id="LDATE" value="${pd.LDATE}" maxlength="1000"  style="width:98%;" readonly="readonly"/></td>
+ 								</c:if>
 								<td style="width:75px;text-align: right;padding-top: 13px;" id="Select_PAYMETHOD_ID" >付款方式:</td>
 								<td style="vertical-align:top;" >
 									<select class="chosen-select form-control" name="PAYMETHOD_ID" id="PAYMETHOD_ID"  style="vertical-align:top;width:98%;" >
@@ -287,9 +289,6 @@
 		            }
 		        }
 		  }
-		function edit(){
-			
-		}
 		
 		//保存
 		function save(){

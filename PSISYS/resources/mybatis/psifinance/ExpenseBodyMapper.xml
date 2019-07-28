@@ -63,6 +63,15 @@
 			EXPENSEBODY_ID = #{EXPENSEBODY_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 	</update>
+	<!--  删除  -->
+	<update id="deleteByHeadId" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set DR = 1
+		where 
+			EXPENSE_ID = #{EXPENSE_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
 	
 	
 	<!-- 通过ID获取数据 -->
