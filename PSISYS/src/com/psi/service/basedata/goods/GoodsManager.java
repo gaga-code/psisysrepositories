@@ -43,6 +43,14 @@ public interface GoodsManager{
 	 * @throws Exception
 	 */
 	public List<GoodsType> salebillListAllDict(Map<String,String> parentIdAndPK_SOBOOKS) throws Exception;
+
+	/**
+	 * 获取所有数据并填充每条数据的子级列表(递归处理)
+	 * @param MENU_ID
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GoodsType> stockCheckListAllDict(Map<String,String> parentIdAndPK_SOBOOKS) throws Exception;
 	
 	/**新增
 	 * @param pd

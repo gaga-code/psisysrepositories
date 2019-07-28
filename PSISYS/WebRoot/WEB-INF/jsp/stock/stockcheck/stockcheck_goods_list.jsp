@@ -37,7 +37,7 @@
 								<td>
 									<div class="nav-search">
 										<span class="input-icon">
-											<input type="text" placeholder="这里输入关键词" class="nav-search-input" id="nav-search-input" autocomplete="off" name="keywords" value="${pd.keywords }" placeholder="这里输入关键词"/>
+											<input type="text" placeholder="这里输入关键词1" class="nav-search-input" id="nav-search-input" autocomplete="off" name="keywords" value="${pd.keywords }" placeholder="这里输入关键词"/>
 											<i class="ace-icon fa fa-search nav-search-icon"></i>
 										</span>
 									</div>
@@ -155,35 +155,20 @@
 			
 			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
 			
-			//发送ajax请求到后台核对仓库是否有此商品
-			$.ajax({
-				type: "POST",
-				url: '<%=basePath%>salebill/checkstock.do?tm='+new Date().getTime(),
-		    	data: {"GOOD_ID":GOODCODE, "WAREHOUSE_ID":WAREHOUSE_ID},
-				dataType:'json',
-				cache: false,
-				success: function(data){
-					if(data.msg == "success"){//存在商品
-						if(!window.localStorage){
-					    	 alert("浏览器不支持localstorage");
-					    }else{
-				             var storage=window.localStorage;
-				             localStorage.setItem("GOOD_ID",GOOD_ID);
-				             localStorage.setItem("GOODNAME",GOODNAME);
-				             localStorage.setItem("BARCODE",BARCODE);
-				             localStorage.setItem("UNITNAME",UNITNAME);
-				             localStorage.setItem("GOODCODE",GOODCODE);
-				             localStorage.setItem("RPRICE",RPRICE);
-				             localStorage.setItem("GOODTYPECODE",GOODTYPECODE);
-				             localStorage.setItem("GOODSPECIF",GOODSPECIF);
-						}
-						top.Dialog.close();//关闭窗口
-					}else {
-						alert("此仓库中没有此商品");
-						return;
-					}
+			if(!window.localStorage){
+			    	 alert("浏览器不支持localstorage");
+			    }else{
+		             var storage=window.localStorage;
+		             localStorage.setItem("GOOD_ID",GOOD_ID);
+		             localStorage.setItem("GOODNAME",GOODNAME);
+		             localStorage.setItem("BARCODE",BARCODE);
+		             localStorage.setItem("UNITNAME",UNITNAME);
+		             localStorage.setItem("GOODCODE",GOODCODE);
+		             localStorage.setItem("RPRICE",RPRICE);
+		             localStorage.setItem("GOODTYPECODE",GOODTYPECODE);
+		             localStorage.setItem("GOODSPECIF",GOODSPECIF);
 				}
-			});
+				top.Dialog.close();//关闭窗口
 		}
 		
 		//检索

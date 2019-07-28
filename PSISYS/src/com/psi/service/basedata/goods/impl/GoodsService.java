@@ -65,7 +65,7 @@ public class GoodsService implements GoodsManager{
 	}
 	
 	/**
-	 * !!!销售单专用!!!
+	 * !!!销售单   仓库调拨!!!
 	 * 
 	 * 获取所有数据并填充每条数据的子级列表(递归处理)
 	 * @param MENU_ID
@@ -82,6 +82,28 @@ public class GoodsService implements GoodsManager{
 			//dict.setSubDict(this.listAllDict(dict.getGOODTYPE_ID()));
 			map.put("PARENTS", dict.getGOODTYPE_ID());
 			dict.setSubDict(this.salebillListAllDict(map));
+			dict.setTarget("treeFrame");
+		}
+		return dictList;
+	}
+	/**
+	 * !!!库存盘点!!!
+	 * 
+	 * 获取所有数据并填充每条数据的子级列表(递归处理)
+	 * @param MENU_ID
+	 * @return
+	 * @throws Exception
+	 */
+	public List<GoodsType> stockCheckListAllDict(Map<String,String> parentIdAndPK_SOBOOKS) throws Exception {
+		List<GoodsType> dictList = this.listSubDictByParentId(parentIdAndPK_SOBOOKS);
+		Map<String,String> map = new HashMap<String, String>();
+		map.put("PK_SOBOOKS", parentIdAndPK_SOBOOKS.get("PK_SOBOOKS"));
+		//map.put("WAREHOUSE_ID", parentIdAndPK_SOBOOKS.get("WAREHOUSE_ID"));
+		for(GoodsType dict : dictList){
+			dict.setTreeurl("stockcheck/goodslist.do?GOODTYPE_ID="+dict.getGOODTYPE_ID()+"&WAREHOUSE_ID=" + parentIdAndPK_SOBOOKS.get("WAREHOUSE_ID"));
+			//dict.setSubDict(this.listAllDict(dict.getGOODTYPE_ID()));
+			map.put("PARENTS", dict.getGOODTYPE_ID());
+			dict.setSubDict(this.stockCheckListAllDict(map));
 			dict.setTarget("treeFrame");
 		}
 		return dictList;

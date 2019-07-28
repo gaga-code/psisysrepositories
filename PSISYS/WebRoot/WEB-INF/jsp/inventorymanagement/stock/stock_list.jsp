@@ -71,6 +71,7 @@
 							<thead>
 								<tr>
 									<th class="center" style="width:50px;">序号</th>
+									<th class="center">仓库</th>
 									<th class="center">商品编号</th>
 									<th class="center">商品名称</th>
 									<th class="center">条码</th>
@@ -96,6 +97,7 @@
 									<c:forEach items="${varList}" var="var" varStatus="vs">
 										<tr>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
+											<td class='center'>${var.WHNAME}</td>
 											<td class='center'>${var.GOODCODE}</td>
 											<td class='center'>${var.GOODNAME}</td>
 											<td class='center'>
