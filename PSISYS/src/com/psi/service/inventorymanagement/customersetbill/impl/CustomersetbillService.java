@@ -56,7 +56,7 @@ public class CustomersetbillService implements CustomersetbillManager{
 		if(strs[1] == null){ //新增
 			PsiBillCode psiBillCode = new PsiBillCode();
 			psiBillCode.setCode_ID(UuidUtil.get32UUID());
-			psiBillCode.setCodeType(Const.BILLCODE_SUPPSETBILL_PFIX);
+			psiBillCode.setCodeType(Const.BILLCODE_CUSTONMERSETBILL_PFIX);
 			psiBillCode.setMaxNo(strs[0]);
 			psiBillCode.setNOTE("客户结算单编号");
 			billCodeService.insertBillCode(psiBillCode);

@@ -382,7 +382,7 @@
 		
 		$(function() {
 			$("#LDATE").attr("disabled","disabled");
-			
+			console.log("1111");	
 			$('#PAYMENTAMOUNT').bind('input porpertychange',function(){
 	            if($("#select_paymethod").val() == '0' && $("#select_customersetbill").val() == '0'){
 	            	$("#PAYMENTAMOUNT").tips({
@@ -923,6 +923,7 @@
 						 top.Dialog.close();
 					 }
 					 if(data.msg=="error"){
+						 alert("出错啦");
 						 $("#zhongxin2").hide();
 					 }
 				}

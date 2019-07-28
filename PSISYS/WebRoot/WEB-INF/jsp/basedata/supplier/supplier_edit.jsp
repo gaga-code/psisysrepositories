@@ -33,7 +33,7 @@
 							</tr>
 							<c:if test="${msg == 'save' }">
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">客户编号:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">供应商编号:</td>
 								<td><input type="text" name="SUPPLIERCODE" id="SUPPLIERCODE" value="${pd.SUPPLIERCODE}" maxlength="100" placeholder="这里输入客户编号" title="客户编号" style="width:98%;"/></td>
 							</tr>
 							</c:if>

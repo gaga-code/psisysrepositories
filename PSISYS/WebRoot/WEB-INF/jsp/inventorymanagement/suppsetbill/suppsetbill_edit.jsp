@@ -406,16 +406,16 @@
 						time : 3
 					});
 	            }else{
-	            	if(parseInt($("#PAYABLEAMOUNT").val())+supphaspaidamount < parseInt($("#PAYMENTAMOUNT").val())){
+	            	if(parseFloat($("#PAYABLEAMOUNT").val())+supphaspaidamount < parseFloat($("#PAYMENTAMOUNT").val())){
 		            	$("#PAYMENTAMOUNT").tips({
 							side : 1,
 							msg : "付款多了",
 							bg : '#FF5080',
 							time : 3
 						});
-		            	$("#PAYMENTAMOUNT").val(parseInt($("#PAYABLEAMOUNT").val())+supphaspaidamount)
+		            	$("#PAYMENTAMOUNT").val(parseFloat($("#PAYABLEAMOUNT").val())+supphaspaidamount)
 		            }
-		            if(parseInt($("#PAYMENTAMOUNT").val()) < supphaspaidamount && supphaspaidamount != 0.0){
+		            if(parseFloat($("#PAYMENTAMOUNT").val()) < supphaspaidamount && supphaspaidamount != 0.0){
 		            	$("#PAYMENTAMOUNT").tips({
 							side : 1,
 							msg : "当前付款总额至少为已结算进货单的额度",
@@ -455,7 +455,7 @@
 				});
 				$('#chosen-multiple-style .btn').on('click', function(e){
 					var target = $(this).find('input[type=radio]');
-					var which = parseInt(target.val());
+					var which = parseFloat(target.val());
 					if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
 					 else $('#form-field-select-4').removeClass('tag-input-style');
 				});
@@ -588,7 +588,7 @@
 				var unpaid = unpaidamountmap.get(Id);
 				var allamount = allamountmap.get(Id);
 				var paidamout = paidamoutmap.get(Id);
-				var thispayamount = parseInt($("#PAYMENTAMOUNT").val());
+				var thispayamount = parseFloat($("#PAYMENTAMOUNT").val());
 				if(thispayamount == 0.0){
 					$("#PAYMENTAMOUNT").tips({
 						side : 1,

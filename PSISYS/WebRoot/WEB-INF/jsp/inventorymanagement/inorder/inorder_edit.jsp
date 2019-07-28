@@ -349,7 +349,7 @@
 				$("#MONEY").val(0);
 			} */
 			GetValue();
-			if($("#ALLAMOUNT").val() < $("#PAIDAMOUNT").val()){
+			if(parseFloat($("#ALLAMOUNT").val()) < parseFloat($("#PAIDAMOUNT").val())){
 				$("#ALLAMOUNT").tips({
 					side:3,
 		            msg:'总金额不能少于已付金额',

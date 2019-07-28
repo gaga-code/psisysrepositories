@@ -455,7 +455,7 @@
 		
 		//保存
 		function save(){
-			
+			console.log("11");
 			var wh = $("#WAREHOUSE_ID").val();
 			if(wh ==""){
 				$("#tishi").tips({
@@ -503,7 +503,7 @@
 		        });
 			return false;
 			}
-			if($("#ALLAMOUNT").val() < $("#PAIDAMOUNT").val()){
+			if(parseFloat($("#ALLAMOUNT").val()) < parseFloat($("#PAIDAMOUNT").val())){
 				$("#ALLAMOUNT").tips({
 					side:3,
 		            msg:'总金额不能少于已付金额',
@@ -525,6 +525,7 @@
 
 		$(function(){
 // 			insertOldRow('2','999999','1','1','9.0','9','81.0','9');
+		console.log("1");
 			//日期框
 			$('.date-picker').datepicker({
 				autoclose: true,
