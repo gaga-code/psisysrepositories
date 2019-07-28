@@ -127,10 +127,12 @@
 								<td style="width:75px;text-align: right;padding-top: 13px;">会员价:</td>
 								<td><input type="number" name="MPRICE" id="MPRICE" value="${pd.MPRICE}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
+							<c:if test="${'edit' == msg }">
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">库存数量:</td>
 								<td colspan="10"><input type="number" name="STOCKNUM" id="STOCKNUM" value="${pd.STOCKNUM}" maxlength="255"  style="width:98%;"/></td>
 							</tr>
+							</c:if>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">库存上限:</td>
 								<td><input type="number" name="STOCKUPNUM" id="STOCKUPNUM" value="${pd.STOCKUPNUM}" maxlength="30"   style="width:98%;"/></td>
