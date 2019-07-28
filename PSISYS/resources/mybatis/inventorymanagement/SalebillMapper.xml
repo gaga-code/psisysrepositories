@@ -263,6 +263,18 @@
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0
 	</select>
+	
+	<select id="getSaleInfo" parameterType="pd" resultType="pd">
+		select  ps.USER_ID ,a.CREATETIME,a.UNITPRICE_ID, bg.LASTPPRICE, bg.CPRICE ,bg.RPRICE 
+			from psi_salebillbody  as a 
+ 		left join psi_salebill as ps on a.SALEBILL_ID = ps.SALEBILL_ID 
+ 		left join base_good as bg on a.GOODCODE_ID = bg.GOODCODE 
+ 		where a.GOODCODE_ID = #{GOODCODE}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0
+	</select>
+	
+	
 	<select id="findAllById" parameterType="pd" resultType="pd" >
 		select 
 			<include refid="InAllField"></include>

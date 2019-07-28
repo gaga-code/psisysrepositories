@@ -459,6 +459,13 @@ public class SalebillService implements SalebillManager{
 	public List<PageData> listForPassTimeSaleBill(Page page) throws Exception {
 		return (List<PageData>)dao.findForList("SalebillMapper.datalistPageForPassTimeSaleBill", page);
 	}
+
+	@Override
+	public List<PageData> listSaleInfo(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("SalebillMapper.getSaleInfo", pd);
+	}
+	
 	
 }
 

@@ -369,6 +369,7 @@ public class SalebillController extends BaseController {
 //		mv.addObject("varListL", varListL);
 		return mv;
 	}	
+
 	
 	 /**去修改页面
 	 * @param
@@ -517,5 +518,18 @@ public class SalebillController extends BaseController {
 	public void initBinder(WebDataBinder binder){
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(format,true));
+	}
+	
+	
+	@RequestMapping(value="/getSaleInfo")
+	public ModelAndView getSaleInfo() throws Exception{
+		ModelAndView mv= new ModelAndView();
+		PageData pd= new PageData();
+		pd=this.getPageData();
+		pd.put("GOODCODE",1);
+		List<PageData> pdlist=salebillService.listSaleInfo(pd);
+		mv.addObject("pdlist",pdlist);
+		mv.setViewName("inventorymanagement/salebill/detailsale");
+		return mv;
 	}
 }

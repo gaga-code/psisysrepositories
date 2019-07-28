@@ -186,7 +186,10 @@
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
-	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
+	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'>"
+	                      +"<a class='btn btn-xs btn-danger' onclick='detailsale(\"" + GOODCODE + "\")'>查看商品</a>"
+	                      +"<a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a>"
+	                      + "</div></td>"
 	                      +"</tr>";
 	        //这里的行数减2，是因为要减去底部的一行和顶部的一行，剩下的为开始要插入行的索引
 	                      $("#simple-table tr:eq(" + (rowLength - 2) + ")").after(insertStr); //将新拼接的一行插入到当前行的下面
@@ -344,6 +347,23 @@
 	        
 	    }
 	  
+	  	function detailsale(GOODCODE){
+	  		 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="该商品的前十条销售记录";
+			 diag.URL = '<%=basePath%>salebill/getSaleInfo.do?ROLE_ID='+GOODCODE;
+			 diag.Width = 800;
+			 diag.Height = 500;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					top.jzts();
+					setTimeout("self.location.reload()",100);
+				}
+				diag.close();
+			 };
+			 diag.show();
+	  	}
 	  
 		function addgoods(){
 			

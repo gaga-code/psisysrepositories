@@ -127,6 +127,8 @@ public interface SalebillManager{
 	 * @return
 	 */
 	public Integer getStock(PageData pd)throws Exception;
+
+	public List<PageData> listSaleInfo(PageData pd) throws Exception;
 	
 }
 
