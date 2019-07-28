@@ -25,6 +25,7 @@ public class CustomerService implements CustomerManager{
 	 * @throws Exception
 	 */
 	public void save(PageData pd)throws Exception{
+		pd.put("FREETIME", Integer.parseInt(pd.getString("FREETIME")));
 		dao.save("CustomerMapper.save", pd);
 	}
 	

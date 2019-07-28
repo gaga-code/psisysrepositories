@@ -19,6 +19,7 @@
 		PAGING,
 		FAX,	
 		LINKMAN,
+		FREETIME,
 		DISTRIBUTIONMODE,
 		CREDITDEGREE,	
 		NOTE,	
@@ -38,6 +39,7 @@
 		YICODE,	
 		TELEPHONE,	
 		PAGING,
+		FREETIME,
 		FAX,	
 		LINKMAN,
 		DISTRIBUTIONMODE,
@@ -63,6 +65,7 @@
 		#{PAGING},	
 		#{FAX},	
 		#{LINKMAN},	
+		#{FREETIME},	
 		#{DISTRIBUTIONMODE},	
 		#{CREDITDEGREE},	
 		#{NOTE},	
@@ -107,6 +110,7 @@
 			YICODE = #{YICODE},
 			TELEPHONE = #{TELEPHONE},
 			PAGING = #{PAGING},
+			FREETIME = #{FREETIME},
 			FAX = #{FAX},
 			LINKMAN = #{LINKMAN},
 			DISTRIBUTIONMODE = #{DISTRIBUTIONMODE},
@@ -142,7 +146,8 @@
 			a.ADDRESS,	
 			a.YICODE,	
 			a.TELEPHONE,	
-			a.CREATETIME,	
+			a.CREATETIME,
+			a.FREETIME,	
 			a.PAGING,	
 			a.FAX,	
 			a.LINKMAN,	
@@ -183,7 +188,7 @@
 		</if>
 		and PK_SOBOOKS = #{pd.PK_SOBOOKS}
 			and IFNULL(DR,0)=0 
-		order by a.CREATETIME desc
+		order by a.LASTTIME desc
 		
 	</select>
 	

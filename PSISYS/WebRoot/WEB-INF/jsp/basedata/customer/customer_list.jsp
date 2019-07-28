@@ -65,6 +65,7 @@
 									<th class="center">建档时间</th>
 									<th class="center">地址</th>
 									<th class="center">经销方式</th>
+									<th class="center">账期</th>
 									<th class="center">经手人</th>
 <!-- 									<th class="center">消费记录</th>
 									<th class="center">跟踪记录</th> -->
@@ -95,6 +96,7 @@
 											<c:if test="${var.DISTRIBUTIONMODE == 2 }">
 											   <td class='center'>月结</td>
 											</c:if>
+											<td class='center'>${var.FREETIME}</td>
 											<td class='center'>${var.PSI_NAME}</td>
 <%-- 											<td class='center'><a style="cursor:pointer;" onclick="consume('${var.CUSTOMER_ID}')">[查看消费记录]</a></td>
 											<td class='center'><a style="cursor:pointer;" onclick="chaImg('${var.CUSTOMER_ID}')">[查看跟踪记录]</a></td> --%>

@@ -59,6 +59,10 @@
 								<td><input type="number" name="CREDITDEGREE" id="CREDITDEGREE" value="${pd.CREDITDEGREE}" maxlength="11" placeholder="这里输入信誉程度" title="信誉程度" style="width:98%;"/></td>
 							</tr>
 							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">账期:</td>
+								<td><input type="number" name="FREETIME" id="FREETIME" value="${pd.FREETIME}" maxlength="11" placeholder="这里输入账期" title="账期" style="width:98%;"/></td>
+							</tr>
+							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">地址:</td>
 								<td><input type="text" name="ADDRESS" id="ADDRESS" value="${pd.ADDRESS}" maxlength="1000" placeholder="这里输入地址" title="地址" style="width:98%;"/></td>
 							</tr>

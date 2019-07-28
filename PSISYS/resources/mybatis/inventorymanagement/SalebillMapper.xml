@@ -407,7 +407,7 @@
 			and  a.CUSTOMER_ID= #{pd.CUSTOMER_ID}
 		</if>
 		<!-- 超期： 当前时间-结款日期>客户账期 -->
-		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > b.FREETIME
+		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > IFNULL(b.FREETIME,0)
 		and a.ISSETTLEMENTED =1
 		and a.BILLSTATUS = 2
 		order by a.LASTTIME DESC
