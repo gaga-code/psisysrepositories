@@ -61,11 +61,11 @@
 								<td style="width:75px;text-align: right;padding-top: 13px;">单位比例:</td>
 								<td style="padding-top: 13px;">${pd.UNITPROP}</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品分类编号:</td>
-								<td style="padding-top: 13px;">${pd.GOODTYPE_ID}</td>
+								<td style="padding-top: 13px;">${pd.GOODTYPE_CODE}</td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
-								<td colspan="10" style="padding-top: 13px;"><div>${pd.SUPPLIER_ID}</div></td>
+								<td colspan="10" style="padding-top: 13px;"><div>${pd.SUPPLIER_NAME}</div></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>

@@ -44,6 +44,14 @@ public class UserIDTranNameAspectj {
 					if(o!=null) {
 						if (o.getClass() == PageData.class) {
 							PageData pd = (PageData) o;
+							if(pd.containsKey("GOODTYPE_ID")) {
+								PageData pdf = transGoodTypeIdToCode(pd);
+								isNoneP = true;
+							}
+							if(pd.containsKey("SUPPLIER_ID")) {
+								PageData pdf = transSupplierIdToName(pd);
+								isNoneP = true;
+							}
 							if(pd.containsKey("INOUTCOMETYPE_ID")) {
 								PageData pdf = transIOCTypeToName(pd);
 								isNoneP = true;
@@ -129,6 +137,12 @@ public class UserIDTranNameAspectj {
 			}
 		} else if (returnObj.getClass() == PageData.class) {
 			PageData pd = (PageData) returnObj;
+			if(pd.containsKey("GOODTYPE_ID")) {
+				PageData pdf = transGoodTypeIdToCode(pd);
+			}
+			if(pd.containsKey("SUPPLIER_ID")) {
+				PageData pdf = transSupplierIdToName(pd);
+			}
 			if (pd.containsKey("PAYMETHOD_ID")) {
 				PageData pdf = transPayMethodIdToPayMethodName(pd);
 			}
@@ -224,6 +238,26 @@ public class UserIDTranNameAspectj {
 	private PageData transIOCTypeToName(PageData pd) {
 		String TYPENAME = jdbcTempUtil.transIDtoString("base_inoutcometype", "INOUTCOMETYPE_ID", (String) pd.get("INOUTCOMETYPE_ID"), "TYPENAME");
 		pd.put("INOUTCOMETYPE_NAME", TYPENAME);
+		return pd;
+	}
+	/**
+	 * 商品分类编号 主键转 编号
+	 * @param pd
+	 * @return
+	 */
+	private PageData transGoodTypeIdToCode(PageData pd) {
+		String TYPECODE = jdbcTempUtil.transIDtoString("base_goodtype", "GOODTYPE_ID", (String) pd.get("GOODTYPE_ID"), "TYPECODE");
+		pd.put("GOODTYPE_CODE", TYPECODE);
+		return pd;
+	}
+	/**
+	 * 供应商 主键转名称
+	 * @param pd
+	 * @return
+	 */
+	private PageData transSupplierIdToName(PageData pd) {
+		String SUPPLIERNAME = jdbcTempUtil.transIDtoString("base_supplier", "SUPPLIER_ID", (String) pd.get("SUPPLIER_ID"), "SUPPLIERNAME");
+		pd.put("SUPPLIER_NAME", SUPPLIERNAME);
 		return pd;
 	}
 	/**

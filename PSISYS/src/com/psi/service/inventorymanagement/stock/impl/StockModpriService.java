@@ -454,6 +454,18 @@ public class StockModpriService implements SalebillManager{
 		Integer num = (Integer) result.get("STOCK");
 		return num;
 	}
+
+	@Override
+	public List<PageData> listForPassTimeSaleBill(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> listSaleInfo(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
 
