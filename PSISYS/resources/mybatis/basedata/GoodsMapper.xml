@@ -221,6 +221,20 @@
 	</select>
 	
 	<!-- 列表 -->
+	<select id="checkGoodsStockDownNum" parameterType="page" resultType="pd">
+		select
+			GOODNAME,
+			GOODCODE,
+			STOCKNUM,
+			STOCKDOWNNUM	
+		from 
+		<include refid="tableName"></include>
+			where 1=1
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+			and STOCKDOWNNUM > STOCKNUM
+	</select>
+	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
 			a.GOOD_ID,

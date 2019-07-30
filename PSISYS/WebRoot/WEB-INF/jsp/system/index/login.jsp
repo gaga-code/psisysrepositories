@@ -141,16 +141,16 @@
 				<div class="form-actions">
 					<div style="width:86%;padding-left:8%;">
 
-						<div style="float: left;padding-top:2px;">
-							<i><img src="static/login/yan.png" /></i>
-						</div>
-						<div style="float: left;" class="codediv">
-							<input type="text" name="code" id="code" class="login_code"
-								style="height:16px; padding-top:4px;" />
-						</div>
-						<div style="float: left;">
-							<i><img style="height:22px;" id="codeImg" alt="点击更换" title="点击更换" src="" /></i>
-						</div>
+<!-- 						<div style="float: left;padding-top:2px;"> -->
+<!-- 							<i><img src="static/login/yan.png" /></i> -->
+<!-- 						</div> -->
+<!-- 						<div style="float: left;" class="codediv"> -->
+<!-- 							<input type="text" name="code" id="code" class="login_code" -->
+<!-- 								style="height:16px; padding-top:4px;" /> -->
+<!-- 						</div> -->
+<!-- 						<div style="float: left;"> -->
+<!-- 							<i><img style="height:22px;" id="codeImg" alt="点击更换" title="点击更换" src="" /></i> -->
+<!-- 						</div> -->
 						<c:if test="${pd.isZhuce == 'yes' }">
 						<span class="pull-right" style="padding-right:3%;"><a href="javascript:changepage(1);" class="btn btn-success">注册</a></span>
 						</c:if>

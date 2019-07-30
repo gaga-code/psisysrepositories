@@ -128,15 +128,16 @@ public class LoginController extends BaseController {
 		String KEYDATA[] = pd.getString("KEYDATA").split(",");
 		if(null != KEYDATA && KEYDATA.length == 4){
 			Session session = Jurisdiction.getSession();
-			String sessionCode = (String)session.getAttribute(Const.SESSION_SECURITY_CODE);		//获取session中的验证码
-			String code = KEYDATA[2];
-			if(null == code || "".equals(code)){//判断效验码
-				errInfo = "nullcode"; 			//效验码为空
-			}else{
+//			取消验证码
+//			String sessionCode = (String)session.getAttribute(Const.SESSION_SECURITY_CODE);		//获取session中的验证码
+//			String code = KEYDATA[2];
+//			if(null == code || "".equals(code)){//判断效验码
+//				errInfo = "nullcode"; 			//效验码为空
+//			}else{
 				String USERNAME = KEYDATA[0];	//登录过来的用户名
 				String PASSWORD  = KEYDATA[1];	//登录过来的密码
 				pd.put("USERNAME", USERNAME);
-				if(Tools.notEmpty(sessionCode) && sessionCode.equalsIgnoreCase(code)){		//判断登录验证码
+//				if(Tools.notEmpty(sessionCode) && sessionCode.equalsIgnoreCase(code)){		//判断登录验证码
 					String passwd = new SimpleHash("SHA-1", USERNAME, PASSWORD).toString();	//密码加密
 					pd.put("PASSWORD", passwd);
 					pd.put("PK_SOBOOKS", KEYDATA[3]);
@@ -170,16 +171,16 @@ public class LoginController extends BaseController {
 						logBefore(logger, USERNAME+"登录系统密码或用户名或账套错误");
 						FHLOG.save(USERNAME, "登录系统密码或用户名或账套错误");
 					}
-				}else{
-					errInfo = "codeerror";				 	//验证码输入有误
-				}
+//				}else{
+//					errInfo = "codeerror";				 	//验证码输入有误
+//				}
 				if(Tools.isEmpty(errInfo)){
 					errInfo = "success";					//验证成功
 					session.setAttribute(Const.SESSION_PK_SOBOOKS, KEYDATA[3]);
 					logBefore(logger, USERNAME+"登录系统");
 					FHLOG.save(USERNAME, "登录系统");
 				}
-			}
+//			}
 		}else{
 			errInfo = "error";	//缺少参数
 		}

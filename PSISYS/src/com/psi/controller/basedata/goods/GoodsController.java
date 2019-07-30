@@ -62,6 +62,20 @@ public class GoodsController extends BaseController {
 	@Resource(name="supplierService")
 	private SupplierManager supplierService;
 	
+	/**
+	 * 库存预警
+	 * 检查商品的库存是否低于下限
+	 * 返回低于下限的商品的列表  包括字段： 名称、编号、当前库存、库存下限
+	 */
+	@RequestMapping(value="/check_goods_stock_down_num")
+	@ResponseBody
+	public List<PageData> checkGoodsStockDownNum() throws Exception{
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		return goodsService.checkGoodsStockDownNum(pd);
+	}
+	
+	
 	/**保存
 	 * @param
 	 * @throws Exception

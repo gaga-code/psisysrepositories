@@ -211,5 +211,15 @@ public class GoodsService implements GoodsManager{
 		dao.update("GoodsMapper.editZCOUNT", pd);
 	}
 	
+	/**
+	 * 库存预警
+	 * 检查商品的库存是否低于下限
+	 * 返回低于下限的商品的列表  包括字段： 名称、编号、当前库存、库存下限
+	 */
+	@Override
+	public List<PageData> checkGoodsStockDownNum(PageData pd) throws Exception {
+		return (List<PageData>)dao.findForList("GoodsMapper.checkGoodsStockDownNum", pd);
+	}
+	
 }
 

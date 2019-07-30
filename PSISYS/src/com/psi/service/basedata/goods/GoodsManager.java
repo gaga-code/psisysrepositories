@@ -13,6 +13,13 @@ import com.psi.util.PageData;
 public interface GoodsManager{
 
 	/**
+	 * 库存预警
+	 * 检查商品的库存是否低于下限
+	 * 返回低于下限的商品的列表  包括字段： 名称、编号、当前库存、库存下限
+	 */
+	public List<PageData> checkGoodsStockDownNum(PageData pd) throws Exception;
+	
+	/**
 	 * 通过ID获取其子级列表
 	 * @param parentId
 	 * @return
