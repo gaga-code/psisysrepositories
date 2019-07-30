@@ -178,15 +178,22 @@ public class SalebillController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/shenpi")
-	public void shenpi(PrintWriter out) throws Exception{
+	@ResponseBody
+	public Object shenpi(PrintWriter out) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"审批salebill");
 		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
+		Map<String,Object> map = new HashMap<String,Object>();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
+		List<PageData> goodslist = goodsService.checkGoodsStockDownNum(pd);
+		if(goodslist.isEmpty()) {
+			map.put("goodslist",null);
+		}else {
+			map.put("goodslist",goodslist);
+		}
 		salebillService.updateshenpi(pd);
-		out.write("success");
-		out.close();
+		return AppUtil.returnObject(new PageData(), map);
 	}
 	/**反审
 	 * @param out
