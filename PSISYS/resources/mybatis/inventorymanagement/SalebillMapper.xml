@@ -271,7 +271,9 @@
  		left join base_good as bg on a.GOODCODE_ID = bg.GOODCODE 
  		where a.GOODCODE_ID = #{GOODCODE}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and ps.CUSTOMER_ID=#{CUSTOMER_ID}
 			and IFNULL(a.dr,0)=0
+			ORDER BY ps.CREATETIME desc limit 0,10
 	</select>
 	
 	

@@ -534,7 +534,6 @@ public class SalebillController extends BaseController {
 		ModelAndView mv= new ModelAndView();
 		PageData pd= new PageData();
 		pd=this.getPageData();
-		pd.put("GOODCODE",1);
 		List<PageData> pdlist=salebillService.listSaleInfo(pd);
 		mv.addObject("pdlist",pdlist);
 		mv.setViewName("inventorymanagement/salebill/detailsale");
