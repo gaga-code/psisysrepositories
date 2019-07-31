@@ -71,7 +71,7 @@
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">录单日期</th>
 									<th class="center">单据编号</th>
-									<th class="center">仓库</th>
+<!-- 									<th class="center">仓库</th> -->
 									<th class="center">盘点人</th>
 									<th class="center">批号</th>
 									<th class="center">备注</th>
@@ -92,7 +92,7 @@
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.LDATE}</td>
 											<td class='center'>${var.BILLCODE}</td>
-											<td class='center'>${var.WAREHOUSE_NAME}</td>
+<%-- 											<td class='center'>${var.WAREHOUSE_NAME}</td> --%>
 <!-- 											<td class='center'> -->
 <%-- 												<c:if test="${var.BILLSTATUS == 1}"> --%>
 <!-- 													未审核 -->
@@ -191,7 +191,8 @@
 							<tr>
 								<td style="vertical-align:top;">
 									<c:if test="${QX.add == 1 }">
-									<a class="btn btn-mini btn-success" onclick="add();">新增</a>
+									<a class="btn btn-mini btn-success" onclick="add();">按仓库添加</a>
+									<a class="btn btn-mini btn-success" onclick="addasgoods();">按商品添加</a>
 									<!-- <a class="btn btn-mini btn-success" onclick="add();">新增</a> -->
 									</c:if>
 <%-- 									<c:if test="${QX.del == 1 }"><c:if test="${'1' == pd.BILLSTATUS || '3' == pd.BILLSTATUS}"> --%>
@@ -243,6 +244,12 @@
 		//新增
 		function add(){
 			document.forms.actionForm.action="stockcheck/goAdd.do";
+	        document.forms.actionForm.submit();
+			//siMenu('z190','lm180','添加进货单','stockcheck/goAdd.do');
+		}
+		//新增
+		function addasgoods(){
+			document.forms.actionForm.action="stockcheck/goodsgoAdd.do";
 	        document.forms.actionForm.submit();
 			//siMenu('z190','lm180','添加进货单','stockcheck/goAdd.do');
 		}

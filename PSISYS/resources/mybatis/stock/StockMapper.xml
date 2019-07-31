@@ -70,6 +70,17 @@
 		and IFNULL(DR,0)=0 
 	</update>
 	
+	<!-- 修改商品编码 -->
+	<update id="editGOODCODE" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			GOOD_ID = #{newGOODCODE}
+		where 
+		GOOD_ID = #{GOODCODE}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
 	<!-- 通过ID获取数据 -->
 	<select id="findById" parameterType="pd" resultType="pd">
 		select 

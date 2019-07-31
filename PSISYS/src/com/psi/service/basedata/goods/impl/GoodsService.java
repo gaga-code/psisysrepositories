@@ -44,7 +44,7 @@ public class GoodsService implements GoodsManager{
 	}
 	/**
 	 * !!!入库单专用!!!
-	 * 
+	 * 全部
 	 * 获取所有数据并填充每条数据的子级列表(递归处理)
 	 * @param MENU_ID
 	 * @return
@@ -66,7 +66,7 @@ public class GoodsService implements GoodsManager{
 	
 	/**
 	 * !!!销售单   仓库调拨!!!
-	 * 
+	 * 只获取仓库中存在的
 	 * 获取所有数据并填充每条数据的子级列表(递归处理)
 	 * @param MENU_ID
 	 * @return
@@ -98,7 +98,7 @@ public class GoodsService implements GoodsManager{
 		List<GoodsType> dictList = this.listSubDictByParentId(parentIdAndPK_SOBOOKS);
 		Map<String,String> map = new HashMap<String, String>();
 		map.put("PK_SOBOOKS", parentIdAndPK_SOBOOKS.get("PK_SOBOOKS"));
-		//map.put("WAREHOUSE_ID", parentIdAndPK_SOBOOKS.get("WAREHOUSE_ID"));
+		map.put("WAREHOUSE_ID", parentIdAndPK_SOBOOKS.get("WAREHOUSE_ID"));
 		for(GoodsType dict : dictList){
 			dict.setTreeurl("stockcheck/goodslist.do?GOODTYPE_ID="+dict.getGOODTYPE_ID()+"&WAREHOUSE_ID=" + parentIdAndPK_SOBOOKS.get("WAREHOUSE_ID"));
 			//dict.setSubDict(this.listAllDict(dict.getGOODTYPE_ID()));
@@ -141,9 +141,32 @@ public class GoodsService implements GoodsManager{
 	 * @throws Exception
 	 */
 	public void edit(PageData pd)throws Exception{
+		
+		//修改商品编号（填补之前把商品编号当商品主键使用的坑）
+		//判断商品编号是否有变化
+		PageData pageData = (PageData)dao.findForObject("GoodsMapper.findById", pd);
+		if(((String)pageData.get("GOODCODE")).equals((String)pd.get("GOODCODE"))) {//没有，不用处理
+		}else {//有，把引用到商品编号的所有表对应的商品编号都要修改
+			updateGOODCODE((String)pageData.get("GOODCODE"), (String)pd.get("GOODCODE"), pd);
+		}
 		dao.update("GoodsMapper.edit", pd);
 	}
 	
+	private void updateGOODCODE(String oldGOODCODE, String newGOODCODE, PageData pd) throws Exception {
+		PageData pageDate = new PageData();
+		pageDate.put("GOODCODE", oldGOODCODE);
+		pageDate.put("newGOODCODE", newGOODCODE);
+		pageDate.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
+		dao.update("StockMapper.editGOODCODE", pageDate);
+		dao.update("IncomerecordMapper.editGOODCODE", pageDate);
+		dao.update("InOrderBodyMapper.editGOODCODE", pageDate);
+		dao.update("InOrderAndSuppsetBackMapper.editGOODCODE", pageDate);
+		dao.update("SalebillBodyMapper.editGOODCODE", pageDate);
+		dao.update("SalebillAndCustomersetBackMapper.editGOODCODE", pageDate);
+		dao.update("SalePriceRecordMapper.editGOODCODE", pageDate);
+		dao.update("StockCheckBodyMapper.editGOODCODE", pageDate);
+		dao.update("WhallocateBodyMapper.editGOODCODE", pageDate);
+	}
 	/**修改库存
 	 * @param pd
 	 * @throws Exception

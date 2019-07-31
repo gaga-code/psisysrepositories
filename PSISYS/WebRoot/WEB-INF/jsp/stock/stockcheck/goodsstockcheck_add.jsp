@@ -50,22 +50,22 @@
 <!-- 								<td><input type="text" name="BILLSTATUS" id="BILLSTATUS" value="未审批" maxlength="1000"    style="width:98%;" readonly="readonly"/></td> -->
 								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
 								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="1000"    style="width:98%;" readonly="readonly"/></td>
-							</tr>
-							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td id="tishi">
-									<select class="chosen-select form-control" name="WAREHOUSE_ID" id="WAREHOUSE_ID" onchange="checkaddgoods();"  style="vertical-align:top;width:98%;" >
-										<option value="">无</option>
-										<c:forEach items="${warehouseList}" var="var">
-											<option value="${var.WAREHOUSE_ID }" <c:if test="${var.WAREHOUSE_ID == pd.WAREHOUSE_ID }">selected</c:if>>${var.WHNAME }</option>
-										</c:forEach>
-									</select>
-								</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">批号:</td>
 								<td><input type="text" name="LOTNUM" id="LOTNUM" value="${pd.LOTNUM}" maxlength="1000"   style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
 								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000"   style="width:98%;"/></td>
 							</tr>
+<!-- 							<tr> -->
+<!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td> -->
+<!-- 								<td id="tishi"> -->
+<!-- 									<select class="chosen-select form-control" name="WAREHOUSE_ID" id="WAREHOUSE_ID" onchange="checkaddgoods();"  style="vertical-align:top;width:98%;" > -->
+<!-- 										<option value="">无</option> -->
+<%-- 										<c:forEach items="${warehouseList}" var="var"> --%>
+<%-- 											<option value="${var.WAREHOUSE_ID }" <c:if test="${var.WAREHOUSE_ID == pd.WAREHOUSE_ID }">selected</c:if>>${var.WHNAME }</option> --%>
+<%-- 										</c:forEach> --%>
+<!-- 									</select> -->
+<!-- 								</td> -->
+<!-- 							</tr> -->
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<%-- <tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">已付金额:</td>
@@ -157,7 +157,11 @@
 // 	    });
 
 		function checkaddgoods(){
-			$("#simple-table").html("<thead><tr><th class='center'>商品名称</th><th class='center'>商品编号</th><th class='center'>单位</th><th class='center'>型号</th><th class='center'>规格</th><th class='center'>仓库</th><th class='center'>库存数量</th><th class='center'>盘点数量</th><th class='center'>盈亏数量</th><th class='center'>备注</th><th class='center'>操作</th></tr></thead>");
+			//查询库存
+			
+			
+			
+// 			$("#simple-table").html("<thead><tr><th class='center'>商品名称</th><th class='center'>商品编号</th><th class='center'>单位</th><th class='center'>型号</th><th class='center'>规格</th><th class='center'>库存数量</th><th class='center'>盘点数量</th><th class='center'>盈亏数量</th><th class='center'>备注</th><th class='center'>操作</th></tr></thead>");
 		}
 	
 		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF,NUM,WHNAME,WAREHOUSE_ID) {
@@ -353,7 +357,7 @@
 			var diag = new top.Dialog();
 			diag.Drag=true;
 			diag.Title ="查看商品信息";
-			diag.URL = '<%=basePath%>stockcheck/goaddgoods.do?WAREHOUSE_ID=' + wh;
+			diag.URL = '<%=basePath%>inorder/goaddgoods.do?WAREHOUSE_ID=' + wh;
 			diag.Width = 1000;
 			diag.Height = 800;
 			diag.Modal = true;				//有无遮罩窗口
@@ -391,38 +395,46 @@
 		
 		//获取库存的数量
 		function getWHNUM(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF){
-			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
-			var options=$("#WAREHOUSE_ID option:selected");//获取当前选择项.
-			var WHNAME = options.text();//获取当前选择项的文本.
-			$.ajax({
-				type: "POST",
-				url: '<%=basePath%>salebill/checkstock.do?tm='+new Date().getTime(),
-		    	data: {"GOOD_ID":GOODCODE, "WAREHOUSE_ID":WAREHOUSE_ID},
-				dataType:'json',
-				cache: false,
-				success: function(data){
-					if(data.msg == "success"){//存在商品
-						if(data.stockNum >= 0){
+//  			var WAREHOUSE_ID =  ${warehouseList};
+// 			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
+// 			var listlength = '${fn:length(warehouseList)}';
+// 			console.log(list);
+// 			for(var i=0;i<'${warehouseList.size()}';i++){
+// 			var WAREHOUSE_ID = '${warehouseList[1].WAREHOUSE_ID}';
+// 			var WAREHOUSE_NAME = '${warehouseList[1].WHNAME}';
+				$.ajax({
+					type: "POST",
+					url: '<%=basePath%>stockcheck/checkstockWH.do?tm='+new Date().getTime(),
+			    	data: {"GOOD_ID":GOODCODE},
+					dataType:'json',
+					cache: false,
+					success: function(data){
+						if(data.msg == "success"){//存在商品
+							for(var i = 0; i < data.result.length; i++){
+								if( GOOD_ID != null)
+									if(data.result[i].STOCK >= 0)
+							    		insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF,data.result[i].STOCK,data.result[i].WAREHOUSE_NAME,data.result[i].WAREHOUSE_ID);
+							}
+							if(data.stockNum >= 0){
+								return data.stockNum;
+							}
+	// 						else{
+	// 							if( GOOD_ID != null)
+	// 						    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF,0);
+	// 						}
+						}else {
 							if( GOOD_ID != null)
-						    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF,data.stockNum,WHNAME,WAREHOUSE_ID);
-							return data.stockNum;
+						    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF,0);
+							return 0;
 						}
-// 						else{
-// 							if( GOOD_ID != null)
-// 						    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF,0);
-// 						}
-					}else {
-						if( GOOD_ID != null)
-					    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF,0);
-						return 0;
+					},
+			    	error:function(){
+			    		alert("请求数据失败");
+			    		return 0;
 					}
-				},
-		    	error:function(){
-		    		alert("请求数据失败");
-		    		return 0;
-				}
-
-			});
+	
+				});
+// 			};
 		}
 		
 		//判断商品单价和数量是否为空
@@ -477,17 +489,8 @@
 				return false;
 			}
 			GetValue();
-			console.log($("#goodslist").val());
+			//console.log($("#goodslist").val());
 			if($("#goodslist").val()=="#"){
-				$("#addgoods").tips({
-					side:3,
-		            msg:'请选择商品',
-		            bg:'#AE81FF',
-		            time:2
-		        });
-			return false;
-			}
-			if($("#goodslist").val()==""){
 				$("#addgoods").tips({
 					side:3,
 		            msg:'请选择商品',

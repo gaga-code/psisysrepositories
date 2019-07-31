@@ -449,10 +449,9 @@ public class SalebillService implements SalebillManager{
 	 * @throws Exception 
 	 */
 	@Override
-	public Integer getStock(PageData pd) throws Exception {
+	public PageData getStock(PageData pd) throws Exception {
 		PageData result = (PageData)dao.findForObject("StockMapper.getStock", pd);
-		Integer num = (Integer) result.get("STOCK");
-		return num;
+		return result;
 	}
 
 	@Override

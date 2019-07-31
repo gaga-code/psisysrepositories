@@ -79,6 +79,34 @@ public class StockCheckController extends BaseController {
 		}
 		return AppUtil.returnObject(new PageData(), map);
 	}
+	
+	/**
+	 * 检查 所有 库存是否存在指定商品checkstock
+	 * 通过商品编号和仓库ID来查，商品编号在JSP以GOOD_ID名字来传到后台
+	 */
+	@RequestMapping(value="/checkstockWH")
+	@ResponseBody
+	public Object checkStockWH() {
+		logBefore(logger, Jurisdiction.getUsername()+"检查库存");
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		try {
+			List<PageData> warehouseList = warehouseService.listAll(pd);	//列出仓库列表;
+			pd.put("warehouseList", warehouseList);
+			List<PageData> result = stockCheckService.getStockWH(pd);
+			//Integer num = (Integer) result.get("STOCK");
+			if(result == null) {
+				map.put("msg","error");
+			}else {
+				map.put("msg","success");
+				map.put("result",result);
+			}
+		}catch(Exception e) {
+			map.put("msg","error");
+		}
+		return AppUtil.returnObject(new PageData(), map);
+	}
 	/**
 	 * 打开添加商品
 	 * @throws Exception 
@@ -92,7 +120,7 @@ public class StockCheckController extends BaseController {
 			Map<String,String> map = new HashMap<String, String>();
 			map.put("PK_SOBOOKS", pd.getString("PK_SOBOOKS"));
 			map.put("PARENTS", "0");
-			map.put("WAREHOUSE_ID", "");
+			//map.put("WAREHOUSE_ID", "");
 			JSONArray arr = JSONArray.fromObject(goodsService.stockCheckListAllDict(map));
 			String json = arr.toString();
 			json = json.replaceAll("GOODTYPE_ID", "id").replaceAll("PARENTS", "pId").replaceAll("TYPENAME", "name").replaceAll("subDict", "nodes").replaceAll("hasDict", "checked").replaceAll("treeurl", "url");
@@ -122,7 +150,7 @@ public class StockCheckController extends BaseController {
 			pd.put("keywords", keywords.trim());
 		}
 		pd.put("GOODTYPE_ID", pd.get("id"));
-		pd.put("WAREHOUSE_ID", "");
+		//pd.put("WAREHOUSE_ID", "");
 		pd.put("USERNAME", "admin".equals(Jurisdiction.getUsername())?"":Jurisdiction.getUsername());
 		page.setPd(pd);
 		List<PageData>	varList = goodsService.list(page);	//列出Goods列表
@@ -351,6 +379,27 @@ public class StockCheckController extends BaseController {
 		pd.put("PSI_NAME", user.getNAME());
 		List<PageData> warehouseList = warehouseService.listAll(pd);	//列出仓库列表;
 		mv.setViewName("stock/stockcheck/stockcheck_add");
+		mv.addObject("msg", "save");
+		mv.addObject("pd", pd);
+		mv.addObject("warehouseList", warehouseList);
+//		mv.addObject("varListL", varListL);
+		return mv;
+	}	
+	
+	/**去新增页面
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/goodsgoAdd")
+	public ModelAndView goodsGoAdd()throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		Session session = Jurisdiction.getSession();
+		User user = (User)session.getAttribute(Const.SESSION_USER);
+		pd.put("PSI_NAME", user.getNAME());
+		List<PageData> warehouseList = warehouseService.listAll(pd);	//列出仓库列表;
+		mv.setViewName("stock/stockcheck/goodsstockcheck_add");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
 		mv.addObject("warehouseList", warehouseList);

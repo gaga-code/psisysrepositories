@@ -60,7 +60,7 @@
 							<tr>
 								<td style="width:90px;text-align: right;padding-top: 1px;" id="select_suppsetbill_name">供应商:</td>
 								<td style="vertical-align:top;">
-								 	<select class="chosen-select form-control" name="select_suppsetbill" id="select_suppsetbill" data-placeholder="请选择供应商" style="vertical-align:top;width: 98%;"  >
+								 	<select class="chosen-select form-control" name="select_suppsetbill" id="select_suppsetbill" data-placeholder="请选择供应商"  style="vertical-align:top;width: 98%;"  >
 									<option value=""></option>
 								  	</select>
 								</td>

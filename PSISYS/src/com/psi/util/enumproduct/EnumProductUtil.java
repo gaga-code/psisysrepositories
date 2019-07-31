@@ -14,8 +14,8 @@ import java.util.List;
  *	EDUCATION  学历：平凡、初中毕业、中专毕业、高中毕业、大学专科、大学本科
  *	          			1	   2       3         4        5         6   		
  *	
- *	BILLSTATUS  单据状态：未审核、已审核
- *		  				  1         2      
+ *	BILLSTATUS  单据状态：未审核、已审核、作废
+ *		  				  1         2      3
  *  ISSETTLEMENTED 结算状态：未结算  已结算 结算中
  *                             0      1    2  
  *	
@@ -105,7 +105,7 @@ public class EnumProductUtil {
 	
 	/**
 	 * 返回单据状态的list
-	 * 单据状态：未审核、已审核、结算未通过
+	 * 单据状态：未审核、已审核、作废
 	 * 			 1         2      3
 	 * @return
 	 */
@@ -120,7 +120,7 @@ public class EnumProductUtil {
 		pass.put("TITLE","已审核");
 		HashMap hasproblem = new HashMap();
 		hasproblem.put("LEVEL_ID", 3);
-		hasproblem.put("TITLE","审核不通过");
+		hasproblem.put("TITLE","作废");
 		varList.add(nopass);
 		varList.add(pass);
 		varList.add(hasproblem);

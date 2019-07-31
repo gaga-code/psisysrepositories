@@ -327,7 +327,10 @@ public class CustomersetbillService implements CustomersetbillManager{
 				}
 			}
 		}
-		
+		//=================================反审的单据变为作废单据,先备份，后插入============================================
+		PageData zuofeipd = (PageData) pd.clone();
+		zuofeipd.put("BILLSTATUS", 3);//单据状态改为作废
+		zuofeipd.put("CUSTOMERSETBILL_ID", UuidUtil.get32UUID());
 		//=================================进行真正的反审操作，也就是恢复审批前的快照============================================
 		//1、查找结算单、销售单以及明细的快照主键 SETTEDNUMANDID
 		String customerbackid = pd.getString("SETTEDNUMANDID");//结算单的快照主键
@@ -346,7 +349,22 @@ public class CustomersetbillService implements CustomersetbillManager{
 		PageData customerback = new PageData();
 		customerback.put("CUSTOMERSETBILLBACK_ID", customerbackid);
 		customerback = saleBillAndCustomersetBackService.findCustomerBackById(customerback);
+		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_CUSTONMERSETBILL_PFIX); //获取该编号类型的最大编号
+		customerback.put("BILLCODE",strs[0]);
 		dao.update("CustomersetbillMapper.snapshotedit", customerback);
+		if(strs[1] == null){ //新增
+			PsiBillCode psiBillCode = new PsiBillCode();
+			psiBillCode.setCode_ID(UuidUtil.get32UUID());
+			psiBillCode.setCodeType(Const.BILLCODE_CUSTONMERSETBILL_PFIX);
+			psiBillCode.setMaxNo(strs[0]);
+			psiBillCode.setNOTE("客户结算单编号");
+			billCodeService.insertBillCode(psiBillCode);
+		}else{//修改
+			PageData ppp = new PageData();
+			ppp.put("MaxNo",strs[0]);
+			ppp.put("Code_ID", strs[1]);
+			billCodeService.updateMaxNo(ppp);
+		}
 		
 		for(int i = 0 ; i < salebillbackidlist.size(); i++) {
 			PageData salebillback = new PageData();
@@ -360,6 +378,8 @@ public class CustomersetbillService implements CustomersetbillManager{
 			inbodyback=saleBillAndCustomersetBackService.findSaleBodyBackById(inbodyback);
 			dao.update("SalebillBodyMapper.salebillbodysnapshotedit", inbodyback);
 		}
+		
+		dao.save("CustomersetbillMapper.save", zuofeipd);
 	}
 	
 }

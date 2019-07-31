@@ -13,6 +13,7 @@
 		STOCKCHECKBODY_ID,
 		STOCKCHECK_ID,
 		GOODCODE_ID,
+		WAREHOUSE_ID,
 		CHENKNUM,
 		LOSSNUM,
 		NOTE,
@@ -24,6 +25,7 @@
 		#{STOCKCHECKBODY_ID},	
 		#{STOCKCHECK_ID},
 		#{GOODCODE_ID},	
+		#{WAREHOUSE_ID},	
 		#{CHENKNUM},	
 		#{LOSSNUM},	
 		#{NOTE},	
@@ -33,6 +35,7 @@
 		STOCKCHECKBODY_ID,    
 		STOCKCHECK_ID,        
 		GOODCODE_ID,       
+		WAREHOUSE_ID,       
 		CHENKNUM,           
 		LOSSNUM,           
 		NOTE,          
@@ -50,6 +53,7 @@
 		#{STOCKCHECKBODY_ID}, 
 		#{STOCKCHECK_ID},     
 		#{GOODCODE_ID},    
+		#{WAREHOUSE_ID},    
 		#{CHENKNUM},         
 		#{LOSSNUM},         
 		#{NOTE},        
@@ -107,6 +111,17 @@
 			and IFNULL(dr,0)=0
 	</update>
 	
+	<!-- 修改商品编码 -->
+	<update id="editGOODCODE" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			GOODCODE_ID = #{newGOODCODE}
+		where 
+		GOODCODE_ID = #{GOODCODE}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
 	<!-- 修改 -->
 	<update id="salebillbodysnapshotedit" parameterType="pd">
 		update
@@ -158,13 +173,16 @@
 			b.GOODNAME,
 			b.GOODTYPECODE,
 			b.GOODSPECIF,
-			c.NAME
+			c.NAME,
+			d.WHNAME WAREHOUSE_NAME
 		from 
 		<include refid="tableName"></include> a
 		left join base_good b
 		on a.GOODCODE_ID = b.GOODCODE	
 		left join cp_spunit c
 		on b.CUNIT_ID = c.SPUNIT_ID	
+		left join base_warehouse d
+		on d.WAREHOUSE_ID = a.WAREHOUSE_ID	
 		where 
 			a.STOCKCHECK_ID = #{STOCKCHECK_ID}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}

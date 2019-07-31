@@ -15,6 +15,7 @@
 		GOODTYPE_ID,
 		GOODCODE,
 		GOODNAME,
+		WAREHOUSE_IDs,
 		BARCODE,
 		SIMPLENAME,
 		SUBGZ_ID,
@@ -44,7 +45,8 @@
 		#{USER_ID},	
 		#{GOODTYPE_ID},	
 		#{GOODCODE},	
-		#{GOODNAME},	
+		#{GOODNAME},
+		#{WAREHOUSE_IDs},	
 		#{BARCODE},	
 		#{SIMPLENAME},	
 		#{SUBGZ_ID},	
@@ -97,6 +99,7 @@
 			GOODTYPE_ID = #{GOODTYPE_ID},	
 			GOODCODE = #{GOODCODE},	
 			GOODNAME = #{GOODNAME},	
+			WAREHOUSE_IDs = #{WAREHOUSE_IDs},
 			BARCODE=#{BARCODE},	
 			SIMPLENAME=#{SIMPLENAME},	
 			SUBGZ_ID=#{SUBGZ_ID},	
@@ -180,6 +183,7 @@
 			a.GOODTYPE_ID,
 			a.GOODCODE,
 			a.GOODNAME,	
+			a.WAREHOUSE_IDs,
 			a.BARCODE,	
 			a.SIMPLENAME,
 			a.BRANT,
@@ -242,6 +246,7 @@
 			a.GOODTYPE_ID,
 			a.GOODCODE,
 			a.GOODNAME,	
+			a.WAREHOUSE_IDs,
 			a.BARCODE,	
 			a.SIMPLENAME,
 			a.BRANT,
@@ -276,8 +281,10 @@
 		on a.CUNIT_ID = c.SPUNIT_ID
 		left join cp_spunit d
 		on a.FZUNIT_ID = d.SPUNIT_ID
+		<if test="pd.WAREHOUSE_ID!= null and pd.WAREHOUSE_ID != ''">
 		left join base_stock e
 		on a.GOODCODE = e.GOOD_ID
+		</if>
 		where 1=1
 			and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
@@ -312,6 +319,7 @@
 			a.GOODTYPE_ID,
 			a.GOODCODE,
 			a.GOODNAME,	
+			a.WAREHOUSE_IDs,
 			a.BARCODE,	
 			a.SIMPLENAME,
 			a.BRANT,
@@ -360,6 +368,7 @@
 			a.GOODTYPE_ID,
 			a.GOODCODE,
 			a.GOODNAME,	
+			a.WAREHOUSE_IDs,
 			a.BARCODE,	
 			a.SIMPLENAME,
 			a.BRANT,

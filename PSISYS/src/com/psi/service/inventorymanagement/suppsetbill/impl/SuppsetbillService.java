@@ -116,7 +116,7 @@ public class SuppsetbillService implements SuppsetbillManager{
 					newsuppid = newsuppid.substring(0,newsuppid.length()-1);
 				}
 				inorderpd.put("SUPPSETBILL_ID", newsuppid);
-				inorderpd.put("ISSETTLEMENTED", "2");
+				inorderpd.put("ISSETTLEMENTED", "0");
 				inOrderService.editFromSupp(inorderpd);
 			}
 		}
@@ -323,7 +323,10 @@ public class SuppsetbillService implements SuppsetbillManager{
 				}
 			}
 		}
-		
+		//=================================反审的单据变为作废单据,先备份，后插入============================================
+		PageData zuofeipd = (PageData) pd.clone();
+		zuofeipd.put("BILLSTATUS", 3);//单据状态改为作废
+		zuofeipd.put("SUPPSETBILL_ID", UuidUtil.get32UUID());
 		//=================================进行真正的反审操作，也就是恢复审批前的快照============================================
 		//1、查找结算单、进货单以及明细的快照主键 SETTEDNUMANDID
 		String suppbackid = pd.getString("SETTEDNUMANDID");//结算单的快照主键
@@ -341,21 +344,39 @@ public class SuppsetbillService implements SuppsetbillManager{
 		}
 		PageData suppback = new PageData();
 		suppback.put("SUPPSETBILLBACK_ID", suppbackid);
+		//=======================================================单据编号改变=====================================================
+		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_SUPPSETBILL_PFIX); //获取该编号类型的最大编号
 		suppback = inOrderAndSuppsetBackService.findSuppBackById(suppback);
+		suppback.put("BILLCODE",strs[0]);
 		dao.update("SuppsetbillMapper.snapshotedit", suppback);
-		
+		if(strs[1] == null){ //新增
+			PsiBillCode psiBillCode = new PsiBillCode();
+			psiBillCode.setCode_ID(UuidUtil.get32UUID());
+			psiBillCode.setCodeType(Const.BILLCODE_SUPPSETBILL_PFIX);
+			psiBillCode.setMaxNo(strs[0]);
+			psiBillCode.setNOTE("供应商结算单编号");
+			billCodeService.insertBillCode(psiBillCode);
+		}else{//修改
+			PageData ppp = new PageData();
+			ppp.put("MaxNo",strs[0]);
+			ppp.put("Code_ID", strs[1]);
+			billCodeService.updateMaxNo(ppp);
+		}
+		//进货单恢复快照
 		for(int i = 0 ; i < inorderbackidlist.size(); i++) {
 			PageData inorderback = new PageData();
 			inorderback.put("INORDERBACK_ID", inorderbackidlist.get(i));
 			inorderback=inOrderAndSuppsetBackService.findInBackById(inorderback);
 			dao.update("InOrderMapper.inordersnapshotedit", inorderback);
 		}
+		//进货明细单恢复快照
 		for(int i = 0 ; i < inorderbodybackidlist.size(); i++) {
 			PageData inbodyback = new PageData();
 			inbodyback.put("INORDERBODYBACK_ID", inorderbodybackidlist.get(i));
 			inbodyback=inOrderAndSuppsetBackService.findInBodyBackById(inbodyback);
 			dao.update("InOrderBodyMapper.inorderbodysnapshotedit", inbodyback);
 		}
+		dao.save("SuppsetbillMapper.save", zuofeipd);
 	}
 	
 }

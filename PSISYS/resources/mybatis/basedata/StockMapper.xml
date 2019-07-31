@@ -89,6 +89,19 @@
 		from 
 		<include refid="tableName"></include>
 		where 
+			WAREHOUSE_ID = #{WAREHOUSE_ID}
+			and GOOD_ID = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 通过ID获取库存数量 -->
+	<select id="getStockWH" parameterType="pd" resultType="pd">
+		select 
+		<include refid="FieldCha"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
 			WAREHOUSE_ID = #{WAREHOUSE_ID} 
 			and GOOD_ID = #{GOOD_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}

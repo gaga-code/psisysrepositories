@@ -46,8 +46,8 @@
 <%-- 								<td><input type="text" name="BILLSTATUS" id="BILLSTATUS" value="${pd.BILLSTATUSNAME}" maxlength="1000" placeholder="单据状态"   style="width:98%;" readonly="readonly"/></td> --%>
 								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
 								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WHNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
+<!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td> -->
+<%-- 								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WHNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> --%>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">批号:</td>
@@ -60,6 +60,7 @@
 						<table name="goodstable" id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
 								<tr>
+									<th class="center">仓库</th>
 									<th class="center">商品名称</th>
 									<th class="center">商品编号</th>
 									<th class="center">单位</th>
@@ -81,6 +82,7 @@
 									<c:forEach items="${pd.goodslist}" var="var" varStatus="vs">
 										<tr>
 <%-- 											<td class='center' style="width: 30px;">${vs.index+1}</td> --%>
+											<td class='center'>${var.WAREHOUSE_NAME}</td>
 											<td class='center'>${var.GOODNAME}</td>
 											<td class='center'>${var.GOODCODE_ID}</td>
 											<td class='center'>${var.NAME}</td>

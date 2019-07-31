@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://"
@@ -15,6 +16,8 @@
 
 	<!-- jsp文件头和头部 -->
 	<%@ include file="top.jsp"%>
+	<!-- 自定義CSS文件 -->
+	<link rel="stylesheet" href="static/myCSS/style.css"/>
 	<style type="text/css">
 	.commitopacity{position:absolute; width:100%; height:100px; background:#7f7f7f; filter:alpha(opacity=50); -moz-opacity:0.8; -khtml-opacity: 0.5; opacity: 0.5; top:0px; z-index:99999;}
 	</style>
@@ -24,7 +27,23 @@
 	<link rel="stylesheet" href="plugins/fhim/dist/css/contextMenu.css"> -->
 	
 </head>
-	<body class="no-skin">
+	<body class="no-skin" id="bodyBox">
+		<input type="hidden" name="goodslist" id="goodslist" value="${sessionScope.goodslist}"/>
+		<!-- 預警提示彈窗  style="display:none;"-->
+		<div id="alertBox" style="display:none;" >
+			<div class="boxTop">
+				<span>库存预警</span>
+				<button id="boxClose" onclick = "$('#alertBox').css('display','none');"> X </button>
+			</div>
+			<ul id="alertGoodsList" >
+				<li>
+					<span>2019/07/29</span>
+					<span>针类钻石爪</span>
+					<span>200</span>
+				</li>
+			</ul>
+		</div>
+		
 		<!-- #section:basics/navbar.layout -->
 		
 		<!-- 页面顶部¨ -->
@@ -45,6 +64,7 @@
 
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
+						
 						<!-- #section:settings.box -->
 						<div class="ace-settings-container" id="ace-settings-container">
 							<div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
@@ -99,6 +119,7 @@
 						</div>
 						</div>
 						<div>
+							
 							<iframe name="mainFrame" id="mainFrame" frameborder="0" src="tab.do" style="margin:0 auto;width:100%;height:100%;"></iframe>
 						</div>
 						</div><!-- /.row -->	
@@ -106,7 +127,7 @@
 					
 				</div>
 			</div><!-- /.main-content -->
-
+			
 		</div><!-- /.main-container -->
 
 		<!-- basic scripts -->
@@ -150,6 +171,7 @@
 		<script type="text/javascript" src="static/js/myjs/head.js"></script>
 		<script type="text/javascript" src="static/js/myjs/index.js"></script>
 		<script type="text/javascript" src="static/js/myjs/setSkin.js"></script>
+		
 		
 		<!--引入弹窗组件1start-->
 		<!--<script type="text/javascript" src="plugins/attention/zDialog/zDrag.js"></script>-->

@@ -25,6 +25,7 @@ import com.psi.entity.system.User;
 import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.basedata.goodstype.GoodsTypeManager;
 import com.psi.service.basedata.supplier.SupplierManager;
+import com.psi.service.basedata.warehouse.WarehouseManager;
 import com.psi.service.erp.spbrand.SpbrandManager;
 import com.psi.service.erp.sptype.SptypeManager;
 import com.psi.service.erp.spunit.SpunitManager;
@@ -61,6 +62,8 @@ public class GoodsController extends BaseController {
 	private GoodsTypeManager goodsTypeService;
 	@Resource(name="supplierService")
 	private SupplierManager supplierService;
+	@Resource(name="warehouseService")
+	private WarehouseManager warehouseService;
 	
 	/**
 	 * 库存预警
@@ -90,7 +93,8 @@ public class GoodsController extends BaseController {
 		pd.put("GOOD_ID", this.get32UUID());	//主键 
 		//库存
 		if(pd.get("STOCKNUM") == null || pd.get("STOCKNUM").equals(""))
-			pd.put("STOCKNUM", 0);					
+			pd.put("STOCKNUM", 0);	
+		pd.put("WAREHOUSE_IDs", pd.getString("wh"));
 		goodsService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -228,6 +232,24 @@ public class GoodsController extends BaseController {
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
 	}
+	
+	/**
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/listNameAndID" ,produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public Object listNameAndID()throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表Goods");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		List<PageData> varList = warehouseService.listAll(pd);	//列出supplier列表
+		map.put("varList", varList);
+		return AppUtil.returnObject(pd, map);
+	}
+	
 	
 	/**去新增页面
 	 * @param
