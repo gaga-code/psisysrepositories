@@ -44,7 +44,7 @@ public class GoodsService implements GoodsManager{
 	}
 	/**
 	 * !!!入库单专用!!!
-	 * 
+	 * 全部
 	 * 获取所有数据并填充每条数据的子级列表(递归处理)
 	 * @param MENU_ID
 	 * @return
@@ -66,7 +66,7 @@ public class GoodsService implements GoodsManager{
 	
 	/**
 	 * !!!销售单   仓库调拨!!!
-	 * 
+	 * 只获取仓库中存在的
 	 * 获取所有数据并填充每条数据的子级列表(递归处理)
 	 * @param MENU_ID
 	 * @return
@@ -98,7 +98,7 @@ public class GoodsService implements GoodsManager{
 		List<GoodsType> dictList = this.listSubDictByParentId(parentIdAndPK_SOBOOKS);
 		Map<String,String> map = new HashMap<String, String>();
 		map.put("PK_SOBOOKS", parentIdAndPK_SOBOOKS.get("PK_SOBOOKS"));
-		//map.put("WAREHOUSE_ID", parentIdAndPK_SOBOOKS.get("WAREHOUSE_ID"));
+		map.put("WAREHOUSE_ID", parentIdAndPK_SOBOOKS.get("WAREHOUSE_ID"));
 		for(GoodsType dict : dictList){
 			dict.setTreeurl("stockcheck/goodslist.do?GOODTYPE_ID="+dict.getGOODTYPE_ID()+"&WAREHOUSE_ID=" + parentIdAndPK_SOBOOKS.get("WAREHOUSE_ID"));
 			//dict.setSubDict(this.listAllDict(dict.getGOODTYPE_ID()));

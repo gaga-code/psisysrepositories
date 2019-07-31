@@ -60,6 +60,7 @@
 						<table name="goodstable" id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
 								<tr>
+									<th class="center">仓库</th>
 									<th class="center">商品名称</th>
 									<th class="center">商品编号</th>
 									<th class="center">单位</th>
@@ -81,6 +82,7 @@
 									<c:forEach items="${pd.goodslist}" var="var" varStatus="vs">
 										<tr>
 <%-- 											<td class='center' style="width: 30px;">${vs.index+1}</td> --%>
+											<td class='center'>${var.WAREHOUSE_NAME}</td>
 											<td class='center'>${var.GOODNAME}</td>
 											<td class='center'>${var.GOODCODE_ID}</td>
 											<td class='center'>${var.NAME}</td>

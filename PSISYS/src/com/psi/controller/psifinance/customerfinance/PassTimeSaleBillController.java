@@ -67,7 +67,8 @@ public class PassTimeSaleBillController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		try {
-			Integer num = salebillService.getStock(pd);
+			PageData result = salebillService.getStock(pd);
+			Integer num = (Integer) result.get("STOCK");
 			if(num == null || num <= 0) {
 				map.put("msg","error");
 			}else {

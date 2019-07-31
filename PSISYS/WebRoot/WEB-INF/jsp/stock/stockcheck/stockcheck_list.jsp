@@ -191,7 +191,8 @@
 							<tr>
 								<td style="vertical-align:top;">
 									<c:if test="${QX.add == 1 }">
-									<a class="btn btn-mini btn-success" onclick="add();">新增</a>
+									<a class="btn btn-mini btn-success" onclick="add();">按仓库添加</a>
+									<a class="btn btn-mini btn-success" onclick="addasgoods();">按商品添加</a>
 									<!-- <a class="btn btn-mini btn-success" onclick="add();">新增</a> -->
 									</c:if>
 <%-- 									<c:if test="${QX.del == 1 }"><c:if test="${'1' == pd.BILLSTATUS || '3' == pd.BILLSTATUS}"> --%>
@@ -243,6 +244,12 @@
 		//新增
 		function add(){
 			document.forms.actionForm.action="stockcheck/goAdd.do";
+	        document.forms.actionForm.submit();
+			//siMenu('z190','lm180','添加进货单','stockcheck/goAdd.do');
+		}
+		//新增
+		function addasgoods(){
+			document.forms.actionForm.action="stockcheck/goodsgoAdd.do";
 	        document.forms.actionForm.submit();
 			//siMenu('z190','lm180','添加进货单','stockcheck/goAdd.do');
 		}

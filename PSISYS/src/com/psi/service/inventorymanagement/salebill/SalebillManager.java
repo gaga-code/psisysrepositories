@@ -126,7 +126,7 @@ public interface SalebillManager{
 	 * @param pd  仓库ID  商品编号GOOD_ID
 	 * @return
 	 */
-	public Integer getStock(PageData pd)throws Exception;
+	public PageData getStock(PageData pd)throws Exception;
 
 	public List<PageData> listSaleInfo(PageData pd) throws Exception;
 	

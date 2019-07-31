@@ -13,6 +13,7 @@
 		STOCKCHECKBODY_ID,
 		STOCKCHECK_ID,
 		GOODCODE_ID,
+		WAREHOUSE_ID,
 		CHENKNUM,
 		LOSSNUM,
 		NOTE,
@@ -24,6 +25,7 @@
 		#{STOCKCHECKBODY_ID},	
 		#{STOCKCHECK_ID},
 		#{GOODCODE_ID},	
+		#{WAREHOUSE_ID},	
 		#{CHENKNUM},	
 		#{LOSSNUM},	
 		#{NOTE},	
@@ -33,6 +35,7 @@
 		STOCKCHECKBODY_ID,    
 		STOCKCHECK_ID,        
 		GOODCODE_ID,       
+		WAREHOUSE_ID,       
 		CHENKNUM,           
 		LOSSNUM,           
 		NOTE,          
@@ -50,6 +53,7 @@
 		#{STOCKCHECKBODY_ID}, 
 		#{STOCKCHECK_ID},     
 		#{GOODCODE_ID},    
+		#{WAREHOUSE_ID},    
 		#{CHENKNUM},         
 		#{LOSSNUM},         
 		#{NOTE},        
@@ -158,13 +162,16 @@
 			b.GOODNAME,
 			b.GOODTYPECODE,
 			b.GOODSPECIF,
-			c.NAME
+			c.NAME,
+			d.WHNAME WAREHOUSE_NAME
 		from 
 		<include refid="tableName"></include> a
 		left join base_good b
 		on a.GOODCODE_ID = b.GOODCODE	
 		left join cp_spunit c
 		on b.CUNIT_ID = c.SPUNIT_ID	
+		left join base_warehouse d
+		on d.WAREHOUSE_ID = a.WAREHOUSE_ID	
 		where 
 			a.STOCKCHECK_ID = #{STOCKCHECK_ID}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}

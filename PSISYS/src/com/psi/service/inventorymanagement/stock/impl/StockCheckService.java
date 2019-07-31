@@ -61,6 +61,7 @@ public class StockCheckService implements StockCheckManager{
 			pageData.put("STOCKCHECKBODY_ID", UuidUtil.get32UUID());
 			pageData.put("STOCKCHECK_ID", pd.get("STOCKCHECK_ID"));
 			pageData.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
+			pageData.put("WAREHOUSE_ID", pd.get("WAREHOUSE_ID"));
 			
 			pageData.put("GOODCODE_ID", agoods[1]);
 			pageData.put("CHENKNUM", agoods[6]);
@@ -118,11 +119,11 @@ public class StockCheckService implements StockCheckManager{
 			head.put("STOCK", (Integer)aGood.get("STOCK") + Integer.valueOf(LOSSNUM));
 			dao.update("StockMapper.edit", head);
 		}
-		//没有,新增
+		//没有,出错
 		else {
-			head.put("WAREHOUSE_GOOD_ID", UuidUtil.get32UUID());
-			head.put("STOCK", Integer.valueOf(CHENKNUM));
-			dao.save("StockMapper.save", head);
+//			head.put("WAREHOUSE_GOOD_ID", UuidUtil.get32UUID());
+//			head.put("STOCK", Integer.valueOf(CHENKNUM));
+//			dao.save("StockMapper.save", head);
 		}
 	}
 	
@@ -490,6 +491,20 @@ public class StockCheckService implements StockCheckManager{
 		PageData result = (PageData)dao.findForObject("StockMapper.getStock", pd);
 		Integer num = (Integer) result.get("STOCK");
 		return num;
+	}
+	@Override
+	public List<PageData> getStockWH(PageData pd) throws Exception {
+		List<PageData> result = new ArrayList<PageData>();
+		List<PageData> list = (List<PageData>)pd.get("warehouseList");
+		for (PageData pageData : list) {
+			pd.put("WAREHOUSE_ID", pageData.get("WAREHOUSE_ID"));
+			PageData res = (PageData)dao.findForObject("StockMapper.getStock", pd);
+			if(res != null) {
+				res.put("WAREHOUSE_NAME", pageData.get("WHNAME"));
+				result.add(res);
+			}
+		}
+		return result;
 	}
 	
 }

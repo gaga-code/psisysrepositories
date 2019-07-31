@@ -54,7 +54,7 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
 								<td id="tishi">
-									<select class="chosen-select form-control" name="WAREHOUSE_ID" id="WAREHOUSE_ID"  style="vertical-align:top;width:98%;" >
+									<select class="chosen-select form-control" name="WAREHOUSE_ID" id="WAREHOUSE_ID" onchange="checkaddgoods();"  style="vertical-align:top;width:98%;" >
 										<option value="">无</option>
 										<c:forEach items="${warehouseList}" var="var">
 											<option value="${var.WAREHOUSE_ID }" <c:if test="${var.WAREHOUSE_ID == pd.WAREHOUSE_ID }">selected</c:if>>${var.WHNAME }</option>
@@ -154,6 +154,10 @@
 // 	        thirdCell = $("#row0 td:eq(2)").html();
 // 	        fourthCell = $("#row0 td:eq(3)").html();
 // 	    });
+
+		function checkaddgoods(){
+			$("#simple-table").html("<thead><tr><th class='center'>商品名称</th><th class='center'>商品编号</th><th class='center'>单位</th><th class='center'>型号</th><th class='center'>规格</th><th class='center'>库存数量</th><th class='center'>盘点数量</th><th class='center'>盈亏数量</th><th class='center'>备注</th><th class='center'>操作</th></tr></thead>");
+		}
 	
 		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF,NUM) {
 			 //获取表格有多少行
@@ -346,7 +350,7 @@
 			var diag = new top.Dialog();
 			diag.Drag=true;
 			diag.Title ="查看商品信息";
-			diag.URL = '<%=basePath%>stockcheck/goaddgoods.do?';
+			diag.URL = '<%=basePath%>stockcheck/goaddgoods.do?WAREHOUSE_ID=' + wh;
 			diag.Width = 1000;
 			diag.Height = 800;
 			diag.Modal = true;				//有无遮罩窗口

@@ -122,5 +122,12 @@ public interface StockCheckManager{
 	 */
 	public Integer getStock(PageData pd)throws Exception;
 	
+	/**
+	 * 检查 所有 库存是否存在指定商品
+	 * @param pd  仓库ID  商品编号GOOD_ID
+	 * @return
+	 */
+	public List<PageData> getStockWH(PageData pd)throws Exception;
+	
 }
 
