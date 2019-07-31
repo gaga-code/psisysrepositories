@@ -138,6 +138,16 @@
 								<td><input type="number" name="STOCKUPNUM" id="STOCKUPNUM" value="${pd.STOCKUPNUM}" maxlength="30"   style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">库存下限:</td>
 								<td><input type="number" name="STOCKDOWNNUM" id="STOCKDOWNNUM" value="${pd.STOCKDOWNNUM}" maxlength="30"   style="width:98%;"/></td>
+								<input type="hidden" id="wh" name="wh" value="${pd.wh}"   />
+							</tr>
+							<tr>
+								<td style="width:90px;text-align: right;padding-top: 1px;" id="select_stock_name">仓库:</td>
+								<input type="hidden" id="WAREHOUSE_IDs" name="WAREHOUSE_IDs" value="${pd.WAREHOUSE_IDs}"   />
+								<td style="vertical-align:top;">
+								 	<select class="chosen-select form-control" name="Select_WAREHOUSE_IDs" id="Select_WAREHOUSE_IDs" data-placeholder="请选择仓库" multiple="multiple"  style="vertical-align:top;width: 98%;"  >
+									<option value=""></option>
+								  	</select>
+								</td>
 							</tr>
 						</table>
 						</div>
@@ -183,6 +193,32 @@
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
 		<script type="text/javascript">
 		$(top.hangge());
+		
+		$(window).on('load', function () {
+			//获取仓库列表
+			var sid = $("#WAREHOUSE_IDs").val();
+		    $.ajax({
+		        method:'POST',
+		        url:'goods/listNameAndID',
+		        dataType:'json',
+		        success: function (res) {
+		            var html="<option value='0'>请选择仓库</option>";
+		            console.log(res);
+		            for (var i = 0; i < res.varList.length; i++) {
+		                if (sid.match(res.varList[i].WAREHOUSE_ID)) {
+		                    html += "<option  value='" + res.varList[i].WAREHOUSE_ID + "' selected='selected' data-name='"+res.varList[i].WHNAME+"'>" + res.varList[i].WHNAME + "</option>";
+		                } else {
+		                    html += "<option  value='" + res.varList[i].WAREHOUSE_ID + "' data-name='"+res.varList[i].WHNAME+"'>"+ res.varList[i].WHNAME + "</option>";
+		                }
+		            }
+		            $("#Select_WAREHOUSE_IDs").html(html);
+		            $('#Select_WAREHOUSE_IDs').trigger("chosen:updated");//重置下拉框  
+		            $('#Select_WAREHOUSE_IDs').chosen();//下拉框检索框架
+		        }
+		    }); 
+		});
+		
+		
 		//单位比例提示
 		function getUNITPROPtips(){
 			var danwei=$("#CUNIT_ID option:selected");//获取当前选择项.
@@ -377,7 +413,28 @@
 				$("#STOCKDOWNNUM").focus();
 			return false;
 			}
-			
+			if($("#Select_WAREHOUSE_IDs").val()==""){
+				$("#Select_WAREHOUSE_IDs").tips({
+					side:3,
+		            msg:'请选择仓库',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				$("#Select_WAREHOUSE_IDs").focus();
+			return false;
+			}
+			alert($("#Select_WAREHOUSE_IDs").val());
+			var array = $("#Select_WAREHOUSE_IDs").val();			
+			var str="";
+			for(var i = 0; i <  array.length; i++){
+				if(i != array.length-1){
+					str += array[i]+",";
+				}else{
+					str += array[i];
+				}
+			}
+			$("#WAREHOUSE_IDs").val(str);
+			$("#wh").val(str);
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();

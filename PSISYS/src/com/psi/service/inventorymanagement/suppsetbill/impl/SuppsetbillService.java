@@ -116,7 +116,7 @@ public class SuppsetbillService implements SuppsetbillManager{
 					newsuppid = newsuppid.substring(0,newsuppid.length()-1);
 				}
 				inorderpd.put("SUPPSETBILL_ID", newsuppid);
-				inorderpd.put("ISSETTLEMENTED", "2");
+				inorderpd.put("ISSETTLEMENTED", "0");
 				inOrderService.editFromSupp(inorderpd);
 			}
 		}
