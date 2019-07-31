@@ -46,8 +46,8 @@
 <%-- 								<td><input type="text" name="BILLSTATUS" id="BILLSTATUS" value="${pd.BILLSTATUSNAME}" maxlength="1000" placeholder="单据状态"   style="width:98%;" readonly="readonly"/></td> --%>
 								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
 								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WHNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
+<!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td> -->
+<%-- 								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WHNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> --%>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">批号:</td>

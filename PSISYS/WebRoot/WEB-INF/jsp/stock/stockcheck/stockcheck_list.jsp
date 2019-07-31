@@ -71,7 +71,7 @@
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">录单日期</th>
 									<th class="center">单据编号</th>
-									<th class="center">仓库</th>
+<!-- 									<th class="center">仓库</th> -->
 									<th class="center">盘点人</th>
 									<th class="center">批号</th>
 									<th class="center">备注</th>
@@ -92,7 +92,7 @@
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.LDATE}</td>
 											<td class='center'>${var.BILLCODE}</td>
-											<td class='center'>${var.WAREHOUSE_NAME}</td>
+<%-- 											<td class='center'>${var.WAREHOUSE_NAME}</td> --%>
 <!-- 											<td class='center'> -->
 <%-- 												<c:if test="${var.BILLSTATUS == 1}"> --%>
 <!-- 													未审核 -->

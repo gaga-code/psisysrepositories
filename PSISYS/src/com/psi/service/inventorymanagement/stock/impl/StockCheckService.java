@@ -61,18 +61,19 @@ public class StockCheckService implements StockCheckManager{
 			pageData.put("STOCKCHECKBODY_ID", UuidUtil.get32UUID());
 			pageData.put("STOCKCHECK_ID", pd.get("STOCKCHECK_ID"));
 			pageData.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
-			pageData.put("WAREHOUSE_ID", pd.get("WAREHOUSE_ID"));
 			
 			pageData.put("GOODCODE_ID", agoods[1]);
-			pageData.put("CHENKNUM", agoods[6]);
-			pageData.put("LOSSNUM", agoods[7]);
-			pageData.put("NOTE", agoods[8]);
+			pageData.put("CHENKNUM", agoods[7]);
+			pageData.put("LOSSNUM", agoods[8]);
+			pageData.put("NOTE", agoods[9]);
+			pageData.put("WAREHOUSE_ID", agoods[10]);
 			
 			dao.save("StockCheckBodyMapper.save", pageData);
 			
 			//更新库存
-			updateStock((String) pd.get("WAREHOUSE_ID"),agoods[1],agoods[6], agoods[7]);
+			updateStock(agoods[10],agoods[1],agoods[7], agoods[8]);
 		}
+		pd.put("WAREHOUSE_ID", "");
 		dao.save("StockCheckMapper.save", pd);
 		//保存编号
 		if(strs[1] == null){ //新增
@@ -501,6 +502,7 @@ public class StockCheckService implements StockCheckManager{
 			PageData res = (PageData)dao.findForObject("StockMapper.getStock", pd);
 			if(res != null) {
 				res.put("WAREHOUSE_NAME", pageData.get("WHNAME"));
+				res.put("WAREHOUSE_ID", pageData.get("WAREHOUSE_ID"));
 				result.add(res);
 			}
 		}
