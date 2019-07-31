@@ -349,10 +349,11 @@
 	  
 	  	function detailsale(GOODCODE){
 	  		 top.jzts();
+	  		 var CUSTOMER_ID=$("#CUSTOMER_ID").val()
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="该商品的前十条销售记录";
-			 diag.URL = '<%=basePath%>salebill/getSaleInfo.do?ROLE_ID='+GOODCODE;
+			 diag.URL = '<%=basePath%>salebill/getSaleInfo.do?ROLE_ID='+GOODCODE+'&CUSTOMER_ID='+CUSTOMER_ID;
 			 diag.Width = 800;
 			 diag.Height = 500;
 			 diag.CancelEvent = function(){ //关闭事件
