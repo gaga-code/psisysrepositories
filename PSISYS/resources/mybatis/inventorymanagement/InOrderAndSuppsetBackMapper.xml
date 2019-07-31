@@ -200,6 +200,16 @@
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 	</update>
 	
+	<!-- 修改商品编码 -->
+	<update id="editGOODCODE" parameterType="pd">
+		update
+		<include refid="inBodyBackTableName"></include>
+		set 
+			GOODCODE_ID = #{newGOODCODE}
+		where 
+		GOODCODE_ID = #{GOODCODE}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
 	<!-- 修改 -->
 	<update id="editsuppback" parameterType="pd">
 		update

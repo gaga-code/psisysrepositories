@@ -25,6 +25,16 @@
 		)
 	</insert>
 	
+	<!-- 修改商品编码 -->
+	<update id="editGOODCODE" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			GOOD_ID = #{newGOODCODE}
+		where 
+		GOOD_ID = #{GOODCODE}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
 	
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
