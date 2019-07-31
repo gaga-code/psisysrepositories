@@ -53,6 +53,7 @@
 									<option value="">全部</option>								 	
 									<option value="1" >未审核</option>
 									<option value="2">已审核</option>
+									<option value="3">作废</option>
 								  	</select>
 								</td>
 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
@@ -118,10 +119,13 @@
 											<td class='center'>${var.LDATE}</td>
 											<td class='center'>${var.BILLCODE}</td>
 											<c:if test="${var.BILLSTATUS == 1 }">
-											<td class='center'>未审核</td>
+											<td class='center' id='BILLSTATUS'>未审核</td>
 											</c:if>
 											<c:if test="${var.BILLSTATUS == 2 }">
-											<td class='center'>已审核</td>
+											<td class='center' id='BILLSTATUS'>已审核</td>
+											</c:if>
+											<c:if test="${var.BILLSTATUS == 3 }">
+											<td class='center' id='BILLSTATUS'>作废</td>
 											</c:if>
 											<td class='center'>${var.FROMUNITNAME}</td>
 											<td class='center'>${var.PAYMETHOD}</td>
@@ -297,7 +301,7 @@
 		}
 
 		$(function() {
-			
+			console.log("1");
 			$("#billstatus option[text='未审核']").attr("selected", true); 
 			
 			//日期框
@@ -373,8 +377,17 @@
 				
 		//删除
 		function del(Id,BILLSTATUS){
+			if(BILLSTATUS == 3){
+				$("#"+Id+" #customercheckbox").tips({
+					side:1,
+		            msg:'作废单不可以删除',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			if(BILLSTATUS == 2){
-				$("#"+Id+" #delone").tips({
+				$("#"+Id+" #customercheckbox").tips({
 					side:1,
 		            msg:'已审核的客户结算单不可以删除',
 		            bg:'#AE81FF',
@@ -396,7 +409,7 @@
 		
 		//修改
 		function edit(Id,status){
-			if(status != 2){
+			if(status == 1){
 				top.jzts();
 				 var diag = new top.Dialog();
 				 diag.Drag=true;
@@ -415,7 +428,7 @@
 				 };
 				 diag.show();
 			}else{//customercheckbox
-				$("#customercheckbox").tips({
+				$("#"+Id+" #customercheckbox").tips({
 					side : 1,
 					msg : "该单据已审核，无法修改！",
 					bg : '#FF5080',
@@ -427,9 +440,18 @@
 			 
 		}
 		function unapprovalone(Id,BILLSTATUS){
+			if(BILLSTATUS == 3){
+				$("#"+Id+" #customercheckbox").tips({
+					side:1,
+		            msg:'作废单不可反审',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			//1、先判断结算单里的进货单是否有二次结算的单，如果有，该单不能反审
 			if(BILLSTATUS != 2){
-				$("#"+Id+" #unapprovalone").tips({
+				$("#"+Id+" #customercheckbox").tips({
 					side:1,
 		            msg:'未审核不可进行反审',
 		            bg:'#AE81FF',
@@ -472,8 +494,17 @@
 		        });
 				return;
 			}
+			if(BILLSTATUS == 3){
+				$("#"+Id+" #customercheckbox").tips({
+					side:1,
+		            msg:'作废单不可审批',
+		            bg:'#AE81FF',
+		            time:8
+		        });
+				return;
+			}
 			if(BILLSTATUS == 2){
-				$("#"+Id+" #approvalone").tips({
+				$("#"+Id+" #customercheckbox").tips({
 					side:1,
 		            msg:'已审批，不可重复审批',
 		            bg:'#AE81FF',
@@ -500,7 +531,7 @@
 						        });
 								tosearch();
 							}else if(data.msg == "error"){
-								$("#"+Id+" #approvalone").tips({
+								$("#"+Id+" #customercheckbox").tips({
 									side:1,
 						            msg:'审批失败',
 						            bg:'#AE81FF',
@@ -527,16 +558,16 @@
 					  if(document.getElementsByName('ids')[i].checked){
 					  	if(str=='') str += document.getElementsByName('ids')[i].value;
 					  	else str += ',' + document.getElementsByName('ids')[i].value;
-					  	if($("#"+document.getElementsByName('ids')[i].value+" #PAYMENTAMOUNT").val() == 0.0 || $("#"+document.getElementsByName('ids')[i].value+" #PAYMENTAMOUNT").val() == 0){
-					  		var billcode = $("#"+document.getElementsByName('ids')[i].value+" #BILLCODE").val()
-					  		$("#zcheckbox").tips({
+					  	console.log($("#"+document.getElementsByName('ids')[i].value+" #BILLSTATUS").text().match(RegExp(/未审核/)));
+					  	if(!$("#"+document.getElementsByName('ids')[i].value+" #BILLSTATUS").text().match(RegExp(/未审核/)) ){
+					  		$("#"+document.getElementsByName('ids')[i].value+" #customercheckbox").tips({
 								side:1,
-					            msg:'单据编号为'+billcode+'的结算单实收金额不可为0,审批无效',
+					            msg:'该结算单不可参与批量审核',
 					            bg:'#AE81FF',
 					            time:8
 					        });
 							return;
-					  	}
+						}
 					  }
 					}
 					if(str==''){

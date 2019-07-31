@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://"
@@ -14,14 +15,18 @@
 <base href="<%=basePath%>">
 <!-- 下拉框 -->
 <link rel="stylesheet" href="static/ace/css/chosen.css" />
+<!-- 自定義CSS文件 -->
+<link rel="stylesheet" href="static/myCSS/style.css"/>
 <!-- jsp文件头和头部 -->
 <%@ include file="../../system/index/top.jsp"%>
+<!-- <script type="text/javascript" src="static/js/jquery/jquery-1.7.2.js"></script> -->
 <script type="text/javascript" src="static/js/myjs/head.js"></script>
 <!-- 日期框 -->
 <link rel="stylesheet" href="static/ace/css/datepicker.css" />
 </head>
 <body class="no-skin">
 	<!-- /section:basics/navbar.layout -->
+	<input type="hidden" name="goodslist" id="goodslist" value="${sessionScope.goodslist}"/>
 	<div class="main-container" id="main-container">
 		<!-- /section:basics/sidebar -->
 		<div class="main-content">
@@ -32,213 +37,215 @@
 							
 						<!-- 检索  -->
 						<form action="salebill/list.do" method="post" name="Form" id="Form">
-						<table style="margin-top:5px;">
-							<tr>
-								<td>
-									<div class="nav-search">
-										<span class="input-icon">
-											<input type="text" placeholder="这里输入关键词" class="nav-search-input" id="nav-search-input" autocomplete="off" name="keywords" value="${pd.keywords }" placeholder="这里输入关键词"/>
-											<i class="ace-icon fa fa-search nav-search-icon"></i>
-										</span>
-									</div>
-								</td>
-								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
-								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
-								<td>
-									<select class="chosen-select form-control" name="CUSTOMER_ID" id="CUSTOMER_ID" data-placeholder="选择供应商" style="vertical-align:top;width:98%;" >
-										<option value="">选择客户</option>
-										<c:forEach items="${customerList}" var="var">
-											<option value="${var.CUSTOMER_ID }" <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if>>${var.CUATOMERNAME }</option>  <!-- <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if> -->
-										</c:forEach>
-									</select>
-								</td>
-								<td>
-									<select class="chosen-select form-control" name="ISSETTLEMENTED" id="ISSETTLEMENTED" data-placeholder="选择结算状态" style="vertical-align:top;width:98%;" >
-										<option value="">选择结算状态</option>
-										<option value="0" <c:if test="${'0' == pd.ISSETTLEMENTED }">selected</c:if>>未结算</option>
-										<option value="1" <c:if test="${'1' == pd.ISSETTLEMENTED }">selected</c:if>>已结算</option>
-										<option value="2" <c:if test="${'2' == pd.ISSETTLEMENTED }">selected</c:if>>正在结算</option>
-									</select>
-								</td>
-								<td>
-									<select class="chosen-select form-control" name="BILLSTATUS" id="BILLSTATUS" data-placeholder="选择审核状态" style="vertical-align:top;width:98%;" >
-										<option value="">选择审核状态</option>
-										<option value="1" <c:if test="${'1' == pd.BILLSTATUS }">selected</c:if>>未审核</option>
-										<option value="2" <c:if test="${'2' == pd.BILLSTATUS }">selected</c:if>>已审核</option>
-										<option value="3" <c:if test="${'3' == pd.BILLSTATUS }">selected</c:if>>结算未通过</option>
-									</select>
-								</td>
-<%-- 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td> --%>
-<%-- 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td> --%>
-								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
-								</c:if>
-								<%-- <c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if> --%>
-							</tr>
-						</table>
-						<!-- 检索  -->
-					
-						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
-							<thead>
+							<table style="margin-top:5px;">
 								<tr>
-									<th class="center" style="width:35px;">
-									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
-									</th>
-									<th class="center" style="width:50px;">序号</th>
-									<th class="center">单据编号</th>
-									<th class="center">客户</th>
-									<th class="center">总金额</th>
-									<th class="center">未付金额</th>
-									<th class="center">已付金额</th>
-									<th class="center">本次付款</th>
-									<th class="center">结算状态</th>
-									<th class="center">审核状态</th>
-									<th class="center">经手人</th>
-									<th class="center">备注</th>
-									<th class="center">操作</th><!-- style="width:150px;" -->
-								</tr>
-							</thead>
-													
-							<tbody>
-							<!-- 开始循环 -->	
-							<c:choose>
-								<c:when test="${not empty varList}">
+									<td>
+										<div class="nav-search">
+											<span class="input-icon">
+												<input type="text" placeholder="这里输入关键词" class="nav-search-input" id="nav-search-input" autocomplete="off" name="keywords" value="${pd.keywords }" placeholder="这里输入关键词"/>
+												<i class="ace-icon fa fa-search nav-search-icon"></i>
+											</span>
+										</div>
+									</td>
+									<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
+									<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
+									<td>
+										<select class="chosen-select form-control" name="CUSTOMER_ID" id="CUSTOMER_ID" data-placeholder="选择供应商" style="vertical-align:top;width:98%;" >
+											<option value="">选择客户</option>
+											<c:forEach items="${customerList}" var="var">
+												<option value="${var.CUSTOMER_ID }" <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if>>${var.CUATOMERNAME }</option>  <!-- <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if> -->
+											</c:forEach>
+										</select>
+									</td>
+									<td>
+										<select class="chosen-select form-control" name="ISSETTLEMENTED" id="ISSETTLEMENTED" data-placeholder="选择结算状态" style="vertical-align:top;width:98%;" >
+											<option value="">选择结算状态</option>
+											<option value="0" <c:if test="${'0' == pd.ISSETTLEMENTED }">selected</c:if>>未结算</option>
+											<option value="1" <c:if test="${'1' == pd.ISSETTLEMENTED }">selected</c:if>>已结算</option>
+											<option value="2" <c:if test="${'2' == pd.ISSETTLEMENTED }">selected</c:if>>正在结算</option>
+										</select>
+									</td>
+									<td>
+										<select class="chosen-select form-control" name="BILLSTATUS" id="BILLSTATUS" data-placeholder="选择审核状态" style="vertical-align:top;width:98%;" >
+											<option value="">选择审核状态</option>
+											<option value="1" <c:if test="${'1' == pd.BILLSTATUS }">selected</c:if>>未审核</option>
+											<option value="2" <c:if test="${'2' == pd.BILLSTATUS }">selected</c:if>>已审核</option>
+											<option value="3" <c:if test="${'3' == pd.BILLSTATUS }">selected</c:if>>结算未通过</option>
+										</select>
+									</td>
+	<%-- 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td> --%>
+	<%-- 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td> --%>
 									<c:if test="${QX.cha == 1 }">
-									<c:forEach items="${varList}" var="var" varStatus="vs">
-										<tr>
-											<td class='center'>
-												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.SALEBILL_ID}" class="ace" /><span class="lbl"></span></label>
-											</td>
-											<td class='center' style="width: 30px;">${vs.index+1}</td>
-											<td class='center'>${var.BILLCODE}</td>
-											<td class='center'>${var.CUATOMERNAME}</td>
-											<td class='center'>${var.ALLAMOUNT}</td>
-											<td class='center'>${var.UNPAIDAMOUNT}</td>
-											<td class='center'>${var.PAIDAMOUNT}</td>
-											<td class='center'>${var.THISPAY}</td>
-											<td class='center'>
-												<c:if test="${var.ISSETTLEMENTED == 2}">
-													结算中
-												</c:if>
-												<c:if test="${var.ISSETTLEMENTED == 1}">
-													已结算
-												</c:if>
-												<c:if test="${var.ISSETTLEMENTED == 0}">
-													未结算
-												</c:if>
-											</td>
-											<td class='center'>
-												<c:if test="${var.BILLSTATUS == 1}">
-													未审核
-												</c:if>
-												<c:if test="${var.BILLSTATUS == 2}">
-													已审核
-												</c:if>
-												<c:if test="${var.BILLSTATUS == 3}">
-													结算未通过
-												</c:if>
-											</td>
-											<td class='center'>${var.PSI_NAME}</td>
-											<td class='center'>${var.NOTE}</td>
-											<td class="center">
-												<c:if test="${QX.edit != 1 && QX.del != 1 }">
-												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
-												</c:if>
-												<div class="hidden-sm hidden-xs btn-group">
-													<c:if test="${QX.InOrderfanshenApproval == 1 }"><c:if test="${var.ISSETTLEMENTED == 0 || var.ISSETTLEMENTED == 2}"><c:if test="${var.BILLSTATUS == 2}">
-													<a class="btn btn-mini btn-danger"  style="height:26px;" onclick="fanshen('${var.SALEBILL_ID}');">反审</a>
-													</c:if></c:if></c:if>
-													<c:if test="${QX.InOrdershenpiApproval == 1 }"><c:if test="${var.BILLSTATUS != 2}">
-													<a class="btn btn-mini btn-success" style="height:26px;" onclick="shenpi('${var.SALEBILL_ID}');">审批</a>
-													</c:if></c:if>
-													<a class="btn btn-xs btn-success" title="查看" onclick="view('${var.SALEBILL_ID}');">
-														<i class="ace-icon fa fa-eye bigger-120" title="查看"></i>
-													</a>
-													<c:if test="${QX.edit == 1 }"><c:if test="${var.BILLSTATUS != 2}">
-													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.SALEBILL_ID}');">
-														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
-													</a>
-													</c:if></c:if>
-													<c:if test="${QX.del == 1 }"><c:if test="${var.BILLSTATUS != 2}">
-													<a class="btn btn-xs btn-danger" onclick="del('${var.SALEBILL_ID}');">
-														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
-													</a>
-													</c:if></c:if>
-												</div>
-												<div class="hidden-md hidden-lg">
-													<div class="inline pos-rel">
-														<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-															<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-														</button>
-			
-														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-															<li>
-																<a style="cursor:pointer;" onclick="view('${var.SALEBILL_ID}');" class="tooltip-success" data-rel="tooltip" title="查看">
-																	<span class="green">
-																		<i class="ace-icon fa fa-eye bigger-120"></i>
-																	</span>
-																</a>
-															</li>
-															<c:if test="${QX.edit == 1 }">
-															<li>
-																<a style="cursor:pointer;" onclick="edit('${var.SALEBILL_ID}');" class="tooltip-success" data-rel="tooltip" title="修改">
-																	<span class="green">
-																		<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
-																	</span>
-																</a>
-															</li>
-															</c:if>
-															<c:if test="${QX.del == 1 }">
-															<li>
-																<a style="cursor:pointer;" onclick="del('${var.SALEBILL_ID}');" class="tooltip-error" data-rel="tooltip" title="删除">
-																	<span class="red">
-																		<i class="ace-icon fa fa-trash-o bigger-120"></i>
-																	</span>
-																</a>
-															</li>
-															</c:if>
-														</ul>
-													</div>
-												</div>
-											</td>
-										</tr>
-									
-									</c:forEach>
+									<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 									</c:if>
-									<c:if test="${QX.cha == 0 }">
-										<tr>
-											<td colspan="100" class="center">您无权查看</td>
-										</tr>
-									</c:if>
-								</c:when>
-								<c:otherwise>
-									<tr class="main_info">
-										<td colspan="100" class="center" >没有相关数据</td>
+									<%-- <c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if> --%>
+								</tr>
+							</table>
+							<!-- 检索  -->
+						
+							<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
+								<thead>
+									<tr>
+										<th class="center" style="width:35px;">
+										<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
+										</th>
+										<th class="center" style="width:50px;">序号</th>
+										<th class="center">单据编号</th>
+										<th class="center">客户</th>
+										<th class="center">总金额</th>
+										<th class="center">未付金额</th>
+										<th class="center">已付金额</th>
+										<th class="center">本次付款</th>
+										<th class="center">结算状态</th>
+										<th class="center">审核状态</th>
+										<th class="center">经手人</th>
+										<th class="center">备注</th>
+										<th class="center">操作</th><!-- style="width:150px;" -->
 									</tr>
-								</c:otherwise>
-							</c:choose>
-							</tbody>
-						</table>
-						<div class="page-header position-relative">
-						<table style="width:100%;">
-							<tr>
-								<td style="vertical-align:top;">
-									<c:if test="${QX.add == 1 }">
-									<a class="btn btn-mini btn-success" onclick="add();">新增</a>
-									<!-- <a class="btn btn-mini btn-success" onclick="add();">新增</a> -->
-									</c:if>
-									<c:if test="${QX.del == 1 }"><c:if test="${'1' == pd.BILLSTATUS || '3' == pd.BILLSTATUS}">
-									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" >批量删除</i></a>
-									</c:if></c:if>
-									<c:if test="${'1' == pd.BILLSTATUS || '3' == pd.BILLSTATUS}">
-									<a class="btn btn-mini btn-success" onclick="shenpiAll('确定要批量审批选中的数据吗?');" title="批量审批" >批量审批</a>
-									</c:if>
-								</td>
-								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
-							</tr>
-						</table>
-						</div>
+								</thead>
+														
+								<tbody>
+								<!-- 开始循环 -->	
+								<c:choose>
+									<c:when test="${not empty varList}">
+										<c:if test="${QX.cha == 1 }">
+										<c:forEach items="${varList}" var="var" varStatus="vs">
+											<tr >
+												<td class='center' id='checkbox${var.SALEBILL_ID }'>
+													<label class="pos-rel"><input type='checkbox' name='ids' value="${var.SALEBILL_ID}" class="ace" /><span class="lbl"></span></label>
+												</td>
+												<td class='center' style="width: 30px;">${vs.index+1}</td>
+												<td class='center'>${var.BILLCODE}</td>
+												<td class='center'>${var.CUATOMERNAME}</td>
+												<td class='center'>${var.ALLAMOUNT}</td>
+												<td class='center'>${var.UNPAIDAMOUNT}</td>
+												<td class='center'>${var.PAIDAMOUNT}</td>
+												<td class='center'>${var.THISPAY}</td>
+												<td class='center'>
+													<c:if test="${var.ISSETTLEMENTED == 2}">
+														结算中
+													</c:if>
+													<c:if test="${var.ISSETTLEMENTED == 1}">
+														已结算
+													</c:if>
+													<c:if test="${var.ISSETTLEMENTED == 0}">
+														未结算
+													</c:if>
+												</td>
+												<td class='center' id='${var.SALEBILL_ID}'>
+													<c:if test="${var.BILLSTATUS == 1}">
+														未审核
+													</c:if>
+													<c:if test="${var.BILLSTATUS == 2}">
+														已审核
+													</c:if>
+													<c:if test="${var.BILLSTATUS == 3}">
+														结算未通过
+													</c:if>
+												</td>
+												<td class='center'>${var.PSI_NAME}</td>
+												<td class='center'>${var.NOTE}</td>
+												<td class="center">
+													<c:if test="${QX.edit != 1 && QX.del != 1 }">
+													<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
+													</c:if>
+													<div class="hidden-sm hidden-xs btn-group">
+														<c:if test="${QX.InOrdershenpiApproval == 1 }">
+														<a class="btn btn-mini btn-success" style="height:26px;" onclick="shenpi('${var.SALEBILL_ID}','${var.BILLSTATUS}');">审批</a>
+														</c:if>
+														<c:if test="${QX.InOrderfanshenApproval == 1 }">
+														<a class="btn btn-mini btn-danger"  style="height:26px;" onclick="fanshen('${var.SALEBILL_ID}','${var.ISSETTLEMENTED}','${var.BILLSTATUS}');">反审</a>
+														</c:if>
+														<a class="btn btn-xs btn-success" title="查看" onclick="view('${var.SALEBILL_ID}');">
+															<i class="ace-icon fa fa-eye bigger-120" title="查看"></i>
+														</a>
+														<c:if test="${QX.edit == 1 }">
+														<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.SALEBILL_ID}','${var.BILLSTATUS}');">
+															<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
+														</a>
+														</c:if>
+														<c:if test="${QX.del == 1 }">
+														<a class="btn btn-xs btn-danger" onclick="del('${var.SALEBILL_ID}','${var.BILLSTATUS}');">
+															<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
+														</a>
+														</c:if>
+													</div>
+													<div class="hidden-md hidden-lg">
+														<div class="inline pos-rel">
+															<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+															</button>
+				
+															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																<li>
+																	<a style="cursor:pointer;" onclick="view('${var.SALEBILL_ID}');" class="tooltip-success" data-rel="tooltip" title="查看">
+																		<span class="green">
+																			<i class="ace-icon fa fa-eye bigger-120"></i>
+																		</span>
+																	</a>
+																</li>
+																<c:if test="${QX.edit == 1 }">
+																<li>
+																	<a style="cursor:pointer;" onclick="edit('${var.SALEBILL_ID}','${var.BILLSTATUS}');" class="tooltip-success" data-rel="tooltip" title="修改">
+																		<span class="green">
+																			<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
+																		</span>
+																	</a>
+																</li>
+																</c:if>
+																<c:if test="${QX.del == 1 }">
+																<li>
+																	<a style="cursor:pointer;" onclick="del('${var.SALEBILL_ID}','${var.BILLSTATUS} }');" class="tooltip-error" data-rel="tooltip" title="删除">
+																		<span class="red">
+																			<i class="ace-icon fa fa-trash-o bigger-120"></i>
+																		</span>
+																	</a>
+																</li>
+																</c:if>
+															</ul>
+														</div>
+													</div>
+												</td>
+											</tr>
+										
+										</c:forEach>
+										</c:if>
+										<c:if test="${QX.cha == 0 }">
+											<tr>
+												<td colspan="100" class="center">您无权查看</td>
+											</tr>
+										</c:if>
+									</c:when>
+									<c:otherwise>
+										<tr class="main_info">
+											<td colspan="100" class="center" >没有相关数据</td>
+										</tr>
+									</c:otherwise>
+								</c:choose>
+								</tbody>
+							</table>
+							<div class="page-header position-relative">
+								<table style="width:100%;">
+									<tr>
+										<td style="vertical-align:top;">
+											<c:if test="${QX.add == 1 }">
+											<a class="btn btn-mini btn-success" onclick="add();">新增</a>
+											<!-- <a class="btn btn-mini btn-success" onclick="add();">新增</a> -->
+											</c:if>
+											<c:if test="${QX.del == 1 }"><c:if test="${'1' == pd.BILLSTATUS || '3' == pd.BILLSTATUS}">
+											<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" >批量删除</i></a>
+											</c:if></c:if>
+											<c:if test="${'1' == pd.BILLSTATUS || '3' == pd.BILLSTATUS}">
+											<a class="btn btn-mini btn-success" onclick="shenpiAll('确定要批量审批选中的数据吗?');" title="批量审批" >批量审批</a>
+											</c:if>
+										</td>
+										<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
+									</tr>
+								</table>
+							</div>
+						
 						</form>
+						<iframe id="rfFrame" name="rfFrame" src="about:blank" style="display:none;"></iframe>
 						<form action="#" method="post" name="actionForm" id="actionForm"></form>
 						</div>
 						<!-- /.col -->
@@ -280,7 +287,17 @@
 			//siMenu('z190','lm180','添加进货单','salebill/goAdd.do');
 		}
 		//修改
-		function edit(Id){
+		function edit(Id,BILLSTATUS){
+			if($("#"+Id).text().match(RegExp(/已审核/)) ){
+				var ee = '#checkbox'+Id;
+				 $(ee).tips({
+					side:1,
+		            msg:'该单据已审核，不可修改，请先反审',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			var url = 'salebill/goEdit.do?SALEBILL_ID='+Id;
 			document.forms.actionForm.action=url;
 	        document.forms.actionForm.submit();
@@ -386,7 +403,17 @@
 		}
 				
 		//删除
-		function del(Id){
+		function del(Id,BILLSTATUS){
+			if($("#"+Id).text().match(RegExp(/已审核/)) ){
+				var ee = '#checkbox'+Id;
+				 $(ee).tips({
+						side:1,
+			            msg:'该单据已审核，不可删除',
+			            bg:'#AE81FF',
+			            time:5
+			        });
+					return;
+			 }
 			bootbox.confirm("确定要删除吗?", function(result) {
 				if(result) {
 					top.jzts();
@@ -398,16 +425,84 @@
 			});
 		}
 		
-		//审批
-		function shenpi(Id){
-			top.jzts();
-			var url = "<%=basePath%>salebill/shenpi.do?SALEBILL_ID="+Id+"&tm="+new Date().getTime();
-			$.get(url,function(data){
-				tosearch();
-			});
+		
+		
+		//审批  GOODNAME,GOODCODE,STOCKNUM,STOCKDOWNNUM	
+		function shenpi(Id,BILLSTATUS){
+			if($("#"+Id).text().match(RegExp(/已审核/)) ){
+				 var ee = '#checkbox'+Id;
+				 $(ee).tips({
+						side:1,
+			            msg:'该单据已审核，不可重复审批',
+			            bg:'#AE81FF',
+			            time:5
+			        });
+					return;
+			 }
+			 top.jzts();
+			 $.ajax({
+					type: "POST",
+					url: '<%=basePath%>salebill/shenpi.do?tm='+new Date().getTime(),
+			    	data: {SALEBILL_ID:Id},
+					dataType:'json',
+					//beforeSend: validateData,
+					cache: false,
+					success: function(data){
+						//tosearch();
+						top.hangge();
+						alert($('#goodslist').val())
+						
+						$("#"+Id).html("已审核");
+						$(this).hide();
+						
+						if(data.goodslist != null){
+							if($("#alertBox").is(":hidden")){
+								$('#alertBox').show();
+							}else{
+								var htmlStr = "<div id='alertBox'><div class='boxTop'><span>库存预警</span><span id='boxClose'> X </span></div><ul id=\"alertGoodsList\">";
+								
+								for( var i = 0; i < data.goodslist.length; i++ ){
+									htmlStr += "<li><span>"+data.goodslist[i].GOODCODE+"</span><span>"+data.goodslist[i].GOODNAME+"</span><span>"+data.goodslist[i].STOCKNUM+"</span></li>"
+								}
+								htmlStr += "</ul></div>";
+								$(".page-content").append(htmlStr);
+	
+							}
+						
+							//预警弹窗消失
+							var closeObj = document.getElementById('boxClose');
+							closeObj.onclick=function(){
+								$('#alertBox').hide();
+							};
+						} 
+					}
+				});
+			/* $.get(url,function(data){
+				
+			}); */
 		}
 		//反审
-		function fanshen(Id){
+		function fanshen(Id,ISSETTLEMENTED,BILLSTATUS){
+			if(ISSETTLEMENTED == 1){
+				var ee = '#checkbox'+Id;
+				 $(ee).tips({
+					side:1,
+		            msg:'该单据已结算，请先反审结算单',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
+			if(!$("#"+Id).text().match(RegExp(/已审核/)) ){
+				var ee = '#checkbox'+Id;
+				 $(ee).tips({
+						side:1,
+			            msg:'请先审批',
+			            bg:'#AE81FF',
+			            time:5
+			        });
+					return;
+			 }
 			bootbox.confirm("确定要反审吗?", function(result) {
 				if(result) {
 					top.jzts();
@@ -508,6 +603,7 @@
 				}
 			});
 		};
+		
 		
 		//导出excel
 		function toExcel(){

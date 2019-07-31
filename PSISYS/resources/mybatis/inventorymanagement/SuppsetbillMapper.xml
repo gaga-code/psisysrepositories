@@ -237,7 +237,7 @@
 		</if>
 		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
 			and IFNULL(a.DR,0)=0 
-		order by a.CREATETIME desc
+		order by a.LASTTIME desc
 		
 	</select>
 	

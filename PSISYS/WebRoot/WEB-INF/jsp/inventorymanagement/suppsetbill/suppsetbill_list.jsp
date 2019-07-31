@@ -53,6 +53,7 @@
 									<option value="">全部</option>								 	
 									<option value="1" >未审核</option>
 									<option value="2">已审核</option>
+									<option value="3">作废</option>
 								  	</select>
 								</td>
 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
@@ -116,18 +117,21 @@
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.LDATE}</td>
-											<td class='center'>${var.BILLCODE}</td>
+											<td class='center' id='BILLCODE'>${var.BILLCODE}</td>
 											<c:if test="${var.BILLSTATUS == 1 }">
-											<td class='center'>未审核</td>
+											<td class='center' id='BILLSTATUS'><font color="blue">未审核</font></td>
 											</c:if>
 											<c:if test="${var.BILLSTATUS == 2 }">
-											<td class='center'>已审核</td>
+											<td class='center' id='BILLSTATUS'><font color="green">已审核</font></td>
+											</c:if>
+											<c:if test="${var.BILLSTATUS == 3 }">
+											<td class='center' id='BILLSTATUS'><font color="red">作废</font></td>
 											</c:if>
 											<td class='center'>${var.FROMUNITNAME}</td>
 											<td class='center'>${var.PAYMETHOD}</td>
 											<td class='center'>${var.PAYABLEALLAM}</td>
 											<td class='center'>${var.PAYABLEAMOUNT}</td>
-											<td class='center'>${var.PAYMENTAMOUNT}</td>
+											<td class='center' id='PAYMENTAMOUNT'>${var.PAYMENTAMOUNT}</td>
 											<td class='center'>${var.INVOICETYPE}</td>
 											<td class='center'>${var.BILLNO}</td>
 											
@@ -373,8 +377,17 @@
 				
 		//删除
 		function del(Id,BILLSTATUS){
+			if(BILLSTATUS == 3){
+				$("#"+Id+" #suppcheckbox").tips({
+					side:1,
+		            msg:'作废单不可以删除',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			if(BILLSTATUS == 2){
-				$("#"+Id+" #delone").tips({
+				$("#"+Id+" #suppcheckbox").tips({
 					side:1,
 		            msg:'已审核的供应商结算单不可以删除',
 		            bg:'#AE81FF',
@@ -396,7 +409,7 @@
 		
 		//修改
 		function edit(Id,status){
-			if(status != 2){
+			if(status == 1){
 				top.jzts();
 				 var diag = new top.Dialog();
 				 diag.Drag=true;
@@ -415,9 +428,9 @@
 				 };
 				 diag.show();
 			}else{//suppcheckbox
-				$("#suppcheckbox").tips({
+				$("#"+Id+" #suppcheckbox").tips({
 					side : 1,
-					msg : "该单据已审核，无法修改！",
+					msg : "该单据无法修改！",
 					bg : '#FF5080',
 					time : 5
 				});
@@ -427,9 +440,18 @@
 			 
 		}
 		function unapprovalone(Id,BILLSTATUS){
+			if(BILLSTATUS == 3){
+				$("#"+Id+" #suppcheckbox").tips({
+					side:1,
+		            msg:'作废单不可反审',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			//1、先判断结算单里的进货单是否有二次结算的单，如果有，该单不能反审
 			if(BILLSTATUS != 2){
-				$("#"+Id+" #unapprovalone").tips({
+				$("#"+Id+" #suppcheckbox").tips({
 					side:1,
 		            msg:'未审核不可进行反审',
 		            bg:'#AE81FF',
@@ -464,7 +486,7 @@
 		//单张审批
 		function approvalone(Id,paidam,BILLSTATUS){
 			if(paidam == 0.0 || paidam == 0){
-				$("#"+Id+" #approvalone").tips({
+				$("#"+Id+" #suppcheckbox").tips({
 					side:1,
 		            msg:'结算单实付金额不可为0,审批无效',
 		            bg:'#AE81FF',
@@ -472,8 +494,17 @@
 		        });
 				return;
 			}
+			if(BILLSTATUS == 3){
+				$("#"+Id+" #suppcheckbox").tips({
+					side:1,
+		            msg:'作废单不可审批',
+		            bg:'#AE81FF',
+		            time:8
+		        });
+				return;
+			}
 			if(BILLSTATUS == 2){
-				$("#"+Id+" #approvalone").tips({
+				$("#"+Id+" #suppcheckbox").tips({
 					side:1,
 		            msg:'已审批，不可重复审批',
 		            bg:'#AE81FF',
@@ -527,16 +558,15 @@
 					  if(document.getElementsByName('ids')[i].checked){
 					  	if(str=='') str += document.getElementsByName('ids')[i].value;
 					  	else str += ',' + document.getElementsByName('ids')[i].value;
-					  	if($("#"+document.getElementsByName('ids')[i].value+" #PAYMENTAMOUNT").val() == 0.0 || $("#"+document.getElementsByName('ids')[i].value+" #PAYMENTAMOUNT").val() == 0){
-					  		var billcode = $("#"+document.getElementsByName('ids')[i].value+" #BILLCODE").val()
-					  		$("#zcheckbox").tips({
+					  	if(!$("#"+document.getElementsByName('ids')[i].value+" #BILLSTATUS").text().match(RegExp(/未审核/)) ){
+					  		$("#"+document.getElementsByName('ids')[i].value+" #suppcheckbox").tips({
 								side:1,
-					            msg:'单据编号为'+billcode+'的结算单实付金额不可为0,审批无效',
+					            msg:'该结算单不可参与批量审核',
 					            bg:'#AE81FF',
 					            time:8
 					        });
 							return;
-					  	}
+						}
 					  }
 					}
 					if(str==''){
