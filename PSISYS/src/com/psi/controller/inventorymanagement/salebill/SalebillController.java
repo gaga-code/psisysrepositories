@@ -152,11 +152,16 @@ public class SalebillController extends BaseController {
 		pd.put("PAIDAMOUNT", 0);
 		pd.put("THISPAY", 0);
 		pd.put("ISSETTLEMENTED", 0);
-		salebillService.save(pd);
-//		mv.addObject("msg","success");
-//		mv.setViewName("save_result");
-//		mv.setViewName("inventorymanagement/salebill/salebill_list");
-		return "redirect:/salebill/list.do";
+		pd = salebillService.save(pd);
+		List<PageData> customerList = customerService.listAll(pd);	//列出customer列表;
+		List<PageData> warehouseList = warehouseService.listAll(pd);	//列出仓库列表;
+	/*	mv.setViewName("inventorymanagement/salebill/salebill_edit");
+		mv.addObject("msg", "edit");
+		mv.addObject("pd", newpd);
+		mv.addObject("customerList", customerList);
+		mv.addObject("warehouseList", warehouseList);
+		return mv;*/
+		return "redirect:/salebill/goEdit.do?SALEBILL_ID="+pd.getString("SALEBILL_ID");
 	}
 	
 	/**删除

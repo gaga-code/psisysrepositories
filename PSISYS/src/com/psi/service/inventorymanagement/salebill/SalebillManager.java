@@ -15,7 +15,7 @@ public interface SalebillManager{
 	 * @param pd
 	 * @throws Exception
 	 */
-	public void save(PageData pd)throws Exception;
+	public PageData save(PageData pd)throws Exception;
 	
 	/**删除
 	 * @param pd

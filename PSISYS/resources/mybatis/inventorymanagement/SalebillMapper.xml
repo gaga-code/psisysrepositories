@@ -548,7 +548,7 @@
 	<update id="fanshen" parameterType="pd">
 		update
 		<include refid="tableName"></include>
-		set BILLSTATUS = 1
+		set BILLSTATUS = #{BILLSTATUS}
 		where 
 			SALEBILL_ID = #{SALEBILL_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}

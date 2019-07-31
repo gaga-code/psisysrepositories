@@ -13,6 +13,8 @@
 	<!-- jsp文件头和头部 -->
 	<%@ include file="../../system/index/top.jsp"%>
 	<script type="text/javascript" src="static/js/myjs/head.js"></script>
+	<!-- 自定義CSS文件 -->
+	<link rel="stylesheet" href="static/myCSS/style.css"/>
 		<!-- 日期框 -->
 	<link rel="stylesheet" href="static/ace/css/datepicker.css" />
 </head>
@@ -35,6 +37,7 @@
 								<td style="text-align: center;" colspan="10"><font size="6">修改销售单</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 								<td style="text-align: center;" colspan="10">
 								<a class="btn btn-mini btn-primary" onclick="save();">保存</a>
+								<a class="btn btn-mini btn-primary" onclick="shenpi();">审批</a>
 									<a class="btn btn-mini btn-danger" onclick="returnList();">取消</a>
 								</td>
 							</tr>
@@ -535,6 +538,44 @@
 				insertOldRow('${t.GOOD_ID}','${t.GOODNAME}','${t.BARCODE}','${t.NAME}','${t.UNITPRICE_ID}','${t.PNUMBER}','${t.AMOUNT}','${t.NOTE}','${t.GOODCODE_ID}','${t.ISFREE}');
 			</c:forEach>
 		});
+		//审批  GOODNAME,GOODCODE,STOCKNUM,STOCKDOWNNUM	
+		function shenpi(){
+			 var Id = $("#SALEBILL_ID").val();
+			 top.jzts();
+			 $.ajax({
+					type: "POST",
+					url: '<%=basePath%>salebill/shenpi.do?tm='+new Date().getTime(),
+			    	data: {SALEBILL_ID:Id},
+					dataType:'json',
+					//beforeSend: validateData,
+					cache: false,
+					success: function(data){
+						//tosearch();
+						top.hangge();
+						alert($('#goodslist').val())
+						if(data.goodslist != null){
+							if($("#alertBox").is(":hidden")){
+								$('#alertBox').show();
+							}else{
+								var htmlStr = "<div id='alertBox'><div class='boxTop'><span>库存预警</span><span id='boxClose'> X </span></div><ul id=\"alertGoodsList\">";
+								
+								for( var i = 0; i < data.goodslist.length; i++ ){
+									htmlStr += "<li><span>"+data.goodslist[i].GOODCODE+"</span><span>"+data.goodslist[i].GOODNAME+"</span><span>"+data.goodslist[i].STOCKNUM+"</span></li>"
+								}
+								htmlStr += "</ul></div>";
+								$(".page-content").append(htmlStr);
+	
+							}
+						
+							//预警弹窗消失
+							var closeObj = document.getElementById('boxClose');
+							closeObj.onclick=function(){
+								$('#alertBox').hide();
+							};
+						} 
+					}
+				});
+		}		
 		</script>
 </body>
 </html>

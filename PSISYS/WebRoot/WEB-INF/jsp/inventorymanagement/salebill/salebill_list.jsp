@@ -62,7 +62,7 @@
 											<option value="">选择结算状态</option>
 											<option value="0" <c:if test="${'0' == pd.ISSETTLEMENTED }">selected</c:if>>未结算</option>
 											<option value="1" <c:if test="${'1' == pd.ISSETTLEMENTED }">selected</c:if>>已结算</option>
-											<option value="2" <c:if test="${'2' == pd.ISSETTLEMENTED }">selected</c:if>>正在结算</option>
+											<option value="2" <c:if test="${'2' == pd.ISSETTLEMENTED }">selected</c:if>>结算中</option>
 										</select>
 									</td>
 									<td>
@@ -70,7 +70,7 @@
 											<option value="">选择审核状态</option>
 											<option value="1" <c:if test="${'1' == pd.BILLSTATUS }">selected</c:if>>未审核</option>
 											<option value="2" <c:if test="${'2' == pd.BILLSTATUS }">selected</c:if>>已审核</option>
-											<option value="3" <c:if test="${'3' == pd.BILLSTATUS }">selected</c:if>>结算未通过</option>
+											<option value="3" <c:if test="${'3' == pd.BILLSTATUS }">selected</c:if>>作废</option>
 										</select>
 									</td>
 	<%-- 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td> --%>
@@ -134,13 +134,13 @@
 												</td>
 												<td class='center' id='${var.SALEBILL_ID}'>
 													<c:if test="${var.BILLSTATUS == 1}">
-														未审核
+														<font color="blue">未审核</font>
 													</c:if>
 													<c:if test="${var.BILLSTATUS == 2}">
-														已审核
+														<font color="green">已审核</font>
 													</c:if>
 													<c:if test="${var.BILLSTATUS == 3}">
-														结算未通过
+														<font color="red">作废</font>
 													</c:if>
 												</td>
 												<td class='center'>${var.PSI_NAME}</td>
@@ -288,6 +288,16 @@
 		}
 		//修改
 		function edit(Id,BILLSTATUS){
+			if($("#"+Id).text().match(RegExp(/作废/)) ){
+				var ee = '#checkbox'+Id;
+				 $(ee).tips({
+					side:1,
+		            msg:'作废单不可进行任何操作',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			if($("#"+Id).text().match(RegExp(/已审核/)) ){
 				var ee = '#checkbox'+Id;
 				 $(ee).tips({
@@ -298,6 +308,7 @@
 		        });
 				return;
 			}
+			
 			var url = 'salebill/goEdit.do?SALEBILL_ID='+Id;
 			document.forms.actionForm.action=url;
 	        document.forms.actionForm.submit();
@@ -404,6 +415,16 @@
 				
 		//删除
 		function del(Id,BILLSTATUS){
+			if($("#"+Id).text().match(RegExp(/作废/)) ){
+				var ee = '#checkbox'+Id;
+				 $(ee).tips({
+					side:1,
+		            msg:'作废单不可进行任何操作',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			if($("#"+Id).text().match(RegExp(/已审核/)) ){
 				var ee = '#checkbox'+Id;
 				 $(ee).tips({
@@ -414,6 +435,7 @@
 			        });
 					return;
 			 }
+			
 			bootbox.confirm("确定要删除吗?", function(result) {
 				if(result) {
 					top.jzts();
@@ -429,6 +451,16 @@
 		
 		//审批  GOODNAME,GOODCODE,STOCKNUM,STOCKDOWNNUM	
 		function shenpi(Id,BILLSTATUS){
+			if($("#"+Id).text().match(RegExp(/作废/)) ){
+				var ee = '#checkbox'+Id;
+				 $(ee).tips({
+					side:1,
+		            msg:'作废单不可进行任何操作',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			if($("#"+Id).text().match(RegExp(/已审核/)) ){
 				 var ee = '#checkbox'+Id;
 				 $(ee).tips({
@@ -439,6 +471,7 @@
 			        });
 					return;
 			 }
+			
 			 top.jzts();
 			 $.ajax({
 					type: "POST",
@@ -483,6 +516,16 @@
 		}
 		//反审
 		function fanshen(Id,ISSETTLEMENTED,BILLSTATUS){
+			if($("#"+Id).text().match(RegExp(/作废/)) ){
+				var ee = '#checkbox'+Id;
+				 $(ee).tips({
+					side:1,
+		            msg:'作废单不可进行任何操作',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			if(ISSETTLEMENTED == 1){
 				var ee = '#checkbox'+Id;
 				 $(ee).tips({
@@ -503,6 +546,7 @@
 			        });
 					return;
 			 }
+			
 			bootbox.confirm("确定要反审吗?", function(result) {
 				if(result) {
 					top.jzts();

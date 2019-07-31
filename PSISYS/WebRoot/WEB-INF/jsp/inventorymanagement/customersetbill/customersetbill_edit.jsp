@@ -305,11 +305,6 @@
 										html += "			<i class='ace-icon fa fa-eye bigger-120' title='结算'></i> ";
 										html += "		</a> ";
 				            		}
-									if(res.QX.RETRIALINORDERINSUPPSET == 1){
-										html += "		<a class='btn btn-xs btn-success' title='反审' id='retrialsalebill' onclick=\"retrial('"+res.varList[i].SALEBILL_ID+"');\"> ";
-										html += "			<i title='反审'>反审</i> ";
-										html += "		</a> ";
-									}
 									if(res.QX.del == 1){
 										html += "		<a class='btn btn-xs btn-danger' id='delsalebill' onclick=\"del('"+res.varList[i].SALEBILL_ID+"');\" > ";
 										html += "			<i class='ace-icon fa fa-trash-o bigger-120' title='删除'></i> ";
@@ -328,15 +323,6 @@
 										html += "					<a style='cursor:pointer;' id='settleOnsalebill' onclick=\"settleone('"+res.varList[i].SALEBILL_ID+"');\" class='tooltip-success' data-rel='tooltip' title='结算'> ";
 										html += "						<span class='green'> ";
 										html += "							<i class='ace-icon fa fa-eye bigger-120'></i> ";
-										html += "						</span> ";
-										html += "					</a> ";
-										html += "				</li> ";
-									}
-									if(res.QX.RETRIALINORDERINSUPPSET == 1){
-										html += "				<li> ";
-										html += "					<a style='cursor:pointer;' id='retrialsalebill' onclick='retrial('"+res.varList[i].SALEBILL_ID+"');' class='tooltip-success' data-rel='tooltip' title='反审'> ";
-										html += "						<span class='green'> ";
-										html += "							<i class='ace-icon fa fa-pencil-square-o bigger-120'></i> ";
 										html += "						</span> ";
 										html += "					</a> ";
 										html += "				</li> ";
