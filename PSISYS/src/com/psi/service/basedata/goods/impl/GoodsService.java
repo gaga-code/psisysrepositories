@@ -181,7 +181,29 @@ public class GoodsService implements GoodsManager{
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> list(Page page)throws Exception{
-		return (List<PageData>)dao.findForList("GoodsMapper.datalistPage", page);
+		//本来的列表
+		List<PageData> result = (List<PageData>)dao.findForList("GoodsMapper.datalistPage", page);
+
+		//给列表的每个商品添加一个  仓库ID，仓库名，库存#仓库ID，仓库名，库存#  格式的 WAREHOUSE_ID_NAME_STOCK 值
+		PageData map = new PageData(); //查询条件
+		PageData temp = new PageData(); //临时保存查询到的仓库ID，仓库名，库存
+		map.put("PK_SOBOOKS", page.getPd().get("PK_SOBOOKS"));
+		
+		//循环每个商品添加 WAREHOUSE_ID_NAME_STOCK
+		for (PageData pageData : result) {
+			map.put("GOOD_ID", pageData.get("GOODCODE"));
+			String WH = (String)pageData.get("WAREHOUSE_IDs");
+			String[] strings = WH.split(",");
+			String WAREHOUSE_ID_NAME_STOCK = "";
+			for (String WID : strings) {
+				map.put("WAREHOUSE_ID", WID);
+				temp = (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", map);
+				if(temp != null)
+					WAREHOUSE_ID_NAME_STOCK = WAREHOUSE_ID_NAME_STOCK + WID + "," + temp.get("WHNAME") +"," + temp.get("STOCK") + "#";
+			}
+			pageData.put("WAREHOUSE_ID_NAME_STOCK", WAREHOUSE_ID_NAME_STOCK);
+		}
+		return result;
 	}
 	
 	/**列表(全部)

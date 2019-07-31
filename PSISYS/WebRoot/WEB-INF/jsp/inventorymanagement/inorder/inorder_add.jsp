@@ -48,8 +48,8 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
 								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="0" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td>
+								<td style='display:none' style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
+								<td style='display:none'>
 									<select class="chosen-select form-control" name="WAREHOUSE_ID" id="WAREHOUSE_ID"  style="vertical-align:top;width:98%;" >
 										<option value="">无</option>
 										<c:forEach items="${warehouseList}" var="var">
@@ -86,6 +86,7 @@
 								<tr>
 									<th class="center">商品名称</th>
 									<th class="center">商品编号</th>
+									<th class="center">仓库</th>
 									<th class="center">单价</th>
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
@@ -141,6 +142,7 @@
 	    var secondCell = "";
 	    var thirdCell = "";
 	    var fourthCell = "";
+	    var stockgoodsnummap = new Map();
 // 	    $(function() {
 // 	        //初始化第一行
 // 	        firstCell = $("#row0 td:eq(0)").html();
@@ -148,8 +150,32 @@
 // 	        thirdCell = $("#row0 td:eq(2)").html();
 // 	        fourthCell = $("#row0 td:eq(3)").html();
 // 	    });
-	
-		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE) {
+		function parseStr(GOOD_ID,str){
+			 var Str = str.split('#');
+		        if (Str[0] != "") {
+		            for (var i = 0; i < Str.length - 1; i++) {
+		                var value = Str[i].split(',');
+		                var wh_id = value[0];
+		                var wh_name = value[1]
+		                var stock = value[2];
+		                stockgoodsnummap.set(GOOD_ID+","+wh_id,stock);
+		            }
+		        }
+		}
+		
+		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE,WAREHOUSE_ID_NAME_STOCK) {
+			var Str = WAREHOUSE_ID_NAME_STOCK.split('#');
+			var selecthtml = "";
+	        if (Str[0] != "") {
+	        	for (var i = 0; i < Str.length - 1; i++) {
+	        		 var value = Str[i].split(',');
+		                var wh_id = value[0];
+		                var wh_name = value[1]
+		                var stock = value[2];
+		                selecthtml += "<option value="+wh_id+">"+wh_name+","+stock+"</option>";
+	        	}
+	        }
+			//var str = 
 			 //获取表格有多少行
 	        var rowLength = $("#simple-table tr").length;
 	        //这里的rowId就是row加上标志位的组合。是每新增一行的tr的id。
@@ -158,6 +184,9 @@
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      +'<td class="center"><select class="chosen-select form-control" style="vertical-align:top;width:98%;" >'
+						  +	selecthtml
+						  +'</select></td>'
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+CPRICE+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
@@ -287,14 +316,17 @@
 			    var UNITNAME=localStorage.getItem("UNITNAME");
 			    var GOODCODE=localStorage.getItem("GOODCODE");
 			    var CPRICE=localStorage.getItem("CPRICE");
+			    var WAREHOUSE_ID_NAME_STOCK=localStorage.getItem("WAREHOUSE_ID_NAME_STOCK");
 			    window.localStorage.removeItem("GOOD_ID");
 			    window.localStorage.removeItem("GOODNAME");
 			    window.localStorage.removeItem("BARCODE");
 			    window.localStorage.removeItem("UNITNAME");
 			    window.localStorage.removeItem("GOODCODE");
 			    window.localStorage.removeItem("CPRICE");
+			    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
 			    if( GOOD_ID != null)
-			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE);
+			    	parseStr(GOOD_ID,WAREHOUSE_ID_NAME_STOCK);
+			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE,WAREHOUSE_ID_NAME_STOCK);
 				diag.close();
 			};
 			diag.show();

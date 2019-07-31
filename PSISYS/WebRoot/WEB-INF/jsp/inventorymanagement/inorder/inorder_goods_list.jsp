@@ -80,7 +80,7 @@
 											<td class="center">
 												<div class="hidden-md hidden-lg">
 													<div class="inline pos-rel">
-														<button class="btn btn-minier btn-primary dropdown-toggle" onclick="view('${var.GOOD_ID}','${var.GOODNAME}','${var.BARCODE}','${var.UNITNAME}','${var.GOODCODE}' ,'${var.CPRICE}','${var.GOODTYPECODE}','${var.GOODSPECIF}');" data-toggle="dropdown" data-position="auto">
+														<button class="btn btn-minier btn-primary dropdown-toggle" onclick="view('${var.GOOD_ID}','${var.GOODNAME}','${var.BARCODE}','${var.UNITNAME}','${var.GOODCODE}' ,'${var.CPRICE}','${var.GOODTYPECODE}','${var.GOODSPECIF}','${var.WAREHOUSE_ID_NAME_STOCK}'); " data-toggle="dropdown" data-position="auto">
 															选择
 														</button>
 													</div>
@@ -151,7 +151,7 @@
 		$(top.hangge());//关闭加载状态
 		
 		//选择商品
-		function view(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE,GOODTYPECODE,GOODSPECIF){
+		function view(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE,GOODTYPECODE,GOODSPECIF,WAREHOUSE_ID_NAME_STOCK){
 			 if(!window.localStorage){
 		             alert("浏览器不支持localstorage");
 		      }else{
@@ -164,6 +164,7 @@
 		             localStorage.setItem("CPRICE",CPRICE);
 		 			 localStorage.setItem("GOODTYPECODE",GOODTYPECODE);
 		             localStorage.setItem("GOODSPECIF",GOODSPECIF);
+		             localStorage.setItem("WAREHOUSE_ID_NAME_STOCK",WAREHOUSE_ID_NAME_STOCK);
 			}
 			top.Dialog.close();//关闭窗口
 		}
