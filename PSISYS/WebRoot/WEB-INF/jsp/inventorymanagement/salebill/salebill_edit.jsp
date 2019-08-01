@@ -55,8 +55,8 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
 								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="${pd.ALLAMOUNT }" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td id="tishi">
+								<td style='display:none' style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
+								<td style='display:none' id="tishi">
 									<select class="chosen-select form-control" name="WAREHOUSE_ID" id="WAREHOUSE_ID"  style="vertical-align:top;width:98%;" >
 										<option value="">无</option>
 										<c:forEach items="${warehouseList}" var="var">
@@ -76,6 +76,8 @@
 								</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">结款日期:</td>
 								<td style="padding-left:2px;"><input class="span10 date-picker" name="PAYDATE" id="PAYDATE"  value="${pd.PAYDATE}" type="text" data-date-format="yyyy-mm-dd"  style="width:98%;" /></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">客户订单号:</td>
+								<td><input type="text" name="CUSBILLNO" id="CUSBILLNO"  maxlength="1000"  style="width:98%;" value="${pd.CUSBILLNO}"/></td>
 							</tr>
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<tr>
@@ -83,15 +85,12 @@
 								<td><input type="number" name="PAIDAMOUNT" id="PAIDAMOUNT" value="${pd.PAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">未付金额:</td>
 								<td><input type="number" name="UNPAIDAMOUNT" id="UNPAIDAMOUNT" value="${pd.UNPAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">客户订单号:</td>
-								<td><input type="text" name="CUSBILLNO" id="CUSBILLNO"  maxlength="1000"  style="width:98%;" value="${pd.CUSBILLNO}"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
-								<td colspan="10"><input  type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
-							</tr> 
-							<tr>
+								<!-- colspan="10" -->
+								<td ><input  type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;padding-left: 0px;padding-right: 0px;">送货地址:</td>
 								<td><input type="text" name="TOADDRESS" id="TOADDRESS"  maxlength="1000" style="width:98%;" value="${pd.TOADDRESS}" /></td>
-							</tr>
+							</tr> 
 						</table>
 						<table name="goodstable" id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
@@ -113,7 +112,7 @@
 							<tr></tr>
 							</tbody>
 						</table>
-						<a class="btn btn-mini btn-primary" onclick="addgoods();">添加商品</a>
+						<a id="addgoods" class="btn btn-mini btn-primary" onclick="addgoods();">添加商品</a>
 						</div>
 						<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img src="static/images/jiazai.gif" /><br/><h4 class="lighter block green">提交中...</h4></div>
 					</form>
@@ -157,6 +156,7 @@
 	    var secondCell = "";
 	    var thirdCell = "";
 	    var fourthCell = "";
+	    var stockgoodsnummap = new Map();
 // 	    $(function() {
 // 	        //初始化第一行
 // 	        firstCell = $("#row0 td:eq(0)").html();
@@ -164,6 +164,19 @@
 // 	        thirdCell = $("#row0 td:eq(2)").html();
 // 	        fourthCell = $("#row0 td:eq(3)").html();
 // 	    });
+
+ 		function parseStr(GOOD_ID,str){
+			 var Str = str.split('#');
+		        if (Str[0] != "") {
+		            for (var i = 0; i < Str.length - 1; i++) {
+		                var value = Str[i].split(',');
+		                var wh_id = value[0];
+		                var wh_name = value[1]
+		                var stock = value[2];
+		                stockgoodsnummap.set(GOOD_ID+","+wh_id,stock);
+		            }
+		        }
+		}
 	
 		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,WAREHOUSE_ID_NAME_STOCK) {
 			var Str = WAREHOUSE_ID_NAME_STOCK.split('#');
@@ -250,7 +263,7 @@
 		}
 		
 		//插入已存在的商品数据（初始化时调用）
-		function insertOldRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,UNITPRICE_ID,PNUMBER,AMOUNT,NOTE,GOODCODE,ISFREE,WAREHOUSE_ID_NAME_STOCK) {
+		function insertOldRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,UNITPRICE_ID,PNUMBER,AMOUNT,NOTE,GOODCODE,ISFREE,WAREHOUSE_ID,WAREHOUSE_ID_NAME_STOCK) {
 			
 			var Str = WAREHOUSE_ID_NAME_STOCK.split('#');
 			var selecthtml = "";
@@ -576,7 +589,7 @@
 				todayHighlight: true
 			});
 			<c:forEach items="${pd.goodslist}" var="t">
-				insertOldRow('${t.GOOD_ID}','${t.GOODNAME}','${t.BARCODE}','${t.NAME}','${t.UNITPRICE_ID}','${t.PNUMBER}','${t.AMOUNT}','${t.NOTE}','${t.GOODCODE_ID}','${t.ISFREE}','${t.WAREHOUSE_ID_NAME_STOCK}');
+				insertOldRow('${t.GOOD_ID}','${t.GOODNAME}','${t.BARCODE}','${t.NAME}','${t.UNITPRICE_ID}','${t.PNUMBER}','${t.AMOUNT}','${t.NOTE}','${t.GOODCODE_ID}','${t.ISFREE}','${t.WAREHOUSE_ID}','${t.WAREHOUSE_ID_NAME_STOCK}');
 			</c:forEach>
 		});
 		//审批  GOODNAME,GOODCODE,STOCKNUM,STOCKDOWNNUM	

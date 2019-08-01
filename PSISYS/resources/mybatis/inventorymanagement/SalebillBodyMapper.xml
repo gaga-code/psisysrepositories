@@ -200,6 +200,7 @@
 			a.NOTE,
 			a.BARCODE,
 			b.GOODNAME,
+			b.WAREHOUSE_IDs,
 			d.WHNAME,
 			c.NAME
 		from 

@@ -230,6 +230,29 @@ public class SalebillService implements SalebillManager{
 	public PageData findById(PageData pd)throws Exception{
 		PageData result =  (PageData)dao.findForObject("SalebillMapper.findById", pd);
 		result.put("goodslist", (List<PageData>)dao.findForList("SalebillBodyMapper.findById", pd));
+		
+		PageData map = new PageData(); //查询条件
+		PageData WareHouse = new PageData(); //仓库
+		PageData temp = new PageData(); //临时保存查询到的仓库ID，仓库名，库存
+		map.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
+		for (PageData inorder : (List<PageData>)result.get("goodslist")) {
+			map.put("GOOD_ID", inorder.get("GOODCODE_ID"));
+			String WH = (String)inorder.get("WAREHOUSE_IDs");
+			String[] strings = WH.split(",");
+			String WAREHOUSE_ID_NAME_STOCK = "";
+			for (String WID : strings) {
+				map.put("WAREHOUSE_ID", WID);
+				temp = (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", map);
+				WareHouse = (PageData)dao.findForObject("WarehouseMapper.findById", map);
+				Integer stock = 0;
+				String  WHNAME = (String) WareHouse.get("WHNAME");
+				if(temp != null) {
+					stock =  (Integer) temp.get("STOCK");
+				}
+					WAREHOUSE_ID_NAME_STOCK = WAREHOUSE_ID_NAME_STOCK + WID + "," + WHNAME +"," + stock + "#";
+			}
+			inorder.put("WAREHOUSE_ID_NAME_STOCK", WAREHOUSE_ID_NAME_STOCK);
+		}
 		return result;
 	}
 	
