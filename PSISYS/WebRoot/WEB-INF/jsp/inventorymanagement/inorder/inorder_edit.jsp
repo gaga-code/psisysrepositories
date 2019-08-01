@@ -70,6 +70,7 @@
 									</select>
 								</td>
 							</tr>
+							
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">已付金额:</td>
@@ -78,10 +79,14 @@
 								<td><input type="number" name="UNPAIDAMOUNT" id="UNPAIDAMOUNT" value="${pd.UNPAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 <!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">本次付款:</td> -->
 <%-- 								<td><input type="text" name="THISPAY" id="THISPAY" value="${pd.THISPAY}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> --%>
-								
+								<td style="width:75px;text-align: right;padding-top: 13px;">供应商票号:</td>
+								<td><input type="text" name="SUPPLIERNO" id="SUPPLIERNO" value="${pd.SUPPLIERNO}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
+								</tr> 
+							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
 								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
-							</tr> 
+							
+							</tr>
 						</table>
 						<table name="goodstable" id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>

@@ -157,6 +157,7 @@
 	    var thirdCell = "";
 	    var fourthCell = "";
 	    var stockgoodsnummap = new Map();
+	    var shuliangmap = new Map();
 // 	    $(function() {
 // 	        //初始化第一行
 // 	        firstCell = $("#row0 td:eq(0)").html();
@@ -198,7 +199,7 @@
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
-	                      +'<td class="center"><select class="chosen-select form-control" style="vertical-align:top;width:98%;" id="select_wh" >'
+	                      +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" id="select_wh" >'
 						  +	selecthtml
 						  +'</select></td>'
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+RPRICE+"'/></td>"
@@ -217,7 +218,10 @@
 	         //每插入一行，flag自增一次
 	         flag++;
 		}
-		
+		function changewh(flag,rowId){
+			$("#"+rowId+" #goodsnum"+flag).val(0);
+			calculateTheTotalAmount();
+		}
 		//商品数量修改时，判断是否超过了库存量
 		function checkstocknum(goodsnumID, GOOD_ID){
 			
@@ -289,7 +293,7 @@
 	        	var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
-	                      +'<td class="center"><select class="chosen-select form-control" style="vertical-align:top;width:98%;" >'
+	                      +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" >'
 						  +	selecthtml
 						  +'</select></td>'
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
@@ -306,7 +310,7 @@
 	      		var insertStr = "<tr id=" + rowId + ">"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
-		                +'<td class="center"><select class="chosen-select form-control" style="vertical-align:top;width:98%;" >'
+		                +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" >'
 						+ selecthtml
 						+'</select></td>'
 		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
@@ -383,7 +387,7 @@
 	  //计算总金额
 	    function calculateTheTotalAmount() {
 		  
-	    	var wh = $("#WAREHOUSE_ID").val();
+	    	/* var wh = $("#WAREHOUSE_ID").val();
 			if(wh ==""){
 				$("#tishi").tips({
 					side:3,
@@ -393,7 +397,7 @@
 		        });
 				//$("#WAREHOUSE_ID").focus();
 				return false;
-			}
+			} */
 		  
 	    	var value = "";
 	    	$("#simple-table tr").each(function(i) {
@@ -418,12 +422,15 @@
 	                var danjia = value[3];
 	                var shuliang = value[4];
 	                var free = value[7];
+	                var goodcode = value[9];
+	                var wh_id = value[2];
 	                if(danjia!= ''&& shuliang!= ''){
 	                	if(free == '0'){
 		                	result = result + danjia * shuliang;
 	                	}
 	                	$("#simple-table tr").eq(i+1).children().eq(6).children().eq(0).val(danjia * shuliang);
 	                }
+	                shuliangmap.set(goodcode+","+wh_id,shuliang);
 	            }
 	        }
 	       // console.log(value);
@@ -513,16 +520,6 @@
 		//保存
 		function save(){
 			console.log("11");
-			var wh = $("#WAREHOUSE_ID").val();
-			if(wh ==""){
-				$("#tishi").tips({
-					side:3,
-		            msg:'请选择仓库',
-		            bg:'#AE81FF',
-		            time:2
-		        });
-				return false;
-			}
 			
 			if($("#CUSTOMER_ID").val()==""){
 				$("#CUSTOMER_select").tips({
@@ -534,14 +531,7 @@
 			return false;
 			}
 			if($("#PAYDATE").val()==""){
-				$("#PAYDATE").tips({
-					side:3,
-		            msg:'请选择结款日期',
-		            bg:'#AE81FF',
-		            time:2
-		        });
-				$("#PAYDATE").focus();
-			return false;
+				$('#PAYDATE').val(formatDate(new Date()));
 			}
 			/* if($("#MONEY").val()==""){
 				$("#MONEY").val(0);
@@ -569,6 +559,18 @@
 		        });
 			return false;
 			}
+			//stockgoodsnummap shuliangmap
+			shuliangmap.forEach(function(value, key) {
+            	if(stockgoodsnummap.get(key) < value){
+            		$("#save").tips({
+    					side:3,
+    		            msg:'出售商品数量不可大于库存数量',
+    		            bg:'#AE81FF',
+    		            time:5
+    		        });
+    			return false;
+            	}
+			});
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();
@@ -580,6 +582,15 @@
 	        document.forms.actionForm.submit();
 		}
 
+		var formatDate = function (date) {  
+		    var y = date.getFullYear();  
+		    var m = date.getMonth() + 1;  
+		    m = m < 10 ? '0' + m : m;  
+		    var d = date.getDate();  
+		    d = d < 10 ? ('0' + d) : d;  
+		    return y + '-' + m + '-' + d;  
+		};  
+		
 		$(function(){
 // 			insertOldRow('2','999999','1','1','9.0','9','81.0','9');
 		console.log("1");
@@ -588,6 +599,9 @@
 				autoclose: true,
 				todayHighlight: true
 			});
+			console.log(formatDate(new Date()))
+			$('.date-picker').datepicker('setStartDate', formatDate(new Date()));
+			$('#PAYDATE').val(formatDate(new Date()));
 			<c:forEach items="${pd.goodslist}" var="t">
 				insertOldRow('${t.GOOD_ID}','${t.GOODNAME}','${t.BARCODE}','${t.NAME}','${t.UNITPRICE_ID}','${t.PNUMBER}','${t.AMOUNT}','${t.NOTE}','${t.GOODCODE_ID}','${t.ISFREE}','${t.WAREHOUSE_ID}','${t.WAREHOUSE_ID_NAME_STOCK}');
 			</c:forEach>

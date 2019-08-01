@@ -55,7 +55,7 @@
 										<option value="">选择结算状态</option>
 										<option value="0" <c:if test="${'0' == pd.ISSETTLEMENTED }">selected</c:if>>未结算</option>
 										<option value="1" <c:if test="${'1' == pd.ISSETTLEMENTED }">selected</c:if>>已结算</option>
-										<option value="2" <c:if test="${'2' == pd.ISSETTLEMENTED }">selected</c:if>>正在结算</option>
+										<option value="2" <c:if test="${'2' == pd.ISSETTLEMENTED }">selected</c:if>>结算中</option>
 									</select>
 								</td>
 								<td>
@@ -63,7 +63,7 @@
 										<option value="">选择审核状态</option>
 										<option value="1" <c:if test="${'1' == pd.BILLSTATUS }">selected</c:if>>未审核</option>
 										<option value="2" <c:if test="${'2' == pd.BILLSTATUS }">selected</c:if>>已审核</option>
-										<option value="3" <c:if test="${'3' == pd.BILLSTATUS }">selected</c:if>>结算未通过</option>
+										<option value="3" <c:if test="${'3' == pd.BILLSTATUS }">selected</c:if>>作废</option>
 									</select>
 								</td>
 <%-- 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td> --%>
@@ -103,8 +103,8 @@
 								<c:when test="${not empty varList}">
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${varList}" var="var" varStatus="vs">
-										<tr>
-											<td class='center'>
+										<tr id="${var.INORDER_ID}">
+											<td class='center' id="checkbox">
 												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.INORDER_ID}" class="ace" /><span class="lbl"></span></label>
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
@@ -125,7 +125,7 @@
 													未结算
 												</c:if>
 											</td>
-											<td class='center'>
+											<td class='center' >
 												<c:if test="${var.BILLSTATUS == 1}">
 													未审核
 												</c:if>
@@ -133,7 +133,7 @@
 													已审核
 												</c:if>
 												<c:if test="${var.BILLSTATUS == 3}">
-													结算未通过
+													作废
 												</c:if>
 											</td>
 											<td class='center'>${var.PSI_NAME}</td>
@@ -143,25 +143,25 @@
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
-													<c:if test="${QX.InOrderfanshenApproval == 1 }"><c:if test="${var.ISSETTLEMENTED == 0 || var.ISSETTLEMENTED == 2}"><c:if test="${var.BILLSTATUS == 2}">
-													<a class="btn btn-mini btn-danger"  style="height:26px;" onclick="fanshen('${var.INORDER_ID}');">反审</a>
-													</c:if></c:if></c:if>
-													<c:if test="${QX.InOrdershenpiApproval == 1 }"><c:if test="${var.BILLSTATUS != 2}">
-													<a class="btn btn-mini btn-success" style="height:26px;" onclick="shenpi('${var.INORDER_ID}');">审批</a>
-													</c:if></c:if>
+													<c:if test="${QX.InOrderfanshenApproval == 1 }">
+													<a class="btn btn-mini btn-danger"  style="height:26px;" onclick="fanshen('${var.INORDER_ID}','${var.ISSETTLEMENTED}','${var.BILLSTATUS}');">反审</a>
+													</c:if>
+													<c:if test="${QX.InOrdershenpiApproval == 1 }">
+													<a class="btn btn-mini btn-success" style="height:26px;" onclick="shenpi('${var.INORDER_ID}','${var.BILLSTATUS}');">审批</a>
+													</c:if>
 													<a class="btn btn-xs btn-success" title="查看" onclick="view('${var.INORDER_ID}');">
 														<i class="ace-icon fa fa-eye bigger-120" title="查看"></i>
 													</a>
-													<c:if test="${QX.edit == 1 }"><c:if test="${var.BILLSTATUS != 2}">
-													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.INORDER_ID}');">
+													<c:if test="${QX.edit == 1 }">
+													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.INORDER_ID}','${var.BILLSTATUS}');">
 														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
 													</a>
-													</c:if></c:if>
-													<c:if test="${QX.del == 1 }"><c:if test="${var.BILLSTATUS != 2}">
-													<a class="btn btn-xs btn-danger" onclick="del('${var.INORDER_ID}');">
+													</c:if>
+													<c:if test="${QX.del == 1 }">
+													<a class="btn btn-xs btn-danger" onclick="del('${var.INORDER_ID}','${var.BILLSTATUS}','${var.ISSETTLEMENTED}');">
 														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
 													</a>
-													</c:if></c:if>
+													</c:if>
 												</div>
 												<div class="hidden-md hidden-lg">
 													<div class="inline pos-rel">
@@ -278,7 +278,17 @@
 			//siMenu('z190','lm180','添加进货单','inorder/goAdd.do');
 		}
 		//修改
-		function edit(Id){
+		function edit(Id,BILLSTATUS){
+			console.log("1")
+			if(BILLSTATUS != 1){
+				$("#"+Id+" #checkbox").tips({
+					side:1,
+		            msg:'该单据不可修改',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			var url = 'inorder/goEdit.do?INORDER_ID='+Id;
 			document.forms.actionForm.action=url;
 	        document.forms.actionForm.submit();
@@ -384,7 +394,16 @@
 		}
 				
 		//删除
-		function del(Id){
+		function del(Id,BILLSTATUS,ISSETTLEMENTED){
+			if(BILLSTATUS != 1||ISSETTLEMENTED == 1){
+				$("#"+Id+" #checkbox").tips({
+					side:1,
+		            msg:'该单据不可删除',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			bootbox.confirm("确定要删除吗?", function(result) {
 				if(result) {
 					top.jzts();
@@ -397,7 +416,16 @@
 		}
 		
 		//审批
-		function shenpi(Id){
+		function shenpi(Id,BILLSTATUS){
+			if(BILLSTATUS != 1){
+				$("#"+Id+" #checkbox").tips({
+					side:1,
+		            msg:'该单据不可审批',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			top.jzts();
 			var url = "<%=basePath%>inorder/shenpi.do?INORDER_ID="+Id+"&tm="+new Date().getTime();
 			$.get(url,function(data){
@@ -405,7 +433,25 @@
 			});
 		}
 		//反审
-		function fanshen(Id){
+		function fanshen(Id,ISSETTLEMENTED,BILLSTATUS){
+			if(ISSETTLEMENTED == 1){
+				$("#"+Id+" #checkbox").tips({
+					side:1,
+		            msg:'该单据已结算，请先反审结算单',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
+			if(BILLSTATUS != 2){
+				$("#"+Id+" #checkbox").tips({
+					side:1,
+		            msg:'该单据未审批，不可反审',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			bootbox.confirm("确定要反审吗?", function(result) {
 				if(result) {
 					top.jzts();

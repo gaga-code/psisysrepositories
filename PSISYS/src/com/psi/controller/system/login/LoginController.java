@@ -29,6 +29,7 @@ import com.psi.entity.system.Role;
 import com.psi.entity.system.User;
 import com.psi.service.basedata.accountset.AccountSetManager;
 import com.psi.service.basedata.customer.CustomerManager;
+import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.erp.intoku.IntoKuManager;
 import com.psi.service.erp.outku.OutKuManager;
 import com.psi.service.system.buttonrights.ButtonrightsManager;
@@ -74,6 +75,8 @@ public class LoginController extends BaseController {
 	private OutKuManager outkuService;
 	@Resource(name="accountSetService")
 	private AccountSetManager accountSetService;
+	@Resource(name="goodsService")
+	private GoodsManager goodsService;
 	/**访问登录页
 	 * @return
 	 * @throws Exception
@@ -222,6 +225,9 @@ public class LoginController extends BaseController {
 					session.setAttribute(USERNAME + Const.SESSION_QX, this.getUQX(USERNAME));//按钮权限放到session中
 				}
 				this.getRemortIP(USERNAME);	//更新登录IP
+				//库存预警
+				List<PageData> goodslist = goodsService.checkGoodsStockDownNum(pd);
+				this.getRequest().getSession().setAttribute("goodslist", goodslist);
 				mv.setViewName("system/index/main");
 				mv.addObject("user", user);
 				mv.addObject("SKIN", null == session.getAttribute(Const.SKIN)?user.getSKIN():session.getAttribute(Const.SKIN)); 	//用户皮肤

@@ -36,14 +36,12 @@
 							</tr>
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-<!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">单据编号:</td> -->
-<%-- 								<td><input type="text" name="BILLCODE" id="BILLCODE" value="${pd.BILLCODE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> --%>
-<!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">录入日期:</td> -->
-<%-- 								<td><input type="text" name="LDATE" id="LDATE" value="${pd.LDATE}" maxlength="1000"  style="width:98%;" readonly="readonly"/></td> --%>
 								<td style="width:75px;text-align: right;padding-top: 13px;">单据状态:</td>
 								<td><input type="text" name="BILLSTATUS" id="BILLSTATUS" value="未审批" maxlength="1000"    style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
 								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="1000"    style="width:98%;" readonly="readonly"/></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
+								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
@@ -67,8 +65,8 @@
 										</c:forEach>
 									</select>
 								</td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
-								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">供应商票号:</td>
+								<td><input type="text" name="SUPPLIERNO" id="SUPPLIERNO" value="${pd.SUPPLIERNO}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
 							</tr>
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<%-- <tr>
@@ -324,9 +322,10 @@
 			    window.localStorage.removeItem("GOODCODE");
 			    window.localStorage.removeItem("CPRICE");
 			    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
-			    if( GOOD_ID != null)
+			    if( GOOD_ID != null){
 			    	parseStr(GOOD_ID,WAREHOUSE_ID_NAME_STOCK);
 			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE,WAREHOUSE_ID_NAME_STOCK);
+			    }
 				diag.close();
 			};
 			diag.show();

@@ -73,6 +73,8 @@
 								<td><input type="number" name="UNPAIDAMOUNT" id="UNPAIDAMOUNT" value="${pd.UNPAIDAMOUNT}" maxlength="1000" placeholder="这里输入备注" readonly="readonly"  style="width:98%;"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">本次付款:</td>
 								<td><input type="text" name="THISPAY" id="THISPAY" value="${pd.THISPAY}" maxlength="1000" placeholder="这里输入备注" readonly="readonly"  style="width:98%;"/></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">供应商票号:</td>
+								<td><input type="text" name="SUPPLIERNO" id="SUPPLIERNO" value="${pd.SUPPLIERNO}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
 								
 							</tr>
 						</table>

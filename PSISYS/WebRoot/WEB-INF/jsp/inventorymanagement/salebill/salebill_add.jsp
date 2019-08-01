@@ -166,13 +166,22 @@
 	    var thirdCell = "";
 	    var fourthCell = "";
 	    var stockgoodsnummap = new Map();//key为GOOD_ID+","+wh_id value为库存数量
+	    var shuliangmap = new Map();
 // 	    $(function() {
-// 	        //初始化第一行
+// 	        //初始化第一行 
 // 	        firstCell = $("#row0 td:eq(0)").html();
 // 	        secondCell = $("#row0 td:eq(1)").html();
 // 	        thirdCell = $("#row0 td:eq(2)").html();
 // 	        fourthCell = $("#row0 td:eq(3)").html();
 // 	    });
+
+
+		
+		$("#select_wh").on('change',function(e,params){
+			var wh_id = $("#select_wh").val();
+			
+		});
+		
 		function parseStr(GOOD_ID,str){
 			 var Str = str.split('#');
 		        if (Str[0] != "") {
@@ -205,7 +214,7 @@
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
-	                      +'<td class="center"><select class="chosen-select form-control" style="vertical-align:top;width:98%;" id="select_wh" >'
+	                      +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" id="select_wh" >'
 						  +	selecthtml
 						  +'</select></td>'
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+RPRICE+"'/></td>"
@@ -227,7 +236,10 @@
 	         flag++;
 			
 		}
-		
+		function changewh(flag,rowId){
+			$("#"+rowId+" #goodsnum"+flag).val(0);
+			calculateTheTotalAmount();
+		}
 		//商品数量修改时，判断是否超过了库存量
 		function checkstocknum(goodsnumID, GOOD_ID,rowId){
 			var WAREHOUSE_ID = $("#"+rowId+" #select_wh").val();
@@ -376,12 +388,15 @@
 	                var danjia = value[3];
 	                var shuliang = value[4];
 	                var free = value[7];
+	                var goodcode = value[9];
+	                var wh_id = value[2];
 	                if(danjia!= ''&& shuliang!= ''){
 	                	if(free == '0'){
 		                	result = result + danjia * shuliang;
 	                	}
 	                	$("#simple-table tr").eq(i+1).children().eq(6).children().eq(0).val(danjia * shuliang);
 	                }
+	                shuliangmap.set(goodcode+","+wh_id,shuliang);
 	            }
 	        }
 	       // console.log(value);
@@ -511,14 +526,7 @@
 			return false;
 			}
 			if($("#PAYDATE").val()==""){
-				$("#PAYDATE").tips({
-					side:3,
-		            msg:'请选择结款日期',
-		            bg:'#AE81FF',
-		            time:2
-		        });
-				$("#PAYDATE").focus();
-			return false;
+				$('#PAYDATE').val(formatDate(new Date()));
 			}
 			/* if($("#MONEY").val()==""){
 				$("#MONEY").val(0);
@@ -538,6 +546,18 @@
 		        });
 			return false;
 			}
+			//stockgoodsnummap shuliangmap
+			shuliangmap.forEach(function(value, key) {
+            	if(stockgoodsnummap.get(key) < value){
+            		$("#save").tips({
+    					side:3,
+    		            msg:'出售商品数量不可大于库存数量',
+    		            bg:'#AE81FF',
+    		            time:5
+    		        });
+    			return false;
+            	}
+			});
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();
@@ -549,12 +569,23 @@
 	        document.forms.actionForm.submit();
 		}
 
+		var formatDate = function (date) {  
+		    var y = date.getFullYear();  
+		    var m = date.getMonth() + 1;  
+		    m = m < 10 ? '0' + m : m;  
+		    var d = date.getDate();  
+		    d = d < 10 ? ('0' + d) : d;  
+		    return y + '-' + m + '-' + d;  
+		};  
 		$(function() {
 			//日期框
 			$('.date-picker').datepicker({
 				autoclose: true,
 				todayHighlight: true
 			});
+			console.log(formatDate(new Date()))
+			$('.date-picker').datepicker('setStartDate', formatDate(new Date()));
+			$('#PAYDATE').val(formatDate(new Date()));
 			//下拉框
 			if(!ace.vars['touch']) {
 				$('.chosen-select').chosen({allow_single_deselect:true}); 

@@ -54,8 +54,6 @@
 										 <c:if test="${'1' == pd.ISSETTLEMENTED }"><input type="text" value="已结算" style="width:98%;" readonly="readonly"/></c:if>
 										 <c:if test="${'2' == pd.ISSETTLEMENTED }"><input type="text" value="正在结算" style="width:98%;" readonly="readonly"/></c:if>
 								</td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WHNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
 								<td><input type="text" name="SUPPLIERNAME" id="SUPPLIERNAME" value="${pd.SUPPLIERNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 <!-- 								<td> -->
