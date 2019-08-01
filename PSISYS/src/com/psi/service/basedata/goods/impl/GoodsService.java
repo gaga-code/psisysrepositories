@@ -186,6 +186,7 @@ public class GoodsService implements GoodsManager{
 
 		//给列表的每个商品添加一个  仓库ID，仓库名，库存#仓库ID，仓库名，库存#  格式的 WAREHOUSE_ID_NAME_STOCK 值
 		PageData map = new PageData(); //查询条件
+		PageData WareHouse = new PageData(); //仓库
 		PageData temp = new PageData(); //临时保存查询到的仓库ID，仓库名，库存
 		map.put("PK_SOBOOKS", page.getPd().get("PK_SOBOOKS"));
 		
@@ -198,8 +199,13 @@ public class GoodsService implements GoodsManager{
 			for (String WID : strings) {
 				map.put("WAREHOUSE_ID", WID);
 				temp = (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", map);
-				if(temp != null)
-					WAREHOUSE_ID_NAME_STOCK = WAREHOUSE_ID_NAME_STOCK + WID + "," + temp.get("WHNAME") +"," + temp.get("STOCK") + "#";
+				WareHouse = (PageData)dao.findForObject("WarehouseMapper.findById", map);
+				Integer stock = 0;
+				String  WHNAME = (String) WareHouse.get("WHNAME");
+				if(temp != null) {
+					stock =  (Integer) temp.get("STOCK");
+				}
+					WAREHOUSE_ID_NAME_STOCK = WAREHOUSE_ID_NAME_STOCK + WID + "," + WHNAME +"," + stock + "#";
 			}
 			pageData.put("WAREHOUSE_ID_NAME_STOCK", WAREHOUSE_ID_NAME_STOCK);
 		}

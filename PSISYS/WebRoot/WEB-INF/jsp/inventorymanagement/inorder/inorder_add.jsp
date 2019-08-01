@@ -100,7 +100,7 @@
 							<tr></tr>
 							</tbody>
 						</table>
-						<a class="btn btn-mini btn-primary" onclick="addgoods();">添加商品</a>
+						<a id = "addgoodstishi" class="btn btn-mini btn-primary" onclick="addgoods();">添加商品</a>
 						</div>
 						<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img src="static/images/jiazai.gif" /><br/><h4 class="lighter block green">提交中...</h4></div>
 					</form>
@@ -198,11 +198,11 @@
 	        //这里的行数减2，是因为要减去底部的一行和顶部的一行，剩下的为开始要插入行的索引
 	                      $("#simple-table tr:eq(" + (rowLength - 2) + ")").after(insertStr); //将新拼接的一行插入到当前行的下面
 	         //为新添加的行里面的控件添加新的id属性。
-	         $("#" + rowId + " td:eq(0)").children().eq(0).attr("id", "UrbanDepNo" + flag);
-	         $("#" + rowId + " td:eq(1)").children().eq(0).attr("id", "LocNo" + flag);
-	         $("#" + rowId + " td:eq(2)").children().eq(0).attr("id", "RoadSectionName" + flag);
-	         $("#" + rowId + " td:eq(3)").children().eq(0).attr("id", "StStartRoad" + flag);
-	         $("#" + rowId + " td:eq(3)").children().eq(1).attr("id", "EndRoad" + flag);
+// 	         $("#" + rowId + " td:eq(0)").children().eq(0).attr("id", "UrbanDepNo" + flag);
+// 	         $("#" + rowId + " td:eq(1)").children().eq(0).attr("id", "LocNo" + flag);
+// 	         $("#" + rowId + " td:eq(2)").children().eq(0).attr("id", "RoadSectionName" + flag);
+// 	         $("#" + rowId + " td:eq(3)").children().eq(0).attr("id", "StStartRoad" + flag);
+// 	         $("#" + rowId + " td:eq(3)").children().eq(1).attr("id", "EndRoad" + flag);
 	         //每插入一行，flag自增一次
 	         flag++;
 			
@@ -284,11 +284,11 @@
 	        if (Str[0] != "") {
 	            for (var i = 0; i < Str.length - 1; i++) {
 	                var value = Str[i].split(',');
-	                var danjia = value[2];
-	                var shuliang = value[3];
+	                var danjia = value[3];
+	                var shuliang = value[4];
 	                if(danjia!= ''&& shuliang!= ''){
 	                	result = result + danjia * shuliang;
-	                	$("#simple-table tr").eq(i+1).children().eq(5).children().eq(0).val(danjia * shuliang);
+	                	$("#simple-table tr").eq(i+1).children().eq(6).children().eq(0).val(danjia * shuliang);
 	                	console.log(i);
 	                }
 	            }
@@ -332,22 +332,65 @@
 			diag.show();
 		}
 		
+	  //判断商品单价和数量是否为空
+		  function checkGoodsPriceAndNum(){
+			  var value = "";
+		    	$("#simple-table tr").each(function(i) {
+		            if (i >= 1) {
+		                $(this).children().each(function(j) {
+		                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+		                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+		                        if ($(this).children().length > 1) {
+		                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+		                        }
+		                    }
+		                });
+		                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
+		            }
+		        });
+			  	var str = value;
+		        var Str = str.split('#');
+		        var result = 0;
+		        if (Str[0] != "") {
+		            for (var i = 0; i < Str.length - 1; i++) {
+		                var value = Str[i].split(',');
+		                var danjia = value[3];
+		                var shuliang = value[4];
+		                if(danjia == '' || shuliang == ''){
+		                	alert("商品的单价和数量不能为空！");
+		                	return '0';
+		                }
+		            }
+		        }
+		  }
 		//保存
 		function save(){
-			if($("#ENTERPRISENAME").val()==""){
-				$("#ENTERPRISENAME").tips({
+			if($("#SUPPLIER_ID").val()==""){
+				$("#SUPPLIER_ID").tips({
 					side:3,
-		            msg:'请输入企业名称',
+		            msg:'请选择供应商',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#ENTERPRISENAME").focus();
 			return false;
 			}
 			/* if($("#MONEY").val()==""){
 				$("#MONEY").val(0);
 			} */
+			var check = checkGoodsPriceAndNum();
+			if(check == '0'){
+				return false;
+			}
 			GetValue();
+			if($("#goodslist").val()=="#"){
+				$("#addgoodstishi").tips({
+					side:3,
+		            msg:'请选择商品',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+			return false;
+			}
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();

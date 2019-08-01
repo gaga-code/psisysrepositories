@@ -44,14 +44,14 @@
 								<td><input type="text" name="LDATE" id="LDATE" value="${pd.LDATE}" maxlength="1000"  style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">单据状态:</td>
 								<td><input type="text" name="BILLSTATUS" id="BILLSTATUS" value="${pd.BILLSTATUSNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
-								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 							</tr>
 							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
+								<td><input type="text" name="USER_ID" id="USER_ID" value="${pd.PSI_NAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
 								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="${pd.ALLAMOUNT }" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td>
+								<td style='display:none' style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
+								<td style='display:none'>
 									<select class="chosen-select form-control" name="WAREHOUSE_ID" id="WAREHOUSE_ID"  style="vertical-align:top;width:98%;" >
 										<option value="">无</option>
 										<c:forEach items="${warehouseList}" var="var">
@@ -69,8 +69,6 @@
 										</c:forEach>
 									</select>
 								</td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
-								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
 							</tr>
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<tr>
@@ -81,6 +79,8 @@
 <!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">本次付款:</td> -->
 <%-- 								<td><input type="text" name="THISPAY" id="THISPAY" value="${pd.THISPAY}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> --%>
 								
+								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
+								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td>
 							</tr> 
 						</table>
 						<table name="goodstable" id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
@@ -88,6 +88,7 @@
 								<tr>
 									<th class="center">商品名称</th>
 									<th class="center">商品编号</th>
+									<th class="center">仓库</th>
 									<th class="center">单价</th>
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
@@ -101,7 +102,7 @@
 							<tr></tr>
 							</tbody>
 						</table>
-						<a class="btn btn-mini btn-primary" onclick="addgoods();">添加商品</a>
+						<a id="addgoodstishi" class="btn btn-mini btn-primary" onclick="addgoods();">添加商品</a>
 						</div>
 						<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img src="static/images/jiazai.gif" /><br/><h4 class="lighter block green">提交中...</h4></div>
 					</form>
@@ -143,16 +144,37 @@
 	    var secondCell = "";
 	    var thirdCell = "";
 	    var fourthCell = "";
-// 	    $(function() {
-// 	        //初始化第一行
-// 	        firstCell = $("#row0 td:eq(0)").html();
-// 	        secondCell = $("#row0 td:eq(1)").html();
-// 	        thirdCell = $("#row0 td:eq(2)").html();
-// 	        fourthCell = $("#row0 td:eq(3)").html();
-// 	    });
-	
-		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE) {
-			 //获取表格有多少行
+	    var stockgoodsnummap = new Map();
+
+	    function parseStr(GOOD_ID,str){
+			 var Str = str.split('#');
+		        if (Str[0] != "") {
+		            for (var i = 0; i < Str.length - 1; i++) {
+		                var value = Str[i].split(',');
+		                var wh_id = value[0];
+		                var wh_name = value[1]
+		                var stock = value[2];
+		                stockgoodsnummap.set(GOOD_ID+","+wh_id,stock);
+		            }
+		        }
+		}
+		
+			    
+		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE,WAREHOUSE_ID_NAME_STOCK) {
+
+			var Str = WAREHOUSE_ID_NAME_STOCK.split('#');
+			var selecthtml = "";
+	        if (Str[0] != "") {
+	        	for (var i = 0; i < Str.length - 1; i++) {
+	        		 var value = Str[i].split(',');
+		                var wh_id = value[0];
+		                var wh_name = value[1]
+		                var stock = value[2];
+		                selecthtml += "<option value="+wh_id+">"+wh_name+","+stock+"</option>";
+	        	}
+	        }
+			
+			//获取表格有多少行
 	        var rowLength = $("#simple-table tr").length;
 	        //这里的rowId就是row加上标志位的组合。是每新增一行的tr的id。
 	        var rowId = "row" + flag;
@@ -160,6 +182,9 @@
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      +'<td class="center"><select class="chosen-select form-control" style="vertical-align:top;width:98%;" >'
+						  +	selecthtml
+						  +'</select></td>'
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+CPRICE+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
@@ -183,7 +208,23 @@
 		}
 		
 		//插入已存在的商品数据（初始化时调用）
-		function insertOldRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,UNITPRICE_ID,PNUMBER,AMOUNT,NOTE,GOODCODE) {
+		function insertOldRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,UNITPRICE_ID,PNUMBER,AMOUNT,NOTE,GOODCODE,WAREHOUSE_ID,WAREHOUSE_ID_NAME_STOCK) {
+		
+			var Str = WAREHOUSE_ID_NAME_STOCK.split('#');
+			var selecthtml = "";
+	        if (Str[0] != "") {
+	        	for (var i = 0; i < Str.length - 1; i++) {
+	        		 var value = Str[i].split(',');
+		                var wh_id = value[0];
+		                var wh_name = value[1]
+		                var stock = value[2];
+		                var selected = '';
+		                if(WAREHOUSE_ID == wh_id)
+		                	selected = 'selected'
+		                selecthtml += "<option "+selected+" value="+wh_id+">"+wh_name+","+stock+"</option>";
+	        	}
+	        }
+		
 			 //获取表格有多少行
 	        var rowLength = $("#simple-table tr").length;
 	        //这里的rowId就是row加上标志位的组合。是每新增一行的tr的id。
@@ -192,6 +233,9 @@
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      +'<td class="center"><select class="chosen-select form-control" style="vertical-align:top;width:98%;" >'
+						  +	selecthtml
+						  +'</select></td>'
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'value='"+PNUMBER+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
@@ -204,11 +248,11 @@
 	        //这里的行数减2，是因为要减去底部的一行和顶部的一行，剩下的为开始要插入行的索引
 	                      $("#simple-table tr:eq(" + (rowLength - 2) + ")").after(insertStr); //将新拼接的一行插入到当前行的下面
 	         //为新添加的行里面的控件添加新的id属性。
-	         $("#" + rowId + " td:eq(0)").children().eq(0).attr("id", "UrbanDepNo" + flag);
-	         $("#" + rowId + " td:eq(1)").children().eq(0).attr("id", "LocNo" + flag);
-	         $("#" + rowId + " td:eq(2)").children().eq(0).attr("id", "RoadSectionName" + flag);
-	         $("#" + rowId + " td:eq(3)").children().eq(0).attr("id", "StStartRoad" + flag);
-	         $("#" + rowId + " td:eq(3)").children().eq(1).attr("id", "EndRoad" + flag);
+// 	         $("#" + rowId + " td:eq(0)").children().eq(0).attr("id", "UrbanDepNo" + flag);
+// 	         $("#" + rowId + " td:eq(1)").children().eq(0).attr("id", "LocNo" + flag);
+// 	         $("#" + rowId + " td:eq(2)").children().eq(0).attr("id", "RoadSectionName" + flag);
+// 	         $("#" + rowId + " td:eq(3)").children().eq(0).attr("id", "StStartRoad" + flag);
+// 	         $("#" + rowId + " td:eq(3)").children().eq(1).attr("id", "EndRoad" + flag);
 	         //每插入一行，flag自增一次
 	         flag++;
 			
@@ -290,11 +334,11 @@
 	        if (Str[0] != "") {
 	            for (var i = 0; i < Str.length - 1; i++) {
 	                var value = Str[i].split(',');
-	                var danjia = value[2];
-	                var shuliang = value[3];
+	                var danjia = value[3];
+	                var shuliang = value[4];
 	                if(danjia!= ''&& shuliang!= ''){
 	                	result = result + danjia * shuliang;
-	                	$("#simple-table tr").eq(i+1).children().eq(5).children().eq(0).val(danjia * shuliang);
+	                	$("#simple-table tr").eq(i+1).children().eq(6).children().eq(0).val(danjia * shuliang);
 	                	console.log(i);
 	                }
 	            }
@@ -322,35 +366,81 @@
 			    var UNITNAME=localStorage.getItem("UNITNAME");
 			    var GOODCODE=localStorage.getItem("GOODCODE");
 			    var CPRICE=localStorage.getItem("CPRICE");
+			    var WAREHOUSE_ID_NAME_STOCK=localStorage.getItem("WAREHOUSE_ID_NAME_STOCK");
 			    window.localStorage.removeItem("GOOD_ID");
 			    window.localStorage.removeItem("GOODNAME");
 			    window.localStorage.removeItem("BARCODE");
 			    window.localStorage.removeItem("UNITNAME");
 			    window.localStorage.removeItem("GOODCODE");
 			    window.localStorage.removeItem("CPRICE");
+			    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
 			    if( GOOD_ID != null)
-			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE);
+			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE,WAREHOUSE_ID_NAME_STOCK);
 				diag.close();
 			};
 			diag.show();
 		}
 		
+		 //判断商品单价和数量是否为空
+		  function checkGoodsPriceAndNum(){
+			  var value = "";
+		    	$("#simple-table tr").each(function(i) {
+		            if (i >= 1) {
+		                $(this).children().each(function(j) {
+		                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+		                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+		                        if ($(this).children().length > 1) {
+		                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+		                        }
+		                    }
+		                });
+		                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
+		            }
+		        });
+			  	var str = value;
+		        var Str = str.split('#');
+		        var result = 0;
+		        if (Str[0] != "") {
+		            for (var i = 0; i < Str.length - 1; i++) {
+		                var value = Str[i].split(',');
+		                var danjia = value[3];
+		                var shuliang = value[4];
+		                if(danjia == '' || shuliang == ''){
+		                	alert("商品的单价和数量不能为空！");
+		                	return '0';
+		                }
+		            }
+		        }
+		  }
 		//保存
 		function save(){
-			if($("#ENTERPRISENAME").val()==""){
-				$("#ENTERPRISENAME").tips({
+			if($("#SUPPLIER_ID").val()==""){
+				$("#SUPPLIER_ID").tips({
 					side:3,
-		            msg:'请输入企业名称',
+		            msg:'请选择供应商',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#ENTERPRISENAME").focus();
 			return false;
 			}
 			/* if($("#MONEY").val()==""){
 				$("#MONEY").val(0);
 			} */
 			GetValue();
+			var check = checkGoodsPriceAndNum();
+			if(check == '0'){
+				return false;
+			}
+			GetValue();
+			if($("#goodslist").val()=="#"){
+				$("#addgoodstishi").tips({
+					side:3,
+		            msg:'请选择商品',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+			return false;
+			}
 			if(parseFloat($("#ALLAMOUNT").val()) < parseFloat($("#PAIDAMOUNT").val())){
 				$("#ALLAMOUNT").tips({
 					side:3,
@@ -360,6 +450,7 @@
 		        });
 			return false;
 			}
+			
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();
@@ -374,7 +465,7 @@
 		$(function(){
 // 			insertOldRow('2','999999','1','1','9.0','9','81.0','9');
 			<c:forEach items="${pd.goodslist}" var="t">
-				insertOldRow('${t.GOOD_ID}','${t.GOODNAME}','${t.BARCODE}','${t.NAME}','${t.UNITPRICE_ID}','${t.PNUMBER}','${t.AMOUNT}','${t.NOTE}','${t.GOODCODE_ID}');
+				insertOldRow('${t.GOOD_ID}','${t.GOODNAME}','${t.BARCODE}','${t.NAME}','${t.UNITPRICE_ID}','${t.PNUMBER}','${t.AMOUNT}','${t.NOTE}','${t.GOODCODE_ID}','${t.WAREHOUSE_ID}','${t.WAREHOUSE_ID_NAME_STOCK}');
 			</c:forEach>
 		});
 		</script>

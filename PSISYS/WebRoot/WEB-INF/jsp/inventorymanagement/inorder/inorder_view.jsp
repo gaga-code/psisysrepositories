@@ -50,8 +50,8 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
 								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="${pd.ALLAMOUNT}" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WHNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
+<!-- 								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td> -->
+<%-- 								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WHNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td> --%>
 								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
 								<td><input type="text" name="SUPPLIERNAME" id="SUPPLIERNAME" value="${pd.SUPPLIERNAME}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;" readonly="readonly"/></td>
 <!-- 								<td> -->
@@ -81,6 +81,7 @@
 								<tr>
 									<th class="center">商品名称</th>
 									<th class="center">商品编号</th>
+									<th class="center">仓库</th>
 									<th class="center">单价</th>
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
@@ -100,6 +101,7 @@
 <%-- 											<td class='center' style="width: 30px;">${vs.index+1}</td> --%>
 											<td class='center'>${var.GOODNAME}</td>
 											<td class='center'>${var.BARCODE}</td>
+											<td class='center'>${var.WHNAME}</td>
 											<td class='center'>${var.UNITPRICE_ID}</td>
 											<td class='center'>${var.PNUMBER}</td>
 											<td class='center'>${var.NAME}</td>

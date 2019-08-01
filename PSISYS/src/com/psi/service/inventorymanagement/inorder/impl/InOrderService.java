@@ -62,11 +62,12 @@ public class InOrderService implements InOrderManager{
 			pageData.put("APPBILLNO", strs[0]);
 			
 			pageData.put("BARCODE", agoods[1]);
-			pageData.put("UNITPRICE_ID", agoods[2]);
-			pageData.put("PNUMBER", agoods[3]);
-			pageData.put("AMOUNT", agoods[5]);
-			pageData.put("NOTE", agoods[6]);
-			pageData.put("GOODCODE_ID", agoods[7]);
+			pageData.put("WAREHOUSE_ID", agoods[2]);
+			pageData.put("UNITPRICE_ID", agoods[3]);
+			pageData.put("PNUMBER", agoods[4]);
+			pageData.put("AMOUNT", agoods[6]);
+			pageData.put("NOTE", agoods[7]);
+			pageData.put("GOODCODE_ID", agoods[8]);
 			
 			dao.save("InOrderBodyMapper.save", pageData);
 		}
@@ -143,11 +144,12 @@ public class InOrderService implements InOrderManager{
 			
 			
 			pageData.put("BARCODE", agoods[1]);
-			pageData.put("UNITPRICE_ID", agoods[2]);
-			pageData.put("PNUMBER", agoods[3]);
-			pageData.put("AMOUNT", agoods[5]);
-			pageData.put("NOTE", agoods[6]);
-			pageData.put("GOODCODE_ID", agoods[7]);
+			pageData.put("WAREHOUSE_ID", agoods[2]);
+			pageData.put("UNITPRICE_ID", agoods[3]);
+			pageData.put("PNUMBER", agoods[4]);
+			pageData.put("AMOUNT", agoods[6]);
+			pageData.put("NOTE", agoods[7]);
+			pageData.put("GOODCODE_ID", agoods[8]);
 			
 			dao.save("InOrderBodyMapper.save", pageData);
 		}
@@ -223,6 +225,29 @@ public class InOrderService implements InOrderManager{
 	public PageData findById(PageData pd)throws Exception{
 		PageData result =  (PageData)dao.findForObject("InOrderMapper.findById", pd);
 		result.put("goodslist", (List<PageData>)dao.findForList("InOrderBodyMapper.findById", pd));
+		
+		PageData map = new PageData(); //查询条件
+		PageData WareHouse = new PageData(); //仓库
+		PageData temp = new PageData(); //临时保存查询到的仓库ID，仓库名，库存
+		map.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
+		for (PageData inorder : (List<PageData>)result.get("goodslist")) {
+			map.put("GOOD_ID", inorder.get("GOODCODE_ID"));
+			String WH = (String)inorder.get("WAREHOUSE_IDs");
+			String[] strings = WH.split(",");
+			String WAREHOUSE_ID_NAME_STOCK = "";
+			for (String WID : strings) {
+				map.put("WAREHOUSE_ID", WID);
+				temp = (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", map);
+				WareHouse = (PageData)dao.findForObject("WarehouseMapper.findById", map);
+				Integer stock = 0;
+				String  WHNAME = (String) WareHouse.get("WHNAME");
+				if(temp != null) {
+					stock =  (Integer) temp.get("STOCK");
+				}
+					WAREHOUSE_ID_NAME_STOCK = WAREHOUSE_ID_NAME_STOCK + WID + "," + WHNAME +"," + stock + "#";
+			}
+			inorder.put("WAREHOUSE_ID_NAME_STOCK", WAREHOUSE_ID_NAME_STOCK);
+		}
 		return result;
 	}
 	
@@ -352,6 +377,7 @@ public class InOrderService implements InOrderManager{
 			
 			//=========================操作库存表===================
 			//先查看 仓库-商品 表中是否包含相应的 仓库-商品
+			head.put("WAREHOUSE_ID", pageData.get("WAREHOUSE_ID"));
 			PageData aGood =  (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", head);
 			//有，把数量更新
 			if(aGood != null) {
@@ -383,6 +409,7 @@ public class InOrderService implements InOrderManager{
 		
 		//依次把商品数量在 仓库-商品 表中删去
 		for (PageData pageData : goodslist) {
+			head.put("WAREHOUSE_ID", pageData.get("WAREHOUSE_ID"));
 			head.put("GOOD_ID", pageData.get("GOODCODE_ID"));
 			//获取原来的库存
 			PageData aGood =  (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", head);
