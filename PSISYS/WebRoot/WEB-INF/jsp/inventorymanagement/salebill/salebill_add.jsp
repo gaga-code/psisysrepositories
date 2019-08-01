@@ -36,7 +36,7 @@
 							<td style="text-align: center;" colspan="10"><font size="6">添加销售单</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<tr>
 								<td style="text-align: center;" colspan="10">
-									<a class="btn btn-mini btn-primary" onclick="save();">保存</a>
+									<a class="btn btn-mini btn-primary" id='save' onclick="save();">保存</a>
 									<a class="btn btn-mini btn-primary" onclick="shenpi();">审批</a>
 									<a class="btn btn-mini btn-danger" onclick="returnList();">返回</a>
 								</td>
@@ -59,8 +59,8 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">总金额:</td>
 								<td><input type="number" name="ALLAMOUNT" id="ALLAMOUNT" value="0" maxlength="1000" placeholder="选择商品后自动计算"   style="width:98%;" readonly="readonly"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">仓库:</td>
-								<td id="tishi">
+								<td style="width:75px;text-align: right;padding-top: 13px;display:none">仓库:</td>
+								<td id="tishi" style='display:none'>
 									<select class="chosen-select form-control" name="WAREHOUSE_ID" id="WAREHOUSE_ID"  style="vertical-align:top;width:98%;" >
 										<option value="">无</option>
 										<c:forEach items="${warehouseList}" var="var">
@@ -101,6 +101,7 @@
 								<tr>
 									<th class="center">商品名称</th>
 									<th class="center">商品编号</th>
+									<th class="center">仓库</th>
 									<th class="center">单价</th>
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
@@ -164,6 +165,7 @@
 	    var secondCell = "";
 	    var thirdCell = "";
 	    var fourthCell = "";
+	    var stockgoodsnummap = new Map();//key为GOOD_ID+","+wh_id value为库存数量
 // 	    $(function() {
 // 	        //初始化第一行
 // 	        firstCell = $("#row0 td:eq(0)").html();
@@ -171,8 +173,30 @@
 // 	        thirdCell = $("#row0 td:eq(2)").html();
 // 	        fourthCell = $("#row0 td:eq(3)").html();
 // 	    });
-	
-		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE) {
+		function parseStr(GOOD_ID,str){
+			 var Str = str.split('#');
+		        if (Str[0] != "") {
+		            for (var i = 0; i < Str.length - 1; i++) {
+		                var value = Str[i].split(',');
+		                var wh_id = value[0];
+		                var wh_name = value[1]
+		                var stock = value[2];
+		                stockgoodsnummap.set(GOOD_ID+","+wh_id,stock);
+		            }
+		        }
+		}
+		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,WAREHOUSE_ID_NAME_STOCK) {
+			var Str = WAREHOUSE_ID_NAME_STOCK.split('#');
+			var selecthtml = "";
+	        if (Str[0] != "") {
+	        	for (var i = 0; i < Str.length - 1; i++) {
+	        		 var value = Str[i].split(',');
+		                var wh_id = value[0];
+		                var wh_name = value[1]
+		                var stock = value[2];
+		                selecthtml += "<option value="+wh_id+">"+wh_name+","+stock+"</option>";
+	        	}
+	        } 
 			 //获取表格有多少行
 	        var rowLength = $("#simple-table tr").length;
 	        //这里的rowId就是row加上标志位的组合。是每新增一行的tr的id。
@@ -181,8 +205,11 @@
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      +'<td class="center"><select class="chosen-select form-control" style="vertical-align:top;width:98%;" id="select_wh" >'
+						  +	selecthtml
+						  +'</select></td>'
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+RPRICE+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\");'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
@@ -202,10 +229,22 @@
 		}
 		
 		//商品数量修改时，判断是否超过了库存量
-		function checkstocknum(goodsnumID, GOOD_ID){
-			
-			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
-			console.log("test");
+		function checkstocknum(goodsnumID, GOOD_ID,rowId){
+			var WAREHOUSE_ID = $("#"+rowId+" #select_wh").val();
+			var stockNum = stockgoodsnummap.get(GOOD_ID+","+WAREHOUSE_ID);//查出库存数量
+			if(stockNum >= $("#"+goodsnumID).val()){
+				return ;
+			}else{
+				$("#"+goodsnumID).tips({
+					side:3,
+		            msg:'当前库存为' + stockNum,
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				$("#"+goodsnumID).val(stockNum);
+				$("#"+goodsnumID).focus();
+			}
+			<%-- console.log("test");
 			$.ajax({
 				type: "POST",
 				url: '<%=basePath%>salebill/checkstock.do?tm='+new Date().getTime(),
@@ -229,7 +268,7 @@
 						return false;
 					}
 				}
-			});
+			}); --%>
 			calculateTheTotalAmount()
 		}
 		
@@ -301,7 +340,7 @@
 	  //计算总金额
 	    function calculateTheTotalAmount() {
 		  
-	    	var wh = $("#WAREHOUSE_ID").val();
+	    	/* var wh = $("#WAREHOUSE_ID").val();
 			if(wh ==""){
 				$("#tishi").tips({
 					side:3,
@@ -311,7 +350,7 @@
 		        });
 				//$("#WAREHOUSE_ID").focus();
 				return false;
-			}
+			} */
 		  
 	    	var value = "";
 	    	$("#simple-table tr").each(function(i) {
@@ -371,7 +410,7 @@
 		function addgoods(){
 			
 			//如果没有选择仓库，不能选择商品
-			var wh = $("#WAREHOUSE_ID").val();
+			/* var wh = $("#WAREHOUSE_ID").val();
 			if(wh ==""){
 				$("#tishi").tips({
 					side:3,
@@ -381,13 +420,13 @@
 		        });
 				//$("#WAREHOUSE_ID").focus();
 				return false;
-			}
+			} */
 			
 			top.jzts();
 			var diag = new top.Dialog();
 			diag.Drag=true;
 			diag.Title ="查看商品信息";
-			diag.URL = '<%=basePath%>salebill/goaddgoods.do?WAREHOUSE_ID=' + wh;
+			diag.URL = '<%=basePath%>salebill/goaddgoods.do?WAREHOUSE_ID=';
 			diag.Width = 1000;
 			diag.Height = 800;
 			diag.Modal = true;				//有无遮罩窗口
@@ -399,13 +438,16 @@
 			    var UNITNAME=localStorage.getItem("UNITNAME");
 			    var GOODCODE=localStorage.getItem("GOODCODE");
 			    var RPRICE=localStorage.getItem("RPRICE");
+			    var WAREHOUSE_ID_NAME_STOCK=localStorage.getItem("WAREHOUSE_ID_NAME_STOCK");
 			    window.localStorage.removeItem("GOOD_ID");
 			    window.localStorage.removeItem("GOODNAME");
 			    window.localStorage.removeItem("BARCODE");
 			    window.localStorage.removeItem("UNITNAME");
 			    window.localStorage.removeItem("GOODCODE");
 			    window.localStorage.removeItem("RPRICE");
+			    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
 			    if( GOOD_ID != null)
+			    	parseStr(GOOD_ID,WAREHOUSE_ID_NAME_STOCK);
 			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE);
 				diag.close();
 			};
@@ -446,7 +488,7 @@
 		
 		//保存
 		function save(){
-			var wh = $("#WAREHOUSE_ID").val();
+			/* var wh = $("#WAREHOUSE_ID").val();
 			if(wh ==""){
 				$("#tishi").tips({
 					side:3,
@@ -455,7 +497,7 @@
 		            time:2
 		        });
 				return false;
-			}
+			} */
 			
 			if($("#CUSTOMER_ID").val()==""){
 				$("#CUSTOMER_select").tips({
@@ -466,7 +508,7 @@
 		        });
 			return false;
 			}
-			if($("#PAYDATE").val()==""){
+			/* if($("#PAYDATE").val()==""){
 				$("#PAYDATE").tips({
 					side:3,
 		            msg:'请选择结款日期',
@@ -475,7 +517,7 @@
 		        });
 				$("#PAYDATE").focus();
 			return false;
-			}
+			} */
 			/* if($("#MONEY").val()==""){
 				$("#MONEY").val(0);
 			} */
@@ -537,46 +579,15 @@
 				});
 			}
 		});
-		//审批  GOODNAME,GOODCODE,STOCKNUM,STOCKDOWNNUM	
+		//审批  GOODNAME,GOODCODE,STOCKNUM,STOCKDOWNNUM	 zhongxin
 		function shenpi(){
-			 var Id = $("#SALEBILL_ID").val();
-			 top.jzts();
-			 $.ajax({
-					type: "POST",
-					url: '<%=basePath%>salebill/shenpi.do?tm='+new Date().getTime(),
-			    	data: {SALEBILL_ID:Id},
-					dataType:'json',
-					//beforeSend: validateData,
-					cache: false,
-					success: function(data){
-						//tosearch();
-						top.hangge();
-						alert($('#goodslist').val())
-						if(data.goodslist != null){
-							if($("#alertBox").is(":hidden")){
-								$('#alertBox').show();
-							}else{
-								var htmlStr = "<div id='alertBox'><div class='boxTop'><span>库存预警</span><span id='boxClose'> X </span></div><ul id=\"alertGoodsList\">";
-								
-								for( var i = 0; i < data.goodslist.length; i++ ){
-									htmlStr += "<li><span>"+data.goodslist[i].GOODCODE+"</span><span>"+data.goodslist[i].GOODNAME+"</span><span>"+data.goodslist[i].STOCKNUM+"</span></li>"
-								}
-								htmlStr += "</ul></div>";
-								$(".page-content").append(htmlStr);
-	
-							}
-						
-							//预警弹窗消失
-							var closeObj = document.getElementById('boxClose');
-							closeObj.onclick=function(){
-								$('#alertBox').hide();
-							};
-						} 
-					}
-				});
-			/* $.get(url,function(data){
-				
-			}); */
+			$("#save").tips({
+				side:3,
+	            msg:'请先保存',
+	            bg:'#AE81FF',
+	            time:2
+	        });
+			return false;
 		}
 		</script>
 </body>

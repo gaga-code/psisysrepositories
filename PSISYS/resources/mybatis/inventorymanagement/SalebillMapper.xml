@@ -358,7 +358,7 @@
 		</if>
 		order by a.LASTTIME DESC
 	</select>
-	<!-- 列表 -->
+	<!-- 客户超期账款的查询-->
 	<select id="datalistPageForPassTimeSaleBill" parameterType="page" resultType="pd">
 		select
 			a.PK_SOBOOKS,
@@ -410,7 +410,28 @@
 		</if>
 		<!-- 超期： 当前时间-结款日期>客户账期 -->
 		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > IFNULL(b.FREETIME,0)
-		and a.ISSETTLEMENTED =1
+		<!-- 未结算或结算中 -->
+		and a.ISSETTLEMENTED !=1  
+		and a.BILLSTATUS = 2
+		order by a.LASTTIME DESC
+	</select>
+	
+	<!-- 客户超期未付总额以及客户的信誉额度  -->
+	<select id="customerunpaidandgreen" parameterType="pd" resultType="pd">
+		select
+			
+			sum(a.UNPAIDAMOUNT) as unpaidallam,
+			b.CREDITDEGREE as CREDITDEGREE
+		from 
+		   psi_salebill a
+		left join base_customer b
+		on a.CUSTOMER_ID = b.CUSTOMER_ID
+		where 1=1
+		and a.CUSTOMER_ID= #{pd.CUSTOMER_ID}
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > IFNULL(b.FREETIME,0)
+		and a.ISSETTLEMENTED != 1
 		and a.BILLSTATUS = 2
 		order by a.LASTTIME DESC
 	</select>

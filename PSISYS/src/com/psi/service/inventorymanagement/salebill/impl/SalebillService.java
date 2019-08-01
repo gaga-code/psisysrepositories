@@ -487,11 +487,25 @@ public class SalebillService implements SalebillManager{
 		return result;
 	}
 
+	/**
+	 * 超期查询
+	 */
 	@Override
 	public List<PageData> listForPassTimeSaleBill(Page page) throws Exception {
 		return (List<PageData>)dao.findForList("SalebillMapper.datalistPageForPassTimeSaleBill", page);
 	}
-
+	
+	/**
+	 * 检查客户超期未付总金额以及信誉额度
+	 * 输入参数：客户id、帐套id
+	 * 返回：客户超期未付总金额、信誉额度
+	 */
+	@Override
+	public PageData customerunpaidandgreen(PageData pd) throws Exception {
+		return (PageData)dao.findForList("SalebillMapper.customerunpaidandgreen", pd);
+	}
+	
+	
 	@Override
 	public List<PageData> listSaleInfo(PageData pd) throws Exception {
 		// TODO Auto-generated method stub

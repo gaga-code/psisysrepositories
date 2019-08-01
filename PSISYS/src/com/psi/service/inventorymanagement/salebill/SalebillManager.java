@@ -130,5 +130,13 @@ public interface SalebillManager{
 
 	public List<PageData> listSaleInfo(PageData pd) throws Exception;
 	
+	/**
+	 * 检查客户超期未付总金额以及信誉额度
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public PageData customerunpaidandgreen(PageData pd) throws Exception;
+	
 }
 
