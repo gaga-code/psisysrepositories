@@ -119,13 +119,13 @@
 											<td class='center'>${var.LDATE}</td>
 											<td class='center'>${var.BILLCODE}</td>
 											<c:if test="${var.BILLSTATUS == 1 }">
-											<td class='center' id='BILLSTATUS'>未审核</td>
+											<td class='center' id='BILLSTATUS'><font color="blue">未审核</font></td>
 											</c:if>
 											<c:if test="${var.BILLSTATUS == 2 }">
-											<td class='center' id='BILLSTATUS'>已审核</td>
+											<td class='center' id='BILLSTATUS'><font color="green">已审核</font></td>
 											</c:if>
 											<c:if test="${var.BILLSTATUS == 3 }">
-											<td class='center' id='BILLSTATUS'>作废</td>
+											<td class='center' id='BILLSTATUS'><font color="red">作废</font></td>
 											</c:if>
 											<td class='center'>${var.FROMUNITNAME}</td>
 											<td class='center'>${var.PAYMETHOD}</td>

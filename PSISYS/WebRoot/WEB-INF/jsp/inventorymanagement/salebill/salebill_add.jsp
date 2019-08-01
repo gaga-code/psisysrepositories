@@ -177,11 +177,6 @@
 
 
 		
-		$("#select_wh").on('change',function(e,params){
-			var wh_id = $("#select_wh").val();
-			
-		});
-		
 		function parseStr(GOOD_ID,str){
 			 var Str = str.split('#');
 		        if (Str[0] != "") {
@@ -505,16 +500,6 @@
 		
 		//保存
 		function save(){
-			/* var wh = $("#WAREHOUSE_ID").val();
-			if(wh ==""){
-				$("#tishi").tips({
-					side:3,
-		            msg:'请选择仓库',
-		            bg:'#AE81FF',
-		            time:2
-		        });
-				return false;
-			} */
 			
 			if($("#CUSTOMER_ID").val()==""){
 				$("#CUSTOMER_select").tips({

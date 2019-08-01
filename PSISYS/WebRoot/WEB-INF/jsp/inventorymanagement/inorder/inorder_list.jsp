@@ -127,13 +127,13 @@
 											</td>
 											<td class='center' >
 												<c:if test="${var.BILLSTATUS == 1}">
-													未审核
+													<font color="blue">未审核</font>
 												</c:if>
 												<c:if test="${var.BILLSTATUS == 2}">
-													已审核
+													<font color="green">已审核</font>
 												</c:if>
 												<c:if test="${var.BILLSTATUS == 3}">
-													作废
+													<font color="red">作废</font>
 												</c:if>
 											</td>
 											<td class='center'>${var.PSI_NAME}</td>

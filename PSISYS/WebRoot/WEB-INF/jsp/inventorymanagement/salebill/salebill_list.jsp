@@ -483,8 +483,6 @@
 					success: function(data){
 						//tosearch();
 						top.hangge();
-						alert($('#goodslist').val())
-						
 						$("#"+Id).html("已审核");
 						$(this).hide();
 						
