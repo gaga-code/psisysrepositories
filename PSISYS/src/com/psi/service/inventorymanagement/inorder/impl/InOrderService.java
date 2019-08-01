@@ -460,6 +460,15 @@ public class InOrderService implements InOrderManager{
 	public void editFromSupp(PageData pd) throws Exception {
 		dao.update("InOrderMapper.editFromSupp", pd);
 	}
+
+	/**
+	 * 根据进货单ID  获取子表详情列表
+	 * @throws Exception 
+	 */
+	@Override
+	public List<PageData> inOrderlistBody(PageData pd) throws Exception {
+		return (List<PageData>)dao.findForList("InOrderBodyMapper.findById", pd);
+	}
 	
 }
 

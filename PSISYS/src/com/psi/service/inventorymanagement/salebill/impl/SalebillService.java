@@ -538,6 +538,12 @@ public class SalebillService implements SalebillManager{
 		// TODO Auto-generated method stub
 		return (List<PageData>)dao.findForList("SalebillMapper.getSaleInfo", pd);
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PageData> salebillListBody(PageData pd) throws Exception {
+		return (List<PageData>)dao.findForList("SalebillBodyMapper.findById", pd);
+	}
 	
 	
 }

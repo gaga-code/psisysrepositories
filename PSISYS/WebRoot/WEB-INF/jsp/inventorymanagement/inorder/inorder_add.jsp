@@ -186,7 +186,7 @@
 						  +	selecthtml
 						  +'</select></td>'
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+CPRICE+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
@@ -203,7 +203,24 @@
 // 	         $("#" + rowId + " td:eq(3)").children().eq(1).attr("id", "EndRoad" + flag);
 	         //每插入一行，flag自增一次
 	         flag++;
-			
+		}
+		
+		//商品数量修改时，判断是否超过了库存量
+		function checkstocknum(goodsnumID, GOOD_ID,rowId){
+			if($("#"+goodsnumID).val() >=0){
+				calculateTheTotalAmount();
+				return ;
+			}else{
+				$("#"+goodsnumID).tips({
+					side:3,
+		            msg:'数量不能少于0',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				$("#"+goodsnumID).val(0);
+				$("#"+goodsnumID).focus();
+			}
+			calculateTheTotalAmount();
 		}
 		
 		//-----------------删除一行，根据行ID删除-start--------    

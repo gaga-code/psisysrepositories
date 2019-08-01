@@ -115,6 +115,13 @@ public interface InOrderManager{
 	 * @throws Exception
 	 */
 	public PageData findAllById(PageData inorderandbody)throws Exception;
+
+	/**
+	 * 根据进货单ID  获取其子表的列表
+	 * @param pd
+	 * @return
+	 */
+	public List<PageData> inOrderlistBody(PageData pd) throws Exception ;
 	
 }
 

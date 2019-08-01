@@ -103,7 +103,7 @@
 								<c:when test="${not empty varList}">
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${varList}" var="var" varStatus="vs">
-										<tr id="${var.INORDER_ID}">
+										<tr id="${var.INORDER_ID}" onclick="clickaction('${var.INORDER_ID}');">
 											<td class='center' id="checkbox">
 												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.INORDER_ID}" class="ace" /><span class="lbl"></span></label>
 											</td>
@@ -239,11 +239,26 @@
 						</form>
 						<form action="#" method="post" name="actionForm" id="actionForm"></form>
 						</div>
-						<!-- /.col -->
 					</div>
-					<!-- /.row -->
 				</div>
-				<!-- /.page-content -->
+				<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
+							<thead>
+								<tr>
+									<th class="center" style="width:50px;">序号</th>
+									<th class="center">商品名称</th>
+									<th class="center">商品编号</th>
+									<th class="center">仓库</th>
+									<th class="center">单价</th>
+									<th class="center">数量</th>
+									<th class="center">计量单位</th>
+									<th class="center">金额</th>
+									<th class="center">备注</th>
+								</tr>
+							</thead>
+							<tbody id="realtbody">
+							
+							</tbody>
+				</table>
 			</div>
 		</div>
 		<!-- /.main-content -->
@@ -302,7 +317,51 @@
 			//siMenu('z191','lm181','查看进货单',url);
 		}
 		
-		
+		//点击一行显示详情
+		function clickaction(INORDER_ID){
+			$.ajax({
+		        method:'POST',
+		        url:'inorder/inOrderlistBody',
+		        data:{'INORDER_ID':INORDER_ID},
+		        dataType:'json',
+		        success: function (res) {
+		        	printinorderhtml(res);
+		        }
+		    });
+		}
+		function printinorderhtml(res){
+			var strhtml = "";
+            if(res.varList.length == 0){
+            	strhtml +="<tr class='main_info'>";
+            	strhtml +="<td colspan='100' class='center' >没有相关数据</td>";
+            	strhtml +="</tr>";
+            	
+            }else{
+            	for(var i = 0; i < res.varList.length; i++){
+	            	var html = "";
+            		if(res.QX.cha == 1){
+	            		html +="<tr id='"+res.varList[i].INORDER_ID+"'>";
+	            		html +="<td class='center' style='width: 30px;'>"+(i+1)+"</td>";
+	            		html +="<td class='center'>"+res.varList[i].GOODNAME+"</td>";
+	            		html +="<td class='center'>"+res.varList[i].BARCODE+"</td>";
+	            		html +="<td class='center'>"+res.varList[i].WHNAME+"</td>";
+	            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].UNITPRICE_ID+"</td>";
+	            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].PNUMBER+"</td>";
+	            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].NAME+"</td>";
+	            		html +="<td class='center' id='THISPAY'>"+res.varList[i].AMOUNT+"</td>";
+	            		html +="<td class='center'>"+res.varList[i].NOTE+"</td>";
+						html += " </tr>";
+	            	}else if(res.QX.cha == 0){
+	            		html += "<tr> ";
+	            		html += "	<td colspan='100' class='center'>您无权查看</td> ";
+					    html += "</tr> ";
+	            	}
+            		strhtml += html;
+	            }
+            }
+            $("#realtbody").html("");
+            $("#realtbody").html(strhtml);
+		};
 		
 		//检索
 		function tosearch(){

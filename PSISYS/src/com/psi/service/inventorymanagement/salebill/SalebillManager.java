@@ -137,6 +137,14 @@ public interface SalebillManager{
 	 * @throws Exception
 	 */
 	public PageData customerunpaidandgreen(PageData pd) throws Exception;
+
+	/**
+	 * 根据销售单ID获取销售单的详情列表
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> salebillListBody(PageData pd) throws Exception;
 	
 }
 

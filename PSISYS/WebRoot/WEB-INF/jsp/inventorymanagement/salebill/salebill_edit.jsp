@@ -203,7 +203,7 @@
 						  +	selecthtml
 						  +'</select></td>'
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+RPRICE+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\");'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
@@ -223,35 +223,50 @@
 			calculateTheTotalAmount();
 		}
 		//商品数量修改时，判断是否超过了库存量
-		function checkstocknum(goodsnumID, GOOD_ID){
-			
-			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
-			console.log("test");
-			$.ajax({
-				type: "POST",
-				url: '<%=basePath%>salebill/checkstock.do?tm='+new Date().getTime(),
-		    	data: {"GOOD_ID":GOOD_ID, "WAREHOUSE_ID":WAREHOUSE_ID},
-				dataType:'json',
-				cache: false,
-				success: function(data){
-					if(data.msg == "success"){//存在商品
-						if(data.stockNum >= $("#"+goodsnumID).val()){
-							return ;
-						}else{
-							$("#"+goodsnumID).tips({
-								side:3,
-					            msg:'仓库中商品数量不足，当前库存为' + data.stockNum,
-					            bg:'#AE81FF',
-					            time:5
-					        });
-							$("#"+goodsnumID).focus();
-						}
-					}else {
-						return false;
-					}
-				}
-			});
-			calculateTheTotalAmount()
+		function checkstocknum(goodsnumID, GOOD_ID, rowId){
+			var WAREHOUSE_ID = $("#"+rowId+" #select_wh").val();
+			var stockNum = stockgoodsnummap.get(GOOD_ID+","+WAREHOUSE_ID);//查出库存数量
+			if(stockNum >= $("#"+goodsnumID).val() && $("#"+goodsnumID).val() >=0){
+				calculateTheTotalAmount();
+				return ;
+			}else{
+				$("#"+goodsnumID).tips({
+					side:3,
+		            msg:'当前库存为' + stockNum,
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				$("#"+goodsnumID).val(stockNum);
+				$("#"+goodsnumID).focus();
+			}
+// 			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
+// 			console.log("test");
+// 			$.ajax({
+// 				type: "POST",
+<%-- 				url: '<%=basePath%>salebill/checkstock.do?tm='+new Date().getTime(), --%>
+// 		    	data: {"GOOD_ID":GOOD_ID, "WAREHOUSE_ID":WAREHOUSE_ID},
+// 				dataType:'json',
+// 				cache: false,
+// 				success: function(data){
+// 					if(data.msg == "success"){//存在商品
+// 						if(data.stockNum >= $("#"+goodsnumID).val() && $("#"+goodsnumID).val() >=0){
+// 							return ;
+// 						}else{
+// 							$("#"+goodsnumID).tips({
+// 								side:3,
+// 					            msg:'仓库中商品数量不足，当前库存为' + data.stockNum,
+// 					            bg:'#AE81FF',
+// 					            time:5
+// 					        });
+// 							$("#"+goodsnumID).val(stockNum);
+// 							$("#"+goodsnumID).focus();
+// 						}
+// 					}else {
+// 						return false;
+// 					}
+// 				}
+// 			});
+			calculateTheTotalAmount();
 		}
 		
 		//-----------------点击赠送复选框--------    
@@ -293,11 +308,11 @@
 	        	var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
-	                      +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" >'
+	                      +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" id="select_wh" >'
 						  +	selecthtml
 						  +'</select></td>'
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\");' value='"+PNUMBER+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");' value='"+PNUMBER+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='1' checked='checked' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
@@ -310,11 +325,11 @@
 	      		var insertStr = "<tr id=" + rowId + ">"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
-		                +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" >'
+		                +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" id="select_wh">'
 						+ selecthtml
 						+'</select></td>'
 		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
-		                + "<td class='center'><input type='number' maxlength='100' style='width:100px'id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\");' value='"+PNUMBER+"'/></td>"
+		                + "<td class='center'><input type='number' maxlength='100' style='width:100px'id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");' value='"+PNUMBER+"'/></td>"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
 		                + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
@@ -603,6 +618,7 @@
 			$('.date-picker').datepicker('setStartDate', formatDate(new Date()));
 			$('#PAYDATE').val(formatDate(new Date()));
 			<c:forEach items="${pd.goodslist}" var="t">
+				parseStr('${t.GOODCODE_ID}','${t.WAREHOUSE_ID_NAME_STOCK}');	
 				insertOldRow('${t.GOOD_ID}','${t.GOODNAME}','${t.BARCODE}','${t.NAME}','${t.UNITPRICE_ID}','${t.PNUMBER}','${t.AMOUNT}','${t.NOTE}','${t.GOODCODE_ID}','${t.ISFREE}','${t.WAREHOUSE_ID}','${t.WAREHOUSE_ID_NAME_STOCK}');
 			</c:forEach>
 		});
