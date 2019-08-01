@@ -13,6 +13,7 @@
 		FGROUP_ID,
 		SALEBILL_ID,
 		GOODCODE_ID,
+		WAREHOUSE_ID,
 		PNUMBER,
 		UNITPRICE_ID,
 		AMOUNT,
@@ -28,6 +29,7 @@
 		#{FGROUP_ID},	
 		#{SALEBILL_ID},
 		#{GOODCODE_ID},	
+		#{WAREHOUSE_ID},	
 		#{PNUMBER},	
 		#{UNITPRICE_ID},	
 		#{AMOUNT},	
@@ -41,6 +43,7 @@
 		FGROUP_ID,    
 		SALEBILL_ID,        
 		GOODCODE_ID,       
+		WAREHOUSE_ID,       
 		PNUMBER,           
 		UNITPRICE_ID,      
 		AMOUNT,            
@@ -63,6 +66,7 @@
 		#{FGROUP_ID}, 
 		#{SALEBILL_ID},     
 		#{GOODCODE_ID},    
+		#{WAREHOUSE_ID},    
 		#{PNUMBER},         
 		#{UNITPRICE_ID},    
 		#{AMOUNT},          
@@ -143,6 +147,7 @@
 		set
 			SALEBILL_ID=#{SALEBILL_ID},        
 			GOODCODE_ID=#{GOODCODE_ID},       
+			WAREHOUSE_ID=#{WAREHOUSE_ID},       
 			PNUMBER=#{PNUMBER},           
 			UNITPRICE_ID=#{UNITPRICE_ID},      
 			AMOUNT=#{AMOUNT},            
@@ -186,6 +191,7 @@
 			a.FGROUP_ID,
 			a.SALEBILL_ID,
 			a.GOODCODE_ID,
+			a.WAREHOUSE_ID,
 			a.PNUMBER,
 			a.UNITPRICE_ID,
 			a.AMOUNT,
@@ -194,6 +200,7 @@
 			a.NOTE,
 			a.BARCODE,
 			b.GOODNAME,
+			d.WHNAME,
 			c.NAME
 		from 
 		<include refid="tableName"></include> a
@@ -201,6 +208,8 @@
 		on a.GOODCODE_ID = b.GOODCODE		
 		left join cp_spunit c
 		on b.CUNIT_ID = c.SPUNIT_ID		
+		left join base_warehouse d
+		on a.WAREHOUSE_ID = d.WAREHOUSE_ID	
 		where 
 			a.SALEBILL_ID = #{SALEBILL_ID}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}

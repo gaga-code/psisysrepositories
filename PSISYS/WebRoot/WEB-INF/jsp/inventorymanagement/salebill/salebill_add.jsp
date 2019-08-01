@@ -232,7 +232,8 @@
 		function checkstocknum(goodsnumID, GOOD_ID,rowId){
 			var WAREHOUSE_ID = $("#"+rowId+" #select_wh").val();
 			var stockNum = stockgoodsnummap.get(GOOD_ID+","+WAREHOUSE_ID);//查出库存数量
-			if(stockNum >= $("#"+goodsnumID).val()){
+			if(stockNum >= $("#"+goodsnumID).val() && $("#"+goodsnumID).val() >=0){
+				calculateTheTotalAmount();
 				return ;
 			}else{
 				$("#"+goodsnumID).tips({
@@ -269,7 +270,7 @@
 					}
 				}
 			}); --%>
-			calculateTheTotalAmount()
+			calculateTheTotalAmount();
 		}
 		
 		//-----------------点击赠送复选框--------    
@@ -372,14 +373,14 @@
 	        if (Str[0] != "") {
 	            for (var i = 0; i < Str.length - 1; i++) {
 	                var value = Str[i].split(',');
-	                var danjia = value[2];
-	                var shuliang = value[3];
-	                var free = value[6];
+	                var danjia = value[3];
+	                var shuliang = value[4];
+	                var free = value[7];
 	                if(danjia!= ''&& shuliang!= ''){
 	                	if(free == '0'){
 		                	result = result + danjia * shuliang;
 	                	}
-	                	$("#simple-table tr").eq(i+1).children().eq(5).children().eq(0).val(danjia * shuliang);
+	                	$("#simple-table tr").eq(i+1).children().eq(6).children().eq(0).val(danjia * shuliang);
 	                }
 	            }
 	        }
@@ -446,9 +447,10 @@
 			    window.localStorage.removeItem("GOODCODE");
 			    window.localStorage.removeItem("RPRICE");
 			    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
-			    if( GOOD_ID != null)
-			    	parseStr(GOOD_ID,WAREHOUSE_ID_NAME_STOCK);
-			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE);
+			    if( GOOD_ID != null){
+			    	parseStr(GOODCODE,WAREHOUSE_ID_NAME_STOCK);
+			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,WAREHOUSE_ID_NAME_STOCK);
+			    }
 				diag.close();
 			};
 			diag.show();
@@ -476,8 +478,8 @@
 		        if (Str[0] != "") {
 		            for (var i = 0; i < Str.length - 1; i++) {
 		                var value = Str[i].split(',');
-		                var danjia = value[2];
-		                var shuliang = value[3];
+		                var danjia = value[3];
+		                var shuliang = value[4];
 		                if(danjia == '' || shuliang == ''){
 		                	alert("商品的单价和数量不能为空！");
 		                	return '0';
@@ -508,7 +510,7 @@
 		        });
 			return false;
 			}
-			/* if($("#PAYDATE").val()==""){
+			if($("#PAYDATE").val()==""){
 				$("#PAYDATE").tips({
 					side:3,
 		            msg:'请选择结款日期',
@@ -517,7 +519,7 @@
 		        });
 				$("#PAYDATE").focus();
 			return false;
-			} */
+			}
 			/* if($("#MONEY").val()==""){
 				$("#MONEY").val(0);
 			} */

@@ -64,12 +64,13 @@ public class SalebillService implements SalebillManager{
 			pageData.put("APPBILLNO", strs[0]);
 			
 			pageData.put("BARCODE", agoods[1]);
-			pageData.put("UNITPRICE_ID", agoods[2]);
-			pageData.put("PNUMBER", agoods[3]);
-			pageData.put("AMOUNT", agoods[5]);
-			pageData.put("ISFREE", agoods[6]);
-			pageData.put("NOTE", agoods[7]);
-			pageData.put("GOODCODE_ID", agoods[8]);
+			pageData.put("WAREHOUSE_ID", agoods[2]);
+			pageData.put("UNITPRICE_ID", agoods[3]);
+			pageData.put("PNUMBER", agoods[4]);
+			pageData.put("AMOUNT", agoods[6]);
+			pageData.put("ISFREE", agoods[7]);
+			pageData.put("NOTE", agoods[8]);
+			pageData.put("GOODCODE_ID", agoods[9]);
 			
 			dao.save("SalebillBodyMapper.save", pageData);
 		}
@@ -147,12 +148,13 @@ public class SalebillService implements SalebillManager{
 			
 			
 			pageData.put("BARCODE", agoods[1]);
-			pageData.put("UNITPRICE_ID", agoods[2]);
-			pageData.put("PNUMBER", agoods[3]);
-			pageData.put("AMOUNT", agoods[5]);
-			pageData.put("ISFREE", agoods[6]);
-			pageData.put("NOTE", agoods[7]);
-			pageData.put("GOODCODE_ID", agoods[8]);
+			pageData.put("WAREHOUSE_ID", agoods[2]);
+			pageData.put("UNITPRICE_ID", agoods[3]);
+			pageData.put("PNUMBER", agoods[4]);
+			pageData.put("AMOUNT", agoods[6]);
+			pageData.put("ISFREE", agoods[7]);
+			pageData.put("NOTE", agoods[8]);
+			pageData.put("GOODCODE_ID", agoods[9]);
 			
 			dao.save("SalebillBodyMapper.save", pageData);
 		}
@@ -337,7 +339,7 @@ public class SalebillService implements SalebillManager{
 		//通过销售单ID获取该销售单的商品信息
 		List<PageData> goodslist = (List<PageData>)dao.findForList("SalebillBodyMapper.findById", pd);
 		
-		//依次把商品数量添加到 仓库-商品 表中和商品的总数量中
+		//依次把商品数量更新到 仓库-商品 表中和商品的总数量中
 		for (PageData pageData : goodslist) {
 			//把商品的编号加入到查询条件
 			head.put("GOOD_ID", pageData.get("GOODCODE_ID"));
@@ -361,6 +363,7 @@ public class SalebillService implements SalebillManager{
 			
 			//=========================操作库存表===================
 			//先查看 仓库-商品 表中是否包含相应的 仓库-商品
+			head.put("WAREHOUSE_ID", pageData.get("WAREHOUSE_ID"));
 			PageData aGood =  (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", head);
 			//有，把数量更新
 			if(aGood != null) {
@@ -393,6 +396,7 @@ public class SalebillService implements SalebillManager{
 		for (PageData pageData : goodslist) {
 			head.put("GOOD_ID", pageData.get("GOODCODE_ID"));
 			//获取原来的库存
+			head.put("WAREHOUSE_ID", pageData.get("WAREHOUSE_ID"));
 			PageData aGood =  (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", head);
 			
 			//=========================操作商品表===================

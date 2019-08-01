@@ -80,7 +80,7 @@
 											<td class="center">
 												<div class="hidden-md hidden-lg">
 													<div class="inline pos-rel">
-														<button class="btn btn-minier btn-primary dropdown-toggle" onclick="view('${var.GOOD_ID}','${var.GOODNAME}','${var.BARCODE}','${var.UNITNAME}','${var.GOODCODE}','${var.RPRICE}','${var.GOODTYPECODE}','${var.GOODSPECIF}');" data-toggle="dropdown" data-position="auto">
+														<button class="btn btn-minier btn-primary dropdown-toggle" onclick="view('${var.GOOD_ID}','${var.GOODNAME}','${var.BARCODE}','${var.UNITNAME}','${var.GOODCODE}','${var.RPRICE}','${var.GOODTYPECODE}','${var.GOODSPECIF}','${var.WAREHOUSE_ID_NAME_STOCK}');" data-toggle="dropdown" data-position="auto">
 															选择
 														</button>
 													</div>
@@ -151,39 +151,37 @@
 		$(top.hangge());//关闭加载状态
 		
 		//选择商品
-		function view(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF){
-			
-			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
-			
+		function view(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF,WAREHOUSE_ID_NAME_STOCK){
+// 			var WAREHOUSE_ID = $("#WAREHOUSE_ID").val();
 			//发送ajax请求到后台核对仓库是否有此商品
-			$.ajax({
-				type: "POST",
-				url: '<%=basePath%>salebill/checkstock.do?tm='+new Date().getTime(),
-		    	data: {"GOOD_ID":GOODCODE, "WAREHOUSE_ID":WAREHOUSE_ID},
-				dataType:'json',
-				cache: false,
-				success: function(data){
-					if(data.msg == "success"){//存在商品
-						if(!window.localStorage){
-					    	 alert("浏览器不支持localstorage");
-					    }else{
-				             var storage=window.localStorage;
-				             localStorage.setItem("GOOD_ID",GOOD_ID);
-				             localStorage.setItem("GOODNAME",GOODNAME);
-				             localStorage.setItem("BARCODE",BARCODE);
-				             localStorage.setItem("UNITNAME",UNITNAME);
-				             localStorage.setItem("GOODCODE",GOODCODE);
-				             localStorage.setItem("RPRICE",RPRICE);
-				             localStorage.setItem("GOODTYPECODE",GOODTYPECODE);
-				             localStorage.setItem("GOODSPECIF",GOODSPECIF);
-						}
-						top.Dialog.close();//关闭窗口
-					}else {
-						alert("此仓库中没有此商品");
-						return;
-					}
-				}
-			});
+// 			$.ajax({
+// 				type: "POST",
+<%-- 				url: '<%=basePath%>salebill/checkstock.do?tm='+new Date().getTime(), --%>
+// 		    	data: {"GOOD_ID":GOODCODE, "WAREHOUSE_ID":WAREHOUSE_ID},
+// 				dataType:'json',
+// 				cache: false,
+// 				success: function(data){
+// 					if(data.msg == "success"){//存在商品
+// 					}else {
+// 						alert("此仓库中没有此商品");
+// 						return;}
+// 				}
+// 			});
+			if(!window.localStorage){
+		    	 alert("浏览器不支持localstorage");
+		    }else{
+	            var storage=window.localStorage;
+	            localStorage.setItem("GOOD_ID",GOOD_ID);
+	            localStorage.setItem("GOODNAME",GOODNAME);
+	            localStorage.setItem("BARCODE",BARCODE);
+	            localStorage.setItem("UNITNAME",UNITNAME);
+	            localStorage.setItem("GOODCODE",GOODCODE);
+	            localStorage.setItem("RPRICE",RPRICE);
+	            localStorage.setItem("GOODTYPECODE",GOODTYPECODE);
+	            localStorage.setItem("GOODSPECIF",GOODSPECIF);
+				localStorage.setItem("WAREHOUSE_ID_NAME_STOCK",WAREHOUSE_ID_NAME_STOCK);
+			}
+			top.Dialog.close();//关闭窗口
 		}
 		
 		//检索

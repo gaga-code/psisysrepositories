@@ -96,6 +96,7 @@
 								<tr>
 									<th class="center">商品名称</th>
 									<th class="center">商品编号</th>
+									<th class="center">仓库</th>
 									<th class="center">单价</th>
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
@@ -116,6 +117,7 @@
 <%-- 											<td class='center' style="width: 30px;">${vs.index+1}</td> --%>
 											<td class='center'>${var.GOODNAME}</td>
 											<td class='center'>${var.BARCODE}</td>
+											<td class='center'>${var.WHNAME}</td>
 											<td class='center'>${var.UNITPRICE_ID}</td>
 											<td class='center'>${var.PNUMBER}</td>
 											<td class='center'>${var.NAME}</td>

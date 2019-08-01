@@ -125,9 +125,16 @@ public class SalebillController extends BaseController {
 		pd.put("GOODTYPE_ID", pd.get("id"));
 		pd.put("USERNAME", "admin".equals(Jurisdiction.getUsername())?"":Jurisdiction.getUsername());
 		page.setPd(pd);
+		List<PageData>	result = new ArrayList<PageData>();	
 		List<PageData>	varList = goodsService.list(page);	//列出Goods列表
+		for (PageData pageData : varList) {
+			if((Integer)pageData.get("STOCKNUM") != 0) {
+				result.add(pageData);
+			}
+			
+		}
 		mv.setViewName("inventorymanagement/salebill/salebill_goods_list");
-		mv.addObject("varList", varList);
+		mv.addObject("varList", result);
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
