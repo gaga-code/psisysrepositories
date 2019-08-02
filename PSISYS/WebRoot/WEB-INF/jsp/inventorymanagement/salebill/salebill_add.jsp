@@ -497,9 +497,36 @@
 		            }
 		        }
 		  }
+		//检查客户是否超期
+		function checkcustomer(CUSTOMER_ID){
+			$.ajax({
+				type: "POST",
+				url: '<%=basePath%>salebill/checkcustomer.do?tm='+new Date().getTime(),
+		    	data: {"CUSTOMER_ID":CUSTOMER_ID},
+				dataType:'json',
+				cache: false,
+				async:false,
+				success: function(data){
+					if(data.msg == "success"){//存在商品
+						if(data.result){
+							$("#save").tips({
+								side:3,
+					            msg:'当前客户的信誉度为' + data.CREDITDEGREE+",超期未付金额为"+data.unpaidallam+",请慎重开单",
+					            bg:'#AE81FF',
+					            time:5
+					        });
+						}
+						return true;
+					}else {
+						return false;
+					}
+				}
+			});
+		}
 		
 		//保存
 		function save(){
+			
 			
 			if($("#CUSTOMER_ID").val()==""){
 				$("#CUSTOMER_select").tips({
@@ -516,6 +543,8 @@
 			/* if($("#MONEY").val()==""){
 				$("#MONEY").val(0);
 			} */
+				
+			
 			var check = checkGoodsPriceAndNum();
 			if(check == '0'){
 				return false;

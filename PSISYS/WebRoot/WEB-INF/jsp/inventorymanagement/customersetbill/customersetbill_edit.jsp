@@ -174,7 +174,8 @@
 	$(top.hangge());
 		var salebillitemmap = new Map(); //销售单每个子项目的html代码
         var allamountmap=new Map();  //总金额
-        var unpaidamountmap=new Map(); //未收金额
+        var unpaidamountmap=new Map(); //未收金额 --结算会修改
+        var firstmap=new Map(); //原先未付金额 -- 结算不修改
         var paidamoutmap=new Map();  // 已收金额 
         var customerhaspaidamount=0.0;   //已结算销售单的总额 
         var settledsalebillmap = new Map();  //结过算的销售单主键 
@@ -344,6 +345,7 @@
 									salebillitemmap.set(res.varList[i].SALEBILL_ID,html);
 									allamountmap.set(res.varList[i].SALEBILL_ID,res.varList[i].ALLAMOUNT);  //总金额
 				            		unpaidamountmap.set(res.varList[i].SALEBILL_ID,res.varList[i].UNPAIDAMOUNT);  //未收金额
+				            		firstmap.set(res.varList[i].SALEBILL_ID,res.varList[i].UNPAIDAMOUNT);  //未收金额
 				            		paidamoutmap.set(res.varList[i].SALEBILL_ID,res.varList[i].PAIDAMOUNT);  //已收金额
 				            	}else if(res.QX.cha == 0){
 				            		html += "<tr> ";
@@ -365,52 +367,54 @@
 			    }); 
 			}
 		}
-		
+		function changepay(){
+			if($("#select_paymethod").val() == '0' && $("#select_customersetbill").val() == '0'){
+            	$("#PAYMENTAMOUNT").tips({
+					side : 1,
+					msg : "请先选择客户和收款方式",
+					bg : '#FF5080',
+					time : 3
+				});
+            }else  if($("#select_customersetbill").val() == '0' ){
+            	$("#PAYMENTAMOUNT").tips({
+					side : 1,
+					msg : "请先选择客户",
+					bg : '#FF5080',
+					time : 3
+				});
+            }else  if($("#select_paymethod").val() == '0' ){
+            	$("#PAYMENTAMOUNT").tips({
+					side : 1,
+					msg : "请先选择收款方式",
+					bg : '#FF5080',
+					time : 3
+				});
+            }else{
+            	if(parseInt($("#PAYABLEAMOUNT").val())+customerhaspaidamount < parseInt($("#PAYMENTAMOUNT").val())){
+	            	$("#PAYMENTAMOUNT").tips({
+						side : 1,
+						msg : "收款多了",
+						bg : '#FF5080',
+						time : 3
+					});
+	            	$("#PAYMENTAMOUNT").val(parseInt($("#PAYABLEAMOUNT").val())+customerhaspaidamount)
+	            }
+	            if(parseInt($("#PAYMENTAMOUNT").val()) < customerhaspaidamount && customerhaspaidamount != 0.0){
+	            	$("#PAYMENTAMOUNT").tips({
+						side : 1,
+						msg : "当前收款总额至少为已结算销售单的额度",
+						bg : '#FF5080',
+						time : 3
+					});
+	            	$(this).val(customerhaspaidamount);
+	            }
+            }
+		}
 		$(function() {
 			$("#LDATE").attr("disabled","disabled");
 			console.log("1111");	
 			$('#PAYMENTAMOUNT').bind('input porpertychange',function(){
-	            if($("#select_paymethod").val() == '0' && $("#select_customersetbill").val() == '0'){
-	            	$("#PAYMENTAMOUNT").tips({
-						side : 1,
-						msg : "请先选择客户和收款方式",
-						bg : '#FF5080',
-						time : 3
-					});
-	            }else  if($("#select_customersetbill").val() == '0' ){
-	            	$("#PAYMENTAMOUNT").tips({
-						side : 1,
-						msg : "请先选择客户",
-						bg : '#FF5080',
-						time : 3
-					});
-	            }else  if($("#select_paymethod").val() == '0' ){
-	            	$("#PAYMENTAMOUNT").tips({
-						side : 1,
-						msg : "请先选择收款方式",
-						bg : '#FF5080',
-						time : 3
-					});
-	            }else{
-	            	if(parseInt($("#PAYABLEAMOUNT").val())+customerhaspaidamount < parseInt($("#PAYMENTAMOUNT").val())){
-		            	$("#PAYMENTAMOUNT").tips({
-							side : 1,
-							msg : "收款多了",
-							bg : '#FF5080',
-							time : 3
-						});
-		            	$("#PAYMENTAMOUNT").val(parseInt($("#PAYABLEAMOUNT").val())+customerhaspaidamount)
-		            }
-		            if(parseInt($("#PAYMENTAMOUNT").val()) < customerhaspaidamount && customerhaspaidamount != 0.0){
-		            	$("#PAYMENTAMOUNT").tips({
-							side : 1,
-							msg : "当前收款总额至少为已结算销售单的额度",
-							bg : '#FF5080',
-							time : 3
-						});
-		            	$(this).val(customerhaspaidamount);
-		            }
-	            }
+	            
 	            
 	            
 	        });
@@ -867,12 +871,17 @@
 				});
 				return ;
 			}
+			var hasmoney= $("#PAYMENTAMOUNT").val();
 			var settleSALEBILL_ID = "";
 			settledsalebillmap.forEach(function(value, key){
-				if(settleSALEBILL_ID == ""){
-					settleSALEBILL_ID += "'"+key+"'";
-				}else{
-					settleSALEBILL_ID += ",'"+key+"'";
+				var unpaid = firstmap.get(key);
+				hasmoney-=unpaid;
+				if(hasmoney>=0){
+					if(settleSALEBILL_ID == ""){
+						settleSALEBILL_ID += "'"+key+"'";
+					}else{
+						settleSALEBILL_ID += ",'"+key+"'";
+					}
 				}
 			});
 			
@@ -981,12 +990,17 @@
 				});
 				return ;
 			}
+			var hasmoney= $("#PAYMENTAMOUNT").val();
 			var settleSALEBILL_ID = "";
 			settledsalebillmap.forEach(function(value, key){
-				if(settleSALEBILL_ID == ""){
-					settleSALEBILL_ID += "'"+key+"'";
-				}else{
-					settleSALEBILL_ID += ",'"+key+"'";
+				var unpaid = firstmap.get(key);
+				hasmoney-=unpaid;
+				if(hasmoney>=0){
+					if(settleSALEBILL_ID == ""){
+						settleSALEBILL_ID += "'"+key+"'";
+					}else{
+						settleSALEBILL_ID += ",'"+key+"'";
+					}
 				}
 			});
 			

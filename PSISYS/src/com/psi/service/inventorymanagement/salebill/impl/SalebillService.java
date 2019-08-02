@@ -529,7 +529,7 @@ public class SalebillService implements SalebillManager{
 	 */
 	@Override
 	public PageData customerunpaidandgreen(PageData pd) throws Exception {
-		return (PageData)dao.findForList("SalebillMapper.customerunpaidandgreen", pd);
+		return (PageData)dao.findForObject("SalebillMapper.customerunpaidandgreen", pd);
 	}
 	
 	

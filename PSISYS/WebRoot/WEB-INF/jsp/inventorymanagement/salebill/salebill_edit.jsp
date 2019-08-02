@@ -36,7 +36,7 @@
 								&nbsp;&nbsp;&nbsp;&nbsp;
 								<td style="text-align: center;" colspan="10"><font size="6">修改销售单</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 								<td style="text-align: center;" colspan="10">
-								<a class="btn btn-mini btn-primary" onclick="save();">保存</a>
+								<a class="btn btn-mini btn-primary" id="save" onclick="save();">保存</a>
 								<a class="btn btn-mini btn-primary" onclick="shenpi();">审批</a>
 									<a class="btn btn-mini btn-danger" onclick="returnList();">取消</a>
 								</td>
@@ -608,7 +608,19 @@
 		
 		$(function(){
 // 			insertOldRow('2','999999','1','1','9.0','9','81.0','9');
-		console.log("1");
+			console.log("1");
+		
+			var ischaopi = ${pd.ischaopi}
+			if(ischaopi == "1"){
+				$("#save").tips({
+					side:3,
+		            msg:'当前客户的信誉度为' +${pd.CREDITDEGREE}+",超期未付金额为"+${pd.unpaidallam}+",请慎重开单",
+		            bg:'#AE81FF',
+		            time:5
+		        });
+			}
+		
+		
 			//日期框
 			$('.date-picker').datepicker({
 				autoclose: true,

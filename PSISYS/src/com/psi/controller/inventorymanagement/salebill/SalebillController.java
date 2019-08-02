@@ -422,6 +422,19 @@ public class SalebillController extends BaseController {
 		pd = salebillService.findById(pd);	//根据ID读取
 		List<PageData> warehouseList = warehouseService.listAll(pd);	//列出仓库列表;
 		List<PageData> customerList = customerService.listAll(pd);	//列出customer列表;
+
+		String CUSTOMER_ID = pd.getString("CUSTOMER_ID");
+		PageData newpd = salebillService.customerunpaidandgreen(pd);//检查信誉额度
+		Double unpaid = (Double) newpd.get("unpaidallam");
+		Integer CREDITDEGREE = (Integer) newpd.get("CREDITDEGREE");
+		if(unpaid-CREDITDEGREE > 0) {
+			pd.put("unpaidallam", unpaid);
+			pd.put("CREDITDEGREE", CREDITDEGREE);
+			pd.put("ischaopi", "1");
+		}else {
+			pd.put("ischaopi", "0");
+		}
+
 		mv.setViewName("inventorymanagement/salebill/salebill_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);

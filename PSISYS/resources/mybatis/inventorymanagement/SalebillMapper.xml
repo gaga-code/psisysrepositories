@@ -427,8 +427,8 @@
 		left join base_customer b
 		on a.CUSTOMER_ID = b.CUSTOMER_ID
 		where 1=1
-		and a.CUSTOMER_ID= #{pd.CUSTOMER_ID}
-		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and a.CUSTOMER_ID= #{CUSTOMER_ID}
+		and a.PK_SOBOOKS = #{PK_SOBOOKS}
 		and IFNULL(a.dr,0)=0
 		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > IFNULL(b.FREETIME,0)
 		and a.ISSETTLEMENTED != 1

@@ -105,7 +105,7 @@
 								<td style="width:90px;text-align: right;padding-top: 1px;">应付金额:</td>
 								<td><input type="number" name="PAYABLEAMOUNT" id="PAYABLEAMOUNT" value="${pd.PAYABLEAMOUNT }" maxlength="32" placeholder="这里输入应付金 额" title="应付金额" style="width:98%;" readonly="readonly" /></td>
 								<td style="width:90px;text-align: right;padding-top: 1px;">实付金额:</td>
-								<td><input type="number" name="PAYMENTAMOUNT" id="PAYMENTAMOUNT" value="${pd.PAYMENTAMOUNT }" maxlength="32" placeholder="这里输入实付金额" title="实付金额" style="width:98%;"  /></td>
+								<td><input type="number" name="PAYMENTAMOUNT" id="PAYMENTAMOUNT" onchange="changepay()" value="${pd.PAYMENTAMOUNT }" maxlength="32" placeholder="这里输入实付金额" title="实付金额" style="width:98%;"  /></td>
 								<td style="width:90px;text-align: right;padding-top: 1px;">备注:</td>
 								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE }" maxlength="32" placeholder="这里输入备注" title="备注" style="width:98%;" /></td>
 							</tr>
@@ -175,7 +175,8 @@
 	$(top.hangge());
 		var inorderitemmap = new Map(); //进货单每个子项目的html代码
         var allamountmap=new Map();  //总金额
-        var unpaidamountmap=new Map(); //未付金额
+        var unpaidamountmap=new Map(); //未付金额 --结算会修改
+        var firstmap=new Map(); //原先未付金额 -- 结算不修改
         var paidamoutmap=new Map();  // 已付金额 
         var supphaspaidamount=0.0;   //已结算进货单的总额 
         var settledinordermap = new Map();  //结过算的进货单主键 
@@ -346,6 +347,7 @@
 									inorderitemmap.set(res.varList[i].INORDER_ID,html);
 									allamountmap.set(res.varList[i].INORDER_ID,res.varList[i].ALLAMOUNT);  //总金额
 				            		unpaidamountmap.set(res.varList[i].INORDER_ID,res.varList[i].UNPAIDAMOUNT);  //未付金额
+				            		firstmap.set(res.varList[i].INORDER_ID,res.varList[i].UNPAIDAMOUNT);  //未付金额
 				            		paidamoutmap.set(res.varList[i].INORDER_ID,res.varList[i].PAIDAMOUNT);  //已付金额
 				            	}else if(res.QX.cha == 0){
 				            		html += "<tr> ";
@@ -367,55 +369,53 @@
 			    }); 
 			}
 		}
+		function changepay(){
+			if($("#select_paymethod").val() == '0' && $("#select_suppsetbill").val() == '0'){
+            	$("#PAYMENTAMOUNT").tips({
+					side : 1,
+					msg : "请先选择供应商和付款方式",
+					bg : '#FF5080',
+					time : 3
+				});
+            }else  if($("#select_suppsetbill").val() == '0' ){
+            	$("#PAYMENTAMOUNT").tips({
+					side : 1,
+					msg : "请先选择供应商",
+					bg : '#FF5080',
+					time : 3
+				});
+            }else  if($("#select_paymethod").val() == '0' ){
+            	$("#PAYMENTAMOUNT").tips({
+					side : 1,
+					msg : "请先选择付款方式",
+					bg : '#FF5080',
+					time : 3
+				});
+            }else{
+            	if(parseFloat($("#PAYABLEAMOUNT").val())+supphaspaidamount < parseFloat($("#PAYMENTAMOUNT").val())){
+	            	$("#PAYMENTAMOUNT").tips({
+						side : 1,
+						msg : "付款多了",
+						bg : '#FF5080',
+						time : 3
+					});
+	            	$("#PAYMENTAMOUNT").val(parseFloat($("#PAYABLEAMOUNT").val())+supphaspaidamount)
+	            }
+	            if(parseFloat($("#PAYMENTAMOUNT").val()) < supphaspaidamount && supphaspaidamount != 0.0){
+	            	$("#PAYMENTAMOUNT").tips({
+						side : 1,
+						msg : "当前付款总额至少为已结算进货单的额度",
+						bg : '#FF5080',
+						time : 3
+					});
+	            	$(this).val(supphaspaidamount);
+	            }
+            }
+		}
 		
 		$(function() {
 			$("#LDATE").attr("disabled","disabled");
 			
-			$('#PAYMENTAMOUNT').bind('input porpertychange',function(){
-	            if($("#select_paymethod").val() == '0' && $("#select_suppsetbill").val() == '0'){
-	            	$("#PAYMENTAMOUNT").tips({
-						side : 1,
-						msg : "请先选择供应商和付款方式",
-						bg : '#FF5080',
-						time : 3
-					});
-	            }else  if($("#select_suppsetbill").val() == '0' ){
-	            	$("#PAYMENTAMOUNT").tips({
-						side : 1,
-						msg : "请先选择供应商",
-						bg : '#FF5080',
-						time : 3
-					});
-	            }else  if($("#select_paymethod").val() == '0' ){
-	            	$("#PAYMENTAMOUNT").tips({
-						side : 1,
-						msg : "请先选择付款方式",
-						bg : '#FF5080',
-						time : 3
-					});
-	            }else{
-	            	if(parseFloat($("#PAYABLEAMOUNT").val())+supphaspaidamount < parseFloat($("#PAYMENTAMOUNT").val())){
-		            	$("#PAYMENTAMOUNT").tips({
-							side : 1,
-							msg : "付款多了",
-							bg : '#FF5080',
-							time : 3
-						});
-		            	$("#PAYMENTAMOUNT").val(parseFloat($("#PAYABLEAMOUNT").val())+supphaspaidamount)
-		            }
-		            if(parseFloat($("#PAYMENTAMOUNT").val()) < supphaspaidamount && supphaspaidamount != 0.0){
-		            	$("#PAYMENTAMOUNT").tips({
-							side : 1,
-							msg : "当前付款总额至少为已结算进货单的额度",
-							bg : '#FF5080',
-							time : 3
-						});
-		            	$(this).val(supphaspaidamount);
-		            }
-	            }
-	            
-	            
-	        });
 			
  			//日期框
 			$('.date-picker').datepicker({
@@ -732,6 +732,9 @@
 									if(document.getElementsByName('ids')[i].checked){
 										  var id = document.getElementsByName('ids')[i].value;
 										  var unpaid = unpaidamountmap.get(id);
+										  if(canpaidamount == 0 || canpaidamount == 0.0){
+											  break;
+										  }
 										  if(canpaidamount >= unpaid){//可结算的单
 											  canpaidamount -= unpaid;
 											  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(id)-unpaid);
@@ -958,16 +961,21 @@
 				});
 				return ;
 			}
+			var hasmoney= $("#PAYMENTAMOUNT").val();
 			var settleInOrder_ID = "";
 			settledinordermap.forEach(function(value, key){
-				if(settleInOrder_ID == ""){
-					settleInOrder_ID += "'"+key+"'";
-				}else{
-					settleInOrder_ID += ",'"+key+"'";
+				var unpaid = firstmap.get(key);
+				hasmoney-=unpaid;
+				if(hasmoney>=0){
+					if(settleInOrder_ID == ""){
+						settleInOrder_ID += "'"+key+"'";
+					}else{
+						settleInOrder_ID += ",'"+key+"'";
+					}
 				}
 			});
 			
-			/* select_suppsetbill DISTRIBUTIONMODE INVOICETYPE BILLNO select_paymethod PAYABLEALLAM PAYABLEAMOUNT PAYMENTAMOUNT NOTE */
+			/* select_suppsetbill DISTRIBUTIONMODE INVOICETYPE BILLNO select_paymethod PAYABLEALLAM PAYABLEAMOUNT PAYMENTAMOUNT NOTE unpaidamountmap */
 			var FROMUNIT= $("#select_suppsetbill").val();
 			var DISTRIBUTIONMODE= $("#DISTRIBUTIONMODE").val();
 			var INVOICETYPE= $("#INVOICETYPE").val()==null?"":$("#INVOICETYPE").val();
@@ -975,7 +983,8 @@
 			var PAYMETHOD= $("#select_paymethod").val();
 			var PAYABLEALLAM= $("#PAYABLEALLAM").val();
 			var PAYABLEAMOUNT= $("#PAYABLEAMOUNT").val();
-			var PAYMENTAMOUNT= $("#PAYMENTAMOUNT").val();
+			var PAYMENTAMOUNT= $("#PAYMENTAMOUNT").val();//实付
+			
 			var NOTE= $("#NOTE").val() == null ?"":$("#NOTE").val();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();
@@ -1071,12 +1080,17 @@
 				});
 				return ;
 			}
+			var hasmoney= $("#PAYMENTAMOUNT").val();
 			var settleInOrder_ID = "";
 			settledinordermap.forEach(function(value, key){
-				if(settleInOrder_ID == ""){
-					settleInOrder_ID += "'"+key+"'";
-				}else{
-					settleInOrder_ID += ",'"+key+"'";
+				var unpaid = firstmap.get(key);
+				hasmoney-=unpaid;
+				if(hasmoney>=0){
+					if(settleInOrder_ID == ""){
+						settleInOrder_ID += "'"+key+"'";
+					}else{
+						settleInOrder_ID += ",'"+key+"'";
+					}
 				}
 			});
 			
