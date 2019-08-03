@@ -100,7 +100,7 @@ public class AppAccountContrller extends BaseController {
 		Session session = Jurisdiction.getSession();
 
 		String USERNAME = pd.getString("USERNAME"); // 登录过来的用户名
-		String PASSWORD = pd.getString("PASSWORD"); // 登录过来的密码
+		String PASSWORD = pd.getString("PASSWORD"); // 登录过来的密码ccc
 
 		String passwd = new SimpleHash("SHA-1", USERNAME, PASSWORD).toString(); // 密码加密
 		pd.put("PASSWORD", passwd);
