@@ -68,17 +68,12 @@
 	<!-- 判断用户名和密码 -->
 	<select id="getUserInfo" parameterType="pd" resultType="pd">
 		select a.USERNAME,a.NAME,a.PASSWORD,a.USER_ID,a.RIGHTS,a.PHONE,a.HIREDATE,b.PHOTO0 from
-		sys_user as a , sys_userphoto as b 
-		where 1=1
+		sys_user as a left join sys_userphoto as b on  a.USERNAME=b.USERNAME
+		where  1=1
 		<if test="USERNAME!=null and PASSWORD!=null and PK_SOBOOKS!=null">
 		and a.USERNAME = #{USERNAME} and a.PASSWORD=#{PASSWORD} and a.PK_SOBOOKS=#{PK_SOBOOKS}
 		</if>
-		<if test="USER_ID!=null and USER_ID>0">
-		and a.USER_ID = #{USER_ID}
-		</if>
-		and a.PK_SOBOOKS = #{PK_SOBOOKS}
 		and IFNULL(a.dr,0)=0 
-		and a.USERNAME=b.USERNAME
 	</select>
 	
 	
