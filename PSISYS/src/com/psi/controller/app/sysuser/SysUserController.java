@@ -40,6 +40,17 @@ public class SysUserController extends BaseController {
 	@Resource(name="fhlogService")
 	private FHlogManager FHLOG;
 	
+	
+	
+	@RequestMapping(value="/test")
+	@ResponseBody
+	public Object test(){
+		
+		return "1111111";
+	}
+	
+	
+	
 	/**系统用户注册接口
 	 * @return
 	 */

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppInOderMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		psi_inorder
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		INORDER_ID,
+		PK_SOBOOKS,
+		LDATE,
+		BILLCODE,
+		SUPPLIER_ID,
+		USER_ID,
+		WAREHOUSE_ID,
+		ALLAMOUNT,
+		BILLTYPE,
+		BILLSTATUS,
+		PAIDAMOUNT,
+		UNPAIDAMOUNT,
+		THISPAY,
+		SUBBRANCH,
+		NOTE,
+		ISSETTLEMENTED
+	</sql>
+	<select id="listInOderByToday" parameterType="pd" resultType="pd">
+		select ALLAMOUNT,PNUMBER,GOODNAME from psi_inorder as a , psi_inorder_body as b ,base_good as c 
+		where TO_DAYS(a.CREATETIME) = TO_DAYS(NOW())
+		and a.INORDER_ID=b.INORDER_ID
+		and b.GOODCODE_ID=c.GOODCODE
+		and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
+	</select>
+	
+	<select id="listMountAndNum" parameterType="pd" resultType="pd">
+		select  sum(ALLAMOUNT) as ALLAMOUNT , count(ALLAMOUNT) as  NUM from psi_inorder
+		where
+		date_format(psi_inorder.LASTTIME,'%Y-%m')=#{date}
+		and PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
+	</select>
+	
+	<select id="listInOderGoods" parameterType="pd" resultType="pd">
+		select b.GOODCODE_ID,sum(b.PNUMBER) as PNUMBER,c.GOODNAME
+		from psi_inorder as a , psi_inorder_body as b , base_good as c
+		where a.INORDER_ID = b.INORDER_ID
+		and date_format(a.LASTTIME,'%Y-%m')=#{date}
+		and b.GOODCODE_ID=c.GOODCODE
+		and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
+		GROUP BY c.GOODNAME
+	</select>
+	
+	<select id="listMountAndNumByMD" parameterType="pd" resultType="pd">
+		select  sum(ALLAMOUNT) as ALLAMOUNT , count(ALLAMOUNT) as  NUM from psi_inorder
+		where
+		date_format(psi_inorder.LASTTIME,'%Y-%m-%d')=#{date}
+		and PK_SOBOOKS=1
+		and IFNULL(dr,0)=0 
+	
+	</select>
+	
+	<select id="listInOderGoodsByMD" parameterType="pd" resultType="pd">	
+		select b.GOODCODE_ID,sum(b.PNUMBER) as PNUMBER,c.GOODNAME
+		from psi_inorder as a , psi_inorder_body as b , base_good as c
+		where a.INORDER_ID = b.INORDER_ID
+		and date_format(a.LASTTIME,'%Y-%m-%d')=#{date}
+		and b.GOODCODE_ID=c.GOODCODE
+		and a.PK_SOBOOKS=1
+		and IFNULL(a.dr,0)=0 
+		GROUP BY c.GOODNAME
+	</select>
+</mapper>

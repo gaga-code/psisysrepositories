@@ -469,6 +469,11 @@ public class InOrderService implements InOrderManager{
 	public List<PageData> inOrderlistBody(PageData pd) throws Exception {
 		return (List<PageData>)dao.findForList("InOrderBodyMapper.findById", pd);
 	}
+
+	@Override
+	public List<PageData> listInOderSale(Page page) throws Exception {
+		return (List<PageData>)dao.findForList("InOrderMapper.datalistPageByOderSale", page);
+	}
 	
 }
 

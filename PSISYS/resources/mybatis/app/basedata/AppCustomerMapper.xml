@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppCustomerMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		base_customer
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		CUSTOMERCODE,
+		CUATOMERNAME,	
+		SIMPLENAME,	
+		PHONE,	
+		ADDRESS,	
+		YICODE,	
+		TELEPHONE,	
+		PAGING,
+		FAX,	
+		LINKMAN,
+		FREETIME,
+		DISTRIBUTIONMODE,
+		CREDITDEGREE,	
+		NOTE,	
+		NOTE2,
+		NOTE3,
+		USER_ID,
+		PK_SOBOOKS,	
+		CUSTOMER_ID
+	</sql>
+	<!-- 字段 -->
+	<sql id="FieldCha">
+		CUSTOMERCODE,
+		CUATOMERNAME,	
+		SIMPLENAME,	
+		PHONE,	
+		ADDRESS,	
+		YICODE,	
+		TELEPHONE,	
+		PAGING,
+		FREETIME,
+		FAX,	
+		LINKMAN,
+		DISTRIBUTIONMODE,
+		CREDITDEGREE,	
+		NOTE,	
+		NOTE2,
+		NOTE3,
+		USER_ID,
+		PK_SOBOOKS,
+		CREATETIME,	
+		CUSTOMER_ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{CUSTOMERCODE},	
+		#{CUATOMERNAME},	
+		#{SIMPLENAME},	
+		#{PHONE},	
+		#{ADDRESS},	
+		#{YICODE},	
+		#{TELEPHONE},	
+		#{PAGING},	
+		#{FAX},	
+		#{LINKMAN},	
+		#{FREETIME},	
+		#{DISTRIBUTIONMODE},	
+		#{CREDITDEGREE},	
+		#{NOTE},	
+		#{NOTE1},	
+		#{NOTE2},
+		#{USER_ID},	
+		#{PK_SOBOOKS},	
+		#{CUSTOMER_ID}
+	</sql>
+	
+
+	<!-- 通过CUSTOMERCODE获取数据 -->
+	<select id="findCustomerByCode" parameterType="pd" resultType="pd">
+	select 
+	CUSTOMERCODE,CUATOMERNAME,PHONE,ADDRESS,USER_ID,COMPANY
+	from base_customer
+	WHERE	CUSTOMERCODE=#{CUSTOMERCODE}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
+	
+	<select id="listCutomer" parameterType="pd" resultType="pd">
+	select 
+	CUSTOMERCODE,CUATOMERNAME,PHONE,ADDRESS,USER_ID,COMPANY
+	from base_customer
+	WHERE  PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
+
+</mapper>

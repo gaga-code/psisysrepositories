@@ -24,6 +24,7 @@ import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
 import com.psi.entity.system.User;
 import com.psi.service.basedata.payment.PaymentManager;
+import com.psi.service.inventorymanagement.suppsetbill.SuppsetbillManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
 import com.psi.util.Jurisdiction;
@@ -40,7 +41,8 @@ public class PaymentController extends BaseController {
 	String menuUrl = "payment/list.do"; //菜单地址(权限用)
 	@Resource(name="paymentService")
 	private PaymentManager paymentService;
-	
+	@Resource(name="suppsetbillService")
+	private SuppsetbillManager suppsetbillService;	
 	/**保存
 	 * @param
 	 * @throws Exception
@@ -233,6 +235,58 @@ public class PaymentController extends BaseController {
 	public void initBinder(WebDataBinder binder){
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(format,true));
+	}
+	
+	
+	@RequestMapping("/listOrderSaleByPayment")
+	public ModelAndView listOrderSaleByPayment(Page page){
+		
+		logBefore(logger, Jurisdiction.getUsername()+"查看进销支付");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
+		
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("basedata/payment/odersalebypayment");
+		
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if( keywords !=null && !keywords.equals("")){
+			pd.put("keywords", keywords.trim());
+		}
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+		}
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+		} 
+		pd.put("USERNAME", Jurisdiction.getUsername());
+		
+		page.setPd(pd);
+		
+		String BILLTYPE=pd.getString("BILLTYPE");
+		
+		
+		String paymentId=pd.getString("paymentId");
+		if(paymentId!=null &&paymentId !=""){
+			mv.addObject("paymentId",paymentId);
+		}
+	/*	
+		List<PageData> list;
+		if(BILLTYPE==null ||BILLTYPE.equals("1")){
+			list=suppsetbillService.listInOderBypayment(page);//列出供应商j列表
+			
+		}else{
+			
+			list=salebillService.listInOderSale(page);//列出销售单列表
+		}
+
+		
+		mv.addObject("pd", pd);
+		mv.addObject("varlist",list);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+*/		return mv;
 	}
 }
 

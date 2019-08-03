@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppSalebillMapper">
+	
+	
+	<!--表名 -->
+	<sql id="tableName">
+		psi_salebill
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		SALEBILL_ID,
+		PK_SOBOOKS,
+		LDATE,
+		BILLCODE,
+		CUSTOMER_ID,
+		USER_ID,
+		WAREHOUSE_ID,
+		ALLAMOUNT,
+		BILLTYPE,
+		BILLSTATUS,
+		PAIDAMOUNT,
+		UNPAIDAMOUNT,
+		THISPAY,
+		SUBBRANCH,
+		PAYDATE,
+		CUSBILLNO,
+		TOADDRESS,
+		NOTE,
+		ISSETTLEMENTED
+	</sql>
+	
+	<select id="listDataAndNumAndPrice" parameterType="pd" resultType="pd">
+		select PNUMBER,AMOUNT,CREATETIME
+		from psi_salebillbody
+		where GOODCODE_ID=#{GOODCODE}
+		 and PK_SOBOOKS=#{PK_SOBOOKS} 
+		and IFNULL(dr,0)=0  
+		ORDER BY CREATETIME desc limit 0,5;
+		
+	</select>
+	
+	<select id="listSaleInfoByToday" parameterType="pd" resultType="pd">
+			select sum(ALLAMOUNT) as ALLAMOUNT , count(*) num, from psi_salebill
+			where TO_DAYS(LASTTIME) = TO_DAYS(NOW())-3
+			and PK_SOBOOKS=#{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+			
+	</select>
+	
+	<select id="listSaledGoodsBySTT" parameterType="pd" resultType="pd">
+		select c.GOODPIC ,c.GOODNAME,sum(a.ALLAMOUNT) as ALLAMOUNT , sum(b.PNUMBER)  as PNUMBER, count(*) as NUM, count(*)* sum(b.PNUMBER) as saleNum, (sum(a.ALLAMOUNT)-c.LASTPPRICE*sum(b.PNUMBER)) as maoLi
+		from psi_salebill as a ,psi_salebillbody as b, base_good as c,base_goodtype as d
+		where 
+		a.SALEBILL_ID=b.SALEBILL_ID 
+		and b.GOODCODE_ID=c.GOODCODE
+		and c.GOODTYPE_ID=d.GOODTYPE_ID
+		and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
+		<if test="yearMouth != null and yearMouth != '' "> 
+			and date_format(a.LASTTIME,'%Y-%m')=#{yearMouth}
+		</if>
+		<if test="startTime!=null and startTime!=''">
+			<if test="endTime!=null and endTime!=''">
+				 and a.LASTTIME BETWEEN #{startTime} and #{endTime}
+			</if>
+		</if>
+		<if test="TYPENAME!=null and TYPENAME!='' ">
+			and d.TYPENAME=#{TYPENAME}
+		</if>
+		GROUP BY GOODNAME
+		<if test="sortType==1">
+			ORDER BY ALLAMOUNT desc
+		</if>
+		<if test="sortType==2">
+			ORDER BY saleNum  desc
+		</if>
+		<if test="sortType==3">
+			ORDER BY NUM desc
+		</if>
+		<if test="sortType==4">
+			ORDER BY maoLi desc
+		</if>
+			
+	</select>
+	
+</mapper>

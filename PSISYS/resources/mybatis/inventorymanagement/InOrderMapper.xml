@@ -461,4 +461,32 @@
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
 	</update>
+	
+	<select id="datalistPageByOderSale" parameterType="page" resultType="pd">
+		select a.BILLCODE,d.GOODNAME,b.UNITPRICE_ID,b.PNUMBER,a.ALLAMOUNT,a.PAIDAMOUNT,a.LASTTIME,c.USERNAME,a.BILLTYPE,
+		e.SUPPLIERNAME as startplace , f.WHNAME as endplace
+		from psi_inorder as a 
+		left join  psi_inorder_body as b on  a.INORDER_ID=b.INORDER_ID
+		left join sys_user as c on a.USER_ID=c.USER_ID
+		left join  base_good as d on b.GOODCODE_ID=d.GOODCODE
+		left join base_supplier as e on a.SUPPLIER_ID=e.SUPPLIER_ID 
+		left join  base_warehouse as f on b.WAREHOUSE_ID=f.WAREHOUSE_ID
+		where a.PK_SOBOOKS=1
+		and ifnull(a.dr,0)=0
+		<if test="pd.keywords!=null and pd.keywords!='' ">
+			and d.GOODNAME like concat('%',#{pd.keywords},'%')
+			or  c.USERNAME like concat('%',#{pd.keywords},'%')
+			or  e.SUPPLIERNAME like concat('%',#{pd.keywords},'%')
+			or  f.WHNAME like concat('%',#{pd.keywords},'%')
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart!='' ">
+			<if test="pd.lastEnd!=null and pd.lastEnd!='' ">
+			 and Date(a.LASTTIME) BETWEEN #{pd.lastStart} and #{pd.lastEnd}
+			</if>
+		</if>
+		<if test="pd.WAREHOUSE_ID!=null and pd.WAREHOUSE_ID!=''">
+			and b.WAREHOUSE_ID=#{pd.WAREHOUSE_ID}
+		</if>
+		order by a.LASTTIME desc
+	</select>
 </mapper>

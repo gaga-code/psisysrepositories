@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppGoodsTypeMapper">
+	
+	<resultMap type="GoodsType" id="goodsTypeResultMap">
+		<id column="GOODTYPE_ID" property="GOODTYPE_ID"/>
+		<result column="TYPENAME" property="TYPENAME"/>
+		<result column="PARENTS" property="PARENTS"/>
+	</resultMap>
+	
+	<!--表名 -->
+	<sql id="tableName">
+		base_goodtype
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		GOODTYPE_ID,
+		PK_SOBOOKS,
+		TYPECODE,
+		TYPENAME,
+		USER_ID,
+		PARENTS,
+		DEF1,
+		DEF2,
+		DEF3,
+		DEF4,
+		DEF5
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{GOODTYPE_ID},	
+		#{PK_SOBOOKS},	
+		#{TYPECODE},	
+		#{TYPENAME},	
+		#{USER_ID},	
+		#{PARENTS},	
+		#{DEF1},
+		#{DEF2},
+		#{DEF3},
+		#{DEF4},
+		#{DEF5}
+	</sql>
+	
+	<select id="listGoodsClass" parameterType="pd" resultType="String">
+	    select DISTINCT(TYPENAME) from base_goodtype 
+	    where PK_SOBOOKS=#{PK_SOBOOKS}
+	</select>
+
+</mapper>

@@ -79,6 +79,8 @@ public interface SuppsetbillManager{
 	 * @throws Exception
 	 */
 	public void unapprovalone(PageData pd)throws Exception;
+
+	public List<PageData> listInOderBypayment(Page page) throws Exception;
 	
 	
 	

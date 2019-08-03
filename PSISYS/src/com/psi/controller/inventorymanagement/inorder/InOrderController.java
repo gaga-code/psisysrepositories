@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.basedata.supplier.SupplierManager;
 import com.psi.service.basedata.warehouse.WarehouseManager;
 import com.psi.service.inventorymanagement.inorder.InOrderManager;
+import com.psi.service.inventorymanagement.salebill.SalebillManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
 import com.psi.util.DateUtil;
@@ -55,7 +58,8 @@ public class InOrderController extends BaseController {
 	private SupplierManager supplierService;
 	@Resource(name="warehouseService")
 	private WarehouseManager warehouseService;
-	
+	@Resource(name="salebillService")
+	private SalebillManager salebillService;
 	/**
 	 * 打开添加商品
 	 * @throws Exception 
@@ -503,5 +507,72 @@ public class InOrderController extends BaseController {
 	public void initBinder(WebDataBinder binder){
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(format,true));
+	}
+	
+	@RequestMapping(value="/listInOderSale")
+	public ModelAndView listInOderSale(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"出入库列表");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		PageData pd = new PageData();
+		pd= this.getPageData();
+		
+
+		ModelAndView mv= new ModelAndView();
+		
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if( keywords !=null && !keywords.equals("")){
+			pd.put("keywords", keywords.trim());
+		}
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+		}
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+		} 
+		pd.put("USERNAME", Jurisdiction.getUsername());
+		
+		page.setPd(pd);
+		String BILLTYPE=pd.getString("BILLTYPE");
+		
+		String warehouseId=pd.getString("WAREHOUSE_ID");
+		if(warehouseId!=null &&warehouseId !=""){
+			mv.addObject("warehouseId",warehouseId);
+		}
+		List<PageData> list;
+		if(BILLTYPE==null ||BILLTYPE.equals("1")){
+			list=inOrderService.listInOderSale(page);//列出进货单列表
+			
+		}else{
+			
+			list=salebillService.listInOderSale(page);//列出销售单列表
+		}
+		
+/*
+			Comparator<PageData> com=new Comparator<PageData>(){ //匿名内部类 
+					@Override
+					public int compare(PageData o1, PageData o2) {
+					    String str1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(o1.get("LASTTIME"));
+					    String str2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(o2.get("LASTTIME"));
+					    if(str1.compareTo(str2)>=0){
+					    	lists.add(o1);
+					    	System.out.println("-----------------------------------------------");
+					    	return 1;
+					    }else{
+					    	lists.add(o2);
+					    	System.out.println("+++++++++++++++++++++++++++++++++++++++++");
+					    	return -1;
+					    }
+					}            
+		        };
+		     Collections.sort(list,com);*/
+		List<PageData> warehouselist=warehouseService.listAll(pd);
+		mv.setViewName("inventorymanagement/odersale/odersale_list");
+		mv.addObject("pd", pd);
+		mv.addObject("varlist",list);
+		mv.addObject("warehouselist",warehouselist);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		return mv;
 	}
 }

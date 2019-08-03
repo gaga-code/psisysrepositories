@@ -378,6 +378,12 @@ public class SuppsetbillService implements SuppsetbillManager{
 		}
 		dao.save("SuppsetbillMapper.save", zuofeipd);
 	}
+
+	@Override
+	public List<PageData> listInOderBypayment(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("", page);
+	}
 	
 }
 

@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.system.User;
+import com.psi.service.app.system.user.AppUserManager;
 import com.psi.service.basedata.accountset.AccountSetManager;
 import com.psi.service.system.fhlog.FHlogManager;
 import com.psi.service.system.user.impl.UserService;
@@ -31,6 +32,7 @@ import com.psi.util.PageData;
 import com.psi.util.Tools;
 
 @Controller
+@RequestMapping("/appAccount")
 public class AppAccountContrller extends BaseController {
 
 	@Resource(name = "accountSetService")
@@ -39,12 +41,18 @@ public class AppAccountContrller extends BaseController {
 	@Resource(name = "userService")
 	private UserService userService;
 
+	
+
+	@Resource(name = "appUserService")
+	private AppUserManager appUserService;
+
+	
 	@Resource(name = "fhlogService")
 	private FHlogManager FHLOG;
 
 	@RequestMapping(value = "/getaccountlist", produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public PageData getaccountlist() throws Exception {
+	public Object getaccountlist() throws Exception {
 
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -82,9 +90,10 @@ public class AppAccountContrller extends BaseController {
 	 * @throws Exception
 	 */
 
-	@RequestMapping(value = "/checkUserLoginInfo", produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/checkUserLoginInfo")
 	@ResponseBody
 	public Object login() throws Exception {
+		
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		
@@ -97,7 +106,7 @@ public class AppAccountContrller extends BaseController {
 		pd.put("PASSWORD", passwd);
 		pd.put("PK_SOBOOKS",pd.getString("PK_SOBOOKS"));
 		
-		pd = userService.getUserByNameAndPwd(pd); // 根据用户名和密码 账套主键 去读取用户信息
+		pd = appUserService.getUserByNameAndPwd(pd); // 根据用户名和密码 账套主键 去读取用户信息
 		if (pd != null) {
 			this.removeSession(USERNAME);// 请缓存
 			pd.put("LAST_LOGIN", DateUtil.getTime().toString());
@@ -108,8 +117,8 @@ public class AppAccountContrller extends BaseController {
 			user.setPASSWORD(pd.getString("PASSWORD"));
 			user.setNAME(pd.getString("NAME"));
 			user.setRIGHTS(pd.getString("RIGHTS"));
+			user.setRIGHTS(pd.getString("PK_SOBOOKS"));
 			session.setAttribute(Const.SESSION_USER, user); // 把用户信息放session中
-			
 			// shiro加入身份验证
 			Subject subject = SecurityUtils.getSubject();
 			UsernamePasswordToken token = new UsernamePasswordToken(USERNAME, PASSWORD);

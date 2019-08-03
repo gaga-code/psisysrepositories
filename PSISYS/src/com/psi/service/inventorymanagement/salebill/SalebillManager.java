@@ -145,6 +145,8 @@ public interface SalebillManager{
 	 * @throws Exception
 	 */
 	public List<PageData> salebillListBody(PageData pd) throws Exception;
+
+	public List<PageData> listInOderSale(Page page) throws Exception;
 	
 }
 

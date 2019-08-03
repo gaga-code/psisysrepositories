@@ -1,0 +1,42 @@
+package com.psi.controller.app.basedata.customer;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.psi.controller.base.BaseController;
+import com.psi.service.app.basedata.customer.AppCustomerManager;
+import com.psi.util.PageData;
+
+@Controller
+@RequestMapping("/appCustomer")
+public class AppCustomerController extends BaseController{
+		
+	
+	@Resource(name="appCustomerService")
+	private AppCustomerManager appCustomerService;
+	
+	//.获取某个客户的信息  getCustomerDetails
+	@RequestMapping("/getCustomerDetails")
+	@ResponseBody
+	public PageData  getCustomerDetails() throws Exception{
+		PageData pd=new PageData();
+		pd=this.getPageData();
+		pd=appCustomerService.findCustomerByCode(pd);	
+		return pd;
+	}
+	
+	@RequestMapping("/getCustomerList")
+	@ResponseBody
+	public List<PageData> getCustomerList() throws Exception{
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		List<PageData> list=appCustomerService.listCutomer(pd);
+		return list;
+	}
+ 
+}
