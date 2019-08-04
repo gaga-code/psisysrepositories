@@ -105,8 +105,10 @@ public class AppAccountContrller extends BaseController {
 		String passwd = new SimpleHash("SHA-1", USERNAME, PASSWORD).toString(); // 密码加密
 		pd.put("PASSWORD", passwd);
 		pd.put("PK_SOBOOKS",pd.getString("PK_SOBOOKS"));
-		
+		String PK_SOBOOKS=pd.getString("PK_SOBOOKS");
 		pd = appUserService.getUserByNameAndPwd(pd); // 根据用户名和密码 账套主键 去读取用户信息
+		
+		String errorMessage="";
 		if (pd != null) {
 			this.removeSession(USERNAME);// 请缓存
 			pd.put("LAST_LOGIN", DateUtil.getTime().toString());
@@ -117,15 +119,18 @@ public class AppAccountContrller extends BaseController {
 			user.setPASSWORD(pd.getString("PASSWORD"));
 			user.setNAME(pd.getString("NAME"));
 			user.setRIGHTS(pd.getString("RIGHTS"));
-			user.setRIGHTS(pd.getString("PK_SOBOOKS"));
+			user.setPK_SOBOOKS(pd.getString("PK_SOBOOKS"));
 			session.setAttribute(Const.SESSION_USER, user); // 把用户信息放session中
+			session.setAttribute("PK_SOBOOKS", PK_SOBOOKS);
 			// shiro加入身份验证
 			Subject subject = SecurityUtils.getSubject();
 			UsernamePasswordToken token = new UsernamePasswordToken(USERNAME, PASSWORD);
+			AppUtil.returnObject(new PageData(), pd);
 		
 		} else {
-			logBefore(logger, USERNAME + "登录系统密码或用户名或账套错误");
-			FHLOG.save(USERNAME, "登录系统密码或用户名或账套错误");
+		/*	logBefore(logger, USERNAME + "登录系统密码或用户名或账套错误");
+			FHLOG.save(USERNAME, "登录系统密码或用户名或账套错误");*/
+			pd.put("errorMessage", "你输入的信息错误,请重新输入!");
 		}
 		return pd;
 	}
