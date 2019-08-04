@@ -107,7 +107,9 @@ public class AppGoodsController extends BaseController {
 				lists.get(i).put("PostionNum", PostionNum);
 			}*/
 			lists.get(i).put("stockNum", fpd);
-			pd.put("PK_SOBOOKS", fpd.get(0).getString("PK_SOBOOKS"));
+			if(fpd!=null&&fpd.size()!=0){
+				pd.put("PK_SOBOOKS", fpd.get(0).getString("PK_SOBOOKS"));
+			}
 			pd.put("GOODCODE", GOODCODE);
 			
 			List<PageData> lpd=appSalelbillService.listDataAndNumAndPrice(pd); //获取商品最近五次销售信息
@@ -137,7 +139,9 @@ public class AppGoodsController extends BaseController {
 					lists.get(i).put("PostionNum", PostionNum);
 				}*/
 				lists.get(i).put("stockNum", fpd);
-				pd.put("PK_SOBOOKS", fpd.get(0).getString("PK_SOBOOKS"));
+				if(fpd!=null&&fpd.size()!=0){
+					pd.put("PK_SOBOOKS", fpd.get(0).getString("PK_SOBOOKS"));
+				}
 				pd.put("GOODCODE", GOODCODE);
 				
 				List<PageData> lpd=appSalelbillService.listDataAndNumAndPrice(pd);//获取商品最近五次销售信息
