@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -57,7 +58,14 @@ public class AppGoodsController extends BaseController {
 	public Object getGoodsList() throws Exception{
 		PageData pd=new PageData();
 		pd=this.getPageData();
-		String PK_SOBOOKS=pd.getString("PK_SOBOOKS");
+
+		Session session = Jurisdiction.getSession();
+		Object PK_SOBOOKS;
+		if(pd.getString("PK_SOBOOKS")!=null){
+		    PK_SOBOOKS=pd.getString("PK_SOBOOKS");
+		}else{
+		     PK_SOBOOKS=session.getAttribute("PK_SOBOOKS");
+		}
 		List<PageData> lists=appGoodsService.listGoods(pd); //获取商品信息
 		for(int i=0;i<lists.size();i++){
 			String GOODCODE=lists.get(i).getString("GOODCODE");
