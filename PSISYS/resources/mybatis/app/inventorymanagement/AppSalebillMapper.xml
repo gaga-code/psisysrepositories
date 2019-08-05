@@ -32,12 +32,14 @@
 	</sql>
 	
 	<select id="listDataAndNumAndPrice" parameterType="pd" resultType="pd">
-		select PNUMBER,AMOUNT,CREATETIME
-		from psi_salebillbody
-		where GOODCODE_ID=#{GOODCODE}
-		 and PK_SOBOOKS=#{PK_SOBOOKS} 
-		and IFNULL(dr,0)=0  
-		ORDER BY CREATETIME desc limit 0,5;
+		select a.PNUMBER,a.AMOUNT,a.CREATETIME,d.NAME as UNIT
+		from psi_salebillbody as a left join psi_salebill as b on a.SALEBILL_ID=b.SALEBILL_ID
+		left join base_good as c  on c.GOODCODE=a.GOODCODE_ID
+		left join cp_spunit as d on d.SPUNIT_ID=c.CUNIT_ID 
+		where a.GOODCODE_ID=#{GOODCODE}
+		 and a.PK_SOBOOKS=#{PK_SOBOOKS} 
+		and IFNULL(a.dr,0)=0  
+		ORDER BY a.CREATETIME desc limit 0,5;
 		
 	</select>
 	
