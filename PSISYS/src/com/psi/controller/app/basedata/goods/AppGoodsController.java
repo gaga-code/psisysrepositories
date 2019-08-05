@@ -95,7 +95,6 @@ public class AppGoodsController extends BaseController {
 		
 		return lists;
 	}
-	
 	//根据类别搜索商品信息
 	@RequestMapping("/getGoodsListByClass")
 	@ResponseBody
@@ -120,6 +119,11 @@ public class AppGoodsController extends BaseController {
 			
 			List<PageData> lpd=appSalelbillService.listDataAndNumAndPrice(pd); //获取商品最近五次销售信息
 			if(lpd!=null&&lpd.size()!=0){
+			    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				for(int j =0;j<lpd.size();j++){
+					String d=formatter.format(lpd.get(j).get("CREATETIME"));
+					lpd.get(j).put("CREATETIME", d);
+				}
 			     lists.get(i).put("PNDlist",lpd);
 			}else{
 			     lists.get(i).put("PNDlist","");
@@ -152,6 +156,11 @@ public class AppGoodsController extends BaseController {
 				
 				List<PageData> lpd=appSalelbillService.listDataAndNumAndPrice(pd);//获取商品最近五次销售信息
 				if(lpd!=null&&lpd.size()!=0){
+				    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					for(int j =0;j<lpd.size();j++){
+						String d=formatter.format(lpd.get(j).get("CREATETIME"));
+						lpd.get(j).put("CREATETIME", d);
+					}
 				     lists.get(i).put("PNDlist",lpd);
 				}else{
 				     lists.get(i).put("PNDlist","");

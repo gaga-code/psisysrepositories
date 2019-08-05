@@ -85,6 +85,7 @@
 	<!-- 列表 -->
 	<!-- 列表(全部) -->
 	<select id="listGoodsListByClass" parameterType="pd" resultType="pd">
+		
 			select
 			a.GOODTYPE_ID,
 			a.GOODCODE,
@@ -99,10 +100,14 @@
 			a.FZUNIT_ID,
 			a.UNITPROP,
 			a.PK_SOBOOKS,
-			b.TYPENAME
+			b.TYPENAME,
+			c.NAME as CUNIT,
+			d.NAME as FZUNIT
 		from 
 		base_good as a left join base_goodtype as b
 		on a.GOODTYPE_ID =b.GOODTYPE_ID
+		left join cp_spunit as c on c.SPUNIT_ID=a.CUNIT_ID
+		left join cp_spunit as d on d.SPUNIT_ID=a.FZUNIT_ID
 		where
 		    b.TYPENAME=#{TYPENAME}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
@@ -124,10 +129,14 @@
 			a.FZUNIT_ID,
 			a.UNITPROP,
 			a.PK_SOBOOKS,
-			b.TYPENAME
+			b.TYPENAME,
+			c.NAME as CUNIT,
+			d.NAME as FZUNIT
 		from 
 		base_good as a left join base_goodtype as b
 		on a.GOODTYPE_ID=b.GOODTYPE_ID
+		left join cp_spunit as c on c.SPUNIT_ID=a.CUNIT_ID
+		left join cp_spunit as d on d.SPUNIT_ID=a.FZUNIT_ID
 		where
 			a.GOODNAME like concat('%',#{keyword},'%')
 			or b.TYPENAME like concat('%',#{keyword},'%')
