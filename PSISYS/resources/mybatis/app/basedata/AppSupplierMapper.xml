@@ -33,8 +33,13 @@
 	</sql>
 
 	<select id="listSuppliers" parameterType="pd" resultType="pd">
-		select SUPPLIERCODE ,SUPPLIERNAME,SUPPLIERNAME,PHONE
+		select SUPPLIERCODE ,SUPPLIERNAME,COMPANY,PHONE
 		from base_supplier
 		where PK_SOBOOKS=#{PK_SOBOOKS}
+		<if test="keyword!=null and keyword!='' ">
+			and SUPPLIERNAME like concat('%',#{keyword},'%')
+			or COMPANY  like concat('%',#{keyword},'%')
+		</if>
+		and IFNULL(DR,0)=0
 	</select>
 </mapper>
