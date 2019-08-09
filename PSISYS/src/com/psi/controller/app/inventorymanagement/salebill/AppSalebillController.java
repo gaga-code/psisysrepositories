@@ -51,10 +51,16 @@ public class AppSalebillController extends BaseController {
 					PageData jpd=list.get(j);
 					if(ipd.get("GOODNAME").equals(jpd.get("GOODNAME"))){
 						int PNUMBER=(Integer) jpd.get("PNUMBER")+(Integer) ipd.get("PNUMBER");
-						double AMOUNT=(Double) jpd.get("AMOUNT")+(Double) ipd.get("AMOUNT");
-						double maoLi=(Double) jpd.get("maoLi")+(Double) ipd.get("maoLi");
+						String a1=jpd.get("AMOUNT").toString();
+						String a2=ipd.get("AMOUNT").toString();
+						double AMOUNT= Double.parseDouble(a1)+Double.parseDouble(a2);
+						
+						String m1=jpd.get("maoLi").toString();
+						String m2=ipd.get("maoLi").toString();
+						double maoLi= Double.parseDouble(m1)+Double.parseDouble(m2);
+						
 						jpd.put("PNUMBER", PNUMBER);
-						jpd.put("AMOUNT", PNUMBER);
+						jpd.put("AMOUNT", AMOUNT);
 						jpd.put("maoLi", maoLi);
 						if(jpd.get("NUM")==null){ //单数为零
 							jpd.put("NUM", 1);
