@@ -44,10 +44,12 @@
 	</select>
 	
 	<select id="listSaleInfoByToday" parameterType="pd" resultType="pd">
-			select sum(ALLAMOUNT) as ALLAMOUNT , count(*) num, from psi_salebill
-			where TO_DAYS(LASTTIME) = TO_DAYS(NOW())-3
-			and PK_SOBOOKS=#{PK_SOBOOKS}
-			and IFNULL(dr,0)=0 
+		select b.GOODNAME,a.PNUMBER,a.AMOUNT,(a.UNITPRICE_ID-b.LASTPPRICE) as maoLi,c.NAME
+		from psi_salebillbody as  a left join base_good as b on a.GOODCODE_ID =b.GOODCODE
+		left join cp_spunit as c on c.SPUNIT_ID=b.CUNIT_ID
+		where  date_format(a.LASTTIME,'%Y-%m-%d')= date_format(now(),'%Y-%m-%d')
+		and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
 			
 	</select>
 	
