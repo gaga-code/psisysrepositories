@@ -8,7 +8,7 @@ public interface AppSalebillManager {
 
 	List<PageData> listDataAndNumAndPrice(PageData pd) throws Exception;
 
-	PageData listSaleInfoByToday(PageData pd) throws Exception;
+	List<PageData> listSaleInfoByToday(PageData pd) throws Exception;
 
 	List<PageData> listSaleInfoDayByMouth(PageData pd);
 

@@ -22,9 +22,9 @@ public class AppSalebillService implements AppSalebillManager {
 	}
 
 	@Override
-	public PageData listSaleInfoByToday(PageData pd) throws Exception {
+	public List<PageData> listSaleInfoByToday(PageData pd) throws Exception {
 		
-		return (PageData)dao.findForObject("AppSalebillMapper.listSaleInfoByToday", pd);
+		return (List<PageData>)dao.findForList("AppSalebillMapper.listSaleInfoByToday", pd);
 	}
 
 	@Override
