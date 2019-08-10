@@ -27,7 +27,7 @@
 		ISSETTLEMENTED
 	</sql>
 	<select id="listInOderByToday" parameterType="pd" resultType="pd">
-		select ALLAMOUNT,PNUMBER,GOODNAME from psi_inorder as a , psi_inorder_body as b ,base_good as c 
+		select ALLAMOUNT,PNUMBER,GOODNAME , GOODPIC from psi_inorder as a , psi_inorder_body as b ,base_good as c 
 		where TO_DAYS(a.CREATETIME) = TO_DAYS(NOW())
 		and a.INORDER_ID=b.INORDER_ID
 		and b.GOODCODE_ID=c.GOODCODE
@@ -45,12 +45,12 @@
 	
 	<select id="listInOderGoods" parameterType="pd" resultType="pd">
 		select b.GOODCODE_ID,sum(b.PNUMBER) as PNUMBER,c.GOODNAME
-		from psi_inorder as a , psi_inorder_body as b , base_good as c
-		where a.INORDER_ID = b.INORDER_ID
-		and date_format(a.LASTTIME,'%Y-%m')=#{date}
-		and b.GOODCODE_ID=c.GOODCODE
-		and a.PK_SOBOOKS=#{PK_SOBOOKS}
-		and IFNULL(a.dr,0)=0 
+		from psi_inorder as a left join psi_inorder_body as b on  a.INORDER_ID=b.INORDER_ID
+		left JOIN base_good as c on b.GOODCODE_ID=c.GOODCODE
+		where 
+		a.PK_SOBOOKS=1
+		and IFNULL(a.dr,0)=0
+		and  date_format(a.LASTTIME,'%Y-%m')=#{date} 
 		GROUP BY c.GOODNAME
 	</select>
 	
