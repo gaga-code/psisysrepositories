@@ -14,5 +14,9 @@ public interface AppSalebillManager {
 
 	List<PageData> listSaledGoodsBySTT(PageData pd) throws Exception;
 
+	List<PageData> listsalebill(PageData pd) throws Exception;
+
+	List<PageData> listsalebillBody(PageData pd) throws Exception;
+
 
 }

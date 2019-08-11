@@ -40,4 +40,16 @@ public class AppSalebillService implements AppSalebillManager {
 		return (List<PageData>)dao.findForList("AppSalebillMapper.listSaledGoodsBySTT", pd);
 	}
 
+	@Override
+	public List<PageData> listsalebill(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("AppSalebillMapper.listsalebill",pd);
+	}
+
+	@Override
+	public List<PageData> listsalebillBody(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("AppSalebillMapper.listsalebillBody", pd);
+	}
+
 }

@@ -207,6 +207,9 @@ public class AppSalebillController extends BaseController {
 				pd.put("SALEBILL_ID", lpd.get(i).get("SALEBILL_ID"));
 				List<PageData> ipd = appSalebillService.listsalebillBody(pd);
 				lpd.get(i).put("listgood", ipd);
+			/*	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String CREATETIME=sdf.format(lpd.get(0).getString("CREATETIME"));
+				pd.put("CREATETIME", CREATETIME);*/
 			}
 		}
 		return lpd;

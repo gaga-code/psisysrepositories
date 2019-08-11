@@ -90,7 +90,7 @@
 	</select>
 	
 	<select id="listsalebill" parameterType="pd" resultType="pd">
-		SELECT a.SALEBILL_ID, a.BILLCODE,b.NAME ,c.CUATOMERNAME,a.NOTE,a.CREATETIME,a.ALLAMOUNT
+		SELECT a.SALEBILL_ID, a.BILLCODE,b.NAME ,c.CUATOMERNAME,a.NOTE,date_format(a.CREATETIME,'%Y-%m-%d') as CREATETIME ,a.ALLAMOUNT
 		from 
 		psi_salebill as a left join sys_user as b on a.USER_ID=b.USER_ID
 		left join base_customer as c on a.CUSTOMER_ID=c.CUSTOMER_ID
@@ -99,7 +99,7 @@
 		and IFNULL(a.dr,0)=0 
 		<if test="startTime!=null and startTime!=''">
 			<if test="endTime!=null and endTime!=''">
-				 and a.LASTTIME BETWEEN #{startTime} and #{endTime}
+				 and date_format(a.CREATETIME,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime}
 			</if>
 		</if>
 		<if test="date!=null and date!='' ">
@@ -114,5 +114,6 @@
 		left join base_warehouse as d on a.WAREHOUSE_ID=d.WAREHOUSE_ID
 		where  a.PK_SOBOOKS=#{PK_SOBOOKS}
 		and IFNULL(a.dr,0)=0 
+		and a.SALEBILL_ID=#{SALEBILL_ID}
 	</select>
 </mapper>

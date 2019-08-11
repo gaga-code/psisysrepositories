@@ -53,7 +53,7 @@ public class AppInOderController extends BaseController{
 		Date start = new SimpleDateFormat("yyyy-MM").parse(yyyy+"-1");//定义起始日期  年份的一月份开始
 		Date end;//定义结束日期
 		
-		if(yyyy.equals(year)){//如果yyyy和当前年份相等，则查询今
+		if(yyyy.equals(year)){//如果yyyy和当前年份相等，则查询今年
 			end = new SimpleDateFormat("yyyy-MM").parse(year+"-"+(new Date().getMonth()+1));
 		}else{
 			end = new SimpleDateFormat("yyyy-MM").parse(yyyy+"-12");
@@ -63,33 +63,33 @@ public class AppInOderController extends BaseController{
 		
 		List<HashMap<String, Object>> list= new ArrayList<HashMap<String,Object>>();
 		while(cal.getTime().getTime() <=end.getTime()){//判断是否到结束日期
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-
-		String str =sdf.format(cal.getTime());
-
-		System.out.println(str);//输出日期结果
-		pd.put("date", str);
-		PageData fpd= appInOderService.listMountAndNum(pd); 
-		HashMap<String, Object> map= new HashMap<String,Object>();
-		if(fpd.get("ALLAMOUNT")!=null){
-			map.put("ALLAMOUNT", fpd.get("ALLAMOUNT"));
-			map.put("NUM", fpd.get("NUM"));
-		}
-		pd.put("date", str);
-		pd.put("PK_SOBOOKS", PK_SOBOOKS);
-		
-		List<PageData> lpd=appInOderService.listInOderGoods(pd);//查询 商品在这个月入库的数量
-		if(lpd!=null&&lpd.size()!=0){
-			map.put("listNum", lpd);
-			map.put("yearMouth", str);
-			list.add(map);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+	
+			String str =sdf.format(cal.getTime());
+	
+			System.out.println(str);//输出日期结果
+			pd.put("date", str);
+			PageData fpd= appInOderService.listMountAndNum(pd); 
+			HashMap<String, Object> map= new HashMap<String,Object>();
+			if(fpd.get("ALLAMOUNT")!=null){
+				map.put("ALLAMOUNT", fpd.get("ALLAMOUNT"));
+				map.put("NUM", fpd.get("NUM"));
+			}
+			pd.put("date", str);
+			pd.put("PK_SOBOOKS", PK_SOBOOKS);
 			
-		}
-		cal.add(Calendar.MONTH, 1);//进行当前日期月份加1
-		}
+			List<PageData> lpd=appInOderService.listInOderGoods(pd);//查询 商品在这个月入库的数量
+			if(lpd!=null&&lpd.size()!=0){
+				map.put("listNum", lpd);
+				map.put("yearMouth", str);
+				list.add(map);
+				
+			}
+			cal.add(Calendar.MONTH, 1);//进行当前日期月份加1
+			}
 		return list;
 	}
-	
+	//获取入库汇总（按月份的每一天）
 	@RequestMapping("/listInOrderByMouthDay")
 	@ResponseBody
 	public  List<HashMap<String, Object>> listInOrderByMouthDay() throws Exception{
@@ -155,5 +155,41 @@ public class AppInOderController extends BaseController{
 	}
 	
 	
+	///入库单据（进货单）
+	@RequestMapping("/getInOrder")
+	@ResponseBody
+	public List<PageData> getSailbill() throws Exception{
+		PageData pd= new PageData();
+		pd = this.getPageData();
+		
+		int flag=1;
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			flag=0;
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+		}
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			flag=0;
+			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+		} 
+		if(flag==1){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+			String date =sdf.format(new Date());
+			pd.put("date", date);
+		}
+		List<PageData> lpd=appInOderService.listInOrder(pd);
+		if(lpd!=null){
+			for(int i=0;i<lpd.size();i++){
+				pd.put("INORDER_ID", lpd.get(i).get("INORDER_ID"));
+				List<PageData> ipd = appInOderService.listInOrderBody(pd);
+				lpd.get(i).put("listgood", ipd);
+			/*	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String CREATETIME=sdf.format(lpd.get(0).getString("CREATETIME"));
+				pd.put("CREATETIME", CREATETIME);*/
+			}
+		}
+		return lpd;
+	}
 	
 }

@@ -17,4 +17,8 @@ public interface AppInOderManager {
 
 	List<PageData> listInOderGoodsByMD(PageData pd) throws Exception;
 
+	List<PageData> listInOrder(PageData pd) throws Exception;
+
+	List<PageData> listInOrderBody(PageData pd) throws Exception;
+
 }

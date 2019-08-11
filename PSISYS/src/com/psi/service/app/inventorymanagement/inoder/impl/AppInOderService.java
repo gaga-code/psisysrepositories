@@ -48,4 +48,16 @@ public class AppInOderService implements AppInOderManager {
 		return (List<PageData>)dao.findForList("AppInOderMapper.listInOderGoodsByMD",pd);
 	}
 
+	@Override
+	public List<PageData> listInOrder(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("AppInOderMapper.listInOrder", pd);
+	}
+
+	@Override
+	public List<PageData> listInOrderBody(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return  (List<PageData>)dao.findForList("AppInOderMapper.listInOrderBody", pd);
+	}
+
 }
