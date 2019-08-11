@@ -154,14 +154,14 @@ public class AppSalebillController extends BaseController {
 	public List<PageData> getSaledGoodsBySTT() throws Exception{
 		PageData pd= new PageData();
 		pd=this.getPageData();
-		if(pd.getString("sortType")!=null){  //默认是销售额  sorttype=1
+		if(pd.getString("sortType")==null){  //默认是销售额  sorttype=1
 			pd.put("sortType", 1); 
 		}
 		String startTime=pd.getString("startTime");
 		String endTime=pd.getString("endTime");
 		if(startTime==null&& endTime==null){
 			Calendar cal = Calendar.getInstance(); //定义日期实例
-			int mouth=cal.get(Calendar.MONTH);
+			int mouth=new Date().getMonth()+1;
 			String yearMouth;
 			if(mouth<10){
 				 yearMouth = String.valueOf(cal.get(Calendar.YEAR))+"-0"+mouth;
