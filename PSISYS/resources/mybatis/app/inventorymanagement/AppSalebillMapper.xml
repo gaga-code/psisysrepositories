@@ -71,7 +71,7 @@
 			</if>
 		</if>
 		<if test="TYPENAME!=null and TYPENAME!='' ">
-			and d.TYPENAME=#{TYPENAME}
+			and d.TYPENAME like concat('%',#{TYPENAME},'%')
 		</if>
 		GROUP BY GOODNAME
 		<if test="sortType==1">
@@ -89,4 +89,30 @@
 			
 	</select>
 	
+	<select id="listsalebill" parameterType="pd" resultType="pd">
+		SELECT a.SALEBILL_ID, a.BILLCODE,b.NAME ,c.CUATOMERNAME,a.NOTE,a.CREATETIME,a.ALLAMOUNT
+		from 
+		psi_salebill as a left join sys_user as b on a.USER_ID=b.USER_ID
+		left join base_customer as c on a.CUSTOMER_ID=c.CUSTOMER_ID
+		where a.BILLTYPE='2'
+		and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
+		<if test="startTime!=null and startTime!=''">
+			<if test="endTime!=null and endTime!=''">
+				 and a.LASTTIME BETWEEN #{startTime} and #{endTime}
+			</if>
+		</if>
+		<if test="date!=null and date!='' ">
+			and date_format(a.CREATETIME,'%Y-%m')=#{date}
+		</if>
+	</select>
+	
+	<select id="listsalebillBody" parameterType="pd" resultType="pd">
+		select b.GOODCODE,b.GOODNAME, b.GOODSPECIF ,b.RPRICE, c.NAME as UNIT,a.PNUMBER,a.AMOUNT,d.WHNAME,a.NOTE
+		from  psi_salebillbody as a left join base_good as b  on a.GOODCODE_ID=b.GOODCODE 
+		left join cp_spunit as c on c.SPUNIT_ID = b.CUNIT_ID
+		left join base_warehouse as d on a.WAREHOUSE_ID=d.WAREHOUSE_ID
+		where  a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
+	</select>
 </mapper>

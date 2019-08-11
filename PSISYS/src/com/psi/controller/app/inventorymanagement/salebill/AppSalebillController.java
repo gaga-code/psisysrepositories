@@ -157,7 +157,7 @@ public class AppSalebillController extends BaseController {
 		if(pd.getString("sortType")==null){  //默认是销售额  sorttype=1
 			pd.put("sortType", 1); 
 		}
-		if(pd.get("TYPENAME").equals("")){
+		if(pd.get("TYPENAME")!=null && pd.get("TYPENAME").equals("")){
 			pd.put("TYPENAME", null);
 		}
 		
@@ -177,4 +177,39 @@ public class AppSalebillController extends BaseController {
 		List<PageData> list=appSalebillService.listSaledGoodsBySTT(pd);
 		return list;
 	}
+	
+	///出库单据（销售单）
+	@RequestMapping("/getSailbill")
+	@ResponseBody
+	public List<PageData> getSailbill() throws Exception{
+		PageData pd= new PageData();
+		pd = this.getPageData();
+		
+		int flag=1;
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			flag=0;
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+		}
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			flag=0;
+			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+		} 
+		if(flag==1){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+			String date =sdf.format(new Date());
+			pd.put("date", date);
+		}
+		List<PageData> lpd=appSalebillService.listsalebill(pd);
+		if(lpd!=null){
+			for(int i=0;i<lpd.size();i++){
+				pd.put("SALEBILL_ID", lpd.get(i).get("SALEBILL_ID"));
+				List<PageData> ipd = appSalebillService.listsalebillBody(pd);
+				lpd.get(i).put("listgood", ipd);
+			}
+		}
+		return lpd;
+	}
+	
 }
