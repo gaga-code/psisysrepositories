@@ -67,7 +67,7 @@
 		</if>
 		<if test="startTime!=null and startTime!=''">
 			<if test="endTime!=null and endTime!=''">
-				 and a.LASTTIME BETWEEN #{startTime} and #{endTime}
+			 and date_format(a.LASTTIME,'%Y-%m') BETWEEN #{startTime} and #{endTime}
 			</if>
 		</if>
 		<if test="TYPENAME!=null and TYPENAME!='' ">
