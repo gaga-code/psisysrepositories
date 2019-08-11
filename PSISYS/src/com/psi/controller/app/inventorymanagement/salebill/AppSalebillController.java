@@ -157,6 +157,10 @@ public class AppSalebillController extends BaseController {
 		if(pd.getString("sortType")==null){  //默认是销售额  sorttype=1
 			pd.put("sortType", 1); 
 		}
+		if(pd.get("TYPENAME").equals("")){
+			pd.put("TYPENAME", null);
+		}
+		
 		String startTime=pd.getString("startTime");
 		String endTime=pd.getString("endTime");
 		if(startTime==null&& endTime==null){
