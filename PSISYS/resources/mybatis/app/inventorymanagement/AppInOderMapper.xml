@@ -27,20 +27,22 @@
 		ISSETTLEMENTED
 	</sql>
 	<select id="listInOderByToday" parameterType="pd" resultType="pd">
-		select ALLAMOUNT,PNUMBER,GOODNAME , GOODPIC from psi_inorder as a , psi_inorder_body as b ,base_good as c 
+		select a.ALLAMOUNT,b.PNUMBER,c.GOODNAME , GOODPIC ,c.GOODCODE,a.BILLTYPE 
+		from psi_inorder as a left join  psi_inorder_body as b on a.INORDER_ID=b.INORDER_ID 
+		left join base_good as c on b.GOODCODE_ID=c.GOODCODE
 		where TO_DAYS(a.CREATETIME) = TO_DAYS(NOW())
-		and a.INORDER_ID=b.INORDER_ID
-		and b.GOODCODE_ID=c.GOODCODE
 		and a.PK_SOBOOKS=#{PK_SOBOOKS}
 		and IFNULL(a.dr,0)=0 
 	</select>
 	
 	<select id="listMountAndNum" parameterType="pd" resultType="pd">
-		select  sum(ALLAMOUNT) as ALLAMOUNT , count(ALLAMOUNT) as  NUM from psi_inorder
+		select INORDER_ID, sum(ALLAMOUNT) as ALLAMOUNT , count(INORDER_ID) as  NUM 
+		from psi_inorder
 		where
 		date_format(psi_inorder.LASTTIME,'%Y-%m')=#{date}
 		and PK_SOBOOKS=#{PK_SOBOOKS}
 		and IFNULL(dr,0)=0 
+		and BILLTYPE=#{BILLTYPE}
 	</select>
 	
 	<select id="listInOderGoods" parameterType="pd" resultType="pd">
@@ -48,30 +50,32 @@
 		from psi_inorder as a left join psi_inorder_body as b on  a.INORDER_ID=b.INORDER_ID
 		left JOIN base_good as c on b.GOODCODE_ID=c.GOODCODE
 		where 
-		a.PK_SOBOOKS=1
+		a.PK_SOBOOKS=#{PK_SOBOOKS}
 		and IFNULL(a.dr,0)=0
 		and  date_format(a.LASTTIME,'%Y-%m')=#{date} 
-		GROUP BY c.GOODNAME
+		and a.BILLTYPE=#{BILLTYPE}
+		GROUP BY b.GOODCODE_ID
 	</select>
 	
 	<select id="listMountAndNumByMD" parameterType="pd" resultType="pd">
-		select  sum(ALLAMOUNT) as ALLAMOUNT , count(ALLAMOUNT) as  NUM from psi_inorder
+		select INORDER_ID, sum(ALLAMOUNT) as ALLAMOUNT , count(INORDER_ID) as  NUM from psi_inorder
 		where
 		date_format(psi_inorder.LASTTIME,'%Y-%m-%d')=#{date}
-		and PK_SOBOOKS=1
+		and PK_SOBOOKS=#{PK_SOBOOKS}
 		and IFNULL(dr,0)=0 
-	
+		and BILLTYPE=#{BILLTYPE}
 	</select>
 	
 	<select id="listInOderGoodsByMD" parameterType="pd" resultType="pd">	
 		select b.GOODCODE_ID,sum(b.PNUMBER) as PNUMBER,c.GOODNAME
-		from psi_inorder as a , psi_inorder_body as b , base_good as c
-		where a.INORDER_ID = b.INORDER_ID
-		and date_format(a.LASTTIME,'%Y-%m-%d')=#{date}
-		and b.GOODCODE_ID=c.GOODCODE
-		and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		from psi_inorder as a  left join  psi_inorder_body as b  on a.INORDER_ID = b.INORDER_ID
+		 left join  base_good as c on b.GOODCODE_ID=c.GOODCODE
+		where
+		 a.PK_SOBOOKS=#{PK_SOBOOKS}
 		and IFNULL(a.dr,0)=0 
-		GROUP BY c.GOODNAME
+		and date_format(a.LASTTIME,'%Y-%m-%d')=#{date}
+		and a.BILLTYPE=#{BILLTYPE}
+		GROUP BY b.GOODCODE_ID
 	</select>
 	
 	<select id="listInOrder" parameterType="pd" resultType="pd">
@@ -82,9 +86,9 @@
 		where a.BILLTYPE='1'
 		and a.PK_SOBOOKS=#{PK_SOBOOKS}
 		and IFNULL(a.dr,0)=0 
-		<if test="startTime!=null and startTime!=''">
-			<if test="endTime!=null and endTime!=''">
-				 and date_format(a.CREATETIME,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime}
+		<if test="lastStart!=null and lastStart!=''">
+			<if test="lastEnd!=null and lastEnd!=''">
+				 and date_format(a.CREATETIME,'%Y-%m-%d') BETWEEN #{lastStart} and #{lastEnd}
 			</if>
 		</if>
 		<if test="date!=null and date!='' ">
