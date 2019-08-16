@@ -430,6 +430,9 @@ public class AppSalebillController extends BaseController {
 		PageData pd = new PageData();
 		pd =  this.getPageData();
 		
+		String str = pd.getString("sale");
+		String[] salibill = str.split(",");
+		
 		pd.put("SALEBILL_ID", this.get32UUID());		//主键
 		pd.put("LDATE",DateUtil.getTime().toString());	//录入日期
 		pd.put("BILLSTATUS", 1);
