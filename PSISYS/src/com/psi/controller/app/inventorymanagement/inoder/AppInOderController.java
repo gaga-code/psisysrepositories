@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.psi.controller.base.BaseController;
 import com.psi.service.app.inventorymanagement.inoder.AppInOderManager;
 import com.psi.service.app.inventorymanagement.inoder.impl.AppInOderService;
+import com.psi.util.DateUtil;
+import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
 
 @Controller
@@ -33,7 +35,42 @@ public class AppInOderController extends BaseController{
 	public List<PageData> getInOderByToday() throws Exception{
 		PageData pd = new PageData();
 		pd=this.getPageData();
-		List<PageData> list= appInOderService.listInOderByToday(pd);
+		List<PageData> lpd= appInOderService.listInOderByToday(pd);//得到进货单和退货单
+		List<PageData> list=new ArrayList();//进货单
+		List<PageData> ipd=new ArrayList();//退货单
+		if(lpd!=null&&lpd.size()!=0){
+			for(int i=0;i<lpd.size();i++){
+				if(lpd.get(i).get("BILLTYPE").equals("1")){//如果为进货单
+					int flag=0;
+					for(int j=0;j<list.size();j++){
+						if(list.get(j).get("GOODCODE").equals(lpd.get(i).get("GOODCODE"))){//商品编号相同
+							int PNUMBER=(Integer)list.get(i).get("PNUMBER")+(Integer)lpd.get(i).get("PNUMBER");
+							double ALLAMOUNT=(Double)list.get(i).get("ALLAMOUNT")+(Double)lpd.get(i).get("ALLAMOUNT");
+							list.get(i).put("PNUMBER", PNUMBER);
+							list.get(i).put("ALLAMOUNT", ALLAMOUNT);
+							flag=1;
+						}
+					}
+					if(flag==0){
+						list.add(lpd.get(i));
+					}
+					
+				}else{
+					ipd.add(lpd.get(i));
+				}
+			}
+			for(int i=0;i<list.size();i++){
+				for(int j=0;j<ipd.size();j++){
+					if(list.get(i).get("GOODCODE").equals(ipd.get(j).get("GOODCODE"))){
+						int PNUMBER=(Integer)list.get(i).get("PNUMBER")-(Integer)ipd.get(i).get("PNUMBER");
+						double ALLAMOUNT=(Double)list.get(i).get("ALLAMOUNT")-(Double)ipd.get(i).get("ALLAMOUNT");
+						list.get(i).put("PNUMBER", PNUMBER);
+						list.get(i).put("ALLAMOUNT", ALLAMOUNT);
+						ipd.remove(j);
+					}
+				}
+			}
+		}
 		return list;
 	}
 	//获取入库汇总（按月份）
@@ -69,17 +106,42 @@ public class AppInOderController extends BaseController{
 	
 			System.out.println(str);//输出日期结果
 			pd.put("date", str);
-			PageData fpd= appInOderService.listMountAndNum(pd); 
+			
 			HashMap<String, Object> map= new HashMap<String,Object>();
+			
+			
+			pd.put("BILLTYPE", 1);
+			PageData fpd= appInOderService.listMountAndNum(pd); 
+			pd.put("BILLTYPE", 8);
+			PageData hpd= appInOderService.listMountAndNum(pd); 
+			
+			
 			if(fpd.get("ALLAMOUNT")!=null){
-				map.put("ALLAMOUNT", fpd.get("ALLAMOUNT"));
-				map.put("NUM", fpd.get("NUM"));
+				if((Long)hpd.get("NUM")!=0){
+					double ALLAMOUNT= (Double)fpd.get("ALLAMOUNT")-(Double)hpd.get("ALLAMOUNT");
+					map.put("ALLAMOUNT",ALLAMOUNT);
+					map.put("NUM",fpd.get("NUM"));
+				}
 			}
+			
 			pd.put("date", str);
 			pd.put("PK_SOBOOKS", PK_SOBOOKS);
 			
-			List<PageData> lpd=appInOderService.listInOderGoods(pd);//查询 商品在这个月入库的数量
+			pd.put("BILLTYPE", 1);
+			List<PageData> lpd=appInOderService.listInOderGoods(pd);//查询 商品在这个月入库的数量 进货单
+			pd.put("BILLTYPE", 8);
+			List<PageData> ipd=appInOderService.listInOderGoods(pd);//查询 商品在这个月入库的数量 退货单
 			if(lpd!=null&&lpd.size()!=0){
+				if(ipd!=null && ipd.size()!=0){
+					for(int i=0;i<ipd.size();i++){
+						for(int j=0;j<lpd.size();j++){
+							if(ipd.get(i).get("GOODCODE_ID").equals(lpd.get(j).get("GOODCODE_ID"))){
+								int PNUMBER = (Integer)lpd.get(j).get("PNUMBER")- (Integer)lpd.get(j).get("PNUMBER");
+								lpd.get(j).put("PNUMBER", PNUMBER);
+							}
+						}
+					}
+				}
 				map.put("listNum", lpd);
 				map.put("yearMouth", str);
 				list.add(map);
@@ -114,11 +176,12 @@ public class AppInOderController extends BaseController{
 		int m2 = Integer.parseInt(strarray2[1]);
 		
 		if(y1==y2&&m1==m2){//如果yearmouth和当前月份相等，则查询当今这个月
-			end = new SimpleDateFormat("yyyy-MM-dd").parse(today+"-"+new Date().getDay());
+			Calendar c = Calendar.getInstance();
+			end = new SimpleDateFormat("yyyy-MM-dd").parse(today+"-"+c.get(Calendar.DAY_OF_MONTH));
 		}else{
 	
 			Calendar c = Calendar.getInstance();
-			c.set(y1, m2, 0); //输入类型为int类型
+			c.set(y1, m1, 0); //输入类型为int类型
 			int dayOfMonth = c.get(Calendar.DAY_OF_MONTH);
 			
 			end = new SimpleDateFormat("yyyy-MM-dd").parse(yearmouth+"-"+dayOfMonth);
@@ -128,28 +191,55 @@ public class AppInOderController extends BaseController{
 		List<HashMap<String, Object>> list= new ArrayList<HashMap<String,Object>>();
 		
 		while(cal.getTime().getTime() <=end.getTime()){//判断是否到结束日期
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		String str =sdf.format(cal.getTime());
-
-		System.out.println(str);//输出日期结果
-		pd.put("date", str);
-		PageData fpd= appInOderService.listMountAndNumByMD(pd);
-		HashMap<String, Object> map= new HashMap<String,Object>();
-		if(fpd!=null){
-			map.put("ALLAMOUNT", fpd.get("ALLAMOUNT"));
-			map.put("NUM", fpd.get("NUM"));
-		}
-		pd.put("date", str);
-		pd.put("PK_SOBOOKS", PK_SOBOOKS);
-		
-		List<PageData> lpd=appInOderService.listInOderGoodsByMD(pd);//查询 商品在这个月入库的数量
-		if(lpd!=null&&lpd.size()!=0){
-			map.put("listNum", lpd);
-			map.put("yearMouthDay", str);
-			list.add(map);
-		}
-		cal.add(Calendar.DAY_OF_MONTH, 1);//进行当前日期月份加1
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	
+			String str =sdf.format(cal.getTime());
+	
+			System.out.println(str);//输出日期结果
+			pd.put("date", str);
+			HashMap<String, Object> map= new HashMap<String,Object>();
+			
+			pd.put("BILLTYPE", 1);
+			PageData fpd= appInOderService.listMountAndNumByMD(pd);//进货单
+			
+			pd.put("BILLTYPE", 8);
+			PageData hpd= appInOderService.listMountAndNumByMD(pd);//退货单
+			if(fpd!=null&&fpd.size()!=0&&(Long)fpd.get("NUM")!=0){
+				double ALLAMOUNT = 0;
+				if((Long)hpd.get("NUM")!=0){
+					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT")-(Double)hpd.get("ALLAMOUNT");
+				
+				}else{
+					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
+				}
+				map.put("ALLAMOUNT",ALLAMOUNT);
+				map.put("NUM",fpd.get("NUM"));
+			}
+			pd.put("date", str);
+			pd.put("PK_SOBOOKS", PK_SOBOOKS);
+			
+			pd.put("BILLTYPE", 1);
+			List<PageData> lpd=appInOderService.listInOderGoodsByMD(pd);//查询 商品在这个月入库的数量 进货单
+			
+			pd.put("BILLTYPE", 8);
+			List<PageData> ipd=appInOderService.listInOderGoodsByMD(pd);//查询 商品在这个月入库的数量  退货单
+			
+			if(lpd!=null&&lpd.size()!=0){
+				if(ipd!=null && ipd.size()!=0){
+					for(int i=0;i<ipd.size();i++){
+						for(int j=0;j<lpd.size();j++){
+							if(ipd.get(i).get("GOODCODE_ID").equals(lpd.get(j).get("GOODCODE_ID"))){
+								int PNUMBER = (Integer)lpd.get(j).get("PNUMBER")- (Integer)lpd.get(j).get("PNUMBER");
+								lpd.get(j).put("PNUMBER", PNUMBER);
+							}
+						}
+					}
+				}
+				map.put("listNum", lpd);
+				map.put("yearMouthDay", str);
+				list.add(map);
+			}
+			cal.add(Calendar.DAY_OF_MONTH, 1);//进行当前日期月份加1
 		}
 		return list;
 	}
@@ -191,5 +281,34 @@ public class AppInOderController extends BaseController{
 		}
 		return lpd;
 	}
+	
+	
+	
+	/**保存
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/saveInOrder")
+	public String save() throws Exception{
+	
+//		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		pd.put("INORDER_ID", this.get32UUID());		//主键
+		pd.put("LDATE",DateUtil.getTime().toString());	//录入日期
+		pd.put("BILLSTATUS", 1);
+		pd.put("BILLTYPE", 1);
+		pd.put("UNPAIDAMOUNT", pd.get("ALLAMOUNT"));
+		pd.put("PAIDAMOUNT", 0);
+		pd.put("THISPAY", 0);
+		pd.put("ISSETTLEMENTED", 0);
+		appInOderService.save(pd);
+//		mv.addObject("msg","success");
+//		mv.setViewName("save_result");
+//		mv.setViewName("inventorymanagement/inorder/inorder_list");
+		return "redirect:/inorder/list.do";
+	}
+	
+	
 	
 }

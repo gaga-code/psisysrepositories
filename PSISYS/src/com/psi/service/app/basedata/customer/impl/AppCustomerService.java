@@ -27,5 +27,6 @@ public class AppCustomerService implements AppCustomerManager{
 	
 		return  (List<PageData>)dao.findForList("AppCustomerMapper.listCutomer", pd);
 	}
-	
+
+
 }

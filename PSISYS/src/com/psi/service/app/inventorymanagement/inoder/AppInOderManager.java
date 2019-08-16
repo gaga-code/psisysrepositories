@@ -21,4 +21,6 @@ public interface AppInOderManager {
 
 	List<PageData> listInOrderBody(PageData pd) throws Exception;
 
+	void save(PageData pd) throws Exception;
+
 }

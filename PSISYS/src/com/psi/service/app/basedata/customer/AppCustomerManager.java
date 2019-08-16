@@ -10,4 +10,5 @@ public interface AppCustomerManager {
 
 	List<PageData> listCutomer(PageData pd) throws Exception;
 
+
 }
