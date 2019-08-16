@@ -33,7 +33,7 @@
 	</sql>
 	
 	<select id="listStockById"  parameterType="pd" resultType="pd">
-		select a.WHNAME ,b.STOCK ,b.PK_SOBOOKS from
+		select a.WAREHOUSE_ID,a.WHNAME ,b.STOCK ,b.PK_SOBOOKS from
 		base_warehouse as a left join
 		base_stock as b on
 		a.WAREHOUSE_ID = b.WAREHOUSE_ID
