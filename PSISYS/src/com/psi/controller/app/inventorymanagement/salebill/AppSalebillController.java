@@ -423,14 +423,14 @@ public class AppSalebillController extends BaseController {
 	}
 
 	//出库商品的数据更新到数据库
-	@RequestMapping("/saveSailbill")
+	@RequestMapping("/insertSailbill")
 	@ResponseBody
 	public String  saveSailbill() throws Exception{
 		
 		PageData pd = new PageData();
 		pd =  this.getPageData();
 		
-		String str = pd.getString("sale");
+	/*	String str = pd.getString("sale");
 		String[] salibill = str.split(",");
 		
 		pd.put("SALEBILL_ID", this.get32UUID());		//主键
@@ -442,7 +442,7 @@ public class AppSalebillController extends BaseController {
 		pd.put("THISPAY", 0);
 		pd.put("ISSETTLEMENTED", 0);
 	//	pd = appSalebillService.save(pd);
-		
+		*/
 		return "OK";
 	}
 	
