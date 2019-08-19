@@ -137,7 +137,7 @@ public class AppInOderController extends BaseController{
 						for(int j=0;j<lpd.size();j++){
 							if(ipd.get(i).get("GOODCODE_ID").equals(lpd.get(j).get("GOODCODE_ID"))){
 								
-								int PNUMBER = Integer.valueOf(lpd.get(j).get("PNUMBER").toString())- Integer.valueOf(lpd.get(j).get("PNUMBER").toString());
+								int PNUMBER = Integer.parseInt(lpd.get(j).get("PNUMBER").toString())- Integer.parseInt(lpd.get(j).get("PNUMBER").toString());
 								lpd.get(j).put("PNUMBER", PNUMBER);
 							}
 						}
