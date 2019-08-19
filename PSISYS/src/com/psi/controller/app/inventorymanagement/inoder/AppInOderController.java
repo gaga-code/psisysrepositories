@@ -116,13 +116,19 @@ public class AppInOderController extends BaseController{
 			PageData hpd= appInOderService.listMountAndNum(pd); 
 			
 			
-			if(fpd.get("ALLAMOUNT")!=null){
+			
+			double ALLAMOUNT = 0;
+			if(fpd!=null&&fpd.size()!=0){
 				if((Long)hpd.get("NUM")!=0){
-					double ALLAMOUNT= (Double)fpd.get("ALLAMOUNT")-(Double)hpd.get("ALLAMOUNT");
-					map.put("ALLAMOUNT",ALLAMOUNT);
-					map.put("NUM",fpd.get("NUM"));
+					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT")-(Double)hpd.get("ALLAMOUNT");
+				
+				}else{
+					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
 				}
 			}
+			map.put("ALLAMOUNT",ALLAMOUNT);
+			map.put("NUM",fpd.get("NUM"));
+			
 			
 			pd.put("date", str);
 			pd.put("PK_SOBOOKS", PK_SOBOOKS);
@@ -205,17 +211,19 @@ public class AppInOderController extends BaseController{
 			
 			pd.put("BILLTYPE", 8);
 			PageData hpd= appInOderService.listMountAndNumByMD(pd);//退货单
-			if(fpd!=null&&fpd.size()!=0&&(Long)fpd.get("NUM")!=0){
-				double ALLAMOUNT = 0;
+			
+			double ALLAMOUNT = 0;
+			if(fpd!=null&&fpd.size()!=0){
 				if((Long)hpd.get("NUM")!=0){
 					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT")-(Double)hpd.get("ALLAMOUNT");
 				
 				}else{
 					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
 				}
-				map.put("ALLAMOUNT",ALLAMOUNT);
-				map.put("NUM",fpd.get("NUM"));
 			}
+			map.put("ALLAMOUNT",ALLAMOUNT);
+			map.put("NUM",fpd.get("NUM"));
+			
 			pd.put("date", str);
 			pd.put("PK_SOBOOKS", PK_SOBOOKS);
 			
