@@ -118,7 +118,7 @@ public class AppInOderController extends BaseController{
 			
 			
 			double ALLAMOUNT = 0;
-			if(fpd!=null&&fpd.size()!=0){
+			if(fpd!=null&&fpd.size()!=0&&fpd.get("ALLAMOUNT")!=null){
 				if((Long)hpd.get("NUM")!=0){
 					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT")-(Double)hpd.get("ALLAMOUNT");
 				
@@ -128,7 +128,6 @@ public class AppInOderController extends BaseController{
 			}
 			map.put("ALLAMOUNT",ALLAMOUNT);
 			map.put("NUM",fpd.get("NUM"));
-			
 			
 			pd.put("date", str);
 			pd.put("PK_SOBOOKS", PK_SOBOOKS);
@@ -213,7 +212,7 @@ public class AppInOderController extends BaseController{
 			PageData hpd= appInOderService.listMountAndNumByMD(pd);//退货单
 			
 			double ALLAMOUNT = 0;
-			if(fpd!=null&&fpd.size()!=0){
+			if(fpd!=null&&fpd.size()!=0&&fpd.get("ALLAMOUNT")!=null){
 				if((Long)hpd.get("NUM")!=0){
 					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT")-(Double)hpd.get("ALLAMOUNT");
 				
