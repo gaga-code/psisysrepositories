@@ -331,7 +331,7 @@ public class AppSalebillController extends BaseController {
 	// 商品分类名称：`TYPENAME`（默认是全部）
 	@RequestMapping("/getSaledByCustomer")
 	@ResponseBody
-	public List<PageData> getSaledByCustomer() throws Exception {
+	public List<HashMap<String,Object>> getSaledByCustomer() throws Exception {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		if (pd.getString("sortType") == null) { // 默认是销售额 sorttype=1
@@ -371,7 +371,58 @@ public class AppSalebillController extends BaseController {
 				}
 			}
 		}
-		return list1;
+		List<HashMap<String,Object>> list = new ArrayList();  //把商品编号相同的商品数量加起来
+		for (int i = 0; i < list1.size(); i++) {
+			int flag=1;
+			for(int j=0;j<list.size();j++){
+				if(list.get(j).get("CUSTOMERCODE").equals(list1.get(i).getString("CUSTOMERCODE"))){ 
+					double AMOUNT = (Double)list1.get(i).get("AMOUNT")+(Double)list.get(j).get("AMOUNT");
+					double MONEY = (Double)list1.get(i).get("MONEY")+(Double)list.get(j).get("MONEY");
+					list.get(j).put("AMOUNT", AMOUNT);
+					list.get(j).put("MONEY", MONEY);
+					List<PageData> l = (List<PageData>) list.get(j).get("list");
+					int flag1=1;
+					for(int k=0;k<l.size();k++){
+						String gc1 = l.get(k).getString("GOODCODE");
+						String gc2 = list1.get(i).getString("GOODCODE_ID");
+						if(gc1.equals(gc2)){
+							int PNUMBER = (Integer) l.get(k).get("PNUMBER") + (Integer)list1.get(i).get("PNUMBER");
+							((List<PageData>)list.get(j).get("list")).get(k).put("PNUMBER", PNUMBER );
+							flag1=0;
+							break;
+						}
+					}
+					if(flag1==1){
+						PageData p = new PageData();
+						p.put("GOODCODE", list1.get(i).getString("GOODCODE_ID"));
+						p.put("GOODNAME", list1.get(i).getString("GOODNAME"));
+						p.put("PNUMBER", list1.get(i).get("PNUMBER"));
+						((List<PageData>)list.get(j).get("list")).add(p);
+					}
+					
+					flag=0;
+					break;
+				}
+			}
+			if(flag==1){
+				HashMap map = new HashMap();
+				map.put("CUSTOMERCODE", list1.get(i).getString("CUSTOMERCODE"));
+				map.put("CUATOMERNAME", list1.get(i).getString("CUATOMERNAME"));
+				map.put("TELEPHONE", list1.get(i).getString("TELEPHONE"));
+				map.put("AMOUNT",  list1.get(i).get("AMOUNT"));
+				map.put("MONEY",  list1.get(i).get("MONEY"));
+				List<PageData> ls = new ArrayList();
+				PageData p = new PageData();
+				p.put("GOODCODE", list1.get(i).getString("GOODCODE_ID"));
+				p.put("GOODNAME", list1.get(i).getString("GOODNAME"));
+				p.put("PNUMBER", list1.get(i).get("PNUMBER"));
+				ls.add(p);
+				map.put("list", ls);
+				list.add(map);
+			}
+		}
+		
+		return list;
 	}
 	
 	// 根据排序类型（销售额/销量/单数/毛利）sorttype=(销售额=1，销量=2，单数=3，毛利=4)
@@ -430,8 +481,17 @@ public class AppSalebillController extends BaseController {
 		PageData pd = new PageData();
 		pd =  this.getPageData();
 		
-		String str = pd.getString("sale");
+		String str = pd.getString("salebill");
 		String[] sale = str.split(",");
+		
+		pd.put("CUSBILLNO", sale[0]);
+		pd.put("PAYDATE",sale[1]);
+		pd.put("NOTE",sale[2]);
+		pd.put("CUSTOMER_ID",sale[3]);
+		pd.put("USER_ID", sale[4]);
+		pd.put("ALLAMOUNT", sale[5]);
+		pd.put("TOADDRESS", sale[6]);
+		pd.put("WAREHOUSE_ID", null);
 		
 		pd.put("SALEBILL_ID", this.get32UUID());		//主键
 		pd.put("LDATE",DateUtil.getTime().toString());	//录入日期
@@ -441,7 +501,7 @@ public class AppSalebillController extends BaseController {
 		pd.put("PAIDAMOUNT", 0);
 		pd.put("THISPAY", 0);
 		pd.put("ISSETTLEMENTED", 0);
-	//	pd = appSalebillService.save(pd);
+		pd = appSalebillService.save(pd);
 		
 		return "OK";
 	}
