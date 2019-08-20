@@ -127,7 +127,10 @@ public class AppInOderController extends BaseController{
 				}
 			}*/
 			
-			double ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
+			double ALLAMOUNT = 0;
+			if(fpd.get("ALLAMOUNT")!=null){
+				 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
+			}
 			map.put("ALLAMOUNT",ALLAMOUNT);
 			map.put("NUM",fpd.get("NUM"));
 			
@@ -230,8 +233,10 @@ public class AppInOderController extends BaseController{
 					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
 				}
 			}*/
-			
-			double  ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
+			double ALLAMOUNT = 0;
+			if(fpd.get("ALLAMOUNT")!=null){
+				 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
+			}
 			map.put("ALLAMOUNT",ALLAMOUNT);
 			map.put("NUM",fpd.get("NUM"));
 			
