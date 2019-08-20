@@ -161,7 +161,7 @@ public class AppInOderController extends BaseController{
 				list.add(map);
 				
 			}*/
-			if(lpd!=null){
+			if(lpd!=null&&lpd.size()!=0){
 				map.put("listNum", lpd);
 				map.put("yearMouth", str);
 				list.add(map);
@@ -267,7 +267,7 @@ public class AppInOderController extends BaseController{
 				map.put("yearMouthDay", str);
 				list.add(map);
 			}*/
-			if(lpd!=null){
+			if(lpd!=null&&lpd.size()!=0){
 				map.put("listNum", lpd);
 				map.put("yearMouth", str);
 				list.add(map);
