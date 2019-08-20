@@ -140,12 +140,13 @@ public class AppInOderController extends BaseController{
 			
 			if(lpd!=null&&lpd.size()!=0){
 				if(ipd!=null && ipd.size()!=0){
-					for(int i=0;i<ipd.size();i++){
-						for(int j=0;j<lpd.size();j++){
-							if(ipd.get(i).get("GOODCODE_ID").equals(lpd.get(j).get("GOODCODE_ID"))){
+					for(int i=0;i<lpd.size();i++){
+						for(int j=0;j<ipd.size();j++){
+							if(ipd.get(j).get("GOODCODE_ID").equals(lpd.get(i).get("GOODCODE_ID"))){
 								
-								int PNUMBER = Integer.parseInt(lpd.get(j).get("PNUMBER").toString())- Integer.parseInt(lpd.get(j).get("PNUMBER").toString());
-								lpd.get(j).put("PNUMBER", PNUMBER);
+								int PNUMBER = Integer.parseInt(lpd.get(i).get("PNUMBER").toString())- Integer.parseInt(ipd.get(j).get("PNUMBER").toString());
+								lpd.get(i).put("PNUMBER", PNUMBER);
+								break;
 							}
 						}
 					}
@@ -237,12 +238,13 @@ public class AppInOderController extends BaseController{
 			map.put("NUM",lpd.size());
 			if(lpd!=null&&lpd.size()!=0){
 				if(ipd!=null && ipd.size()!=0){
-					for(int i=0;i<ipd.size();i++){
-						for(int j=0;j<lpd.size();j++){
-							if(ipd.get(i).get("GOODCODE_ID").equals(lpd.get(j).get("GOODCODE_ID"))){
-								int PNUMBER = Integer.parseInt(lpd.get(j).get("PNUMBER").toString())- Integer.parseInt(lpd.get(j).get("PNUMBER").toString());
-							/*	int PNUMBER = (Integer)lpd.get(j).get("PNUMBER")- (Integer)lpd.get(j).get("PNUMBER");*/
-								lpd.get(j).put("PNUMBER", PNUMBER);
+					for(int i=0;i<lpd.size();i++){
+						for(int j=0;j<ipd.size();j++){
+							if(ipd.get(j).get("GOODCODE_ID").equals(lpd.get(i).get("GOODCODE_ID"))){
+								
+								int PNUMBER = Integer.parseInt(lpd.get(i).get("PNUMBER").toString())- Integer.parseInt(ipd.get(j).get("PNUMBER").toString());
+								lpd.get(i).put("PNUMBER", PNUMBER);
+								break;
 							}
 						}
 					}
