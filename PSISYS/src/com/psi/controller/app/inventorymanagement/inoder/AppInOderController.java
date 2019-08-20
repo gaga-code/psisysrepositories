@@ -136,6 +136,8 @@ public class AppInOderController extends BaseController{
 			List<PageData> lpd=appInOderService.listInOderGoods(pd);//查询 商品在这个月入库的数量 进货单
 			pd.put("BILLTYPE", 8);
 			List<PageData> ipd=appInOderService.listInOderGoods(pd);//查询 商品在这个月入库的数量 退货单
+			map.put("NUM",lpd.size());
+			
 			if(lpd!=null&&lpd.size()!=0){
 				if(ipd!=null && ipd.size()!=0){
 					for(int i=0;i<ipd.size();i++){
@@ -154,7 +156,7 @@ public class AppInOderController extends BaseController{
 				
 			}
 			cal.add(Calendar.MONTH, 1);//进行当前日期月份加1
-			}
+		}
 		return list;
 	}
 	//获取入库汇总（按月份的每一天）
@@ -232,6 +234,7 @@ public class AppInOderController extends BaseController{
 			pd.put("BILLTYPE", 8);
 			List<PageData> ipd=appInOderService.listInOderGoodsByMD(pd);//查询 商品在这个月入库的数量  退货单
 			
+			map.put("NUM",lpd.size());
 			if(lpd!=null&&lpd.size()!=0){
 				if(ipd!=null && ipd.size()!=0){
 					for(int i=0;i<ipd.size();i++){
@@ -250,6 +253,7 @@ public class AppInOderController extends BaseController{
 			}
 			cal.add(Calendar.DAY_OF_MONTH, 1);//进行当前日期月份加1
 		}
+		
 		return list;
 	}
 	
