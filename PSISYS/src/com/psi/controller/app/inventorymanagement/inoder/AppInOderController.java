@@ -112,7 +112,7 @@ public class AppInOderController extends BaseController{
 			
 			pd.put("BILLTYPE", 1);
 			PageData fpd= appInOderService.listMountAndNum(pd); 
-			pd.put("BILLTYPE", 8);
+		/*	pd.put("BILLTYPE", 8);
 			PageData hpd= appInOderService.listMountAndNum(pd); 
 			
 			
@@ -125,7 +125,9 @@ public class AppInOderController extends BaseController{
 				}else{
 					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
 				}
-			}
+			}*/
+			
+			double ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
 			map.put("ALLAMOUNT",ALLAMOUNT);
 			map.put("NUM",fpd.get("NUM"));
 			
@@ -134,7 +136,7 @@ public class AppInOderController extends BaseController{
 			
 			pd.put("BILLTYPE", 1);
 			List<PageData> lpd=appInOderService.listInOderGoods(pd);//查询 商品在这个月入库的数量 进货单
-			pd.put("BILLTYPE", 8);
+			/*pd.put("BILLTYPE", 8);
 			List<PageData> ipd=appInOderService.listInOderGoods(pd);//查询 商品在这个月入库的数量 退货单
 			map.put("NUM",lpd.size());
 			
@@ -155,7 +157,12 @@ public class AppInOderController extends BaseController{
 				map.put("yearMouth", str);
 				list.add(map);
 				
-			}
+			}*/
+			
+			map.put("listNum", lpd);
+			map.put("yearMouth", str);
+			list.add(map);
+			
 			cal.add(Calendar.MONTH, 1);//进行当前日期月份加1
 		}
 		return list;
@@ -210,7 +217,7 @@ public class AppInOderController extends BaseController{
 			
 			pd.put("BILLTYPE", 1);
 			PageData fpd= appInOderService.listMountAndNumByMD(pd);//进货单
-			
+		/*	
 			pd.put("BILLTYPE", 8);
 			PageData hpd= appInOderService.listMountAndNumByMD(pd);//退货单
 			
@@ -222,7 +229,9 @@ public class AppInOderController extends BaseController{
 				}else{
 					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
 				}
-			}
+			}*/
+			
+			double  ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
 			map.put("ALLAMOUNT",ALLAMOUNT);
 			map.put("NUM",fpd.get("NUM"));
 			
@@ -232,7 +241,7 @@ public class AppInOderController extends BaseController{
 			pd.put("BILLTYPE", 1);
 			List<PageData> lpd=appInOderService.listInOderGoodsByMD(pd);//查询 商品在这个月入库的数量 进货单
 			
-			pd.put("BILLTYPE", 8);
+		/*	pd.put("BILLTYPE", 8);
 			List<PageData> ipd=appInOderService.listInOderGoodsByMD(pd);//查询 商品在这个月入库的数量  退货单
 			
 			map.put("NUM",lpd.size());
@@ -252,7 +261,11 @@ public class AppInOderController extends BaseController{
 				map.put("listNum", lpd);
 				map.put("yearMouthDay", str);
 				list.add(map);
-			}
+			}*/
+			map.put("listNum", lpd);
+			map.put("yearMouth", str);
+			list.add(map);
+			
 			cal.add(Calendar.DAY_OF_MONTH, 1);//进行当前日期月份加1
 		}
 		
