@@ -430,7 +430,7 @@ public class AppSalebillController extends BaseController {
 	// 商品分类名称：`TYPENAME`（默认是全部）
 	@RequestMapping("/getSaledByUser")
 	@ResponseBody
-	public List<PageData> getSaledByUser() throws Exception {
+	public	List<HashMap<String,Object>>  getSaledByUser() throws Exception {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		if (pd.getString("sortType") == null) { // 默认是销售额 sorttype=1
@@ -470,7 +470,59 @@ public class AppSalebillController extends BaseController {
 				}
 			}
 		}
-		return list1;
+		
+		List<HashMap<String,Object>> list = new ArrayList();  //把商品编号相同的商品数量加起来
+		for (int i = 0; i < list1.size(); i++) {
+			int flag=1;
+			for(int j=0;j<list.size();j++){
+				if(list.get(j).get("USER_ID").equals(list1.get(i).getString("USER_ID"))){ 
+					double AMOUNT = (Double)list1.get(i).get("AMOUNT")+(Double)list.get(j).get("AMOUNT");
+					double MONEY = (Double)list1.get(i).get("MONEY")+(Double)list.get(j).get("MONEY");
+					list.get(j).put("AMOUNT", AMOUNT);
+					list.get(j).put("MONEY", MONEY);
+					List<PageData> l = (List<PageData>) list.get(j).get("list");
+					int flag1=1;
+					for(int k=0;k<l.size();k++){
+						String gc1 = l.get(k).getString("GOODCODE");
+						String gc2 = list1.get(i).getString("GOODCODE_ID");
+						if(gc1.equals(gc2)){
+							int PNUMBER = (Integer) l.get(k).get("PNUMBER") + (Integer)list1.get(i).get("PNUMBER");
+							((List<PageData>)list.get(j).get("list")).get(k).put("PNUMBER", PNUMBER );
+							flag1=0;
+							break;
+						}
+					}
+					if(flag1==1){
+						PageData p = new PageData();
+						p.put("GOODCODE", list1.get(i).getString("GOODCODE_ID"));
+						p.put("GOODNAME", list1.get(i).getString("GOODNAME"));
+						p.put("PNUMBER", list1.get(i).get("PNUMBER"));
+						((List<PageData>)list.get(j).get("list")).add(p);
+					}
+					
+					flag=0;
+					break;
+				}
+			}
+			if(flag==1){
+				HashMap map = new HashMap();
+				map.put("USER_ID", list1.get(i).getString("USER_ID"));
+				map.put("NAME", list1.get(i).getString("NAME"));
+				map.put("ENTERPRISENAME", list1.get(i).getString("ENTERPRISENAME"));
+				map.put("AMOUNT",  list1.get(i).get("AMOUNT"));
+				map.put("MONEY",  list1.get(i).get("MONEY"));
+				List<PageData> ls = new ArrayList();
+				PageData p = new PageData();
+				p.put("GOODCODE", list1.get(i).getString("GOODCODE_ID"));
+				p.put("GOODNAME", list1.get(i).getString("GOODNAME"));
+				p.put("PNUMBER", list1.get(i).get("PNUMBER"));
+				ls.add(p);
+				map.put("list", ls);
+				list.add(map);
+			}
+		}
+		
+		return list;
 	}
 
 	//出库商品的数据更新到数据库
