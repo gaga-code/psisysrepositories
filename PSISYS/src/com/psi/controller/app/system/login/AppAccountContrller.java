@@ -35,6 +35,8 @@ import com.psi.util.Tools;
 @RequestMapping("/appAccount")
 public class AppAccountContrller extends BaseController {
 
+	String menuUrl = "user/listUsers.do"; //菜单地址(权限用)
+	
 	@Resource(name = "accountSetService")
 	private AccountSetManager accountSetService;
 
@@ -110,6 +112,9 @@ public class AppAccountContrller extends BaseController {
 		
 		String errorMessage="";
 		if (pd != null) {
+			
+			pd.put("QX",Jurisdiction.getHC());	//按钮权限
+			
 			this.removeSession(USERNAME);// 请缓存
 			pd.put("LAST_LOGIN", DateUtil.getTime().toString());
 			userService.updateLastLogin(pd);
@@ -126,7 +131,6 @@ public class AppAccountContrller extends BaseController {
 			Subject subject = SecurityUtils.getSubject();
 			UsernamePasswordToken token = new UsernamePasswordToken(USERNAME, PASSWORD);
 			AppUtil.returnObject(new PageData(), pd);
-			pd.put("QX",Jurisdiction.getHC());	//按钮权限
 		
 		} else {
 		/*	logBefore(logger, USERNAME + "登录系统密码或用户名或账套错误");
