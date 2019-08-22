@@ -113,6 +113,7 @@
 		    b.TYPENAME=#{TYPENAME}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
+			limit #{pageNum},7
 	</select>
 	
 <select id="listGoodsListByName" parameterType="pd" resultType="pd">
@@ -144,6 +145,7 @@
 			or b.TYPENAME like concat('%',#{keyword},'%')
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
+			limit #{pageNum},7
 	</select>
 	
 	<select id="listGoods" parameterType="pd" resultType="pd">
@@ -173,6 +175,7 @@
 		where
 			a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
+			limit #{pageNum},7
 	</select>
 	
 	<update id="editGoodsPhoto" parameterType="pd">
