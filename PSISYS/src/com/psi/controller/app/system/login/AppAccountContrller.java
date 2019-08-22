@@ -126,6 +126,7 @@ public class AppAccountContrller extends BaseController {
 			Subject subject = SecurityUtils.getSubject();
 			UsernamePasswordToken token = new UsernamePasswordToken(USERNAME, PASSWORD);
 			AppUtil.returnObject(new PageData(), pd);
+			pd.put("QX",Jurisdiction.getHC());	//按钮权限
 		
 		} else {
 		/*	logBefore(logger, USERNAME + "登录系统密码或用户名或账套错误");
