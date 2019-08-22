@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -14,15 +15,21 @@ import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
+import com.psi.entity.system.Menu;
+import com.psi.entity.system.Role;
 import com.psi.entity.system.User;
 import com.psi.service.app.system.user.AppUserManager;
 import com.psi.service.basedata.accountset.AccountSetManager;
+import com.psi.service.system.buttonrights.ButtonrightsManager;
+import com.psi.service.system.fhbutton.FhbuttonManager;
 import com.psi.service.system.fhlog.FHlogManager;
+import com.psi.service.system.role.RoleManager;
 import com.psi.service.system.user.impl.UserService;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
@@ -42,9 +49,12 @@ public class AppAccountContrller extends BaseController {
 
 	@Resource(name = "userService")
 	private UserService userService;
-
-	
-
+	@Resource(name="roleService")
+	private RoleManager roleService;
+	@Resource(name="fhbuttonService")
+	private FhbuttonManager fhbuttonService;
+	@Resource(name="buttonrightsService")
+	private ButtonrightsManager buttonrightsService;
 	@Resource(name = "appUserService")
 	private AppUserManager appUserService;
 
@@ -112,9 +122,6 @@ public class AppAccountContrller extends BaseController {
 		
 		String errorMessage="";
 		if (pd != null) {
-			
-			pd.put("QX",Jurisdiction.getHC());	//按钮权限
-			
 			this.removeSession(USERNAME);// 请缓存
 			pd.put("LAST_LOGIN", DateUtil.getTime().toString());
 			userService.updateLastLogin(pd);
@@ -131,12 +138,15 @@ public class AppAccountContrller extends BaseController {
 			Subject subject = SecurityUtils.getSubject();
 			UsernamePasswordToken token = new UsernamePasswordToken(USERNAME, PASSWORD);
 			AppUtil.returnObject(new PageData(), pd);
+			this.login_index();
+			pd.put("QX",Jurisdiction.getHC());	//按钮权限
 		
 		} else {
 		/*	logBefore(logger, USERNAME + "登录系统密码或用户名或账套错误");
 			FHLOG.save(USERNAME, "登录系统密码或用户名或账套错误");*/
 			pd.put("errorMessage", "你输入的信息错误,请重新输入!");
 		}
+		
 		return pd;
 	}
 
@@ -160,4 +170,100 @@ public class AppAccountContrller extends BaseController {
 		session.removeAttribute("DEPARTMENT_ID");
 	}
 
+	
+	/**访问系统首页
+	 * @param changeMenu：切换菜单参数
+	 * @return
+	 */
+	public void login_index(){
+		 String changeMenu ="index";
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		try{
+			Session session = Jurisdiction.getSession();
+			User user = (User)session.getAttribute(Const.SESSION_USER);						//读取session中的用户信息(单独用户信息)
+			if (user != null) {
+				User userr = (User)session.getAttribute(Const.SESSION_USERROL);				//读取session中的用户信息(含角色信息)
+				if(null == userr){
+					user = userService.getUserAndRoleById(user.getUSER_ID());				//通过用户ID读取用户信息和角色信息
+					session.setAttribute(Const.SESSION_USERROL, user);						//存入session	
+				}else{
+					user = userr;
+				}
+				String USERNAME = user.getUSERNAME();
+				Role role = user.getRole();													//获取用户角色
+				String roleRights = role!=null ? role.getRIGHTS() : "";						//角色权限(菜单权限)
+				session.setAttribute(USERNAME + Const.SESSION_ROLE_RIGHTS, roleRights); 	//将角色权限存入session
+				session.setAttribute(Const.SESSION_USERNAME, USERNAME);						//放入用户名到session
+				session.setAttribute(Const.SESSION_U_NAME, user.getNAME());					//放入用户姓名到session
+				List<Menu> allmenuList = new ArrayList<Menu>();
+			/*	allmenuList = this.getAttributeMenu(session, USERNAME, roleRights);			//菜单缓存
+				List<Menu> menuList = new ArrayList<Menu>();
+				menuList = this.changeMenuF(allmenuList, session, USERNAME, changeMenu);	//切换菜单
+*/				if(null == session.getAttribute(USERNAME + Const.SESSION_QX)){
+					session.setAttribute(USERNAME + Const.SESSION_QX, this.getUQX(USERNAME));//按钮权限放到session中
+				}
+				this.getRemortIP(USERNAME);	//更新登录IP
+			
+			}else {
+				mv.setViewName("system/index/login");//session失效后跳转登录页面
+			}
+		} catch(Exception e){
+			mv.setViewName("system/index/login");
+			logger.error(e.getMessage(), e);
+		}
+
+	}
+	
+	
+	/**获取用户权限
+	 * @param session
+	 * @return
+	 */
+	public Map<String, String> getUQX(String USERNAME){
+		PageData pd = new PageData();
+		Map<String, String> map = new HashMap<String, String>();
+		try {
+			pd.put(Const.SESSION_USERNAME, USERNAME);
+			pd.put("ROLE_ID", userService.findByUsername(pd).get("ROLE_ID").toString());//获取角色ID
+			pd = roleService.findObjectById(pd);										//获取角色信息														
+			map.put("adds", pd.getString("ADD_QX"));	//增
+			map.put("dels", pd.getString("DEL_QX"));	//删
+			map.put("edits", pd.getString("EDIT_QX"));	//改
+			map.put("chas", pd.getString("CHA_QX"));	//查
+			List<PageData> buttonQXnamelist = new ArrayList<PageData>();
+			if("admin".equals(USERNAME)){
+				buttonQXnamelist = fhbuttonService.listAll(pd);					//admin用户拥有所有按钮权限
+			}else{
+				buttonQXnamelist = buttonrightsService.listAllBrAndQxname(pd);	//此角色拥有的按钮权限标识列表
+			}
+			for(int i=0;i<buttonQXnamelist.size();i++){
+				map.put(buttonQXnamelist.get(i).getString("QX_NAME"),"1");		//按钮权限
+			}
+		} catch (Exception e) {
+			logger.error(e.toString(), e);
+		}	
+		return map;
+	}
+	
+	
+	/** 更新登录用户的IP
+	 * @param USERNAME
+	 * @throws Exception
+	 */
+	public void getRemortIP(String USERNAME) throws Exception {  
+		PageData pd = new PageData();
+		HttpServletRequest request = this.getRequest();
+		String ip = "";
+		if (request.getHeader("x-forwarded-for") == null) {  
+			ip = request.getRemoteAddr();  
+	    }else{
+	    	ip = request.getHeader("x-forwarded-for");  
+	    }
+		pd.put("USERNAME", USERNAME);
+		pd.put("IP", ip);
+		userService.saveIP(pd);
+	}  
+	
 }
