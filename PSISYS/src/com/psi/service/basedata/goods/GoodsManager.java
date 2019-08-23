@@ -124,5 +124,22 @@ public interface GoodsManager{
 	 * @throws Exception
 	 */
 	public void editZCOUNT(PageData pd)throws Exception;
+
+	public Object findByGOODCODE(PageData pd) throws Exception;
+
+	public String findByname(PageData pd) throws Exception;
+
+	public void saveUnit(PageData pd) throws Exception;
+
+	public void saveGoods(PageData pd) throws Exception;
+
+	public Object findByCode(PageData pd) throws Exception;
+
+	public List<PageData> listAllDetail(PageData pd) throws Exception;
+
+	public String findPKBYName(PageData pd) throws Exception;
+
+	public void editPic(PageData pd) throws Exception;
+
 }
 

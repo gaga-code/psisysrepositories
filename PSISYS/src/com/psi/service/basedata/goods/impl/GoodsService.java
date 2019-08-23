@@ -182,8 +182,12 @@ public class GoodsService implements GoodsManager{
 	@SuppressWarnings("unchecked")
 	public List<PageData> list(Page page)throws Exception{
 		//本来的列表
-		List<PageData> result = (List<PageData>)dao.findForList("GoodsMapper.datalistPage", page);
-
+		List<PageData> result;
+		try{
+		 result = (List<PageData>)dao.findForList("GoodsMapper.datalistPage", page);
+		}catch(Exception e){
+			return null;
+		}
 		//给列表的每个商品添加一个  仓库ID，仓库名，库存#仓库ID，仓库名，库存#  格式的 WAREHOUSE_ID_NAME_STOCK 值
 		PageData map = new PageData(); //查询条件
 		PageData WareHouse = new PageData(); //仓库
@@ -194,18 +198,23 @@ public class GoodsService implements GoodsManager{
 		for (PageData pageData : result) {
 			map.put("GOOD_ID", pageData.get("GOODCODE"));
 			String WH = (String)pageData.get("WAREHOUSE_IDs");
-			String[] strings = WH.split(",");
+			String[] strings = null ;
+			if(WH!=null){
+				strings = WH.split(",");
+			}
 			String WAREHOUSE_ID_NAME_STOCK = "";
-			for (String WID : strings) {
-				map.put("WAREHOUSE_ID", WID);
-				temp = (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", map);
-				WareHouse = (PageData)dao.findForObject("WarehouseMapper.findById", map);
-				Integer stock = 0;
-				String  WHNAME = (String) WareHouse.get("WHNAME");
-				if(temp != null) {
-					stock =  (Integer) temp.get("STOCK");
+			if(strings!=null){
+				for (String WID : strings) {
+					map.put("WAREHOUSE_ID", WID);
+					temp = (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", map);
+					WareHouse = (PageData)dao.findForObject("WarehouseMapper.findById", map);
+					Integer stock = 0;
+					String  WHNAME = (String) WareHouse.get("WHNAME");
+					if(temp != null) {
+						stock =  (Integer) temp.get("STOCK");
+					}
+						WAREHOUSE_ID_NAME_STOCK = WAREHOUSE_ID_NAME_STOCK + WID + "," + WHNAME +"," + stock + "#";
 				}
-					WAREHOUSE_ID_NAME_STOCK = WAREHOUSE_ID_NAME_STOCK + WID + "," + WHNAME +"," + stock + "#";
 			}
 			pageData.put("WAREHOUSE_ID_NAME_STOCK", WAREHOUSE_ID_NAME_STOCK);
 		}
@@ -271,6 +280,46 @@ public class GoodsService implements GoodsManager{
 	public List<PageData> checkGoodsStockDownNum(PageData pd) throws Exception {
 		return (List<PageData>)dao.findForList("GoodsMapper.checkGoodsStockDownNum", pd);
 	}
+	@Override
+	public Object findByGOODCODE(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (PageData)dao.findForObject("GoodsMapper.findByGOODCODE", pd);
+	}
+	@Override
+	public String findByname(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (String)dao.findForObject("GoodsMapper.findByUnitName", pd);
+	}
+	@Override
+	public void saveUnit(PageData pd) throws Exception {
+		dao.save("GoodsMapper.saveUnit", pd);
+	}
+	@Override
+	public void saveGoods(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		dao.save("GoodsMapper.saveGoods", pd);
+	}
+	@Override
+	public Object findByCode(PageData pd) throws Exception {
+		
+		return (PageData)dao.findForObject("GoodsMapper.findByCode", pd);
+	}
+	@Override
+	public List<PageData> listAllDetail(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>) dao.findForList("GoodsMapper.listAllDetail", pd);
+	}
+	@Override
+	public String findPKBYName(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (String)dao.findForObject("GoodsMapper.findPKBYName", pd);
+	}
+	@Override
+	public void editPic(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		dao.update("GoodsMapper.savePic", pd);
+	}
+	
 	
 }
 
