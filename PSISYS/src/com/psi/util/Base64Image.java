@@ -41,7 +41,7 @@ public class Base64Image {
 	      BASE64Decoder decoder = new BASE64Decoder();
 	      try {
 	 
-	          byte[] b = Base64Utils.decode(imgStr.getBytes());
+	    	   byte[] b = decoder.decodeBuffer(imgStr);
 	          //Base64解码
 	          //byte[] b = decoder.decodeBuffer(imgStr);
 	          for (int i = 0; i < b.length; ++i) {
