@@ -1,18 +1,26 @@
 package com.psi.controller.app.basedata.goods;
 
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
@@ -199,16 +207,15 @@ public class AppGoodsController extends BaseController {
 	
 	
 
-	@RequestMapping(value = "/uploadData", method = {RequestMethod.POST}, produces = { "application/json;charset=UTF-8" })
+	@RequestMapping(value = "/uploadData")
 	@ResponseBody
 	public String uploadData(HttpServletRequest request) throws Exception {
 	
-	//	logBefore(logger, Jurisdiction.getUsername()+"新增图片");
 		PageData pd = new PageData();
 		
 		String base64Image  = request.getParameter("IMGCODE"); //图base64编码字符串
-	/*	String base64img = base64Image.substring(22, base64Image.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
-		*/
+		String base64img = base64Image.substring(22, base64Image.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
+	
 
 		String  ffile = DateUtil.getDays(), fileName = "";
 		String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile+"/";		//文件上传路径
@@ -219,7 +226,7 @@ public class AppGoodsController extends BaseController {
 		//保存图片
 		//boolean bool = Base64Image.GenerateImage(base64Image, filePath,fileName);
 	//	boolean bool = ImageAnd64Binary.generateImage(base64Image,  filePath+fileName);
-		boolean bool =  Base64Image.toImage(base64Image,  filePath+fileName);
+		boolean bool =  Base64Image.toImage(base64img,  filePath+fileName);
 		if(bool){
 			String GOOD_ID= request.getParameter("GOODCODE");
 			pd.put("GOOD_ID", GOOD_ID);
@@ -243,6 +250,64 @@ public class AppGoodsController extends BaseController {
 	
 
 	}
+	
+	
+
+public int insLetter(String details, HttpSession session, HttpServletRequest request) {
+      
+        
+		String path = "";//需要存入数据库的路径
+		MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
+		// 获取文件名集合放入迭代器
+		Iterator<String> files = mRequest.getFileNames();
+		while (files.hasNext()) {
+			MultipartFile mFile = mRequest.getFile(files.next());
+ 
+	        byte[] bytes = null;
+			try {
+				bytes = mFile.getBytes();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	 
+	        // 当前app根目录
+	        String rootPath = request.getServletContext().getRealPath("/");
+	 
+	        // 需要上传的相对地址（application.properties中获取）
+	        String relativePath = "letterImg";
+	 
+	        // 文件夹是否存在，不存在就创建
+	        File dir = new File(rootPath + File.separator + relativePath);
+	        if (!dir.exists())
+	            dir.mkdirs();
+	       // String fileExtension = getFileExtension(file);
+	        String filename1 = mFile.getOriginalFilename();
+	        String fileExtension = filename1.substring(filename1.lastIndexOf(".")+1);
+//	 
+	        // 生成UUID样式的文件名
+	        String filename = java.util.UUID.randomUUID().toString() + "." + fileExtension;
+	 
+	        // 文件全名
+	        String fullFilename = dir.getAbsolutePath() + File.separator + filename;
+	 
+	        path += relativePath + "\\" + filename + ",";
+	       
+	 
+	        // 保存图片
+	        File serverFile = new File(fullFilename);
+	        try {
+	        BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
+	        stream.write(bytes);
+	        stream.close();
+	        }catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+	
+		return 1;
+	}
+
 
 	
 }
