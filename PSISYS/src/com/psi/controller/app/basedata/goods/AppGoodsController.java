@@ -233,8 +233,8 @@ public class AppGoodsController extends BaseController {
 		
 		String base64img = string1.substring(22, string1.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
 		
-		String  ffile = DateUtil.getDays(), fileName = "";
-		String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile+"/";		//文件上传路径
+		String  fileName = "";
+		String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG +"/";		//文件上传路径
 		fileName=this.get32UUID()+".jpg";
 	
 		logger.info(" 图片保存路径："+ filePath);
@@ -252,7 +252,7 @@ public class AppGoodsController extends BaseController {
 			pd.put("PICTURES_ID", this.get32UUID());			//主键
 			pd.put("TITLE", "商品图片");								//标题
 			pd.put("NAME", fileName);							//文件名
-			pd.put("PATH", ffile + "/" + fileName);				//路径
+			pd.put("PATH", fileName);				//路径
 			pd.put("CREATETIME", Tools.date2Str(new Date()));	//创建时间
 			pd.put("MASTER_ID", MASTER_ID);						//附属与
 			pd.put("BZ", "商品图片");							//备注
