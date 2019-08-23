@@ -67,6 +67,7 @@ public class AppGoodsController extends BaseController {
 		}else{
 		     PK_SOBOOKS=session.getAttribute("PK_SOBOOKS");
 		}
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))); 
 		List<PageData> lists=appGoodsService.listGoods(pd); //获取商品信息
 		for(int i=0;i<lists.size();i++){
 			String GOODCODE=lists.get(i).getString("GOODCODE");
@@ -101,7 +102,7 @@ public class AppGoodsController extends BaseController {
 	public Object getGoodsListByClass() throws Exception{
 		PageData pd=new PageData();
 		pd=this.getPageData();
-		
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum")));
 		List<PageData> lists=appGoodsService.listGoodsListByClass(pd);//获取商品信息
 		for(int i=0;i<lists.size();i++){
 			String GOODCODE=lists.get(i).getString("GOODCODE");
@@ -138,7 +139,7 @@ public class AppGoodsController extends BaseController {
 		public Object getGoodsListByName() throws Exception{
 			PageData pd=new PageData();
 			pd=this.getPageData();
-			
+			pd.put("pageNum", Integer.valueOf(pd.getString("pageNum")));
 			List<PageData> lists=appGoodsService.listGoodsListByName(pd);//获取商品信息
 			for(int i=0;i<lists.size();i++){
 				String GOODCODE=lists.get(i).getString("GOODCODE");
@@ -184,37 +185,7 @@ public class AppGoodsController extends BaseController {
 		return "OK";
 	}
 	
-
-	/*@Resource(name="goodsService")
-	private GoodsManager goodsService;
-	@Resource(name="picturesService")
-	private PicturesManager picturesService;
-	@Resource(name="spbrandService")
-	private SpbrandManager spbrandService;
-	@Resource(name="sptypeService")
-	private SptypeManager sptypeService;
-	@Resource(name="spunitService")
-	private SpunitManager spunitService;
 	
-	 *//**商品详情页面
-	 * @param
-	 * @throws Exception
-	 * http://127.0.0.1:8080/FHSHGL/appGoods/goods.do?GOODS_ID=284e2238d7fc4bd481c6324fc4c160cf
-	 *//*
-	@RequestMapping(value="/goods")
-	public ModelAndView goView()throws Exception{
-		ModelAndView mv = this.getModelAndView();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		List<PageData>	varList = picturesService.listAll(pd);	//列出Pictures列表
-		pd = goodsService.findByIdToCha(pd);					//根据ID读取
-		mv.setViewName("erp/goods/goods_app_view");
-		mv.addObject("varList", varList);
-		mv.addObject("pd", pd);
-		return mv;
-	}*/
-	
-
 	
 }
 	
