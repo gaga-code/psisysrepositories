@@ -54,6 +54,10 @@ public class Base64Image {
 	          
 */	          
 	          String path = filePath+fileName;
+	          path=path.replaceAll("\\\\", "/");
+	          
+	          System.out.println(" 图片保存路径："+ path);
+	      
 	          OutputStream out = new FileOutputStream(path);
 	          out.write(b);
 	          out.flush();

@@ -206,18 +206,13 @@ public class AppGoodsController extends BaseController {
 		PageData pd = new PageData();
 		
 		String base64Image  = request.getParameter("IMGCODE"); //图base64编码字符串
-	//	String pictureName  = request.getParameter("pictureName");
 		String base64img = base64Image.substring(22, base64Image.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
 		
-		//logger.info("图片的名称："+pictureName);
-		logger.info(base64img);
-		
+
 		String  ffile = DateUtil.getDays(), fileName = "";
 		String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile+"/";		//文件上传路径
 		fileName=this.get32UUID()+".jpg";
-		//保存图片路径
-	  //  uploadFiles/uploadImgs/PATH
-		
+	
 		logger.info(" 图片保存路径："+ filePath);
 		
 		//保存图片
