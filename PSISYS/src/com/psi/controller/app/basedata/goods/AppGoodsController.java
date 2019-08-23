@@ -202,12 +202,12 @@ public class AppGoodsController extends BaseController {
 	@ResponseBody
 	public String uploadData(HttpServletRequest request) throws Exception {
 	
-		logBefore(logger, Jurisdiction.getUsername()+"新增图片");
+	//	logBefore(logger, Jurisdiction.getUsername()+"新增图片");
 		PageData pd = new PageData();
 		
 		String base64Image  = request.getParameter("IMGCODE"); //图base64编码字符串
-		String base64img = base64Image.substring(22, base64Image.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
-		
+	/*	String base64img = base64Image.substring(22, base64Image.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
+		*/
 
 		String  ffile = DateUtil.getDays(), fileName = "";
 		String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile+"/";		//文件上传路径
@@ -216,7 +216,7 @@ public class AppGoodsController extends BaseController {
 		logger.info(" 图片保存路径："+ filePath);
 		
 		//保存图片
-		boolean bool = Base64Image.GenerateImage(base64img, filePath,fileName);
+		boolean bool = Base64Image.GenerateImage(base64Image, filePath,fileName);
 		if(bool){
 			String GOOD_ID= request.getParameter("GOODCODE");
 			pd.put("GOOD_ID", GOOD_ID);
@@ -231,7 +231,6 @@ public class AppGoodsController extends BaseController {
 			pd.put("MASTER_ID", MASTER_ID);						//附属与
 			pd.put("BZ", "商品图片");							//备注
 			pd.put("ORDER_BY", 1);								//排序
-			//Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);//加水印
 			picturesService.save(pd);
 			goodsService.editPic(pd);
 			return "OK";
