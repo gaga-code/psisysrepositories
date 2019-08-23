@@ -101,11 +101,11 @@ public class GoodsMxController extends BaseController {
 		logBefore(logger, Jurisdiction.getUsername()+"新增图片");
 		PageData pd = new PageData();
 		
-		String base64Image  = request.getParameter("base64Image"); //图base64编码字符串
-		String pictureName  = request.getParameter("pictureName");
+		String base64Image  = request.getParameter("IMGCODE"); //图base64编码字符串
+	//	String pictureName  = request.getParameter("pictureName");
 		String base64img = base64Image.substring(22, base64Image.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
 		
-		logger.info("图片的名称："+pictureName);
+		//logger.info("图片的名称："+pictureName);
 		logger.info(base64img);
 		
 		String  ffile = DateUtil.getDays(), fileName = "";
@@ -119,7 +119,11 @@ public class GoodsMxController extends BaseController {
 		//保存图片
 		boolean bool = Base64Image.GenerateImage(base64img, filePath,fileName);
 		if(bool){
-			String MASTER_ID= request.getParameter("MASTER_ID");
+			String GOOD_ID= request.getParameter("GOODCODE");
+			pd.put("GOOD_ID", GOOD_ID);
+			PageData p = (PageData) goodsService.findByGOODCODE(pd);
+			String MASTER_ID=p.getString("GOOD_ID");
+			
 			pd.put("PICTURES_ID", this.get32UUID());			//主键
 			pd.put("TITLE", "商品图片");								//标题
 			pd.put("NAME", fileName);							//文件名
