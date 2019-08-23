@@ -218,7 +218,8 @@ public class AppGoodsController extends BaseController {
 		
 		//保存图片
 		//boolean bool = Base64Image.GenerateImage(base64Image, filePath,fileName);
-		boolean bool = ImageAnd64Binary.generateImage(base64Image,  filePath+fileName);
+	//	boolean bool = ImageAnd64Binary.generateImage(base64Image,  filePath+fileName);
+		boolean bool =  Base64Image.toImage(base64Image,  filePath+fileName);
 		if(bool){
 			String GOOD_ID= request.getParameter("GOODCODE");
 			pd.put("GOOD_ID", GOOD_ID);

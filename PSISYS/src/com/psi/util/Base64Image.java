@@ -1,10 +1,16 @@
 package com.psi.util;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.util.Base64Utils;
 
@@ -67,4 +73,27 @@ public class Base64Image {
 	          return false;
 	      }
 	  }
+	  
+	  
+	  
+	  public static boolean toImage(String imageString,String path){  
+	        BufferedImage image = null;  
+	        byte[] imageByte = null;  
+	  
+	        try {  
+	            imageByte = DatatypeConverter.parseBase64Binary(imageString);  
+	            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);  
+	            image = ImageIO.read(new ByteArrayInputStream(imageByte));  
+	            bis.close();  
+	  
+	            File outputfile = new File(path);  
+	            ImageIO.write(image, "jpg", outputfile);  
+	        } catch (IOException e) {  
+	            e.printStackTrace();  
+	            return  false;
+	        }
+	        
+	        return true;
+	    }  
+	
 }
