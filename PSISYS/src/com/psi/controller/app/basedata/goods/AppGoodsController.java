@@ -28,6 +28,7 @@ import com.psi.service.system.fhlog.FHlogManager;
 import com.psi.util.Base64Image;
 import com.psi.util.Const;
 import com.psi.util.DateUtil;
+import com.psi.util.ImageAnd64Binary;
 import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
 import com.psi.util.PathUtil;
@@ -216,7 +217,8 @@ public class AppGoodsController extends BaseController {
 		logger.info(" 图片保存路径："+ filePath);
 		
 		//保存图片
-		boolean bool = Base64Image.GenerateImage(base64Image, filePath,fileName);
+		//boolean bool = Base64Image.GenerateImage(base64Image, filePath,fileName);
+		boolean bool = ImageAnd64Binary.generateImage(base64Image,  filePath+fileName);
 		if(bool){
 			String GOOD_ID= request.getParameter("GOODCODE");
 			pd.put("GOOD_ID", GOOD_ID);
