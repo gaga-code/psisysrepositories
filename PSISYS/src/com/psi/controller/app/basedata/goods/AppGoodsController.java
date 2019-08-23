@@ -6,10 +6,12 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,13 +19,19 @@ import com.psi.controller.base.BaseController;
 import com.psi.service.app.basedata.goods.AppGoodsManager;
 import com.psi.service.app.inventorymanagement.salebill.AppSalebillManager;
 import com.psi.service.app.inventorymanagement.tock.AppStockManager;
+import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.erp.spbrand.SpbrandManager;
 import com.psi.service.erp.sptype.SptypeManager;
 import com.psi.service.erp.spunit.SpunitManager;
 import com.psi.service.information.pictures.PicturesManager;
 import com.psi.service.system.fhlog.FHlogManager;
+import com.psi.util.Base64Image;
+import com.psi.util.Const;
+import com.psi.util.DateUtil;
 import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
+import com.psi.util.PathUtil;
+import com.psi.util.Tools;
 
 
 /**
@@ -43,7 +51,10 @@ public class AppGoodsController extends BaseController {
 	
 	@Resource(name="appGoodsService")
 	private AppGoodsManager appGoodsService;
-
+	@Resource(name="picturesService")
+	private PicturesManager picturesService;
+	@Resource(name="goodsService")
+	private GoodsManager goodsService;
 	@Resource(name = "fhlogService")
 	private FHlogManager FHLOG;
 	
@@ -186,6 +197,56 @@ public class AppGoodsController extends BaseController {
 	}
 	
 	
+
+	@RequestMapping(value = "/uploadData", method = {RequestMethod.POST}, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String uploadData(HttpServletRequest request) throws Exception {
+	
+		logBefore(logger, Jurisdiction.getUsername()+"新增图片");
+		PageData pd = new PageData();
+		
+		String base64Image  = request.getParameter("IMGCODE"); //图base64编码字符串
+	//	String pictureName  = request.getParameter("pictureName");
+		String base64img = base64Image.substring(22, base64Image.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
+		
+		//logger.info("图片的名称："+pictureName);
+		logger.info(base64img);
+		
+		String  ffile = DateUtil.getDays(), fileName = "";
+		String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile+"/";		//文件上传路径
+		fileName=this.get32UUID()+".jpg";
+		//保存图片路径
+	  //  uploadFiles/uploadImgs/PATH
+		
+		logger.info(" 图片保存路径："+ filePath);
+		
+		//保存图片
+		boolean bool = Base64Image.GenerateImage(base64img, filePath,fileName);
+		if(bool){
+			String GOOD_ID= request.getParameter("GOODCODE");
+			pd.put("GOOD_ID", GOOD_ID);
+			PageData p = (PageData) goodsService.findByGOODCODE(pd);
+			String MASTER_ID=p.getString("GOOD_ID");
+			
+			pd.put("PICTURES_ID", this.get32UUID());			//主键
+			pd.put("TITLE", "商品图片");								//标题
+			pd.put("NAME", fileName);							//文件名
+			pd.put("PATH", ffile + "/" + fileName);				//路径
+			pd.put("CREATETIME", Tools.date2Str(new Date()));	//创建时间
+			pd.put("MASTER_ID", MASTER_ID);						//附属与
+			pd.put("BZ", "商品图片");							//备注
+			pd.put("ORDER_BY", 1);								//排序
+			//Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);//加水印
+			picturesService.save(pd);
+			goodsService.editPic(pd);
+			return "OK";
+		}
+		
+		return "Error";
+	
+
+	}
+
 	
 }
 	
