@@ -212,14 +212,26 @@ public class AppGoodsController extends BaseController {
 	public String uploadData(HttpServletRequest request) throws Exception {
 	
 		PageData pd = new PageData();
-		
+		pd = this.getPageData();  
 /*		String base64Image  = request.getParameter("IMGCODE"); //图base64编码字符串
 		String base64img = base64Image.substring(22, base64Image.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
-*/		String string1=  request.getParameter("string1");
+*/		
+		String string1 = null;
+		if(pd.getString("string1")!=null){
+			string1=pd.getString("string1");
+		}
+		String string2;
+		if(pd.getString("string2")!=null){
+			string2=pd.getString("string2");
+			string1+=string2;
+		}
+		String string3;
+		if(pd.getString("string3")!=null){
+			string3=pd.getString("string3");
+			string1+=string3;
+		}
+		
 		String base64img = string1.substring(22, string1.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
-		String string2=  request.getParameter("string2");
-		String string3=  request.getParameter("string3");
-		base64img=base64img+string2+string3;
 		
 		String  ffile = DateUtil.getDays(), fileName = "";
 		String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile+"/";		//文件上传路径
