@@ -93,7 +93,7 @@ public class GoodsMxController extends BaseController {
 	}
 
 
-	@RequestMapping(value = "uploadData", method = {RequestMethod.POST}, produces = { "application/json;charset=UTF-8" })
+	@RequestMapping(value = "/uploadData", method = {RequestMethod.POST}, produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
 	public String uploadData(HttpServletRequest request) throws Exception {
 	
