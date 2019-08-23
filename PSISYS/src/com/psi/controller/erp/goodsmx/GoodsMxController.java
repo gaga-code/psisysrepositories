@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +25,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
+import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.information.pictures.PicturesManager;
 import com.psi.util.AppUtil;
+import com.psi.util.Base64Image;
 import com.psi.util.Const;
 import com.psi.util.DateUtil;
 import com.psi.util.DelAllFile;
@@ -35,6 +38,8 @@ import com.psi.util.PageData;
 import com.psi.util.PathUtil;
 import com.psi.util.Tools;
 import com.psi.util.Watermark;
+
+import sun.misc.BASE64Decoder;
 
 /**
  * 说明：商品管理(明细)
@@ -46,7 +51,8 @@ public class GoodsMxController extends BaseController {
 	String menuUrl = "goodsmx/list.do"; //菜单地址(权限用)
 	@Resource(name="picturesService")
 	private PicturesManager picturesService;
-	
+	@Resource(name="goodsService")
+	private GoodsManager goodsService;
 	/**新增
 	 * @param file
 	 * @return
@@ -65,8 +71,8 @@ public class GoodsMxController extends BaseController {
 		PageData pd = new PageData();
 		if(Jurisdiction.buttonJurisdiction(menuUrl, "add")){
 			if (null != file && !file.isEmpty()) {
-				String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile;		//文件上传路径
-				fileName = FileUpload.fileUp(file, filePath, this.get32UUID());				//执行上传
+				String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile;		//文件上传路径/uploadFiles/uploadImgs/20190823
+				fileName = FileUpload.fileUp(file, filePath, this.get32UUID());				//执行上传a89b818383414c77bfe6bfc655b4ffed.jpg
 			}else{
 				System.out.println("上传失败");
 			}
@@ -80,11 +86,60 @@ public class GoodsMxController extends BaseController {
 			pd.put("ORDER_BY", 1);								//排序
 			Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);//加水印
 			picturesService.save(pd);
+			goodsService.editPic(pd);
 		}
 		map.put("result", "ok");
 		return AppUtil.returnObject(pd, map);
 	}
+
+
+	@RequestMapping(value = "uploadData", method = {RequestMethod.POST}, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String uploadData(HttpServletRequest request) throws Exception {
 	
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
+		logBefore(logger, Jurisdiction.getUsername()+"新增图片");
+		PageData pd = new PageData();
+		
+		String base64Image  = request.getParameter("base64Image"); //图base64编码字符串
+		String pictureName  = request.getParameter("pictureName");
+		String base64img = base64Image.substring(22, base64Image.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
+		
+		logger.info("图片的名称："+pictureName);
+		logger.info(base64img);
+		
+		String  ffile = DateUtil.getDays(), fileName = "";
+		String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile+"/";		//文件上传路径
+		fileName=this.get32UUID()+".jpg";
+		//保存图片路径
+	  //  uploadFiles/uploadImgs/PATH
+		
+		logger.info(" 图片保存路径："+ filePath);
+		
+		//保存图片
+		boolean bool = Base64Image.GenerateImage(base64img, filePath,fileName);
+		if(bool){
+			String MASTER_ID= request.getParameter("MASTER_ID");
+			pd.put("PICTURES_ID", this.get32UUID());			//主键
+			pd.put("TITLE", "商品图片");								//标题
+			pd.put("NAME", fileName);							//文件名
+			pd.put("PATH", ffile + "/" + fileName);				//路径
+			pd.put("CREATETIME", Tools.date2Str(new Date()));	//创建时间
+			pd.put("MASTER_ID", MASTER_ID);						//附属与
+			pd.put("BZ", "商品图片");							//备注
+			pd.put("ORDER_BY", 1);								//排序
+			//Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);//加水印
+			picturesService.save(pd);
+			goodsService.editPic(pd);
+			return "OK";
+		}
+		
+		return "Error";
+	
+
+	}
+
+
 	/**删除
 	 * @param out
 	 * @throws Exception 
@@ -150,6 +205,7 @@ public class GoodsMxController extends BaseController {
 				pd.put("PATH", tpz);
 			}
 			picturesService.edit(pd);				//执行修改数据库
+			goodsService.editPic(pd);
 		}
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -195,6 +251,7 @@ public class GoodsMxController extends BaseController {
 		return mv;
 	}
 	
+
 	/**去新增页面
 	 * @return
 	 */
