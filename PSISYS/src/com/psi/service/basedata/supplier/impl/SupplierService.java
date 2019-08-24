@@ -84,6 +84,44 @@ public class SupplierService implements SupplierManager{
 		//表名和主键字段名
 		jdbcTempUtil.deleteAll(DATA_IDS, PK_SOBOOKS, "base_supplier", "SUPPLIER_ID");
 	}
+
+	@Override
+	public PageData findByCode(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (PageData)dao.findForObject("SupplierMapper.findByCode", pd);
+	}
+
+	@Override
+	public void saveSupplier(PageData pd) throws Exception {
+		
+		dao.save("SupplierMapper.saveSupplier", pd);
+	}
+
+	@Override
+	public String findByName(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (String)dao.findForObject("SupplierMapper.findBySupplierName",pd);
+	}
+
+	@Override
+	public List<PageData> listAllSupp(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("SupplierMapper.listAllSupp", pd);
+	}
+
+	//<!-- 修改当前应支付金额 -->
+	@Override
+	public void editAmount(PageData pd) throws Exception {
+		dao.update("SupplierMapper.editAmount", pd);
+	}
+
+	//根据编号获取当前应付金额
+	@Override
+	public String findAmountByCode(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (String)dao.findForObject("SupplierMapper.findAmountByCode", pd);
+	}
+
 	
 }
 

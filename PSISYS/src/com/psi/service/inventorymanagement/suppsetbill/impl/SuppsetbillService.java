@@ -154,7 +154,8 @@ public class SuppsetbillService implements SuppsetbillManager{
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> list(Page page)throws Exception{
-		return (List<PageData>)dao.findForList("SuppsetbillMapper.datalistPage", page);
+		List<PageData> list = (List<PageData>)dao.findForList("SuppsetbillMapper.datalistPage", page);
+		return list;
 	}
 	
 	/**列表(全部)
@@ -253,23 +254,42 @@ public class SuppsetbillService implements SuppsetbillManager{
 		inOrderAndSuppsetBackService.savesuppback(pd);
 		//================================================================2、根据实付金额依次对进货单进行结算===========================================================//
 		Double thispay = (Double) pd.get("PAYMENTAMOUNT");//本次结算的实付金额
+		for(int k  = 0; k < inorderandbodylist.size(); k++) {
+			PageData headpd = inorderandbodylist.get(k);
+			String type=headpd.getString("BILLTYPE");
+			if(type.equals("8")){
+				String allamount=headpd.get("ALLAMOUNT").toString();
+				Double amount=Double.valueOf(allamount);
+				thispay+=amount;
+			}
+		}
 		int settleNum = 1;
 		for(int k  = 0; k < inorderandbodylist.size(); k++) {
 			PageData headpd = inorderandbodylist.get(k);
 			String INORDERBACK_ID = (String)headpd.get("INORDERBACK_ID");//当前进货单备份主键
+			String type=headpd.getString("BILLTYPE");
 			Double unpay = (Double)headpd.get("UNPAIDAMOUNT");
-			if(thispay >= unpay) {//全部结算完，状态为“已结算”
-				headpd.put("PAIDAMOUNT",(Double)headpd.get("PAIDAMOUNT") + unpay);
-				headpd.put("THISPAY",unpay);
+			if(type.equals("1")){//为进货单
+				if(thispay >= unpay) {//全部结算完，状态为“已结算”
+					headpd.put("PAIDAMOUNT",(Double)headpd.get("PAIDAMOUNT") + unpay);
+					headpd.put("THISPAY",unpay);
+					headpd.put("UNPAIDAMOUNT", 0);
+					headpd.put("ISSETTLEMENTED", 1);
+					headpd.put("SETTEDNUMANDID",INORDERBACK_ID);
+					thispay -= unpay;
+				}else {//部分结算，状态为“未结算”
+					headpd.put("PAIDAMOUNT",(Double)headpd.get("PAIDAMOUNT") + thispay );
+					headpd.put("THISPAY",thispay);
+					headpd.put("UNPAIDAMOUNT", unpay-thispay);
+					headpd.put("ISSETTLEMENTED", 0);
+					headpd.put("SETTEDNUMANDID",INORDERBACK_ID);
+				}
+			}else{//为退货单
+				String allamount=headpd.get("ALLAMOUNT").toString();
+				headpd.put("PAIDAMOUNT",allamount);
+				headpd.put("THISPAY",allamount);
 				headpd.put("UNPAIDAMOUNT", 0);
 				headpd.put("ISSETTLEMENTED", 1);
-				headpd.put("SETTEDNUMANDID",INORDERBACK_ID);
-				thispay -= unpay;
-			}else {//部分结算，状态为“未结算”
-				headpd.put("PAIDAMOUNT",(Double)headpd.get("PAIDAMOUNT") + thispay );
-				headpd.put("THISPAY",thispay);
-				headpd.put("UNPAIDAMOUNT", unpay-thispay);
-				headpd.put("ISSETTLEMENTED", 0);
 				headpd.put("SETTEDNUMANDID",INORDERBACK_ID);
 			}
 			//进货单的表体明细
@@ -379,10 +399,11 @@ public class SuppsetbillService implements SuppsetbillManager{
 		dao.save("SuppsetbillMapper.save", zuofeipd);
 	}
 
+	
 	@Override
-	public List<PageData> listInOderBypayment(Page page) throws Exception {
+	public List<PageData> listByCondition(PageData pd) throws Exception {
 		// TODO Auto-generated method stub
-		return (List<PageData>)dao.findForList("", page);
+		return (List<PageData>)dao.findForList("SuppsetbillMapper.listByCondition", pd);
 	}
 	
 }

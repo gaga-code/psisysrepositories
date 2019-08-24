@@ -78,6 +78,24 @@ public class CustomerService implements CustomerManager{
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("CustomerMapper.deleteAll", ArrayDATA_IDS);
 	}
+
+	@Override
+	public PageData findByCode(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (PageData)dao.findForObject("CustomerMapper.findByCode", pd);
+	}
+
+	@Override
+	public void saveCustomer(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		dao.save("CustomerMapper.saveCustomer", pd);
+	}
+
+	@Override
+	public List<PageData> listAllCUS(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("CustomerMapper.listAllCUS", pd);
+	}
 	
 }
 

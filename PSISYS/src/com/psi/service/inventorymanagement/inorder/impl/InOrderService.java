@@ -61,13 +61,23 @@ public class InOrderService implements InOrderManager{
 			pageData.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
 			pageData.put("APPBILLNO", strs[0]);
 			
-			pageData.put("BARCODE", agoods[1]);
+			pageData.put("GOODCODE_ID", agoods[1]);
 			pageData.put("WAREHOUSE_ID", agoods[2]);
 			pageData.put("UNITPRICE_ID", agoods[3]);
 			pageData.put("PNUMBER", agoods[4]);
 			pageData.put("AMOUNT", agoods[6]);
-			pageData.put("NOTE", agoods[7]);
-			pageData.put("GOODCODE_ID", agoods[8]);
+			
+			if(agoods.length==8){ //如果BARCODE有值，agoods的长度是9
+				pageData.put("NOTE", agoods[7]);
+			}else{  //否则长度为8
+				pageData.put("NOTE", "");
+			}
+			
+			if(agoods.length==9){ //如果BARCODE有值，agoods的长度是9
+				pageData.put("BARCODE", agoods[8]);
+			}else{  //否则长度为8
+				pageData.put("BARCODE", null);
+			}
 			
 			dao.save("InOrderBodyMapper.save", pageData);
 		}
@@ -143,13 +153,22 @@ public class InOrderService implements InOrderManager{
 			pageData.put("APPBILLNO", pd.get("BILLCODE"));
 			
 			
-			pageData.put("BARCODE", agoods[1]);
+			pageData.put("GOODCODE_ID", agoods[1]);
 			pageData.put("WAREHOUSE_ID", agoods[2]);
 			pageData.put("UNITPRICE_ID", agoods[3]);
 			pageData.put("PNUMBER", agoods[4]);
 			pageData.put("AMOUNT", agoods[6]);
-			pageData.put("NOTE", agoods[7]);
-			pageData.put("GOODCODE_ID", agoods[8]);
+			
+			if(agoods.length==8){ //如果BARCODE有值，agoods的长度是9
+				pageData.put("NOTE", agoods[7]);
+			}else{  //否则长度为8
+				pageData.put("NOTE", "");
+			}
+			if(agoods.length==9){ //如果BARCODE有值，agoods的长度是9
+				pageData.put("BARCODE", agoods[8]);
+			}else{  //否则长度为8
+				pageData.put("BARCODE", null);
+			}
 			
 			dao.save("InOrderBodyMapper.save", pageData);
 		}
@@ -361,7 +380,26 @@ public class InOrderService implements InOrderManager{
 		for (PageData pageData : goodslist) {
 			//把商品的编号加入到查询条件
 			head.put("GOOD_ID", pageData.get("GOODCODE_ID"));
+			//=========================修改商品表的平均成本价===================
+			HashMap map=new HashMap();
+			map.put("GOODCODE",  pageData.get("GOODCODE_ID"));
+			map.put("PK_SOBOOKS", pageData.get("PK_SOBOOKS"));
+			PageData gpd=(PageData)dao.findForObject("GoodsMapper.findDefAndNumByCode", map); //查询数据库商品的平均成本价和库存
 			
+			int STOCKNUM= (Integer)gpd.get("STOCKNUM");
+			double price;
+			if(gpd.getString("DEF1")!=null){
+				   price= Double.parseDouble(gpd.getString("DEF1"));
+			}else{
+				price=0;
+			}
+			int num=(Integer)pageData.get("PNUMBER");
+			double amount=(Double)pageData.get("AMOUNT");
+			price=(price*STOCKNUM+amount)/(num+STOCKNUM);
+			
+			map.put("price", price);
+			map.put("GOODCODE", pageData.get("GOODCODE_ID"));
+			dao.save("GoodsMapper.updateDEF1ByCode", map);
 			//=========================操作商品表===================
 			//更新最后进价 和 库存总数量
 			PageData aGoods =  (PageData)dao.findForObject("GoodsMapper.findByGOODCODE", head);
@@ -409,6 +447,33 @@ public class InOrderService implements InOrderManager{
 		
 		//依次把商品数量在 仓库-商品 表中删去
 		for (PageData pageData : goodslist) {
+			
+			
+			//=========================修改商品表的平均成本价===================
+			HashMap map=new HashMap();
+			map.put("GOODCODE",  pageData.get("GOODCODE_ID"));
+			map.put("PK_SOBOOKS", pageData.get("PK_SOBOOKS"));
+			PageData gpd=(PageData)dao.findForObject("GoodsMapper.findDefAndNumByCode", map); //查询数据库商品的平均成本价和库存
+			
+			int STOCKNUM= (Integer)gpd.get("STOCKNUM");
+			double price;
+			if(gpd.getString("DEF1")!=null){
+			    price= Double.parseDouble(gpd.getString("DEF1"));
+			}else{
+				price=0;
+			}
+			int num=(Integer)pageData.get("PNUMBER");
+			double amount=(Double)pageData.get("AMOUNT");
+			if((price*STOCKNUM-amount)==0 || (STOCKNUM-num)==0){
+				price=0;
+			}else{
+				price=(price*STOCKNUM-amount)/(STOCKNUM-num);
+			}
+			map.put("price", price);
+			map.put("GOODCODE", pageData.get("GOODCODE_ID"));
+			dao.save("GoodsMapper.updateDEF1ByCode", map);
+			
+			/////////////////////////////////////
 			head.put("WAREHOUSE_ID", pageData.get("WAREHOUSE_ID"));
 			head.put("GOOD_ID", pageData.get("GOODCODE_ID"));
 			//获取原来的库存
@@ -423,7 +488,9 @@ public class InOrderService implements InOrderManager{
 			
 			//=========================操作库存表===================
 			//把仓库中的库存减去进货单商品的数量
-			head.put("STOCK", (Integer)aGood.get("STOCK") - (Integer)pageData.get("PNUMBER"));
+			if(aGood!=null){
+				head.put("STOCK", (Integer)aGood.get("STOCK") - (Integer)pageData.get("PNUMBER"));
+			}
 			dao.update("StockMapper.edit", head);
 		}
 	}
@@ -473,6 +540,18 @@ public class InOrderService implements InOrderManager{
 	@Override
 	public List<PageData> listInOderSale(Page page) throws Exception {
 		return (List<PageData>)dao.findForList("InOrderMapper.datalistPageByOderSale", page);
+	}
+
+	@Override
+	public List<PageData> listInOderByCondition(Page page) throws Exception {
+		
+		return (List<PageData>)dao.findForList("InOrderMapper.datalistPageByCondition", page);
+	}
+
+	@Override
+	public List<PageData> printInOrder(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("InOrderBodyMapper.printInOrder", pd);
 	}
 	
 }

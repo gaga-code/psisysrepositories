@@ -124,6 +124,10 @@ public interface InOrderManager{
 	public List<PageData> inOrderlistBody(PageData pd) throws Exception ;
 
 	public List<PageData> listInOderSale(Page page) throws Exception;
+
+	public List<PageData> listInOderByCondition(Page page) throws Exception;
+
+	public List<PageData> printInOrder(PageData pd) throws Exception;
 	
 }
 

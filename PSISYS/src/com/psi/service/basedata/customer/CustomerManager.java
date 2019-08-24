@@ -51,6 +51,12 @@ public interface CustomerManager{
 	 * @throws Exception
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception;
+
+	public PageData findByCode(PageData pd) throws Exception;
+
+	public void saveCustomer(PageData pd) throws Exception;
+
+	public List<PageData> listAllCUS(PageData pd) throws Exception;
 	
 }
 

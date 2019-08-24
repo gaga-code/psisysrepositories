@@ -193,5 +193,11 @@ public class UserService implements UserManager{
 		Session session = Jurisdiction.getSession();
 		return (PageData)dao.findForObject("UserMapper.getUserCount", session.getAttribute(Const.SESSION_PK_SOBOOKS));
 	}
+
+	@Override
+	public String findByname(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (String)dao.findForObject("UserMapper.findByname", pd);
+	}
 	
 }

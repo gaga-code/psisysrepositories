@@ -80,7 +80,8 @@ public interface SuppsetbillManager{
 	 */
 	public void unapprovalone(PageData pd)throws Exception;
 
-	public List<PageData> listInOderBypayment(Page page) throws Exception;
+
+	public List<PageData> listByCondition(PageData pd) throws Exception;
 	
 	
 	

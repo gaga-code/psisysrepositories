@@ -51,6 +51,10 @@ public interface WarehouseManager{
 	 * @throws Exception
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception;
+
+	public String findByWid(PageData pd) throws Exception;
+
+	public String findByName(PageData pd) throws Exception;
 	
 }
 

@@ -75,6 +75,10 @@ public interface GoodsTypeManager{
 	 * @throws Exception
 	 */
 	public PageData findFromTbs(PageData pd)throws Exception;
+
+	public String findByname(PageData pd) throws Exception;
+
+	public void saveGoodsType(PageData pd) throws Exception;
 	
 }
 

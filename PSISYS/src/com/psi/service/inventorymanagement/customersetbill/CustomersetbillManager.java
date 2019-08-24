@@ -79,6 +79,10 @@ public interface CustomersetbillManager{
 	 * @throws Exception
 	 */
 	public void unapprovalone(PageData pd)throws Exception;
+
+	public List<PageData> listByCondition(PageData pd) throws Exception;
+
+	public List<PageData> listCustomterbillByPay(PageData pd) throws Exception;
 	
 	
 	

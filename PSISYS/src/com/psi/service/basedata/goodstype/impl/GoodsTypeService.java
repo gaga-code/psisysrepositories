@@ -120,5 +120,17 @@ public class GoodsTypeService implements GoodsTypeManager{
 		return (PageData)dao.findForObject("GoodsTypeMapper.findFromTbs", pd);
 	}
 
+	@Override
+	public String findByname(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (String)dao.findForObject("GoodsTypeMapper.findByname", pd);
+	}
+
+	@Override
+	public void saveGoodsType(PageData pd) throws Exception {
+
+		dao.save("GoodsTypeMapper.saveGoodsType", pd);
+	}
+
 }
 

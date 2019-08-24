@@ -97,9 +97,14 @@ public class AppInOderService implements AppInOderManager {
 			pageData.put("WAREHOUSE_ID", agoods[2]);
 			pageData.put("UNITPRICE_ID", agoods[3]);
 			pageData.put("PNUMBER", agoods[4]);
-			pageData.put("AMOUNT", agoods[6]);
-			pageData.put("NOTE", agoods[7]);
-			pageData.put("GOODCODE_ID", agoods[8]);
+			pageData.put("AMOUNT", agoods[5]);
+			pageData.put("NOTE", agoods[6]);
+			
+			if(agoods.length==8){ //如果BARCODE有值，agoods的长度是9
+				pageData.put("GOODCODE_ID", agoods[7]);
+			}else{  //否则长度为8
+				pageData.put("GOODCODE_ID", null);
+			}
 			
 			dao.save("InOrderBodyMapper.save", pageData);
 		}

@@ -51,6 +51,20 @@ public interface SupplierManager{
 	 * @throws Exception
 	 */
 	public void deleteAll(String DATA_IDS,String PK_SOBOOKS)throws Exception;
+
+	public PageData findByCode(PageData pd) throws Exception;
+
+	public void saveSupplier(PageData pd) throws Exception;
+
+	public String findByName(PageData pd) throws Exception;
+
+	public List<PageData> listAllSupp(PageData pd) throws Exception;
+	//<!-- 修改当前应支付金额 -->
+	public void editAmount(PageData pd) throws Exception;
+	
+	//根据编号获取当前应付金额
+	public String findAmountByCode(PageData pd) throws Exception;
+	
 	
 }
 

@@ -147,6 +147,16 @@ public interface SalebillManager{
 	public List<PageData> salebillListBody(PageData pd) throws Exception;
 
 	public List<PageData> listInOderSale(Page page) throws Exception;
+
+	public List<PageData> listSalebillByCondition(Page page) throws Exception;
+
+	public List<PageData> listSalebillByID(Page page) throws Exception;
+
+	public List<PageData> printSalebill(PageData pd) throws Exception;
+
+	public List<PageData> listByCustomer(PageData pd) throws Exception;
+
+
 	
 }
 

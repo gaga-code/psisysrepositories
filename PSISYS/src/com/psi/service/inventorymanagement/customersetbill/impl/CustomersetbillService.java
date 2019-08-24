@@ -73,7 +73,7 @@ public class CustomersetbillService implements CustomersetbillManager{
 		String[] ioids = SALEBILL_IDs.split(",");
 		for(int i = 0; i < ioids.length; i++) {
 			PageData salebillpd = new PageData();
-			salebillpd.put("SALEBILL_ID",ioids[i].substring(1, ioids[i].length()-1) );
+			salebillpd.put("SALEBILL_ID",ioids[i].substring(1, ioids[i].length()-1));
 			salebillpd = salebillService.findById(salebillpd);
 			if(salebillpd.get("CUSTOMERSETBILL_ID")==null || salebillpd.get("CUSTOMERSETBILL_ID") == "" || "".equals(salebillpd.get("CUSTOMERSETBILL_ID")) ) {
 				salebillpd.put("CUSTOMERSETBILL_ID",pd.getString("CUSTOMERSETBILL_ID"));
@@ -254,23 +254,44 @@ public class CustomersetbillService implements CustomersetbillManager{
 		saleBillAndCustomersetBackService.savecustomerback(pd);
 		//================================================================2、根据实收金额依次对销售单进行结算===========================================================//
 		Double thispay = (Double) pd.get("PAYMENTAMOUNT");//本次结算的实收金额
+		
+		for(int k  = 0; k < salebillandbodylist.size(); k++) {
+			PageData headpd = salebillandbodylist.get(k);
+			String type=headpd.getString("BILLTYPE");
+			if(type.equals("8")){
+				String allamount=headpd.get("ALLAMOUNT").toString();
+				Double amount=Double.valueOf(allamount);
+				thispay+=amount;
+			}
+		}
+		
 		int settleNum = 1;
 		for(int k  = 0; k < salebillandbodylist.size(); k++) {
 			PageData headpd = salebillandbodylist.get(k);
 			String SALEBILLBACK_ID = (String)headpd.get("SALEBILLBACK_ID");//当前销售单备份主键
+			String type = headpd.getString("BILLTYPE");
 			Double unpay = (Double)headpd.get("UNPAIDAMOUNT");
-			if(thispay >= unpay) {//全部结算完，状态为“已结算”
-				headpd.put("PAIDAMOUNT",(Double)headpd.get("PAIDAMOUNT") + unpay);
-				headpd.put("THISPAY",unpay);
+			if(type.equals("2")){
+				if(thispay >= unpay) {//全部结算完，状态为“已结算”
+					headpd.put("PAIDAMOUNT",(Double)headpd.get("PAIDAMOUNT") + unpay);
+					headpd.put("THISPAY",unpay);
+					headpd.put("UNPAIDAMOUNT", 0);
+					headpd.put("ISSETTLEMENTED", 1);
+					headpd.put("SETTEDNUMANDID",SALEBILLBACK_ID);
+					thispay -= unpay;
+				}else {//部分结算，状态为“未结算”
+					headpd.put("PAIDAMOUNT",(Double)headpd.get("PAIDAMOUNT") + thispay );
+					headpd.put("THISPAY",thispay);
+					headpd.put("UNPAIDAMOUNT", unpay-thispay);
+					headpd.put("ISSETTLEMENTED", 0);
+					headpd.put("SETTEDNUMANDID",SALEBILLBACK_ID);
+				}
+			}else{
+				String allamount=headpd.get("ALLAMOUNT").toString();
+				headpd.put("PAIDAMOUNT",allamount);
+				headpd.put("THISPAY",allamount);
 				headpd.put("UNPAIDAMOUNT", 0);
 				headpd.put("ISSETTLEMENTED", 1);
-				headpd.put("SETTEDNUMANDID",SALEBILLBACK_ID);
-				thispay -= unpay;
-			}else {//部分结算，状态为“未结算”
-				headpd.put("PAIDAMOUNT",(Double)headpd.get("PAIDAMOUNT") + thispay );
-				headpd.put("THISPAY",thispay);
-				headpd.put("UNPAIDAMOUNT", unpay-thispay);
-				headpd.put("ISSETTLEMENTED", 0);
 				headpd.put("SETTEDNUMANDID",SALEBILLBACK_ID);
 			}
 			if(headpd.getString("CUSTOMERSETBILL_ID").split(",").length==1) {
@@ -380,6 +401,18 @@ public class CustomersetbillService implements CustomersetbillManager{
 		}
 		
 		dao.save("CustomersetbillMapper.save", zuofeipd);
+	}
+
+	@Override
+	public List<PageData> listByCondition(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("CustomersetbillMapper.listByCondition", pd);
+	}
+
+	@Override
+	public List<PageData> listCustomterbillByPay(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("CustomersetbillMapper.listCustomterbillByPay", pd);
 	}
 	
 }

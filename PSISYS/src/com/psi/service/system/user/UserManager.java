@@ -128,5 +128,7 @@ public interface UserManager {
 	 * @throws Exception
 	 */
 	public PageData getUserCount(String value)throws Exception;
+
+	public String findByname(PageData pd) throws Exception;
 	
 }

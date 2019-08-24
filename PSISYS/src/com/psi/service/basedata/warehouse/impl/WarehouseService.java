@@ -79,6 +79,18 @@ public class WarehouseService implements WarehouseManager{
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.update("WarehouseMapper.deleteAll", ArrayDATA_IDS);
 	}
+
+	@Override
+	public String findByWid(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (String)dao.findForObject("WarehouseMapper.findByWid", pd);
+	}
+
+	@Override
+	public String findByName(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (String)dao.findForObject("WarehouseMapper.findByName", pd);
+	}
 	
 
 }
