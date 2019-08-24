@@ -1,3 +1,4 @@
+
 package com.psi.controller.inventorymanagement.inorder;
 
 import java.io.PrintWriter;
@@ -72,7 +73,7 @@ public class InOrderController extends BaseController {
 		try{
 			Map<String,String> map = new HashMap<String, String>();
 			map.put("PK_SOBOOKS", pd.getString("PK_SOBOOKS"));
-			map.put("PARENTS", "0");
+			map.put("PARENTS", "-2");
 			JSONArray arr = JSONArray.fromObject(goodsService.inOrderListAllDict(map));
 			String json = arr.toString();
 			json = json.replaceAll("GOODTYPE_ID", "id").replaceAll("PARENTS", "pId").replaceAll("TYPENAME", "name").replaceAll("subDict", "nodes").replaceAll("hasDict", "checked").replaceAll("treeurl", "url");
@@ -163,6 +164,7 @@ public class InOrderController extends BaseController {
 		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		pd.put("BILLSTATUS", 2);
 		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
 		inOrderService.updateshenpi(pd);
 		out.write("success");
@@ -178,6 +180,7 @@ public class InOrderController extends BaseController {
 		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		pd.put("BILLSTATUS", 1);
 		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
 		inOrderService.updatefanshen(pd);
 		out.write("success");
@@ -231,6 +234,7 @@ public class InOrderController extends BaseController {
 		if(null != keywords && !"".equals(keywords)){
 			pd.put("keywords", keywords.trim());
 		}
+		pd.put("BILLTYPE", 1);
 		page.setPd(pd);
 		List<PageData> supplierList = supplierService.listAll(pd);	//列出supplier列表;
 		List<PageData>	varList = inOrderService.list(page);	//列出inorder列表
@@ -255,6 +259,7 @@ public class InOrderController extends BaseController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		pd.put("BILLTYPE", 1);
 		List<PageData>	varList = inOrderService.inOrderlistBody(pd);	//列出inorder列表
 		map.put("varList", varList);
 		map.put("QX", Jurisdiction.getHC()); //按钮权限
@@ -328,6 +333,7 @@ public class InOrderController extends BaseController {
 			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
 		} 
 		pd.put("USERNAME", Jurisdiction.getUsername());
+		pd.put("BILLTYPE", 1);
 		page.setPd(pd);
 		List<PageData>	varList = inOrderService.list(page);	//列出Customer列表
 		mv.setViewName("inventorymanagement/inorder/windows_inorder_list");
@@ -533,9 +539,12 @@ public class InOrderController extends BaseController {
 		} 
 		pd.put("USERNAME", Jurisdiction.getUsername());
 		
-		page.setPd(pd);
-		String BILLTYPE=pd.getString("BILLTYPE");
 		
+		String BILLTYPE=pd.getString("BILLTYPE");
+		if(pd.getString("BILLTYPE")==null){
+			pd.put("BILLTYPE", 1);
+		}
+		page.setPd(pd);
 		String warehouseId=pd.getString("WAREHOUSE_ID");
 		if(warehouseId!=null &&warehouseId !=""){
 			mv.addObject("warehouseId",warehouseId);
@@ -549,24 +558,6 @@ public class InOrderController extends BaseController {
 			list=salebillService.listInOderSale(page);//列出销售单列表
 		}
 		
-/*
-			Comparator<PageData> com=new Comparator<PageData>(){ //匿名内部类 
-					@Override
-					public int compare(PageData o1, PageData o2) {
-					    String str1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(o1.get("LASTTIME"));
-					    String str2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(o2.get("LASTTIME"));
-					    if(str1.compareTo(str2)>=0){
-					    	lists.add(o1);
-					    	System.out.println("-----------------------------------------------");
-					    	return 1;
-					    }else{
-					    	lists.add(o2);
-					    	System.out.println("+++++++++++++++++++++++++++++++++++++++++");
-					    	return -1;
-					    }
-					}            
-		        };
-		     Collections.sort(list,com);*/
 		List<PageData> warehouselist=warehouseService.listAll(pd);
 		mv.setViewName("inventorymanagement/odersale/odersale_list");
 		mv.addObject("pd", pd);

@@ -25,7 +25,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
 import com.psi.entity.system.User;
+import com.psi.service.basedata.payment.PaymentManager;
 import com.psi.service.inventorymanagement.customersetbill.CustomersetbillManager;
+import com.psi.service.inventorymanagement.salebill.SalebillManager;
+import com.psi.service.inventorymanagement.salebill.impl.SalebillService;
 import com.psi.service.system.BillCodePsi.BillCodeManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
@@ -47,7 +50,10 @@ public class CustomersetbillController extends BaseController {
 	private CustomersetbillManager customersetbillService;
 	@Resource(name="billCodeService")
 	private BillCodeManager billCodeService;
-
+	@Resource(name="salebillService")
+	private SalebillManager salebillService;
+	@Resource(name="paymentService")
+	private PaymentManager paymentService;
 	
 	
 	/**保存
@@ -372,7 +378,7 @@ public class CustomersetbillController extends BaseController {
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"导出customersetbill到excel");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
+	/*	if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}*/
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -431,4 +437,75 @@ public class CustomersetbillController extends BaseController {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(format,true));
 	}
+	
+	@RequestMapping("/listCustomterbillByPay")
+	public ModelAndView listCustomterbillByPay(Page page) throws Exception{
+	/*	logBefore(logger, Jurisdiction.getUsername()+"查看根据客户罗列支付方式的金额");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}*/
+		PageData pd= new PageData();
+		pd=this.getPageData();
+		ModelAndView mv =  new ModelAndView();
+		if(pd.getString("PAYMETHOD_ID")!=null){
+			mv.addObject("paymentId",pd.getString("PAYMETHOD_ID"));
+		}
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		int start=1;
+		int end=1;
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+			start=0;
+		}
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+			end=0;
+		} 
+		
+		if(start==1&&end==1){ //如果没有输入时间，默认当前时间
+			SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+			String date=sdf.format(new Date());
+			pd.put("date", date);
+		}
+		List<PageData> lpd=customersetbillService.listCustomterbillByPay(pd);
+		List<String> list= new ArrayList();
+		page.setPd(pd);
+		if(lpd!=null&&lpd.size()!=0){
+			for(int i = 0;i<lpd.size();i++){
+				String SALEBILL_IDS=lpd.get(i).getString("SALEBILL_IDS"); //切割SALEBILL_IDS
+				String[] str=SALEBILL_IDS.split(",");
+				lpd.get(i).put("SALEBILLIDS", str[0]);
+				list.add(str[0]);
+			}
+		}
+		page.setList(list);
+		List<PageData> list1 = new ArrayList();
+		if(lpd.size()!=0 &&lpd!=null){
+		      list1=salebillService.listSalebillByID(page);
+		}
+		List<PageData> list2=new ArrayList();
+		if(list1!=null && list1.size()!=0){
+			for(int i=0;i<lpd.size();i++){
+				for(int j=0;j<list1.size();j++){
+					if(lpd.get(i).getString("SALEBILLIDS").equals("'"+list1.get(j).getString("SALEBILL_ID")+"'")){
+						lpd.get(i).put("CUATOMERNAME", list1.get(j).getString("CUATOMERNAME"));
+						list2.add(lpd.get(i));
+						break;
+					}
+				
+				}
+			}
+		}
+		List<PageData>  paymentlist =paymentService.listAll(pd);
+		mv.setViewName("inventorymanagement/customersetbill/customterbypay");
+		mv.addObject("paymentlist",paymentlist);
+		mv.addObject("varlist",list2);
+		mv.addObject("pd", pd);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		return mv;
+	}
+	
 }

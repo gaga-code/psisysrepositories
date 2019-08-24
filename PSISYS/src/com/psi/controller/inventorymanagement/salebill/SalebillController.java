@@ -1,5 +1,7 @@
 package com.psi.controller.inventorymanagement.salebill;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,7 +12,20 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.CellRangeAddress;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -92,7 +107,7 @@ public class SalebillController extends BaseController {
 		try{
 			Map<String,String> map = new HashMap<String, String>();
 			map.put("PK_SOBOOKS", pd.getString("PK_SOBOOKS"));
-			map.put("PARENTS", "0");
+			map.put("PARENTS", "-2");
 			map.put("WAREHOUSE_ID", pd.getString("WAREHOUSE_ID"));
 			JSONArray arr = JSONArray.fromObject(goodsService.salebillListAllDict(map));
 			String json = arr.toString();
@@ -114,7 +129,7 @@ public class SalebillController extends BaseController {
 	@RequestMapping(value="/goodslist")
 	public ModelAndView goodslist(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表Goods");
-		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -279,6 +294,7 @@ public class SalebillController extends BaseController {
 		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
 			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
 		} 
+		pd.put("BILLTYPE", 2);
 		page.setPd(pd);
 		List<PageData> customerList = customerService.listAll(pd);	//列出customer列表;
 		List<PageData>	varList = salebillService.list(page);	//列出salebill列表
@@ -303,6 +319,7 @@ public class SalebillController extends BaseController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		pd.put("BILLTYPE", 2);
 		List<PageData>	varList = salebillService.salebillListBody(pd);	//列出inorder列表
 		map.put("varList", varList);
 		map.put("QX", Jurisdiction.getHC()); //按钮权限
@@ -377,6 +394,7 @@ public class SalebillController extends BaseController {
 			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
 		} 
 		pd.put("USERNAME", Jurisdiction.getUsername());
+		pd.put("BILLTYPE", 2);
 		page.setPd(pd);
 		List<PageData>	varList = salebillService.list(page);	//列出Customer列表
 		mv.setViewName("inventorymanagement/salebill/windows_salebill_list");
@@ -425,16 +443,24 @@ public class SalebillController extends BaseController {
 
 		String CUSTOMER_ID = pd.getString("CUSTOMER_ID");
 		PageData newpd = salebillService.customerunpaidandgreen(pd);//检查信誉额度
-		Double unpaid = (Double) newpd.get("unpaidallam");
-		Integer CREDITDEGREE = (Integer) newpd.get("CREDITDEGREE");
-		if(unpaid-CREDITDEGREE > 0) {
+		Double unpaid = 0.0 ;
+		if( newpd!=null &&newpd.get("unpaidallam")!=null){
+			unpaid = (Double) newpd.get("unpaidallam");
+		}
+		if(newpd!=null){
+			Integer CREDITDEGREE = (Integer) newpd.get("CREDITDEGREE");
+			if(unpaid-CREDITDEGREE > 0) {
+				pd.put("unpaidallam", unpaid);
+				pd.put("CREDITDEGREE", CREDITDEGREE);
+				pd.put("ischaopi", "1");
+			}else {
+				pd.put("ischaopi", "0");
+			}
+		}else{
 			pd.put("unpaidallam", unpaid);
-			pd.put("CREDITDEGREE", CREDITDEGREE);
-			pd.put("ischaopi", "1");
-		}else {
+			pd.put("CREDITDEGREE", 100);
 			pd.put("ischaopi", "0");
 		}
-
 		mv.setViewName("inventorymanagement/salebill/salebill_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
@@ -524,7 +550,7 @@ public class SalebillController extends BaseController {
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"导出salebill到excel");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
+	/*	if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}*/
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -543,6 +569,7 @@ public class SalebillController extends BaseController {
 		titles.add("备注2");	//11
 		dataMap.put("titles", titles);
 		pd.put("USERNAME", Jurisdiction.getUsername());
+		pd.put("BILLTYPE", 2);
 		List<PageData> varOList = salebillService.listAll(pd);
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
@@ -578,9 +605,19 @@ public class SalebillController extends BaseController {
 		ModelAndView mv= new ModelAndView();
 		PageData pd= new PageData();
 		pd=this.getPageData();
+		pd.put("BILLTYPE", 2);
 		List<PageData> pdlist=salebillService.listSaleInfo(pd);
 		mv.addObject("pdlist",pdlist);
 		mv.setViewName("inventorymanagement/salebill/detailsale");
 		return mv;
 	}
+	
+	@RequestMapping(value="/downSailbill")
+	public ModelAndView downSailbill() throws Exception{
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		
+		return null;
+	}
+
 }

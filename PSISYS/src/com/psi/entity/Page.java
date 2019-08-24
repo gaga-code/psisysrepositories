@@ -1,4 +1,6 @@
 package com.psi.entity;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.psi.util.Const;
 import com.psi.util.Jurisdiction;
@@ -29,6 +31,15 @@ public class Page {
 
 	private PageData pd = new PageData();
 	
+	private List list = new ArrayList();
+	public List getList() {
+		return list;
+	}
+
+	public void setList(List list) {
+		this.list = list;
+	}
+
 	public Page(){
 //		this.setPK_SOBOOKS((String) Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS)); //设置帐套主键
 		try {

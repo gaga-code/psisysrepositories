@@ -38,7 +38,7 @@ public class SalesProfitController extends BaseController {
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表salesprofit");
-		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -70,7 +70,7 @@ public class SalesProfitController extends BaseController {
 		List<PageData> varList = new ArrayList<PageData>();
 		for (PageData pageData : temp) {
 			pageData.put("FZ",  pageData.get("UNITPROP") + " " + pageData.get("CUNITNAME") + " = 1 " + pageData.get("FZUNITNAME"));
-			pageData.put("LRJE", ((Double)pageData.get("UNITPRICE_ID") - (Double)pageData.get("CPRICE")) * (Integer)pageData.get("PNUMBER"));
+			pageData.put("LRJE", ((Double)pageData.get("UNITPRICE_ID") - Double.valueOf(pageData.getString("DEF1"))) * (Integer)pageData.get("PNUMBER"));
 			varList.add(pageData);
 		}
 		mv.setViewName("psifinance/salesprofit/salesprofit_list");
