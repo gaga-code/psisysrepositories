@@ -269,10 +269,12 @@ public class AppGoodsController extends BaseController {
 	
 	
 
-public int insLetter(String details, HttpSession session, HttpServletRequest request) {
-      
-        
-		String path = "";//需要存入数据库的路径
+	@RequestMapping(value = "/insLetter")
+	@ResponseBody
+	public String insLetter(String details, HttpSession session, HttpServletRequest request) throws Exception {
+        PageData pd =new PageData();
+        pd= this.getPageData();
+		
 		MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
 		// 获取文件名集合放入迭代器
 		Iterator<String> files = mRequest.getFileNames();
@@ -288,13 +290,14 @@ public int insLetter(String details, HttpSession session, HttpServletRequest req
 			}
 	 
 	        // 当前app根目录
-	        String rootPath = request.getServletContext().getRealPath("/");
+	     //   String rootPath = request.getServletContext().getRealPath("/");
 	 
 	        // 需要上传的相对地址（application.properties中获取）
-	        String relativePath = "letterImg";
-	 
+	      //  String relativePath = "letterImg";
+			String  ffile = DateUtil.getDays();
+	    	String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG +"/"+ffile+"/";		//文件上传路径
 	        // 文件夹是否存在，不存在就创建
-	        File dir = new File(rootPath + File.separator + relativePath);
+	        File dir = new File(filePath);
 	        if (!dir.exists())
 	            dir.mkdirs();
 	       // String fileExtension = getFileExtension(file);
@@ -305,10 +308,8 @@ public int insLetter(String details, HttpSession session, HttpServletRequest req
 	        String filename = java.util.UUID.randomUUID().toString() + "." + fileExtension;
 	 
 	        // 文件全名
-	        String fullFilename = dir.getAbsolutePath() + File.separator + filename;
+	        String fullFilename = dir.getAbsolutePath() + filename;
 	 
-	        path += relativePath + "\\" + filename + ",";
-	       
 	 
 	        // 保存图片
 	        File serverFile = new File(fullFilename);
@@ -318,10 +319,27 @@ public int insLetter(String details, HttpSession session, HttpServletRequest req
 	        stream.close();
 	        }catch (Exception e) {
 				// TODO: handle exception
+	    
 			}
+			String GOOD_ID= request.getParameter("GOODCODE");
+			pd.put("GOOD_ID", GOOD_ID);
+			PageData p = (PageData) goodsService.findByGOODCODE(pd);
+			String MASTER_ID=p.getString("GOOD_ID");
+			
+			pd.put("PICTURES_ID", this.get32UUID());			//主键
+			pd.put("TITLE", "商品图片");								//标题
+			pd.put("NAME", filename);							//文件名
+			pd.put("PATH", "/"+ffile+"/"+filename);				//路径
+			pd.put("CREATETIME", Tools.date2Str(new Date()));	//创建时间
+			pd.put("MASTER_ID", MASTER_ID);						//附属与
+			pd.put("BZ", "商品图片");							//备注
+			pd.put("ORDER_BY", 1);								//排序
+			picturesService.save(pd);
+			goodsService.editPic(pd);
+			return "OK";
+			
 		}
-	
-		return 1;
+		return "ERROR";
 	}
 
 
