@@ -15,6 +15,7 @@
 		GOODTYPE_ID,
 		GOODCODE,
 		GOODNAME,
+		WAREHOUSE_IDs,
 		BARCODE,
 		SIMPLENAME,
 		SUBGZ_ID,
@@ -44,7 +45,8 @@
 		#{USER_ID},	
 		#{GOODTYPE_ID},	
 		#{GOODCODE},	
-		#{GOODNAME},	
+		#{GOODNAME},
+		#{WAREHOUSE_IDs},	
 		#{BARCODE},	
 		#{SIMPLENAME},	
 		#{SUBGZ_ID},	
@@ -78,6 +80,24 @@
 		)
 	</insert>
 	
+	
+		<!--从excel导入数据 新增-->
+	<insert id="saveGoods" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+		GOOD_ID,GOODCODE,BARCODE,SIMPLENAME,GOODNAME,BRANT,SUBGZ_ID,GOODTYPECODE,GOODSPECIF,STOCKNUM,CUNIT_ID,FZUNIT_ID,
+		UNITPROP,LFZUPPRICE,LASTPPRICE,CPRICE,SUPPLIER_ID,RPRICE,MPRICE,FZUCPRICE,PK_SOBOOKS,USER_ID,
+		GOODTYPE_ID,STOCKDOWNNUM,YICODE,NOTE,WAREHOUSE_IDs
+		) values (
+			#{GOOD_ID},#{GOODCODE},#{BARCODE},#{SIMPLENAME},#{GOODNAME},#{BRANT},#{SUBGZ_ID},#{GOODTYPECODE},#{GOODSPECIF},#{STOCKNUM},#{CUNIT_ID},#{FZUNIT_ID},
+			#{UNITPROP},#{LFZUPPRICE},#{LASTPPRICE},#{CPRICE},
+			#{SUPPLIER_ID},#{RPRICE},#{MPRICE},#{FZUCPRICE},#{PK_SOBOOKS},#{USER_ID},#{GOODTYPE_ID},
+			#{STOCKDOWNNUM},#{YICODE},#{NOTE},#{WAREHOUSE_IDs}
+		)
+	</insert>
+	
+	
 	<!-- 删除-->
 	<update id="delete" parameterType="pd">
 		update 
@@ -97,6 +117,7 @@
 			GOODTYPE_ID = #{GOODTYPE_ID},	
 			GOODCODE = #{GOODCODE},	
 			GOODNAME = #{GOODNAME},	
+			WAREHOUSE_IDs = #{WAREHOUSE_IDs},
 			BARCODE=#{BARCODE},	
 			SIMPLENAME=#{SIMPLENAME},	
 			SUBGZ_ID=#{SUBGZ_ID},	
@@ -119,6 +140,19 @@
 			STOCKDOWNNUM=#{STOCKDOWNNUM}
 		where 
 			GOOD_ID = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 修改库存和最后进价 -->
+	<update id="editStocknumAndLastprice" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			LASTPPRICE=#{LASTPPRICE},	
+			STOCKNUM=#{STOCKNUM}
+		where 
+			GOODCODE = #{GOOD_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
 	</update>
@@ -147,6 +181,18 @@
 			and IFNULL(dr,0)=0
 	</select>
 	
+	<!-- 通过 商品编号 获取数据 -->
+	<select id="findByGOODCODE" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			GOODCODE = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	
 	<!-- 通过ID获取数据(查看详细信息) -->
 	<select id="findByIdToCha" parameterType="pd" resultType="pd">
 		select
@@ -155,6 +201,7 @@
 			a.GOODTYPE_ID,
 			a.GOODCODE,
 			a.GOODNAME,	
+			a.WAREHOUSE_IDs,
 			a.BARCODE,	
 			a.SIMPLENAME,
 			a.BRANT,
@@ -196,6 +243,20 @@
 	</select>
 	
 	<!-- 列表 -->
+	<select id="checkGoodsStockDownNum" parameterType="page" resultType="pd">
+		select
+			GOODNAME,
+			GOODCODE,
+			STOCKNUM,
+			STOCKDOWNNUM	
+		from 
+		<include refid="tableName"></include>
+			where 1=1
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+			and STOCKDOWNNUM > STOCKNUM
+	</select>
+	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
 			a.GOOD_ID,
@@ -203,6 +264,7 @@
 			a.GOODTYPE_ID,
 			a.GOODCODE,
 			a.GOODNAME,	
+			a.WAREHOUSE_IDs,
 			a.BARCODE,	
 			a.SIMPLENAME,
 			a.BRANT,
@@ -237,6 +299,10 @@
 		on a.CUNIT_ID = c.SPUNIT_ID
 		left join cp_spunit d
 		on a.FZUNIT_ID = d.SPUNIT_ID
+		<if test="pd.WAREHOUSE_ID!= null and pd.WAREHOUSE_ID != ''">
+		left join base_stock e
+		on a.GOODCODE = e.GOOD_ID
+		</if>
 		where 1=1
 			and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
@@ -254,6 +320,9 @@
 		<if test="pd.SUPPLIER_ID!= null and pd.SUPPLIER_ID != ''">
 			and a.SUPPLIER_ID = #{pd.SUPPLIER_ID}
 		</if>
+		<if test="pd.WAREHOUSE_ID!= null and pd.WAREHOUSE_ID != ''">
+			and e.WAREHOUSE_ID = #{pd.WAREHOUSE_ID}
+		</if>
 		<!-- <if test="pd.isKucun!= null and pd.isKucun != ''">
 			and a.ZCOUNT != 0
 			order by a.ZCOUNT
@@ -268,6 +337,7 @@
 			a.GOODTYPE_ID,
 			a.GOODCODE,
 			a.GOODNAME,	
+			a.WAREHOUSE_IDs,
 			a.BARCODE,	
 			a.SIMPLENAME,
 			a.BRANT,
@@ -290,7 +360,6 @@
 			a.STOCKNUM,
 			a.STOCKUPNUM,
 			a.STOCKDOWNNUM,		
-			
 			b.SUPPLIERNAME,
 			c.NAME UNITNAME,
 			d.NAME FZUNITNAME
@@ -303,10 +372,34 @@
 		left join cp_spunit d
 		on a.FZUNIT_ID = d.SPUNIT_ID
 		where 1=1
-			and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
 		order by a.STOCKNUM desc
 	</select>
+	
+	
+	<select id="listAllDetail" parameterType="pd" resultType="pd">
+		select
+			a.GOOD_ID,e.NAME,f.TYPENAME,a.GOODCODE,a.GOODNAME,a.GOODTYPE_ID,a.WAREHOUSE_IDs,	a.BARCODE,	a.SIMPLENAME,a.BRANT,a.SUBGZ_ID,a.GOODSPECIF,a.CUNIT_ID,
+			a.GOODTYPECODE,	a.FZUNIT_ID,a.YICODE,	a.UNITPROP,	a.GOODPIC,	a.SUPPLIER_ID,	a.NOTE,	a.LASTPPRICE,	a.CPRICE,	a.RPRICE,a.LFZUPPRICE,a.FZUCPRICE,
+			a.MPRICE,	a.STOCKNUM,a.STOCKUPNUM,a.STOCKDOWNNUM,	b.SUPPLIERNAME,c.NAME UNITNAME,d.NAME FZUNITNAME,g.ENTERPRISENAME
+		from 
+		base_good as a
+		left join base_supplier b
+		on a.SUPPLIER_ID = b.SUPPLIER_ID
+		left join cp_spunit c
+		on a.CUNIT_ID = c.SPUNIT_ID
+		left join cp_spunit d
+		on a.FZUNIT_ID = d.SPUNIT_ID
+		left join sys_user as e on a.USER_ID=e.USER_ID
+		left join base_goodtype as f on a.GOODTYPE_ID=f.GOODTYPE_ID
+		left join base_sobooks as g on a.PK_SOBOOKS=g.SOBOOKS_ID
+		where 1=1
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
+		order by a.STOCKNUM desc
+	</select>
+	
 	
 	<!-- 通过产品编码 -->
 	<select id="listByBm" parameterType="pd" resultType="pd">
@@ -316,6 +409,7 @@
 			a.GOODTYPE_ID,
 			a.GOODCODE,
 			a.GOODNAME,	
+			a.WAREHOUSE_IDs,
 			a.BARCODE,	
 			a.SIMPLENAME,
 			a.BRANT,
@@ -379,6 +473,61 @@
 			GOOD_ID = #{GOOD_ID}
 			and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
 			and IFNULL(dr,0)=0 
+	</update>
+	
+	
+	<select id="findByUnitName" parameterType="pd" resultType="String">
+			select SPUNIT_ID from cp_spunit 
+			where name=#{name}
+	</select>
+	
+	<insert id="saveUnit" parameterType="pd">
+		insert into
+		 cp_spunit (SPUNIT_ID,NAME) 
+		 VALUES (#{Id},#{name})
+	</insert>
+	
+	<select id="findByCode" parameterType="pd" resultType="pd">
+		select 
+			GOODCODE,GOODNAME
+		 from 
+		<include refid="tableName"></include>
+		where 
+			GOODCODE = #{GOODCODE}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+	</select>
+	
+	
+	<select id="findPKBYName" parameterType="pd" resultType="String">
+		select SOBOOKS_ID 
+		from base_sobooks
+		where ENTERPRISENAME=#{PK_NAME}
+	</select>
+	
+	
+	<select id="findDefAndNumByCode" parameterType="HashMap" resultType="pd">
+		select STOCKNUM,DEF1
+		from base_good
+		where 
+			GOODCODE=#{GOODCODE}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+	</select>
+	
+	<update id="updateDEF1ByCode" parameterType="map">
+		update base_good
+		set DEF1 = #{price}
+		where GOODCODE=#{GOODCODE}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+	</update>
+	
+	<update id="savePic" parameterType="pd">
+		update base_good
+		set GOODPIC = #{PATH}
+		where GOOD_ID=#{MASTER_ID}
+		and IFNULL(dr,0)=0 
 	</update>
 	
 </mapper>

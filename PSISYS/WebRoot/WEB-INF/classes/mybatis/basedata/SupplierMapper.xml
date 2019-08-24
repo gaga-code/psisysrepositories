@@ -129,7 +129,9 @@
 			NETADDR=#{NETADDR},
 		SUPPLIER_ID = SUPPLIER_ID
 		where 
-		SUPPLIER_ID = #{SUPPLIER_ID}
+			SUPPLIER_ID = #{SUPPLIER_ID}
+		 and PK_SOBOOKS = #{PK_SOBOOKS}
+		 and IFNULL(DR,0)=0
 	</update>
 	
 	<!-- 通过ID获取数据 -->
