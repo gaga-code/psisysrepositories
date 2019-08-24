@@ -272,4 +272,29 @@
 		   and PK_SOBOOKS = #{PK_SOBOOKS}
 		   and IFNULL(DR,0)=0 
 	</update>
+	
+	<select id="listByCondition" parameterType="pd" resultType="pd">
+		select  a.BILLCODE ,a.INORDER_IDS,b.PAYMETHODNAME, a.BILLNO,c.NAME
+		from psi_suppsetbill as a left join base_paymethod as b on a.PAYMETHOD=b.PAYMETHOD_ID
+		left join sys_user as c on a.USER_ID=c.USER_ID
+		where  a.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(a.DR,0)=0 
+		and a.BILLSTATUS=2
+		<if test="date!=null and date!='' ">
+			and	date_format(a.LASTTIME,'%Y-%m-%d')=#{date}
+			or date_format(a.CREATETIME,'%Y-%m-%d')=#{date}
+		</if>
+		<if test="lastStart!=null and lastStart!=''">
+			<if test="lastEnd!=null and lastEnd!='' ">
+				and a.CREATETIME BETWEEN #{lastStart} and  #{lastEnd}	
+			</if>
+		</if>
+		
+		<if test="PAYMETHOD_ID!=null and PAYMETHOD_ID!='' ">
+			and a.PAYMETHOD=#{PAYMETHOD_ID}
+		</if>
+		<if test="keywords!=null and keywords!=''">
+			and c.NAME like concat('%',#{keywords},'%')
+		</if>
+	</select>
 </mapper>

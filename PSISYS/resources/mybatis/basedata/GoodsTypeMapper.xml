@@ -155,4 +155,20 @@
 		where
 			TYPECODE = #{TYPECODE}
 	</select>
+	
+	<select id="findByname" parameterType="pd" resultType="String">
+		select GOODTYPE_ID 
+		from base_goodtype
+		where TYPENAME=#{goodType}
+	</select>
+	
+	<insert id="saveGoodsType" parameterType="pd">
+		insert into 
+		<include refid="tableName"></include>
+			(
+				GOODTYPE_ID,TYPECODE,TYPENAME,PARENTS,PK_SOBOOKS,USER_ID
+			) values (
+				#{GOODTYPE_ID},#{TYPECODE},#{TYPENAME},#{PARENTS},#{PK_SOBOOKS},#{USER_ID}
+			)
+	</insert>
 </mapper>

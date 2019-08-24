@@ -97,6 +97,12 @@
 			and IFNULL(DR,0)=0 
 	</select>
 	
+	<select id="findByWid" parameterType="pd" resultType="String">
+		select WHNAME
+		from base_warehouse 
+		where WAREHOUSE_ID=#{wid} 
+		and IFNULL(DR,0)=0 
+	</select>
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
@@ -140,4 +146,10 @@
 		   and PK_SOBOOKS = #{PK_SOBOOKS}
 		   and IFNULL(DR,0)=0 
 	</update>
+	
+	<select id="findByName" parameterType="pd" resultType="String">
+		select WAREHOUSE_ID
+		from base_warehouse
+		where WHNAME=#{whName}
+	</select>
 </mapper>

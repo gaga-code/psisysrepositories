@@ -356,6 +356,9 @@
 		<if test="pd.BILLSTATUS != null and pd.BILLSTATUS != ''">
 			and  a.BILLSTATUS = #{pd.BILLSTATUS}
 		</if>
+		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+			and a.BILLTYPE = #{pd.BILLTYPE}
+		</if>
 		order by a.LASTTIME DESC
 	</select>
 	<!-- 客户超期账款的查询-->
@@ -408,6 +411,9 @@
 		<if test="pd.CUSTOMER_ID != null and pd.CUSTOMER_ID != ''">
 			and  a.CUSTOMER_ID= #{pd.CUSTOMER_ID}
 		</if>
+		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+			and a.BILLTYPE = #{pd.BILLTYPE}
+		</if>
 		<!-- 超期： 当前时间-结款日期>客户账期 -->
 		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > IFNULL(b.FREETIME,0)
 		<!-- 未结算或结算中 -->
@@ -447,6 +453,7 @@
 			a.UNPAIDAMOUNT,
 			a.PAIDAMOUNT,
 			a.THISPAY,
+			a.BILLTYPE,
 			a.ISSETTLEMENTED,
 			a.USER_ID,
 			a.NOTE
@@ -488,6 +495,7 @@
 			b.CUATOMERNAME CUATOMERNAME,
 			a.ALLAMOUNT,
 			a.UNPAIDAMOUNT,
+			a.BILLTYPE,
 			a.PAIDAMOUNT,
 			a.THISPAY,
 			a.ISSETTLEMENTED,
@@ -511,6 +519,9 @@
 		<include refid="tableName"></include>
 		where
 			1=1
+			<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+			and a.BILLTYPE = #{pd.BILLTYPE}
+			</if>
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
 		<!-- <if test="USERNAME!=null and USERNAME!=''">
@@ -559,7 +570,7 @@
 	<update id="shenpi" parameterType="pd">
 		update
 		<include refid="tableName"></include>
-		set BILLSTATUS = 2
+		set BILLSTATUS = #{BILLSTATUS}
 		where 
 			SALEBILL_ID = #{SALEBILL_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
@@ -585,7 +596,7 @@
 		left join  base_good as d on b.GOODCODE_ID=d.GOODCODE
 		left join base_customer as e on a.CUSTOMER_ID=e.CUSTOMER_ID 
 		left join  base_warehouse as f on b.WAREHOUSE_ID=f.WAREHOUSE_ID
-		where a.PK_SOBOOKS=1
+		where a.PK_SOBOOKS=#{PK_SOBOOKS}
 		and ifnull(a.dr,0)=0
 		<if test="pd.keywords!=null and pd.keywords!='' ">
 			and d.GOODNAME like concat('%',#{pd.keywords},'%')
@@ -601,6 +612,68 @@
 		<if test="pd.WAREHOUSE_ID!=null and pd.WAREHOUSE_ID!=''">
 			and b.WAREHOUSE_ID=#{pd.WAREHOUSE_ID}
 		</if>
+		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+			and a.BILLTYPE = #{pd.BILLTYPE}
+		</if>
 		order by a.LASTTIME desc
+	</select>
+	
+	<select id="datalistPageBySalebill" parameterType="page" resultType="pd">
+		select a.SALEBILL_ID, a.BILLCODE , a.BILLTYPE,c.GOODNAME ,d.NAME , e.CUATOMERNAME , f.WHNAME , a.ALLAMOUNT,a.PAIDAMOUNT,a.UNPAIDAMOUNT,
+		b.PNUMBER,a.CREATETIME,b.UNITPRICE_ID,g.PAYMETHOD,h.PAYMETHODNAME
+		from psi_salebill as a left JOIN psi_salebillbody as b on a.SALEBILL_ID=b.SALEBILL_ID
+		left join base_good as c on b.GOODCODE_ID=c.GOODCODE
+		left join  sys_user as d on a.USER_ID=d.USER_ID
+		left join base_customer as e on  a.CUSTOMER_ID=e.CUSTOMER_ID
+		left join base_warehouse as f on b.WAREHOUSE_ID=f.WAREHOUSE_ID
+		left join psi_customersetbill as g on a.CUSTOMERSETBILL_ID=g.CUSTOMERSETBILL_ID
+		left join base_paymethod as h on  h.PAYMETHOD_ID=g.PAYMETHOD
+		where  a.PK_SOBOOKS=#{pd.PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		and a.BILLSTATUS=2
+		and a.SALEBILL_ID  in 
+	    <foreach collection="list" item="item" index="index"
+	            open="(" close=")" separator=",">
+	            ${item}
+	     </foreach>
+	     <if test="pd.keywords!=null and pd.keywords!=''">
+			and c.GOODNAME like concat('%',#{pd.keywords},'%')
+			or e.CUATOMERNAME like concat('%',#{pd.keywords},'%')
+			or d.NAME  like concat('%',#{pd.keywords},'%')
+			or f.WHNAME  like concat('%',#{pd.keywords},'%')
+		</if>
+		<if test="pd.PAYMETHOD_ID!=null and pd.PAYMETHOD_ID!='' ">
+			and h.PAYMETHOD_ID=#{pd.PAYMETHOD_ID}
+		</if>
+		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+			and a.BILLTYPE = #{pd.BILLTYPE}
+		</if>
+	</select>
+	
+	<select id="datalistPageByID" parameterType="page" resultType="pd">
+		select  e.CUATOMERNAME ,a.SALEBILL_ID
+		from psi_salebill as a  left join base_customer as e on a.CUSTOMER_ID=e.CUSTOMER_ID 
+		where  a.PK_SOBOOKS=#{pd.PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		<if test="pd.keywords!=null and pd.keywords!='' ">
+	     and e.CUATOMERNAME  like concat('%',#{pd.keywords},'%')
+	    </if>
+		and a.SALEBILL_ID  in 
+		<foreach collection="list" item="item" index="index"
+	            open="(" close=")" separator=",">
+	            ${item}
+	    </foreach>
+	</select>
+	
+	<!-- 根据客户id查找对账单 -->
+	<select id="listByCustomer" parameterType="pd" resultType="pd">
+		select b.CUATOMERNAME,a.BILLCODE,a.ALLAMOUNT,a.PAIDAMOUNT,a.UNPAIDAMOUNT, 
+		date_format(a.CREATETIME,'%Y-%m-%d %h:%m:%s')  as CREATETIME  ,date_format(a.LASTTIME,'%Y-%m') as yearMouth
+		from psi_salebill as a left join base_customer as b on a.CUSTOMER_ID=b.CUSTOMER_ID
+	 	where a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		and  a.BILLTYPE=2
+		and  a.BILLSTATUS!=3
+		and a.ALLAMOUNT!=PAIDAMOUNT
 	</select>
 </mapper>

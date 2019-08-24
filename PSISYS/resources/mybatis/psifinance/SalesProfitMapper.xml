@@ -122,6 +122,7 @@
 			b.UNITPROP,
 			b.CPRICE,
 			b.SUBGZ_ID,
+			b.DEF1,
 			b.STOCKUPNUM,
 			b.STOCKDOWNNUM,
 			b.SUPPLIER_ID,
@@ -142,6 +143,7 @@
 			on b.FZUNIT_ID = f.SPUNIT_ID
 			left join base_goodtype g
 			on b.GOODTYPE_ID = g.GOODTYPE_ID
+			left join psi_salebill p on p.SALEBILL_ID=a.SALEBILL_ID
 		where 1=1 
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
 		and
@@ -179,6 +181,7 @@
 		
 		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
 		and IFNULL(a.DR,0)=0 
+		and p.BILLTYPE=2
 		
 		ORDER BY a.GOODCODE_ID DESC
 	</select>
@@ -199,6 +202,7 @@
 			b.STOCKUPNUM,
 			b.STOCKDOWNNUM,
 			b.SUPPLIER_ID,
+			b.DEF1,
 			c.WHNAME,
 			d.TYPENAME,
 			e.NAME CUNITNAME,
@@ -215,6 +219,7 @@
 			on b.CUNIT_ID = e.SPUNIT_ID
 			left join cp_spunit f
 			on b.FZUNIT_ID = f.SPUNIT_ID
+			left join psi_salebill p on p.SALEBILL_ID=a.SALEBILL_ID
 		where 1=1 
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
 		and
@@ -252,7 +257,7 @@
 		and a.STOCK > 0
 		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
 		and IFNULL(a.DR,0)=0 
-		
+		and p.BILLTYPE = 2
 		ORDER BY a.WAREHOUSE_ID,a.GOOD_ID,a.STOCK DESC
 	</select>
 	

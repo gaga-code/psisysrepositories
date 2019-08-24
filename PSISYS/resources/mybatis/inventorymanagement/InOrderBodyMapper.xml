@@ -251,4 +251,20 @@
 		    and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
 	</update>
+	
+	<select id="printInOrder" parameterType="pd" resultType="pd">
+		select c.SUPPLIERNAME as CUATOMERNAME,	c.ADDRESS as CADDRESS,c.TELEPHONE, e.ADDRESS as GADDRESS,e.ENTERPRISENAME,e.PHONE,b.BILLCODE,
+		i.GOODCODE,i.GOODNAME,i.GOODSPECIF,a.PNUMBER,g.NAME , a.UNITPRICE_ID,a.AMOUNT,i.SUBGZ_ID,a.NOTE,d.WHNAME,u.NAME as USERNAME,b.ALLAMOUNT	
+		from psi_inorder_body as a left join psi_inorder as b  on a.INORDER_ID= b.INORDER_ID
+		left join base_supplier as c on b.SUPPLIER_ID =c.SUPPLIER_ID
+		left join base_warehouse as d on a.WAREHOUSE_ID = d.WAREHOUSE_ID
+		left join base_sobooks as e on e.SOBOOKS_ID = b.PK_SOBOOKS
+		left join base_good as i  on  i.GOODCODE =  a.GOODCODE_ID
+		left join cp_spunit as g on g.SPUNIT_ID=i.CUNIT_ID
+		left join sys_user as u on u.USER_ID = b.USER_ID
+		where 
+		    a.INORDER_ID = #{INORDER_ID}
+		    and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0
+	</select>
 </mapper>

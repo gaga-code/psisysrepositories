@@ -272,4 +272,49 @@
 		   and PK_SOBOOKS = #{PK_SOBOOKS}
 		   and IFNULL(DR,0)=0 
 	</update>
+	<select id="listByCondition" parameterType="pd" resultType="pd">		
+		select a.BILLCODE ,a.SALEBILL_IDS ,b.PAYMETHODNAME, a.BILLNO,c.NAME
+		from psi_customersetbill as a left join base_paymethod as b on a.PAYMETHOD=b.PAYMETHOD_ID
+		left join sys_user as c on a.USER_ID=c.USER_ID
+		where  
+		a.BILLSTATUS=2
+		and a.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(a.DR,0)=0 
+		<if test="date!=null and  date!='' ">
+			and	date_format(a.LASTTIME,'%Y-%m-%d')=#{date}
+		</if>
+		<if test="lastStart!=null and lastStart!=''">
+			<if test="lastEnd!=null and lastEnd!='' ">
+				and a.CREATETIME BETWEEN #{lastStart} and  #{lastEnd}	
+			</if>
+		</if>
+		
+		<if test="PAYMETHOD_ID!=null and PAYMETHOD_ID!='' ">
+			and a.PAYMETHOD=#{PAYMETHOD_ID}
+		</if>
+		<if test="keywords!=null and keywords!=''">
+			and c.NAME like concat('%',#{keywords},'%')
+		</if>
+	</select>
+	
+	<select id="listCustomterbillByPay" parameterType="pd" resultType="pd">
+		select a.BILLCODE ,a.BILLTYPE,a.DISTRIBUTIONMODE,a.PAYMETHOD,a.PAYABLEAMOUNT,a.PAYMENTAMOUNT,a.PAYABLEALLAM,a.SALEBILL_IDS,a.LASTTIME,b.PAYMETHODNAME,c.NAME
+		from psi_customersetbill as a left join base_paymethod as b on b.PAYMETHOD_ID=a.PAYMETHOD
+		left join sys_user as c  on a.USER_ID=c.USER_ID
+		where  a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.DR,0)=0 
+			and a.BILLSTATUS=2
+		<if test="lastStart!=null and lastStart!=''">
+			and a.CREATETIME &gt;= #{lastStart} 
+		</if>
+		<if test="lastEnd!=null and lastEnd!=''">
+			and a.CREATETIME &lt;= #{lastEnd} 
+		</if>
+		<if test="date!=null and date!=''">
+			and date_format(a.CREATETIME,'%Y-%m-%d')=#{date}
+		</if>
+		<if test="PAYMETHOD_ID!=null and PAYMETHOD_ID!=''">
+			and a.PAYMETHOD=#{PAYMETHOD_ID}
+		</if>
+	 </select>
 </mapper>
