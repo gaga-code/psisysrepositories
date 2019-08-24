@@ -2,12 +2,14 @@ package com.psi.controller.basedata.goodstype;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 
@@ -20,16 +22,24 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
 import com.psi.entity.system.User;
+import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.basedata.goodstype.GoodsTypeManager;
+import com.psi.service.system.fhlog.FHlogManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
+import com.psi.util.FileDownload;
+import com.psi.util.FileUpload;
 import com.psi.util.Jurisdiction;
+import com.psi.util.ObjectExcelRead;
+import com.psi.util.ObjectExcelView;
 import com.psi.util.PageData;
+import com.psi.util.PathUtil;
 
 /**
  * 说明：商品类型管理
@@ -38,10 +48,13 @@ import com.psi.util.PageData;
 @RequestMapping(value = "/goodstype")
 public class GoodsTypeController extends BaseController {
 	
-	String menuUrl = "goodstype/listAllDict.do?GOODTYPE_ID=0"; //菜单地址(权限用)
+	String menuUrl = "goodstype/listAllDict.do?GOODTYPE_ID=-2"; //菜单地址(权限用)
 	@Resource(name="goodsTypeService")
 	private GoodsTypeManager goodsTypeService;
-	
+	@Resource(name="fhlogService")
+	private FHlogManager FHLOG;
+	@Resource(name="goodsService")
+	private GoodsManager goodsService;
 	/**保存
 	 * @param
 	 * @throws Exception
@@ -53,9 +66,10 @@ public class GoodsTypeController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("GOODTYPE_ID", this.get32UUID());	//主键
+	//	pd.put("GOODTYPE_ID", this.get32UUID());	//主键
+		pd.put("GOODTYPE_ID", pd.get("TYPECODE"));	//主键
 		if(pd.get("PARENTS") == null || pd.get("PARENTS").equals(""))
-			pd.put("PARENTS", "0");
+			pd.put("PARENTS", "-2");
 		goodsTypeService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -153,7 +167,7 @@ public class GoodsTypeController extends BaseController {
 		try{
 			Map<String,String> map = new HashMap<String, String>();
 			map.put("PK_SOBOOKS", pd.getString("PK_SOBOOKS"));
-			map.put("PARENTS", "0");
+			map.put("PARENTS", "-2");
 			JSONArray arr = JSONArray.fromObject(goodsTypeService.listAllDict(map));
 			String json = arr.toString();
 			json = json.replaceAll("GOODTYPE_ID", "id").replaceAll("PARENTS", "pId").replaceAll("TYPENAME", "name").replaceAll("subDict", "nodes").replaceAll("hasDict", "checked").replaceAll("treeurl", "url");
@@ -236,4 +250,105 @@ public class GoodsTypeController extends BaseController {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(format,true));
 	}
+	
+	/**打开上传EXCEL页面
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/goUploadExcel")
+	public ModelAndView goUploadExcel()throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		mv.setViewName("basedata/goodstype/uploadexcel");
+		return mv;
+	}
+	
+	/**从EXCEL导入到数据库
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/readExcel")
+	public ModelAndView readExcel(
+			@RequestParam(value="excel",required=false) MultipartFile file
+			) throws Exception{
+		FHLOG.save(Jurisdiction.getUsername(), "从EXCEL导入到数据库");
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;}
+		if (null != file && !file.isEmpty()) {
+			String filePath = PathUtil.getClasspath() + Const.FILEPATHFILE;								//文件上传路径
+			String fileName =  FileUpload.fileUp(file, filePath, "goodsexcel");							//执行上传
+			List<PageData> listPd = (List)ObjectExcelRead.readExcel(filePath, fileName, 1, 0, 0);		//执行读EXCEL操作,读出的数据导入List 2:从第3行开始；0:从第A列开始；0:第0个sheet
+			/*存入数据库操作======================================*/
+			pd.put("DR", 0);
+			for(int i=0;i<listPd.size();i++){
+				String TYPECODE= listPd.get(i).getString("var0"); 
+				pd.put("GOODTYPE_ID",TYPECODE);		
+				pd.put("TYPECODE", TYPECODE);// 0        
+				if(goodsTypeService.findById(pd) != null){									
+					continue;
+				}
+
+				
+				pd.put("TYPENAME", listPd.get(i).getString("var1"));		//2
+			/*	pd.put("PARENTS", listPd.get(i).getString("var2"));			//3
+*/				
+				String GOODTYPE_ID=TYPECODE.substring(0, TYPECODE.length()-4);
+				pd.put("PARENTS", GOODTYPE_ID);
+
+				goodsTypeService.saveGoodsType(pd);
+			}
+			/*存入数据库操作======================================*/
+			mv.addObject("msg","success");
+		}
+		mv.setViewName("save_result");
+		return mv;
+	}
+
+	
+	/**下载模版
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/downExcel")
+	public void downExcel(HttpServletResponse response)throws Exception{
+		FileDownload.fileDownload(response, PathUtil.getClasspath() + Const.FILEPATHFILE + "GoodsType.xls", "GoodsType.xls");
+	}
+	
+	@RequestMapping(value="/excel")
+	public ModelAndView exportExcel() throws Exception{
+		FHLOG.save(Jurisdiction.getUsername(), "导出商品分类信息到EXCEL");
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		try{
+			if(Jurisdiction.buttonJurisdiction(menuUrl, "cha")){
+				Map<String,Object> dataMap = new HashMap<String,Object>();
+				List<String> titles = new ArrayList<String>();
+				titles.add("商品分类编号"); 		//1
+				titles.add("商品分类名称");  		//2
+				titles.add("商品父类编号");			//3
+				dataMap.put("titles", titles);
+				List<PageData> goodsList = goodsTypeService.listAll(pd);
+				List<PageData> varList = new ArrayList<PageData>();
+				for(int i=0;i<goodsList.size();i++){
+					PageData vpd = new PageData();
+					vpd.put("var1", goodsList.get(i).getString("TYPECODE"));		//1
+					vpd.put("var2", goodsList.get(i).getString("TYPENAME"));		//2
+					vpd.put("var3", goodsList.get(i).getString("PARENTS"));			//3
+					varList.add(vpd);
+				}
+				dataMap.put("varList", varList);
+				ObjectExcelView erv = new ObjectExcelView();					//执行excel操作
+				mv = new ModelAndView(erv,dataMap);
+			}
+		} catch(Exception e){
+			logger.error(e.toString(), e);
+		}
+		return mv;
+	}
+	
+	
+	
 }

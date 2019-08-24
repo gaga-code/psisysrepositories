@@ -295,7 +295,7 @@ public class AppGoodsController extends BaseController {
 	        // 需要上传的相对地址（application.properties中获取）
 	      //  String relativePath = "letterImg";
 			String  ffile = DateUtil.getDays();
-	    	String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG +ffile+"/";		//文件上传路径
+	    	String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG +"/"+ffile+"/";		//文件上传路径
 	        // 文件夹是否存在，不存在就创建
 	        File dir = new File(filePath);
 	        if (!dir.exists())

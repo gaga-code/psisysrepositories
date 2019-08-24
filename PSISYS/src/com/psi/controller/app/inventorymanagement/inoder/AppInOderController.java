@@ -112,7 +112,7 @@ public class AppInOderController extends BaseController{
 			
 			pd.put("BILLTYPE", 1);
 			PageData fpd= appInOderService.listMountAndNum(pd); 
-		/*	pd.put("BILLTYPE", 8);
+			pd.put("BILLTYPE", 8);
 			PageData hpd= appInOderService.listMountAndNum(pd); 
 			
 			
@@ -125,9 +125,9 @@ public class AppInOderController extends BaseController{
 				}else{
 					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
 				}
-			}*/
+			}
 			
-			double ALLAMOUNT = 0;
+	
 			if(fpd.get("ALLAMOUNT")!=null){
 				 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
 			}
@@ -139,7 +139,7 @@ public class AppInOderController extends BaseController{
 			
 			pd.put("BILLTYPE", 1);
 			List<PageData> lpd=appInOderService.listInOderGoods(pd);//查询 商品在这个月入库的数量 进货单
-			/*pd.put("BILLTYPE", 8);
+			pd.put("BILLTYPE", 8);
 			List<PageData> ipd=appInOderService.listInOderGoods(pd);//查询 商品在这个月入库的数量 退货单
 			map.put("NUM",lpd.size());
 			
@@ -160,7 +160,7 @@ public class AppInOderController extends BaseController{
 				map.put("yearMouth", str);
 				list.add(map);
 				
-			}*/
+			}
 			if(lpd!=null&&lpd.size()!=0){
 				map.put("NUM",lpd.size());
 				map.put("listNum", lpd);
@@ -221,7 +221,7 @@ public class AppInOderController extends BaseController{
 			
 			pd.put("BILLTYPE", 1);
 			PageData fpd= appInOderService.listMountAndNumByMD(pd);//进货单
-		/*	
+			
 			pd.put("BILLTYPE", 8);
 			PageData hpd= appInOderService.listMountAndNumByMD(pd);//退货单
 			
@@ -233,8 +233,8 @@ public class AppInOderController extends BaseController{
 				}else{
 					 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
 				}
-			}*/
-			double ALLAMOUNT = 0;
+			}
+		
 			if(fpd.get("ALLAMOUNT")!=null){
 				 ALLAMOUNT= (Double)fpd.get("ALLAMOUNT");
 			}
@@ -247,16 +247,16 @@ public class AppInOderController extends BaseController{
 			pd.put("BILLTYPE", 1);
 			List<PageData> lpd=appInOderService.listInOderGoodsByMD(pd);//查询 商品在这个月入库的数量 进货单
 			
-		/*	pd.put("BILLTYPE", 8);
+			pd.put("BILLTYPE", 8);
 			List<PageData> ipd=appInOderService.listInOderGoodsByMD(pd);//查询 商品在这个月入库的数量  退货单
 			
 			map.put("NUM",lpd.size());
 			if(lpd!=null&&lpd.size()!=0){
 				if(ipd!=null && ipd.size()!=0){
+
 					for(int i=0;i<lpd.size();i++){
 						for(int j=0;j<ipd.size();j++){
 							if(ipd.get(j).get("GOODCODE_ID").equals(lpd.get(i).get("GOODCODE_ID"))){
-								
 								int PNUMBER = Integer.parseInt(lpd.get(i).get("PNUMBER").toString())- Integer.parseInt(ipd.get(j).get("PNUMBER").toString());
 								lpd.get(i).put("PNUMBER", PNUMBER);
 								break;
@@ -267,7 +267,7 @@ public class AppInOderController extends BaseController{
 				map.put("listNum", lpd);
 				map.put("yearMouthDay", str);
 				list.add(map);
-			}*/
+			}
 			if(lpd!=null&&lpd.size()!=0){
 				map.put("NUM",lpd.size());
 				map.put("listNum", lpd);
@@ -311,9 +311,9 @@ public class AppInOderController extends BaseController{
 				pd.put("INORDER_ID", lpd.get(i).get("INORDER_ID"));
 				List<PageData> ipd = appInOderService.listInOrderBody(pd);
 				lpd.get(i).put("listgood", ipd);
-			/*	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				String CREATETIME=sdf.format(lpd.get(0).getString("CREATETIME"));
-				pd.put("CREATETIME", CREATETIME);*/
+				pd.put("CREATETIME", CREATETIME);
 			}
 		}
 		return lpd;

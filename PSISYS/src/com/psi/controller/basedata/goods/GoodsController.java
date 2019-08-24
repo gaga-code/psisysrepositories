@@ -2,13 +2,16 @@ package com.psi.controller.basedata.goods;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -16,11 +19,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.controller.base.BaseController;
 import com.psi.entity.Page;
+import com.psi.entity.system.Role;
 import com.psi.entity.system.User;
 import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.basedata.goodstype.GoodsTypeManager;
@@ -30,12 +36,20 @@ import com.psi.service.erp.spbrand.SpbrandManager;
 import com.psi.service.erp.sptype.SptypeManager;
 import com.psi.service.erp.spunit.SpunitManager;
 import com.psi.service.information.pictures.PicturesManager;
+import com.psi.service.system.fhlog.FHlogManager;
+import com.psi.service.system.user.UserManager;
 import com.psi.util.AppUtil;
 import com.psi.util.BarcodeUtil;
 import com.psi.util.Const;
+import com.psi.util.FileDownload;
+import com.psi.util.FileUpload;
+import com.psi.util.GetPinyin;
 import com.psi.util.Jurisdiction;
+import com.psi.util.ObjectExcelRead;
+import com.psi.util.ObjectExcelView;
 import com.psi.util.PageData;
 import com.psi.util.PathUtil;
+import com.psi.util.Tools;
 import com.psi.util.TwoDimensionCode;
 
 import net.sf.json.JSONArray;
@@ -64,7 +78,10 @@ public class GoodsController extends BaseController {
 	private SupplierManager supplierService;
 	@Resource(name="warehouseService")
 	private WarehouseManager warehouseService;
-	
+	@Resource(name="fhlogService")
+	private FHlogManager FHLOG;
+	@Resource(name="userService")
+	private UserManager userService;
 	/**
 	 * 库存预警
 	 * 检查商品的库存是否低于下限
@@ -191,7 +208,7 @@ public class GoodsController extends BaseController {
 		try{
 			Map<String,String> map = new HashMap<String, String>();
 			map.put("PK_SOBOOKS", pd.getString("PK_SOBOOKS"));
-			map.put("PARENTS", "0");
+			map.put("PARENTS", "-2");
 			JSONArray arr = JSONArray.fromObject(goodsService.listAllDict(map));
 			String json = arr.toString();
 			json = json.replaceAll("GOODTYPE_ID", "id").replaceAll("PARENTS", "pId").replaceAll("TYPENAME", "name").replaceAll("subDict", "nodes").replaceAll("hasDict", "checked").replaceAll("treeurl", "url");
@@ -341,5 +358,256 @@ public class GoodsController extends BaseController {
 	public void initBinder(WebDataBinder binder){
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(format,true));
+	}
+	
+	@RequestMapping(value="/excel")
+	public ModelAndView exportExcel() throws Exception{
+		FHLOG.save(Jurisdiction.getUsername(), "导出用户信息到EXCEL");
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		try{
+			if(Jurisdiction.buttonJurisdiction(menuUrl, "cha")){
+			
+				Map<String,Object> dataMap = new HashMap<String,Object>();
+				List<String> titles = new ArrayList<String>();
+				titles.add("商品编号"); 		//1
+				titles.add("商品名称");  		//2
+				titles.add("条码");			//3
+				titles.add("简称");			//4
+				titles.add("品牌");			//5
+				titles.add("所属柜组");			//6
+				titles.add("商品规格");		//7
+				titles.add("商品型号");	//8
+				titles.add("计量单位"); //9
+				titles.add("辅助单位");  //10
+				titles.add("单位比例");   //11
+				titles.add("主供应商");   //12
+				titles.add("最后进价");   //13
+				titles.add("成本价");   //14
+				titles.add("零售价");   //15
+				titles.add("会员价");   //16
+				titles.add("库存数量");   //17
+				titles.add("库存上限");   //18
+				titles.add("库存下限");   //19
+				titles.add("拼音编码");  //20
+				titles.add("最后辅助单位进价"); //21
+				titles.add("辅助单位零售价"); //22
+				titles.add("备注");//23
+				titles.add("帐套");//24
+				titles.add("经手人");//25
+				titles.add("商品分类编号");//26
+				titles.add("仓库");//27
+				dataMap.put("titles", titles);
+				List<PageData> goodsList = goodsService.listAllDetail(pd);
+				List<PageData> varList = new ArrayList<PageData>();
+				for(int i=0;i<goodsList.size();i++){
+					PageData vpd = new PageData();
+					vpd.put("var1", goodsList.get(i).getString("GOODCODE"));		//1
+					vpd.put("var2", goodsList.get(i).getString("GOODNAME"));		//2
+					vpd.put("var3", goodsList.get(i).getString("BARCODE"));			//3
+					vpd.put("var4", goodsList.get(i).getString("SIMPLENAME"));	//4
+					vpd.put("var5", goodsList.get(i).getString("BRANT"));		//5
+					vpd.put("var6", goodsList.get(i).getString("SUBGZ_ID"));		//6
+					vpd.put("var7", goodsList.get(i).getString("GOODSPECIF"));	//7
+					vpd.put("var8", goodsList.get(i).getString("GOODTYPECODE"));		//8
+					vpd.put("var9", goodsList.get(i).getString("UNITNAME"));//	9	
+					vpd.put("var10", goodsList.get(i).getString("FZUNITNAME"));//	10	
+					vpd.put("var11", goodsList.get(i).getString("UNITPROP"));//		11
+					vpd.put("var12", goodsList.get(i).getString("SUPPLIERNAME"));//		12
+					vpd.put("var13", goodsList.get(i).get("LASTPPRICE").toString());//		13
+					vpd.put("var14", goodsList.get(i).get("CPRICE").toString());//		14
+					vpd.put("var15", goodsList.get(i).get("RPRICE").toString());//		15
+					vpd.put("var16", goodsList.get(i).get("MPRICE").toString());//		16
+					vpd.put("var17", goodsList.get(i).get("STOCKNUM").toString());//		17
+					vpd.put("var18", goodsList.get(i).get("STOCKUPNUM").toString());//		18
+					vpd.put("var19", goodsList.get(i).get("STOCKDOWNNUM").toString());//		19
+					vpd.put("var20", goodsList.get(i).get("YICODE").toString());//	20
+					vpd.put("var21", goodsList.get(i).get("LFZUPPRICE").toString());//21	
+					vpd.put("var22", goodsList.get(i).get("FZUCPRICE").toString());//	22
+					vpd.put("var23", goodsList.get(i).getString("NOTE"));//	23
+					vpd.put("var24", goodsList.get(i).getString("ENTERPRISENAME"));//24	
+					vpd.put("var25", goodsList.get(i).getString("NAME"));//	25
+					vpd.put("var26", goodsList.get(i).getString("GOODTYPE_ID"));//26	
+					
+					String  wid=goodsList.get(i).getString("WAREHOUSE_IDs");//27
+					String[] str=wid.split(",");
+					String whname="";
+					for(int j=0;j<str.length;j++){
+						PageData lpd=new PageData();
+						lpd.put("wid", str[j]);
+						if(whname.equals("")){
+							whname=warehouseService.findByWid(lpd);	
+						}else{
+							whname+=","+warehouseService.findByWid(lpd);
+						}
+					}
+					vpd.put("var27", whname);//	
+					varList.add(vpd);
+				}
+				dataMap.put("varList", varList);
+				ObjectExcelView erv = new ObjectExcelView();					//执行excel操作
+				mv = new ModelAndView(erv,dataMap);
+			}
+		} catch(Exception e){
+			logger.error(e.toString(), e);
+		}
+		return mv;
+	}
+	
+	
+	/**打开上传EXCEL页面
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/goUploadExcel")
+	public ModelAndView goUploadExcel()throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		mv.setViewName("basedata/goods/uploadexcel");
+		return mv;
+	}
+	
+	/**从EXCEL导入到数据库
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/readExcel")
+	public ModelAndView readExcel(
+			@RequestParam(value="excel",required=false) MultipartFile file
+			) throws Exception{
+		FHLOG.save(Jurisdiction.getUsername(), "从EXCEL导入到数据库");
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;}
+		if (null != file && !file.isEmpty()) {
+			String filePath = PathUtil.getClasspath() + Const.FILEPATHFILE;								//文件上传路径
+			String fileName =  FileUpload.fileUp(file, filePath, "goodsexcel");							//执行上传
+			List<PageData> listPd = (List)ObjectExcelRead.readExcel(filePath, fileName, 1, 0, 0);		//执行读EXCEL操作,读出的数据导入List 2:从第3行开始；0:从第A列开始；0:第0个sheet
+			/*存入数据库操作======================================*/
+			pd.put("DR", 0);
+			for(int i=0;i<listPd.size();i++){		
+				pd.put("GOOD_ID", this.get32UUID());		
+				pd.put("GOODCODE", listPd.get(i).getString("var0"));// 0        
+				if(goodsService.findByCode(pd) != null){									
+					continue;
+				}
+				pd.put("GOODNAME", listPd.get(i).getString("var1"));		//2
+				pd.put("BARCODE", listPd.get(i).getString("var2"));			//3
+				pd.put("SIMPLENAME", listPd.get(i).getString("var3"));	//4
+				pd.put("BRANT", listPd.get(i).getString("var4"));		//5
+				pd.put("SUBGZ_ID", listPd.get(i).getString("var5"));		//6
+				pd.put("GOODSPECIF", listPd.get(i).getString("var6"));	//7
+				pd.put("GOODTYPECODE", listPd.get(i).getString("var7"));		//8
+				
+				String uname=listPd.get(i).getString("var8"); //9
+				pd.put("name", uname);
+				String danweiId=goodsService.findByname(pd);
+				if(danweiId==null){
+					PageData upd=new PageData();
+					upd.put("name", uname);
+					upd.put("Id", this.get32UUID());
+					goodsService.saveUnit(upd);
+					pd.put("CUNIT_ID", upd.getString("Id"));
+				}else{
+					pd.put("CUNIT_ID", danweiId);	//9
+				}	
+				
+				
+				String fname=listPd.get(i).getString("var9"); //10
+				pd.put("name", fname);
+				String fudanweiId=goodsService.findByname(pd);
+				if(fudanweiId==null){
+					PageData upd=new PageData();
+					upd.put("name", fname);
+					upd.put("Id", this.get32UUID());
+					goodsService.saveUnit(upd);
+					pd.put("FZUNIT_ID", upd.getString("Id"));
+				}else{
+					pd.put("FZUNIT_ID", fudanweiId);	//10
+				}
+				
+				pd.put("UNITPROP", listPd.get(i).getString("var10"));//		11
+				
+				String supplierName=listPd.get(i).getString("var11");
+				pd.put("supplierName", supplierName);
+				String supplierId = supplierService.findByName(pd);
+				pd.put("SUPPLIER_ID",supplierId);//		12
+				
+				pd.put("LASTPPRICE", listPd.get(i).get("var12"));//		13
+				pd.put("CPRICE", listPd.get(i).get("var13"));//		14
+				pd.put("RPRICE", listPd.get(i).get("var14"));//		15
+				pd.put("MPRICE", listPd.get(i).get("var15"));//		16
+				pd.put("STOCKNUM", listPd.get(i).get("var16"));//		17
+				pd.put("STOCKUPNUM", listPd.get(i).get("var17"));//		18
+				
+				if(listPd.get(i).getString("var18").equals("")){
+					pd.put("STOCKDOWNNUM", 0);//		19
+				}else{
+					pd.put("STOCKDOWNNUM", listPd.get(i).get("var18"));//		19
+				}
+				pd.put("YICODE", listPd.get(i).get("var19").toString());//	20
+				pd.put("LFZUPPRICE", listPd.get(i).get("var20"));//	21
+				pd.put("FZUCPRICE", listPd.get(i).get("var21"));//	22
+				pd.put("NOTE", listPd.get(i).getString("var22"));//	23
+				
+				String PK_NAME=listPd.get(i).getString("var23");//24
+				pd.put("PK_NAME", PK_NAME);
+				String PK_ID=goodsService.findPKBYName(pd);
+				if(PK_ID!=null){
+					pd.put("PK_SOBOOKS",PK_ID);//	24
+				}
+				
+				String username=listPd.get(i).getString("var24");//25
+				pd.put("username", username);
+				String userId = userService.findByname(pd);
+				if(userId!=null){
+					pd.put("USER_ID",userId );//	
+				}
+		/*		
+				String goodType= listPd.get(i).getString("var25");
+				pd.put("goodType", goodType);
+				String goodTypeId=goodsTypeService.findByname(pd);
+				pd.put("GOODTYPE_ID", goodTypeId);//	
+				
+				
+*/				String GOODCODE = listPd.get(i).getString("var0");
+				String GOODTYPE_ID=GOODCODE.substring(0, GOODCODE.length()-4);
+				pd.put("GOODTYPE_ID", GOODTYPE_ID);
+
+				String whname= listPd.get(i).getString("var26");
+				if(whname!=null&&!whname.equals("")){
+					String whId="";
+					String[] str=whname.split(",");
+					for(int j=0;j<str.length;j++){
+						pd.put("whName", str[j]);
+						if(whId.equals("")){
+							whId=warehouseService.findByName(pd);
+						}else{
+							whId+=","+warehouseService.findByName(pd);
+						}
+					}
+					pd.put("WAREHOUSE_IDs", whId);
+				}else{
+					pd.put("WAREHOUSE_IDs", null);
+				}
+				goodsService.saveGoods(pd);
+			}
+			/*存入数据库操作======================================*/
+			mv.addObject("msg","success");
+		}
+		mv.setViewName("save_result");
+		return mv;
+	}
+	
+	
+	/**下载模版
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/downExcel")
+	public void downExcel(HttpServletResponse response)throws Exception{
+		FileDownload.fileDownload(response, PathUtil.getClasspath() + Const.FILEPATHFILE + "Goods.xls", "Goods.xls");
 	}
 }
