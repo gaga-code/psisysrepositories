@@ -238,6 +238,7 @@
 									</th> -->
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">单据编号</th>
+									<th class="center">单据类型</th>
 									<th class="center">供应商</th>
 									<th class="center">供应商票号</th>
 									<th class="center">总金额</th>
@@ -687,12 +688,24 @@
 	            		 */
 	            		html +="<td class='center' style='width: 30px;'>"+(i+1)+"</td>";
 	            		html +="<td class='center'>"+res.varList[i].BILLCODE+"</td>";
-	            		html +="<td class='center'>"+res.varList[i].SUPPLIERNAME+"</td>";
-	            		html +="<td class='center'>"+res.varList[i].SUPPLIERNO+"</td>";
-	            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].ALLAMOUNT+"</td>";
-	            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
-	            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
-	            		html +="<td class='center' id='THISPAY'>"+res.varList[i].THISPAY+"</td>";
+	            		if(res.varList[i].BILLTYPE=='1'){
+	            			html +="<td class='center' style='color:green' >进货单</td>";
+	            			html +="<td class='center'>"+res.varList[i].SUPPLIERNAME+"</td>";
+		            		html +="<td class='center'>"+res.varList[i].SUPPLIERNO+"</td>";
+		            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].ALLAMOUNT+"</td>";
+		            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
+		            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
+		            		html +="<td class='center' id='THISPAY'>"+res.varList[i].THISPAY+"</td>";
+	            		}else{
+	            			html +="<td class='center' style='color:red' >退货单</td>";
+	            			html +="<td class='center'>"+res.varList[i].SUPPLIERNAME+"</td>";
+		            		html +="<td class='center'>"+res.varList[i].SUPPLIERNO+"</td>";
+		            		html +="<td class='center' id='ALLAMOUNT' >-"+res.varList[i].ALLAMOUNT+"</td>";
+		            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
+		            		html +="<td class='center' id='PAIDAMOUNT'>-"+res.varList[i].PAIDAMOUNT+"</td>";
+		            		html +="<td class='center' id='THISPAY'>-"+res.varList[i].THISPAY+"</td>";
+	            		}
+	            	
 	            		if(res.varList[i].ISSETTLEMENTED == 2){
 		            		html +="<td class='center' id='ISSETTLEMENTEDName'>结算中</td>";
 		            		html +="<td class='center' id='ISSETTLEMENTED' style='display:none' >2</td>";

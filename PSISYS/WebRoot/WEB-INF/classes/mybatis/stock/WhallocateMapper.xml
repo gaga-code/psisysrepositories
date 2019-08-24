@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="WhallocateMapper">
+	
+	
+	<!--表名 -->
+	<sql id="tableName">
+		psi_whallocate
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		WHALLOCATE_ID,
+		PK_SOBOOKS,
+		LDATE,
+		BILLCODE,
+		USER_ID,
+		OUTWH_ID,
+		INWH_ID,
+		BILLSTATUS,
+		NOTE
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{WHALLOCATE_ID},	
+		#{PK_SOBOOKS},
+		#{LDATE},	
+		#{BILLCODE},	
+		#{USER_ID},	
+		#{OUTWH_ID},	
+		#{INWH_ID},	
+		#{BILLSTATUS},	
+		#{NOTE}
+	</sql>
+	<sql id="InAllField">
+		WHALLOCATE_ID,     
+		LDATE,          
+		BILLCODE,       
+		USER_ID,        
+		OUTWH_ID,   
+		INWH_ID,      
+		BILLSTATUS,     
+		NOTE,       
+		PK_SOBOOKS,     
+		DEF1,           
+		DEF2,           
+		DEF3,           
+		DEF4,           
+		DEF5,           
+		CREATETIME,     
+		LASTTIME,       
+		DR            
+	</sql>
+
+
+	<sql id="InAllFieldValue">
+		#{WHALLOCATE_ID},        
+		#{LDATE},             
+		#{BILLCODE},          
+		#{USER_ID},           
+		#{OUTWH_ID},      
+		#{INWH_ID},         
+		#{BILLSTATUS},        
+		#{NOTE},          
+		#{PK_SOBOOKS},        
+		#{DEF1},              
+		#{DEF2},              
+		#{DEF3},              
+		#{DEF4},              
+		#{DEF5},              
+		#{CREATETIME},        
+		#{LASTTIME},          
+		#{DR}                
+	</sql>
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set DR = 1
+		where 
+			WHALLOCATE_ID = #{WHALLOCATE_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			OUTWH_ID = #{OUTWH_ID},
+			INWH_ID = #{INWH_ID},
+			NOTE = #{NOTE}
+		where 
+			WHALLOCATE_ID = #{WHALLOCATE_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	<update id="salebillsnapshotedit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set
+			LDATE=#{LDATE},          
+			BILLCODE=#{BILLCODE},       
+			USER_ID=#{USER_ID},        
+			OUTWH_ID=#{OUTWH_ID},   
+			INWH_ID=#{INWH_ID},      
+			BILLSTATUS=#{BILLSTATUS},     
+			CUSTOMERSETBILL_ID=#{CUSTOMERSETBILL_ID}, 
+			PAYDATE = #{PAYDATE}, 
+			CUSBILLNO = #{CUSBILLNO}, 
+			TOADDRESS = #{TOADDRESS},
+			NOTE=#{NOTE},       
+			SETTEDNUMANDID=#{SETTEDNUMANDID}, 
+			PK_SOBOOKS=#{PK_SOBOOKS},     
+			DEF1=#{DEF1},           
+			DEF2=#{DEF2},           
+			DEF3=#{DEF3},           
+			DEF4=#{DEF4},           
+			DEF5=#{DEF5},           
+			CREATETIME=#{CREATETIME},     
+			LASTTIME=#{LASTTIME},       
+			DR=#{DR}  
+		where 
+			WHALLOCATE_ID = #{WHALLOCATE_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 修改 -->
+	<update id="editFromCustomer" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			CUSTOMERSETBILL_ID = #{CUSTOMERSETBILL_ID},
+		where 
+			WHALLOCATE_ID = #{WHALLOCATE_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	
+	<!-- 结算一张进货单 -->
+	<update id="updateForSettle" parameterType="pd"  >
+		update
+		<include refid="tableName"></include>
+		set 
+		where 
+		    WHALLOCATE_ID = #{WHALLOCATE_ID}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			a.PK_SOBOOKS,
+			a.WHALLOCATE_ID,
+			a.LDATE,
+			a.BILLCODE,
+			a.USER_ID,
+			a.OUTWH_ID,
+			a.INWH_ID,
+			a.BILLSTATUS,
+			a.NOTE,
+			b.WHNAME OUTWH_NAME,
+			c.WHNAME INWH_NAME
+		from 
+		<include refid="tableName"></include> a
+		left join base_warehouse b
+		on a.OUTWH_ID = b.WAREHOUSE_ID
+		left join base_warehouse c
+		on a.INWH_ID = c.WAREHOUSE_ID
+		where 
+			a.WHALLOCATE_ID = #{WHALLOCATE_ID}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0
+	</select>
+	<select id="findAllById" parameterType="pd" resultType="pd" >
+		select 
+			<include refid="InAllField"></include>
+		from
+		 <include refid="tableName"></include>
+		where 
+			 WHALLOCATE_ID = #{WHALLOCATE_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	<select id="listForByCustomersetId" parameterType="pd" resultType="pd" >
+		select 
+			<include refid="InAllField"></include>
+		from
+		 <include refid="tableName"></include>
+		where 
+			 CUSTOMERSETBILL_ID = #{CUSTOMERSETBILL_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+			a.PK_SOBOOKS,
+			a.WHALLOCATE_ID,
+			a.LDATE,
+			a.BILLCODE,
+			a.USER_ID,
+			a.OUTWH_ID,
+			a.INWH_ID,
+			a.BILLSTATUS,
+			a.NOTE,
+			b.WHNAME OUTWH_NAME,
+			c.WHNAME INWH_NAME
+		from 
+		<include refid="tableName"></include>a
+		left join base_warehouse b
+		on a.OUTWH_ID = b.WAREHOUSE_ID
+		left join base_warehouse c
+		on a.INWH_ID = c.WAREHOUSE_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					a.NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					<!--  or 
+					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 -->
+				)
+		</if>
+		<!-- 录单日期日期条件 -->
+		<if test="pd.lastStart!=null and pd.lastStart!=''">
+			and a.LDATE &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and a.LDATE &lt;= #{pd.lastEnd} 
+		</if>
+		<!-- 审核状态 -->
+		<if test="pd.BILLSTATUS != null and pd.BILLSTATUS != ''">
+			and  a.BILLSTATUS = #{pd.BILLSTATUS}
+		</if>
+		order by a.LASTTIME DESC
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPageByCustomerset" parameterType="page" resultType="pd">
+		select
+			a.WHALLOCATE_ID,
+			a.BILLCODE,
+			a.INWH_ID,
+			a.USER_ID,
+			a.NOTE
+		from 
+		<include refid="tableName"></include>a
+		where 1=1
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					<!--  or 
+					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 -->
+				)
+		</if>
+		and a.BILLSTATUS = 2
+		order by a.LASTTIME DESC
+	</select>
+	
+	<select id="findBySalebillId" parameterType="pd" resultType="pd">
+		select
+			a.WHALLOCATE_ID,
+			a.BILLCODE,
+			a.INWH_ID,
+			a.USER_ID,
+			a.NOTE
+		from 
+		<include refid="tableName"></include>a
+		where 1=1
+		and a.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		and a.WHALLOCATE_ID = #{WHALLOCATE_ID}
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where
+			1=1
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+		<!-- <if test="USERNAME!=null and USERNAME!=''">
+			and USERNAME = #{USERNAME} 
+		</if> -->
+		<!-- <if test="days!=null and days!=''">几天内
+			and DATE_SUB(CURDATE(), INTERVAL ${days} DAY) &lt;= date(CTIME)
+		</if> -->
+	</select>
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		update 
+		<include refid="tableName"></include>
+		set DR = 1 
+		where 
+			WHALLOCATE_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</update>
+	<!-- *结算单反审进货单功能 使进货单的单据状态为审核不通过 -->
+	<update id="retrialSalebill" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			BILLSTATUS = 3
+		where 
+		    WHALLOCATE_ID = #{WHALLOCATE_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 审批-->
+	<update id="shenpi" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set BILLSTATUS = 2
+		where 
+			WHALLOCATE_ID = #{WHALLOCATE_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	<!-- 反审-->
+	<update id="fanshen" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set BILLSTATUS = 1
+		where 
+			WHALLOCATE_ID = #{WHALLOCATE_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+</mapper>

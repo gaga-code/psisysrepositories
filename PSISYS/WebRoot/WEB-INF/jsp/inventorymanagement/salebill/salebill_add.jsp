@@ -77,7 +77,7 @@
 											<option value="${var.CUSTOMER_ID }" <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if>>${var.CUATOMERNAME }</option>
 										</c:forEach>
 									</select>
-								</td>
+								</td> 
 								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
 								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000"   style="width:98%;"/></td>
 							</tr>
@@ -208,7 +208,7 @@
 	      //每次往下标为flag+1的下面添加tr,因为append是往标签内追加。所以用after
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
-	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODCODE+"'/></td>"
 	                      +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" id="select_wh" >'
 						  +	selecthtml
 						  +'</select></td>'
@@ -218,7 +218,7 @@
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
-	                      + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
+	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'>"
 	                      +"<a class='btn btn-xs btn-danger' onclick='detailsale(\"" + GOODCODE + "\")'>查看商品</a>"
 	                      +"<a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a>"
@@ -526,8 +526,6 @@
 		
 		//保存
 		function save(){
-			
-			
 			if($("#CUSTOMER_ID").val()==""){
 				$("#CUSTOMER_select").tips({
 					side:3,

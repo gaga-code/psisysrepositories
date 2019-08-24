@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SalebillMapper">
+	
+	
+	<!--表名 -->
+	<sql id="tableName">
+		psi_salebill
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		SALEBILL_ID,
+		PK_SOBOOKS,
+		LDATE,
+		BILLCODE,
+		CUSTOMER_ID,
+		USER_ID,
+		WAREHOUSE_ID,
+		ALLAMOUNT,
+		BILLTYPE,
+		BILLSTATUS,
+		PAIDAMOUNT,
+		UNPAIDAMOUNT,
+		THISPAY,
+		SUBBRANCH,
+		PAYDATE,
+		CUSBILLNO,
+		TOADDRESS,
+		NOTE,
+		ISSETTLEMENTED
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{SALEBILL_ID},	
+		#{PK_SOBOOKS},
+		#{LDATE},	
+		#{BILLCODE},	
+		#{CUSTOMER_ID},	
+		#{USER_ID},	
+		#{WAREHOUSE_ID},	
+		#{ALLAMOUNT},	
+		#{BILLTYPE},	
+		#{BILLSTATUS},	
+		#{PAIDAMOUNT},	
+		#{UNPAIDAMOUNT},
+		#{THISPAY},	
+		#{SUBBRANCH},
+		#{PAYDATE},
+		#{CUSBILLNO},
+		#{TOADDRESS},
+		#{NOTE},
+		#{ISSETTLEMENTED}
+	</sql>
+	<sql id="InAllField">
+		SALEBILL_ID,     
+		LDATE,          
+		BILLCODE,       
+		CUSTOMER_ID,    
+		USER_ID,        
+		WAREHOUSE_ID,   
+		ALLAMOUNT,      
+		BILLTYPE,       
+		BILLSTATUS,     
+		PAIDAMOUNT,     
+		UNPAIDAMOUNT,   
+		THISPAY,        
+		SUBBRANCH,      
+		CUSTOMERSETBILL_ID, 
+		PAYDATE,
+		CUSBILLNO,
+		TOADDRESS,
+		NOTE,       
+		ISSETTLEMENTED, 
+		SETTEDNUMANDID, 
+		PK_SOBOOKS,     
+		DEF1,           
+		DEF2,           
+		DEF3,           
+		DEF4,           
+		DEF5,           
+		CREATETIME,     
+		LASTTIME,       
+		DR            
+	</sql>
+
+
+	<sql id="InAllFieldValue">
+		#{SALEBILL_ID},        
+		#{LDATE},             
+		#{BILLCODE},          
+		#{CUSTOMER_ID},       
+		#{USER_ID},           
+		#{WAREHOUSE_ID},      
+		#{ALLAMOUNT},         
+		#{BILLTYPE},          
+		#{BILLSTATUS},        
+		#{PAIDAMOUNT},        
+		#{UNPAIDAMOUNT},      
+		#{THISPAY},           
+		#{SUBBRANCH},         
+		#{CUSTOMERSETBILL_ID},  
+		#{PAYDATE},
+		#{CUSBILLNO},
+		#{TOADDRESS},  
+		#{NOTE},          
+		#{ISSETTLEMENTED},    
+		#{SETTEDNUMANDID},    
+		#{PK_SOBOOKS},        
+		#{DEF1},              
+		#{DEF2},              
+		#{DEF3},              
+		#{DEF4},              
+		#{DEF5},              
+		#{CREATETIME},        
+		#{LASTTIME},          
+		#{DR}                
+	</sql>
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set DR = 1
+		where 
+			SALEBILL_ID = #{SALEBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			WAREHOUSE_ID = #{WAREHOUSE_ID},
+			CUSTOMER_ID = #{CUSTOMER_ID},
+			ALLAMOUNT = #{ALLAMOUNT},
+			UNPAIDAMOUNT = #{UNPAIDAMOUNT}, 
+			PAYDATE = #{PAYDATE}, 
+			CUSBILLNO = #{CUSBILLNO}, 
+			TOADDRESS = #{TOADDRESS}, 
+			NOTE = #{NOTE}
+		where 
+			SALEBILL_ID = #{SALEBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	<update id="salebillsnapshotedit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set
+			LDATE=#{LDATE},          
+			BILLCODE=#{BILLCODE},       
+			CUSTOMER_ID=#{CUSTOMER_ID},    
+			USER_ID=#{USER_ID},        
+			WAREHOUSE_ID=#{WAREHOUSE_ID},   
+			ALLAMOUNT=#{ALLAMOUNT},      
+			BILLTYPE=#{BILLTYPE},       
+			BILLSTATUS=#{BILLSTATUS},     
+			PAIDAMOUNT=#{PAIDAMOUNT},     
+			UNPAIDAMOUNT=#{UNPAIDAMOUNT},   
+			THISPAY=#{THISPAY},        
+			SUBBRANCH=#{SUBBRANCH},      
+			CUSTOMERSETBILL_ID=#{CUSTOMERSETBILL_ID}, 
+			PAYDATE = #{PAYDATE}, 
+			CUSBILLNO = #{CUSBILLNO}, 
+			TOADDRESS = #{TOADDRESS},
+			NOTE=#{NOTE},       
+			ISSETTLEMENTED=#{ISSETTLEMENTED}, 
+			SETTEDNUMANDID=#{SETTEDNUMANDID}, 
+			PK_SOBOOKS=#{PK_SOBOOKS},     
+			DEF1=#{DEF1},           
+			DEF2=#{DEF2},           
+			DEF3=#{DEF3},           
+			DEF4=#{DEF4},           
+			DEF5=#{DEF5},           
+			CREATETIME=#{CREATETIME},     
+			LASTTIME=#{LASTTIME},       
+			DR=#{DR}  
+		where 
+			SALEBILL_ID = #{SALEBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 修改 -->
+	<update id="editFromCustomer" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			CUSTOMERSETBILL_ID = #{CUSTOMERSETBILL_ID},
+			ISSETTLEMENTED = #{ISSETTLEMENTED}
+		where 
+			SALEBILL_ID = #{SALEBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	
+	<!-- 结算一张进货单 -->
+	<update id="updateForSettle" parameterType="pd"  >
+		update
+		<include refid="tableName"></include>
+		set 
+			UNPAIDAMOUNT = #{UNPAIDAMOUNT},
+			THISPAY = #{THISPAY},
+			PAIDAMOUNT = #{PAIDAMOUNT},
+			ISSETTLEMENTED = #{ISSETTLEMENTED},
+			CUSTOMERSETBILL_ID = #{CUSTOMERSETBILL_ID},
+			LDATE = #{LDATE},
+			SETTEDNUMANDID = #{SETTEDNUMANDID}
+		where 
+		    SALEBILL_ID = #{SALEBILL_ID}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			a.PK_SOBOOKS,
+			a.SALEBILL_ID,
+			a.LDATE,
+			a.BILLCODE,
+			a.CUSTOMER_ID,
+			a.USER_ID,
+			a.WAREHOUSE_ID,
+			a.ALLAMOUNT,
+			a.BILLTYPE,
+			a.BILLSTATUS,
+			a.PAIDAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.THISPAY,
+			a.SUBBRANCH,
+			a.PAYDATE,
+			a.CUSBILLNO,
+			a.TOADDRESS,
+			a.NOTE,
+			a.ISSETTLEMENTED,
+			a.CUSTOMERSETBILL_ID,
+			b.CUATOMERNAME,
+			c.WHNAME 
+		from 
+		<include refid="tableName"></include> a
+		left join base_customer b
+		on a.CUSTOMER_ID = b.CUSTOMER_ID
+		left join base_warehouse c
+		on a.WAREHOUSE_ID = c.WAREHOUSE_ID
+		where 
+			a.SALEBILL_ID = #{SALEBILL_ID}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0
+	</select>
+	
+	<select id="getSaleInfo" parameterType="pd" resultType="pd">
+		select  ps.USER_ID ,a.CREATETIME,a.UNITPRICE_ID, bg.LASTPPRICE, bg.CPRICE ,bg.RPRICE 
+			from psi_salebillbody  as a 
+ 		left join psi_salebill as ps on a.SALEBILL_ID = ps.SALEBILL_ID 
+ 		left join base_good as bg on a.GOODCODE_ID = bg.GOODCODE 
+ 		where a.GOODCODE_ID = #{GOODCODE}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and ps.CUSTOMER_ID=#{CUSTOMER_ID}
+			and IFNULL(a.dr,0)=0
+			ORDER BY ps.CREATETIME desc limit 0,10
+	</select>
+	
+	
+	<select id="findAllById" parameterType="pd" resultType="pd" >
+		select 
+			<include refid="InAllField"></include>
+		from
+		 <include refid="tableName"></include>
+		where 
+			 SALEBILL_ID = #{SALEBILL_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	<select id="listForByCustomersetId" parameterType="pd" resultType="pd" >
+		select 
+			<include refid="InAllField"></include>
+		from
+		 <include refid="tableName"></include>
+		where 
+			 CUSTOMERSETBILL_ID = #{CUSTOMERSETBILL_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+			a.PK_SOBOOKS,
+			a.SALEBILL_ID,
+			a.LDATE,
+			a.BILLCODE,
+			a.CUSTOMER_ID,
+			a.USER_ID,
+			a.WAREHOUSE_ID,
+			a.ALLAMOUNT,
+			a.BILLTYPE,
+			a.BILLSTATUS,
+			a.PAIDAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.THISPAY,
+			a.SUBBRANCH,
+			a.PAYDATE,
+			a.CUSBILLNO,
+			a.TOADDRESS,
+			a.NOTE,
+			a.ISSETTLEMENTED,
+			b.CUATOMERNAME CUATOMERNAME
+		from 
+		<include refid="tableName"></include>a
+		left join base_customer b
+		on a.CUSTOMER_ID = b.CUSTOMER_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					a.NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					<!--  or 
+					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 -->
+				)
+		</if>
+		<!-- 录单日期日期条件 -->
+		<if test="pd.lastStart!=null and pd.lastStart!=''">
+			and a.LDATE &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and a.LDATE &lt;= #{pd.lastEnd} 
+		</if>
+		<!-- 客户ID -->
+		<if test="pd.CUSTOMER_ID != null and pd.CUSTOMER_ID != ''">
+			and  a.CUSTOMER_ID= #{pd.CUSTOMER_ID}
+		</if>
+		<!-- 是否结算了的 -->
+		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != ''">
+			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
+		</if>
+		<!-- 审核状态 -->
+		<if test="pd.BILLSTATUS != null and pd.BILLSTATUS != ''">
+			and  a.BILLSTATUS = #{pd.BILLSTATUS}
+		</if>
+		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+			and a.BILLTYPE = #{pd.BILLTYPE}
+		</if>
+		order by a.LASTTIME DESC
+	</select>
+	<!-- 客户超期账款的查询-->
+	<select id="datalistPageForPassTimeSaleBill" parameterType="page" resultType="pd">
+		select
+			a.PK_SOBOOKS,
+			a.SALEBILL_ID,
+			a.LDATE,
+			a.BILLCODE,
+			a.CUSTOMER_ID,
+			a.USER_ID,
+			a.WAREHOUSE_ID,
+			a.ALLAMOUNT,
+			a.BILLTYPE,
+			a.BILLSTATUS,
+			a.PAIDAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.THISPAY,
+			a.SUBBRANCH,
+			a.PAYDATE,
+			a.CUSBILLNO,
+			a.TOADDRESS,
+			a.NOTE,
+			a.ISSETTLEMENTED,
+			b.CUATOMERNAME CUATOMERNAME
+		from 
+		<include refid="tableName"></include>a
+		left join base_customer b
+		on a.CUSTOMER_ID = b.CUSTOMER_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					a.NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					<!--  or 
+					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 -->
+				)
+		</if>
+		<!-- 录单日期日期条件 -->
+		<if test="pd.lastStart!=null and pd.lastStart!=''">
+			and a.LDATE &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and a.LDATE &lt;= #{pd.lastEnd} 
+		</if>
+		<!-- 客户ID -->
+		<if test="pd.CUSTOMER_ID != null and pd.CUSTOMER_ID != ''">
+			and  a.CUSTOMER_ID= #{pd.CUSTOMER_ID}
+		</if>
+		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+			and a.BILLTYPE = #{pd.BILLTYPE}
+		</if>
+		<!-- 超期： 当前时间-结款日期>客户账期 -->
+		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > IFNULL(b.FREETIME,0)
+		<!-- 未结算或结算中 -->
+		and a.ISSETTLEMENTED !=1  
+		and a.BILLSTATUS = 2
+		order by a.LASTTIME DESC
+	</select>
+	
+	<!-- 客户超期未付总额以及客户的信誉额度  -->
+	<select id="customerunpaidandgreen" parameterType="pd" resultType="pd">
+		select
+			
+			sum(a.UNPAIDAMOUNT) as unpaidallam,
+			b.CREDITDEGREE as CREDITDEGREE
+		from 
+		   psi_salebill a
+		left join base_customer b
+		on a.CUSTOMER_ID = b.CUSTOMER_ID
+		where 1=1
+		and a.CUSTOMER_ID= #{CUSTOMER_ID}
+		and a.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > IFNULL(b.FREETIME,0)
+		and a.ISSETTLEMENTED != 1
+		and a.BILLSTATUS = 2
+		order by a.LASTTIME DESC
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPageByCustomerset" parameterType="page" resultType="pd">
+		select
+			a.SALEBILL_ID,
+			a.BILLCODE,
+			b.CUATOMERNAME CUATOMERNAME,
+			a.ALLAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.PAIDAMOUNT,
+			a.THISPAY,
+			a.BILLTYPE,
+			a.ISSETTLEMENTED,
+			a.USER_ID,
+			a.NOTE
+		from 
+		<include refid="tableName"></include>a
+		left join base_customer b
+		on a.CUSTOMER_ID = b.CUSTOMER_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					<!--  or 
+					LEGALREP LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 -->
+				)
+		</if>
+		<!-- 客户ID -->
+		<if test="pd.CUSTOMER_ID != null and pd.CUSTOMER_ID != ''">
+			and  a.CUSTOMER_ID= #{pd.CUSTOMER_ID}
+		</if>
+		<!-- 结算状态 -->
+		<if test="pd.ISSETTLEMENTED == 4">
+			and  a.ISSETTLEMENTED != 1
+		</if>
+		<if test="pd.ISSETTLEMENTED != null and pd.ISSETTLEMENTED != '' and pd.ISSETTLEMENTED != 4 ">
+			and  a.ISSETTLEMENTED = #{pd.ISSETTLEMENTED}
+		</if>	
+		and a.BILLSTATUS = 2
+		order by a.LASTTIME DESC
+	</select>
+	
+	<select id="findBySalebillId" parameterType="pd" resultType="pd">
+		select
+			a.SALEBILL_ID,
+			a.BILLCODE,
+			b.CUATOMERNAME CUATOMERNAME,
+			a.ALLAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.BILLTYPE,
+			a.PAIDAMOUNT,
+			a.THISPAY,
+			a.ISSETTLEMENTED,
+			a.USER_ID,
+			a.NOTE
+		from 
+		<include refid="tableName"></include> a
+		left join base_customer b
+		on a.CUSTOMER_ID = b.CUSTOMER_ID
+		where 1=1
+		and a.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		and a.SALEBILL_ID = #{SALEBILL_ID}
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where
+			1=1
+			<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+			and a.BILLTYPE = #{pd.BILLTYPE}
+			</if>
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+		<!-- <if test="USERNAME!=null and USERNAME!=''">
+			and USERNAME = #{USERNAME} 
+		</if> -->
+		<!-- <if test="days!=null and days!=''">几天内
+			and DATE_SUB(CURDATE(), INTERVAL ${days} DAY) &lt;= date(CTIME)
+		</if> -->
+	</select>
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		update 
+		<include refid="tableName"></include>
+		set DR = 1 
+		where 
+			SALEBILL_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</update>
+	<!-- *结算单反审进货单功能 使进货单的单据状态为审核不通过 -->
+	<update id="retrialSalebill" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			BILLSTATUS = 3
+		where 
+		    SALEBILL_ID = #{SALEBILL_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	<!-- *结算单反审进货单功能 使进货单的单据状态为审核不通过 -->
+	<update id="updateSettleStatus" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			ISSETTLEMENTED = #{ISSETTLEMENTED}
+		where 
+		    SALEBILL_ID = #{SALEBILL_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 审批-->
+	<update id="shenpi" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set BILLSTATUS = #{BILLSTATUS}
+		where 
+			SALEBILL_ID = #{SALEBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	<!-- 反审-->
+	<update id="fanshen" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set BILLSTATUS = #{BILLSTATUS}
+		where 
+			SALEBILL_ID = #{SALEBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	<select id="datalistPageByOderSale" parameterType="page" resultType="pd">
+		select a.BILLCODE,d.GOODNAME,b.UNITPRICE_ID,b.PNUMBER,a.ALLAMOUNT,a.PAIDAMOUNT,a.LASTTIME,c.USERNAME,a.BILLTYPE,
+		 f.WHNAME as startplace ,e.CUATOMERNAME as endplace 
+		from psi_salebill as a 
+		left join  psi_salebillbody as b on  a.SALEBILL_ID=b.SALEBILL_ID
+		left join sys_user as c on a.USER_ID=c.USER_ID
+		left join  base_good as d on b.GOODCODE_ID=d.GOODCODE
+		left join base_customer as e on a.CUSTOMER_ID=e.CUSTOMER_ID 
+		left join  base_warehouse as f on b.WAREHOUSE_ID=f.WAREHOUSE_ID
+		where a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		<if test="pd.keywords!=null and pd.keywords!='' ">
+			and d.GOODNAME like concat('%',#{pd.keywords},'%')
+			or  c.USERNAME like concat('%',#{pd.keywords},'%')
+			or  f.WHNAME   like concat('%',#{pd.keywords},'%')
+			or  e.CUATOMERNAME like concat('%',#{pd.keywords},'%')
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart!='' ">
+			<if test="pd.lastEnd!=null and vlastEnd!='' ">
+			 and Date(a.LASTTIME) BETWEEN #{pd.lastStart} and #{pd.lastEnd}
+			</if>
+		</if>
+		<if test="pd.WAREHOUSE_ID!=null and pd.WAREHOUSE_ID!=''">
+			and b.WAREHOUSE_ID=#{pd.WAREHOUSE_ID}
+		</if>
+		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+			and a.BILLTYPE = #{pd.BILLTYPE}
+		</if>
+		order by a.LASTTIME desc
+	</select>
+	
+	<select id="datalistPageBySalebill" parameterType="page" resultType="pd">
+		select a.SALEBILL_ID, a.BILLCODE , a.BILLTYPE,c.GOODNAME ,d.NAME , e.CUATOMERNAME , f.WHNAME , a.ALLAMOUNT,a.PAIDAMOUNT,a.UNPAIDAMOUNT,
+		b.PNUMBER,a.CREATETIME,b.UNITPRICE_ID,g.PAYMETHOD,h.PAYMETHODNAME
+		from psi_salebill as a left JOIN psi_salebillbody as b on a.SALEBILL_ID=b.SALEBILL_ID
+		left join base_good as c on b.GOODCODE_ID=c.GOODCODE
+		left join  sys_user as d on a.USER_ID=d.USER_ID
+		left join base_customer as e on  a.CUSTOMER_ID=e.CUSTOMER_ID
+		left join base_warehouse as f on b.WAREHOUSE_ID=f.WAREHOUSE_ID
+		left join psi_customersetbill as g on a.CUSTOMERSETBILL_ID=g.CUSTOMERSETBILL_ID
+		left join base_paymethod as h on  h.PAYMETHOD_ID=g.PAYMETHOD
+		where  a.PK_SOBOOKS=#{pd.PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		and a.BILLSTATUS=2
+		and a.SALEBILL_ID  in 
+	    <foreach collection="list" item="item" index="index"
+	            open="(" close=")" separator=",">
+	            ${item}
+	     </foreach>
+	     <if test="pd.keywords!=null and pd.keywords!=''">
+			and c.GOODNAME like concat('%',#{pd.keywords},'%')
+			or e.CUATOMERNAME like concat('%',#{pd.keywords},'%')
+			or d.NAME  like concat('%',#{pd.keywords},'%')
+			or f.WHNAME  like concat('%',#{pd.keywords},'%')
+		</if>
+		<if test="pd.PAYMETHOD_ID!=null and pd.PAYMETHOD_ID!='' ">
+			and h.PAYMETHOD_ID=#{pd.PAYMETHOD_ID}
+		</if>
+		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+			and a.BILLTYPE = #{pd.BILLTYPE}
+		</if>
+	</select>
+	
+	<select id="datalistPageByID" parameterType="page" resultType="pd">
+		select  e.CUATOMERNAME ,a.SALEBILL_ID
+		from psi_salebill as a  left join base_customer as e on a.CUSTOMER_ID=e.CUSTOMER_ID 
+		where  a.PK_SOBOOKS=#{pd.PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		<if test="pd.keywords!=null and pd.keywords!='' ">
+	     and e.CUATOMERNAME  like concat('%',#{pd.keywords},'%')
+	    </if>
+		and a.SALEBILL_ID  in 
+		<foreach collection="list" item="item" index="index"
+	            open="(" close=")" separator=",">
+	            ${item}
+	    </foreach>
+	</select>
+	
+	<!-- 根据客户id查找对账单 -->
+	<select id="listByCustomer" parameterType="pd" resultType="pd">
+		select b.CUATOMERNAME,a.BILLCODE,a.ALLAMOUNT,a.PAIDAMOUNT,a.UNPAIDAMOUNT, 
+		date_format(a.CREATETIME,'%Y-%m-%d %h:%m:%s')  as CREATETIME  ,date_format(a.LASTTIME,'%Y-%m') as yearMouth
+		from psi_salebill as a left join base_customer as b on a.CUSTOMER_ID=b.CUSTOMER_ID
+	 	where a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		and  a.BILLTYPE=2
+		and  a.BILLSTATUS!=3
+		and a.ALLAMOUNT!=PAIDAMOUNT
+	</select>
+</mapper>

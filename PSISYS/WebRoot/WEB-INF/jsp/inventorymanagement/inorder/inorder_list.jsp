@@ -146,6 +146,10 @@
 													<c:if test="${QX.InOrderfanshenApproval == 1 }">
 													<a class="btn btn-mini btn-danger"  style="height:26px;" onclick="fanshen('${var.INORDER_ID}','${var.ISSETTLEMENTED}','${var.BILLSTATUS}');">反审</a>
 													</c:if>
+													<c:if test="${QX.daying == 1 }">
+														<a class="btn btn-mini btn-success"  style="height:26px;" onclick="daying('${var.INORDER_ID}');">打印</a>
+													</c:if>
+														
 													<c:if test="${QX.InOrdershenpiApproval == 1 }">
 													<a class="btn btn-mini btn-success" style="height:26px;" onclick="shenpi('${var.INORDER_ID}','${var.BILLSTATUS}');">审批</a>
 													</c:if>
@@ -343,7 +347,7 @@
 	            		html +="<tr id='"+res.varList[i].INORDER_ID+"'>";
 	            		html +="<td class='center' style='width: 30px;'>"+(i+1)+"</td>";
 	            		html +="<td class='center'>"+res.varList[i].GOODNAME+"</td>";
-	            		html +="<td class='center'>"+res.varList[i].BARCODE+"</td>";
+	            		html +="<td class='center'>"+res.varList[i].GOODCODE_ID+"</td>";
 	            		html +="<td class='center'>"+res.varList[i].WHNAME+"</td>";
 	            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].UNITPRICE_ID+"</td>";
 	            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].PNUMBER+"</td>";
@@ -473,7 +477,17 @@
 				}
 			});
 		}
-		
+	
+ 		//打印
+		function daying(INORDER_ID){
+			bootbox.confirm("确定要打印送货单吗?", function(result) {
+				if(result) {
+					window.location.href='<%=basePath%>daying/createExcel.do?INORDER_ID='+INORDER_ID;
+				}
+			});
+		}
+
+
 		//审批
 		function shenpi(Id,BILLSTATUS){
 			if(BILLSTATUS != 1){

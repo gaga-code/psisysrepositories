@@ -14,6 +14,7 @@
 		SIMPLENAME,	
 		PHONE,	
 		ADDRESS,	
+		COMPANY,
 		YICODE,	
 		TELEPHONE,	
 		PAGING,
@@ -36,10 +37,12 @@
 		SIMPLENAME,	
 		PHONE,	
 		ADDRESS,	
+		COMPANY,
 		YICODE,	
 		TELEPHONE,	
 		PAGING,
 		FREETIME,
+		SUBADDR_ID,
 		FAX,	
 		LINKMAN,
 		DISTRIBUTIONMODE,
@@ -50,7 +53,9 @@
 		USER_ID,
 		PK_SOBOOKS,
 		CREATETIME,	
-		CUSTOMER_ID
+		CUSTOMER_ID,
+		DEF1,
+		DEF2
 	</sql>
 	
 	<!-- 字段值 -->
@@ -64,6 +69,7 @@
 		#{TELEPHONE},	
 		#{PAGING},	
 		#{FAX},	
+		#{COMPANY},
 		#{LINKMAN},	
 		#{FREETIME},	
 		#{DISTRIBUTIONMODE},	
@@ -87,6 +93,20 @@
 		)
 	</insert>
 	
+	<!-- 导入excel新增-->
+	<insert id="saveCustomer" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+		CUSTOMERCODE,CUATOMERNAME,LINKMAN,SIMPLENAME,TELEPHONE,PHONE,COMPANY,SUBADDR_ID,ADDRESS,FAX,PAGING,YICODE,DISTRIBUTIONMODE,
+		CREDITDEGREE,USER_ID,PK_SOBOOKS,CUSTOMER_ID,DEF1,DEF2,NOTE
+		) values (
+		#{CUSTOMERCODE},#{CUATOMERNAME},#{LINKMAN},#{SIMPLENAME},#{TELEPHONE},#{PHONE},#{COMPANY},#{SUBADDR_ID},#{ADDRESS},#{FAX},	
+		#{PAGING},#{YICODE},#{DISTRIBUTIONMODE},#{CREDITDEGREE},#{USER_ID}, #{PK_SOBOOKS}, #{CUSTOMER_ID},
+	    #{DEF1},#{DEF2},#{NOTE}
+		)
+	</insert>
+	
 	<!-- 删除-->
 	<update id="delete" parameterType="pd">
 		update 
@@ -106,6 +126,7 @@
 			CUATOMERNAME = #{CUATOMERNAME},
 			SIMPLENAME = #{SIMPLENAME},
 			PHONE = #{PHONE},
+			COMPANY=#{COMPANY},
 			ADDRESS = #{ADDRESS},
 			YICODE = #{YICODE},
 			TELEPHONE = #{TELEPHONE},
@@ -136,6 +157,17 @@
 			and IFNULL(DR,0)=0
 	</select>
 	
+		<!-- 通过客户编号获取数据 -->
+	<select id="findByCode" parameterType="pd" resultType="pd">
+			select 
+		<include refid="FieldCha"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			CUSTOMERCODE = #{CUSTOMERCODE}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
@@ -143,6 +175,7 @@
 			a.CUATOMERNAME,	
 			a.SIMPLENAME,	
 			a.PHONE,	
+			a.COMPANY,
 			a.ADDRESS,	
 			a.YICODE,	
 			a.TELEPHONE,	
@@ -167,6 +200,8 @@
 					a.CUATOMERNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 					 or 
 					a.PHONE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					a.COMPANY LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 					or 
 					a.ADDRESS LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 					or 
@@ -221,4 +256,36 @@
 		   and PK_SOBOOKS = #{PK_SOBOOKS}
 		   and IFNULL(DR,0)=0 
 	</update>
+	
+	<select id="listAllCUS" parameterType="pd" resultType="pd">
+		select	
+	a.CUSTOMERCODE,
+		a.CUATOMERNAME,	
+		a.SIMPLENAME,	
+		a.PHONE,	
+		a.ADDRESS,	
+		a.COMPANY,
+		a.YICODE,	
+		a.TELEPHONE,	
+		a.PAGING,
+		a.FREETIME,
+		a.SUBADDR_ID,
+		a.FAX,	
+		a.LINKMAN,
+		a.DISTRIBUTIONMODE,
+		a.CREDITDEGREE,	
+		a.NOTE,	
+		a.NOTE2,
+		a.NOTE3,
+		b.NAME,
+		c.ENTERPRISENAME,
+		a.CREATETIME,	
+		a.CUSTOMER_ID,
+		a.DEF1,
+		a.DEF2
+		from base_customer as a left join sys_user as b on a.USER_ID=b.USER_ID
+		left join base_sobooks as c on a.PK_SOBOOKS=c.SOBOOKS_ID
+		where  a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.DR,0)=0 
+	</select>
 </mapper>

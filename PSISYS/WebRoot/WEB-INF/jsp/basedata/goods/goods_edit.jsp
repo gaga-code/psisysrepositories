@@ -423,7 +423,6 @@
 				$("#Select_WAREHOUSE_IDs").focus();
 			return false;
 			}
-			alert($("#Select_WAREHOUSE_IDs").val());
 			var array = $("#Select_WAREHOUSE_IDs").val();			
 			var str="";
 			for(var i = 0; i <  array.length; i++){

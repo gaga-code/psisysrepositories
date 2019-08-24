@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SalebillAndCustomersetBackMapper">
+	
+	<!--表名 -->
+	<sql id="saleBackTableName">
+		psi_salebill_back
+	</sql>
+	<!--表名 -->
+	<sql id="saleBodyBackTableName">
+		psi_salebillbody_back
+	</sql>
+	<!--表名 -->
+	<sql id="customersetBackTableName">
+		psi_customersetbill_back
+	</sql>
+	<sql id="SaleAllField">
+		SALEBILLBACK_ID,   
+		SALEBILL_ID,       
+		LDATE,             
+		BILLCODE,          
+		CUSTOMER_ID,       
+		USER_ID,           
+		WAREHOUSE_ID,      
+		PAYDATE,           
+		BILLTYPE,          
+		BILLSTATUS,        
+		CUSBILLNO,         
+		TOADDRESS,         
+		ISSETTLEMENTED,    
+		ALLAMOUNT,         
+		PAIDAMOUNT,        
+		UNPAIDAMOUNT,      
+		THISPAY,           
+		SUBBRANCH,         
+		SETTEDNUMANDID,    
+		CUSTOMERSETBILL_ID,
+		DEFAULTE,          
+		PK_SOBOOKS,        
+		DEF1,              
+		DEF2,              
+		DEF3,              
+		DEF4,              
+		DEF5,              
+		CREATETIME,        
+		LASTTIME,          
+		DR                 
+		      
+	</sql>
+	<sql id="SaleBodyAllField">
+		SALEBILLBODYBACK_ID, 
+		FGROUP_ID,        
+		SALEBILL_ID,      
+		GOODCODE_ID,      
+		WAREHOUSE_ID,      
+		PNUMBER,          
+		UNITPRICE_ID,     
+		AMOUNT,           
+		APPBILLNO,        
+		ISFREE,           
+		DEFAULTE,         
+		SETTEDNUMANDID,   
+		BARCODE,          
+		PK_SOBOOKS,       
+		DEF1,             
+		DEF2,             
+		DEF3,             
+		DEF4,             
+		DEF5,             
+		CREATETIME,       
+		LASTTIME,         
+		DR              
+	</sql>
+	<sql id="CustomerAllField">
+	      CUSTOMERSETBILLBACK_ID,                                   
+		  CUSTOMERSETBILL_ID,                                       
+		  LDATE,                                                    
+		  BILLCODE,                                                 
+		  USER_ID,                                                  
+		  BILLTYPE,                                                 
+		  BILLSTATUS,                                               
+		  FROMUNIT,                                                 
+		  DISTRIBUTIONMODE,                                         
+		  INVOICETYPE,                                              
+		  BILLNO,                                                   
+		  PAYMETHOD,                                                
+		  PAYABLEAMOUNT,                                            
+		  PAYMENTAMOUNT,                                            
+		  PAYABLEALLAM,                                             
+		  SALEBILL_IDS,                                             
+		  SETTEDNUMANDID,                                           
+		  DEFAULTE,                                                 
+		  PK_SOBOOKS,                                               
+		  DEF1,                                                     
+		  DEF2,                                                     
+		  DEF3,                                                     
+		  DEF4,                                                     
+		  DEF5,                                                     
+		  CREATETIME,                                               
+		  LASTTIME,                                                 
+		  DR                                                       
+	</sql>
+	
+	<sql id="SaleAllFieldValue">
+		  #{SALEBILLBACK_ID},       
+		  #{SALEBILL_ID},           
+		  #{LDATE},                 
+		  #{BILLCODE},              
+		  #{CUSTOMER_ID},           
+		  #{USER_ID},               
+		  #{WAREHOUSE_ID},          
+		  #{PAYDATE},               
+		  #{BILLTYPE},              
+		  #{BILLSTATUS},            
+		  #{CUSBILLNO},             
+		  #{TOADDRESS},             
+		  #{ISSETTLEMENTED},        
+		  #{ALLAMOUNT},             
+		  #{PAIDAMOUNT},            
+		  #{UNPAIDAMOUNT},          
+		  #{THISPAY},               
+		  #{SUBBRANCH},             
+		  #{SETTEDNUMANDID},        
+		  #{CUSTOMERSETBILL_ID},    
+		  #{DEFAULTE},              
+		  #{PK_SOBOOKS},            
+		  #{DEF1},                  
+		  #{DEF2},                  
+		  #{DEF3},                  
+		  #{DEF4},                  
+		  #{DEF5},                  
+		  #{CREATETIME},            
+		  #{LASTTIME},              
+		  #{DR}    
+	</sql>
+	<sql id="SaleBodyAllFieldValue">
+		  #{SALEBILLBODYBACK_ID},                                          
+		  #{FGROUP_ID},                                                 
+		  #{SALEBILL_ID},                                               
+		  #{GOODCODE_ID},                                               
+		  #{WAREHOUSE_ID},                                               
+		  #{PNUMBER},                                                   
+		  #{UNITPRICE_ID},                                              
+		  #{AMOUNT},                                                    
+		  #{APPBILLNO},                                                 
+		  #{ISFREE},                                                    
+		  #{DEFAULTE},                                                  
+		  #{SETTEDNUMANDID},                                            
+		  #{BARCODE},                                                   
+		  #{PK_SOBOOKS},                                                
+		  #{DEF1},                                                      
+		  #{DEF2},                                                      
+		  #{DEF3},                                                      
+		  #{DEF4},                                                      
+		  #{DEF5},                                                      
+		  #{CREATETIME},                                                
+		  #{LASTTIME},                                                  
+		  #{DR}
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="CustomerAllFieldValue">
+		  #{CUSTOMERSETBILLBACK_ID},                                  
+		  #{CUSTOMERSETBILL_ID},                                      
+		  #{LDATE},                                                   
+		  #{BILLCODE},                                                
+		  #{USER_ID},                                                 
+		  #{BILLTYPE},                                                
+		  #{BILLSTATUS},                                              
+		  #{FROMUNIT},                                                
+		  #{DISTRIBUTIONMODE},                                        
+		  #{INVOICETYPE},                                             
+		  #{BILLNO},                                                  
+		  #{PAYMETHOD},                                               
+		  #{PAYABLEAMOUNT},                                           
+		  #{PAYMENTAMOUNT},                                           
+		  #{PAYABLEALLAM},                                            
+		  #{SALEBILL_IDS},                                            
+		  #{SETTEDNUMANDID},                                          
+		  #{DEFAULTE},                                                
+		  #{PK_SOBOOKS},                                              
+		  #{DEF1},                                                    
+		  #{DEF2},                                                    
+		  #{DEF3},                                                    
+		  #{DEF4},                                                    
+		  #{DEF5},                                                    
+		  #{CREATETIME},                                              
+		  #{LASTTIME},                                                
+		  #{DR}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="savecustomerback" parameterType="pd">
+		insert into 
+	<include refid="customersetBackTableName"></include>
+		(
+	<include refid="CustomerAllField"></include>
+		) values (
+	<include refid="CustomerAllFieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="deletecustomerback" parameterType="pd">
+		update 
+		<include refid="customersetBackTableName"></include>
+		set
+			DR = 1 
+		where 
+			CUSTOMERSETBILLBACK_ID = #{CUSTOMERSETBILLBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
+		<!-- 修改商品编码 -->
+	<update id="editGOODCODE" parameterType="pd">
+		update
+		<include refid="saleBodyBackTableName"></include>
+		set 
+			GOODCODE_ID = #{newGOODCODE}
+		where 
+		GOODCODE_ID = #{GOODCODE}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="editcustomerback" parameterType="pd">
+		update
+			 CUSTOMERSETBILL_ID=#{CUSTOMERSETBILL_ID},                                      
+			 LDATE=#{LDATE},                                                   
+			 BILLCODE=#{BILLCODE},                                                
+			 USER_ID=#{USER_ID},                                                 
+			 BILLTYPE=#{BILLTYPE},                                                
+			 BILLSTATUS=#{BILLSTATUS},                                              
+			 FROMUNIT=#{FROMUNIT},                                                
+			 DISTRIBUTIONMODE=#{DISTRIBUTIONMODE},                                        
+			 INVOICETYPE=#{INVOICETYPE},                                             
+			 BILLNO=#{BILLNO},                                                  
+			 PAYMETHOD=#{PAYMETHOD},                                               
+			 PAYABLEAMOUNT=#{PAYABLEAMOUNT},                                           
+			 PAYMENTAMOUNT=#{PAYMENTAMOUNT},                                           
+			 PAYABLEALLAM=#{PAYABLEALLAM},                                            
+			 SALEBILL_IDS=#{SALEBILL_IDS},                                            
+			 SETTEDNUMANDID=#{SETTEDNUMANDID},                                          
+			 DEFAULTE=#{DEFAULTE},                                                
+			 PK_SOBOOKS=#{PK_SOBOOKS},                                              
+			 DEF1=#{DEF1},                                                    
+			 DEF2=#{DEF2},                                                    
+			 DEF3=#{DEF3},                                                    
+			 DEF4=#{DEF4},                                                    
+			 DEF5=#{DEF5},                                                    
+			 CREATETIME=#{CREATETIME},                                              
+			 LASTTIME=#{LASTTIME},                                                
+			 DR=#{DR} 
+		set                                                                                                       
+			<include refid="CustomerAllFieldValue"></include>
+		where 
+			PK_SOBOOKS = #{PK_SOBOOKS} and
+			CUSTOMERSETBILLBACK_ID = #{CUSTOMERSETBILLBACK_ID}
+			and IFNULL(DR,0)=0
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findCustomerBackById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="CustomerAllField"></include>
+		from 
+		<include refid="customersetBackTableName"></include>
+		where 
+			CUSTOMERSETBILLBACK_ID = #{CUSTOMERSETBILLBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
+	
+	
+	<!-- 进货单 -->
+	
+	<!-- 新增-->
+	<insert id="savesaleback" parameterType="pd">
+		insert into 
+	<include refid="saleBackTableName"></include>
+		(
+	<include refid="SaleAllField"></include>
+		) values (
+	<include refid="SaleAllFieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="deletesaleback" parameterType="pd">
+		update 
+		<include refid="saleBackTableName"></include>
+		set
+			DR = 1 
+		where 
+			SALEBILLBACK_ID = #{SALEBILLBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="editsaleback" parameterType="pd">
+		update
+		<include refid="saleBackTableName"></include>
+		set                                                                                                       
+			  SALEBILL_ID=#{SALEBILL_ID},           
+			  LDATE=#{LDATE},                 
+			  BILLCODE=#{BILLCODE},              
+			  CUSTOMER_ID=#{CUSTOMER_ID},           
+			  USER_ID=#{USER_ID},               
+			  WAREHOUSE_ID=#{WAREHOUSE_ID},          
+			  PAYDATE=#{PAYDATE},               
+			  BILLTYPE=#{BILLTYPE},              
+			  BILLSTATUS=#{BILLSTATUS},            
+			  CUSBILLNO=#{CUSBILLNO},             
+			  TOADDRESS=#{TOADDRESS},             
+			  ISSETTLEMENTED=#{ISSETTLEMENTED},        
+			  ALLAMOUNT=#{ALLAMOUNT},             
+			  PAIDAMOUNT=#{PAIDAMOUNT},            
+			  UNPAIDAMOUNT=#{UNPAIDAMOUNT},          
+			  THISPAY=#{THISPAY},               
+			  SUBBRANCH=#{SUBBRANCH},             
+			  SETTEDNUMANDID=#{SETTEDNUMANDID},        
+			  CUSTOMERSETBILL_ID=#{CUSTOMERSETBILL_ID},    
+			  DEFAULTE=#{DEFAULTE},              
+			  PK_SOBOOKS=#{PK_SOBOOKS},            
+			  DEF1=#{DEF1},                  
+			  DEF2=#{DEF2},                  
+			  DEF3=#{DEF3},                  
+			  DEF4=#{DEF4},                  
+			  DEF5=#{DEF5},                  
+			  CREATETIME=#{CREATETIME},            
+			  LASTTIME=#{LASTTIME},              
+			  DR=#{DR}
+		where 
+			PK_SOBOOKS = #{PK_SOBOOKS} and
+			SALEBILLBACK_ID = #{SALEBILLBACK_ID}
+			and IFNULL(DR,0)=0
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findSaleBackById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="SaleAllField"></include>
+		from 
+		<include refid="saleBackTableName"></include>
+		where 
+			SALEBILLBACK_ID = #{SALEBILLBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
+	
+	
+	
+	
+	<!--     进货单明细的CRUD          -->
+	
+	<!-- 新增-->
+	<insert id="savesalebodyback" parameterType="pd">
+		insert into 
+	<include refid="saleBodyBackTableName"></include>
+		(
+	<include refid="SaleBodyAllField"></include>
+		) values (
+	<include refid="SaleBodyAllFieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="deletesalebodyback" parameterType="pd">
+		update 
+		<include refid="saleBodyBackTableName"></include>
+		set
+			DR = 1 
+		where 
+			SALEBILLBODYBACK_ID = #{SALEBILLBODYBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="editsalebodyback" parameterType="pd">
+		update
+		<include refid="saleBodyBackTableName"></include>
+		set                                                                                                       
+			  FGROUP_ID=#{FGROUP_ID},                                                 
+			  SALEBILL_ID=#{SALEBILL_ID},                                               
+			  GOODCODE_ID=#{GOODCODE_ID},                                               
+			  WAREHOUSE_ID=#{WAREHOUSE_ID},                                               
+			  PNUMBER=#{PNUMBER},                                                   
+			  UNITPRICE_ID=#{UNITPRICE_ID},                                              
+			  AMOUNT=#{AMOUNT},                                                    
+			  APPBILLNO=#{APPBILLNO},                                                 
+			  ISFREE=#{ISFREE},                                                    
+			  DEFAULTE=#{DEFAULTE},                                                  
+			  SETTEDNUMANDID=#{SETTEDNUMANDID},                                            
+			  BARCODE=#{BARCODE},                                                   
+			  PK_SOBOOKS=#{PK_SOBOOKS},                                                
+			  DEF1=#{DEF1},                                                      
+			  DEF2=#{DEF2},                                                      
+			  DEF3=#{DEF3},                                                      
+			  DEF4=#{DEF4},                                                      
+			  DEF5=#{DEF5},                                                      
+			  CREATETIME=#{CREATETIME},                                                
+			  LASTTIME=#{LASTTIME},                                                  
+			  DR=#{DR}
+		where 
+			PK_SOBOOKS = #{PK_SOBOOKS} and
+			SALEBILLBODYBACK_ID = #{SALEBILLBODYBACK_ID}
+			and IFNULL(DR,0)=0
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findSaleBodyBackById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="SaleBodyAllField"></include>
+		from 
+		<include refid="saleBodyBackTableName"></include>
+		where 
+			SALEBILLBODYBACK_ID = #{SALEBILLBODYBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
+	
+	
+</mapper>

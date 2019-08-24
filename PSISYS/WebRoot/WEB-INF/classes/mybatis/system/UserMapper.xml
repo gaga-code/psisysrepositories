@@ -464,4 +464,9 @@
 			and IFNULL(dr,0)=0
 	</select>
 	
+	<select id="findByname" parameterType="pd" resultType="String">
+		select USER_ID
+		from sys_user
+		where NAME=#{username}
+	</select>
 </mapper>

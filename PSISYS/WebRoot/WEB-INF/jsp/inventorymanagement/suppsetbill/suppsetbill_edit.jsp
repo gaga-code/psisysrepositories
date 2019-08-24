@@ -120,6 +120,7 @@
 									</th>
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">单据编号</th>
+									<th class="center">单据类型</th>
 									<th class="center">供应商</th>
 									<th class="center">供应商票号</th>
 									<th class="center">总金额</th>
@@ -275,16 +276,27 @@
 			            		if(res.QX.cha == 1){
 				            		html +="<tr id='"+res.varList[i].INORDER_ID+"'>";
 					            	html +="<td class='center'>";
-					            	html +="	<label class='pos-rel'><input type='checkbox' name='ids' value='"+res.varList[i].INORDER_ID+"' class='ace' /><span class='lbl'></span></label>";
+					            	html +="	<label class='pos-rel'><input type='checkbox' name='ids' value='"+res.varList[i].INORDER_ID+","+res.varList[i].BILLTYPE+"' class='ace' /><span class='lbl'></span></label>";
 				            		html +="</td>";
 				            		html +="<td class='center' style='width: 30px;'>"+(i+1)+"</td>";
 				            		html +="<td class='center'>"+res.varList[i].BILLCODE+"</td>";
-				            		html +="<td class='center'>"+res.varList[i].SUPPLIERNAME+"</td>";
-				            		html +="<td class='center'>"+res.varList[i].SUPPLIERNO+"</td>";
-				            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].ALLAMOUNT+"</td>";
-				            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
-				            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
-				            		html +="<td class='center' id='THISPAY'>"+res.varList[i].THISPAY+"</td>";
+				            		if(res.varList[i].BILLTYPE=='1'){
+				            			html +="<td class='center' style='color:green'>进货单</td>";
+				            			html +="<td class='center'>"+res.varList[i].SUPPLIERNAME+"</td>";
+					            		html +="<td class='center'>"+res.varList[i].SUPPLIERNO+"</td>";
+					            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].ALLAMOUNT+"</td>";
+					            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
+					            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
+					            		html +="<td class='center' id='THISPAY'>"+res.varList[i].THISPAY+"</td>";
+				            		}else if(res.varList[i].BILLTYPE=='8'){
+				            			html +="<td class='center' style='color:red'>退货单</td>";
+				            			html +="<td class='center'>"+res.varList[i].SUPPLIERNAME+"</td>";
+					            		html +="<td class='center'>"+res.varList[i].SUPPLIERNO+"</td>";
+					            		html +="<td class='center' id='ALLAMOUNT' >-"+res.varList[i].ALLAMOUNT+"</td>";
+					            		html +="<td class='center' id='UNPAIDAMOUNT'>-"+res.varList[i].UNPAIDAMOUNT+"</td>";
+					            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
+					            		html +="<td class='center' id='THISPAY'>"+res.varList[i].THISPAY+"</td>";
+				            		}
 				            		
 				            		if(res.varList[i].ISSETTLEMENTED == 2){
 					            		html +="<td class='center' id='ISSETTLEMENTEDName'>结算中</td>";
@@ -304,12 +316,12 @@
 				            		}
 				            		if(res.QX.SUPPSETBILLSET == 1 ){
 					            		html += "	<div class='hidden-sm hidden-xs btn-group'> ";
-										html += "		<a class='btn btn-xs btn-success' title='结算' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].INORDER_ID+"');\"> ";
+										html += "		<a class='btn btn-xs btn-success' title='结算' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].INORDER_ID+"','"+res.varList[i].BILLTYPE+"');\"> ";
 										html += "			<i class='ace-icon fa fa-eye bigger-120' title='结算'></i> ";
 										html += "		</a> ";
 				            		}
 									if(res.QX.del == 1){
-										html += "		<a class='btn btn-xs btn-danger' id='delInorder' onclick=\"del('"+res.varList[i].INORDER_ID+"');\" > ";
+										html += "		<a class='btn btn-xs btn-danger' id='delInorder' onclick=\"del('"+res.varList[i].INORDER_ID+"','"+res.varList[i].BILLTYPE+"');\" > ";
 										html += "			<i class='ace-icon fa fa-trash-o bigger-120' title='删除'></i> ";
 										html += "		</a> ";
 									}
@@ -323,7 +335,7 @@
 									html += "			<ul class='dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close'> ";
 									if(res.QX.SUPPSETBILLSET == 1){
 										html += "				<li> ";
-										html += "					<a style='cursor:pointer;' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].INORDER_ID+"');\" class='tooltip-success' data-rel='tooltip' title='结算'> ";
+										html += "					<a style='cursor:pointer;' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].INORDER_ID+"','"+res.varList[i].BILLTYPE+"');\" class='tooltip-success' data-rel='tooltip' title='结算'> ";
 										html += "						<span class='green'> ";
 										html += "							<i class='ace-icon fa fa-eye bigger-120'></i> ";
 										html += "						</span> ";
@@ -332,7 +344,7 @@
 									}
 									if(res.QX.del == 1){
 										html += "				<li> ";
-										html += "					<a style='cursor:pointer;' id='delInorder' onclick='del('"+res.varList[i].INORDER_ID+"');' class='tooltip-error' data-rel='tooltip' title='删除'> ";
+										html += "					<a style='cursor:pointer;' id='delInorder' onclick='del('"+res.varList[i].INORDER_ID+"','"+res.varList[i].BILLTYPE+"');' class='tooltip-error' data-rel='tooltip' title='删除'> ";
 										html += "						<span class='red'> ";
 										html += "							<i class='ace-icon fa fa-trash-o bigger-120'></i> ";
 										html += "						</span> ";
@@ -345,10 +357,10 @@
 									html += " </td>";
 									html += " </tr>";
 									inorderitemmap.set(res.varList[i].INORDER_ID,html);
-									allamountmap.set(res.varList[i].INORDER_ID,res.varList[i].ALLAMOUNT);  //总金额
-				            		unpaidamountmap.set(res.varList[i].INORDER_ID,res.varList[i].UNPAIDAMOUNT);  //未付金额
-				            		firstmap.set(res.varList[i].INORDER_ID,res.varList[i].UNPAIDAMOUNT);  //未付金额
-				            		paidamoutmap.set(res.varList[i].INORDER_ID,res.varList[i].PAIDAMOUNT);  //已付金额
+									allamountmap.set(res.varList[i].INORDER_ID+","+res.varList[i].BILLTYPE,res.varList[i].ALLAMOUNT);  //总金额
+				            		unpaidamountmap.set(res.varList[i].INORDER_ID+","+res.varList[i].BILLTYPE,res.varList[i].UNPAIDAMOUNT);  //未付金额
+				            		firstmap.set(res.varList[i].INORDER_ID+","+res.varList[i].BILLTYPE,res.varList[i].UNPAIDAMOUNT);  //未付金额
+				            		paidamoutmap.set(res.varList[i].INORDER_ID+","+res.varList[i].BILLTYPE,res.varList[i].PAIDAMOUNT);  //已付金额
 				            	}else if(res.QX.cha == 0){
 				            		html += "<tr> ";
 				            		html += "	<td colspan='100' class='center'>您无权查看</td> ";
@@ -360,7 +372,13 @@
 			            compu();//统计额度
 			            var unpaidam=0.0;
 			            unpaidamountmap.forEach(function(value, key) {
-			            	unpaidam += value;
+			            	var str=key.split(",");
+			            	if(str[1]=='1'){
+			            		unpaidam += value;
+			            	}else{
+			            		unpaidam -= value;
+			            	}
+			            	
 						});
 			            $("#PAYABLEAMOUNT").val(unpaidam);
 			            $("#realtbody").html("");
@@ -385,6 +403,7 @@
 					time : 3
 				});
             }else  if($("#select_paymethod").val() == '0' ){
+            	$("#PAYMENTAMOUNT").val('');
             	$("#PAYMENTAMOUNT").tips({
 					side : 1,
 					msg : "请先选择付款方式",
@@ -398,8 +417,8 @@
 						msg : "付款多了",
 						bg : '#FF5080',
 						time : 3
-					});
-	            	$("#PAYMENTAMOUNT").val(parseFloat($("#PAYABLEAMOUNT").val())+supphaspaidamount)
+					});      
+	            	$("#PAYMENTAMOUNT").val(parseFloat($("#PAYABLEAMOUNT").val()));
 	            }
 	            if(parseFloat($("#PAYMENTAMOUNT").val()) < supphaspaidamount && supphaspaidamount != 0.0){
 	            	$("#PAYMENTAMOUNT").tips({
@@ -464,11 +483,12 @@
 		
 				
 		//删除进货单
-		function del(Id){
-			if(settledinordermap.get(Id) == null){
+		function del(Id,type){
+			var ids=Id+","+type;
+			if(settledinordermap.get(ids) == null){
 				bootbox.confirm("确定要删除吗?", function(result) {
 					if(result) {
-						delreal(Id);
+						delreal(Id,type);
 					}
 				});
 				
@@ -481,10 +501,11 @@
 				});
 			}
 		}
-		function delreal(Id){
-			allamountmap.delete(Id);
-			paidamoutmap.delete(Id);
-			unpaidamountmap.delete(Id);
+		function delreal(Id,type){
+			var ids=Id+","+type;
+			allamountmap.delete(ids);
+			paidamoutmap.delete(ids);
+			unpaidamountmap.delete(ids);
 			inorderitemmap.delete(Id);
 			var strhtml = "";
 			inorderitemmap.forEach(function(value, key) {
@@ -495,7 +516,12 @@
 			compu();
 			var unpaidam=0.0;
             unpaidamountmap.forEach(function(value, key) {
-            	unpaidam += value;
+            	var str=key.split(",");
+            	if(str[1]=='1'){
+            		unpaidam += value;
+            	}else{
+            		unpaidam -= value;
+            	}
 			});
             $("#PAYABLEAMOUNT").val(unpaidam);
 		}
@@ -503,11 +529,21 @@
 		function compu(){
 			var allam = 0.0;
             allamountmap.forEach(function(value, key) {
-            	allam += value;
+            	var str=key.split(",");
+            	if(str[1]=='1'){
+           		 	allam += value;
+            	}else{
+            	 	allam -= value;
+            	}
 			});
             var paidam=0.0;
             paidamoutmap.forEach(function(value, key) {
-            	paidam += value;
+            	var str=key.split(",");
+            	if(str[1]=='1'){
+            		paidam += value;
+            	}else{
+            		paidam -= value;	
+            	}
 			});
            
             $("#PAYABLEALLAM").val(allam);
@@ -546,8 +582,9 @@
 		}
 		
 		//反审进货单 retrialInorder
-		function retrial(Id){
-			if(settledinordermap.get(Id) != null){
+		function retrial(Id,type){
+			var ids=Id+","+type;
+			if(settledinordermap.get(ids) != null){
 				bootbox.confirm("确定要反审该进货单吗?", function(result) {
 					if(result) {
 						$.ajax({
@@ -556,7 +593,7 @@
 					        data:{INORDER_ID:Id},
 					        dataType:'json',
 					        success: function (res) {
-					        	delreal(Id);
+					        	delreal(Id,type);
 					        }
 					    });
 					}
@@ -571,12 +608,24 @@
 			}
 		}
 		//结算一张进货单
-		function settleone(Id){
-			if(settledinordermap.get(Id) != 1){
-				var unpaid = unpaidamountmap.get(Id);
-				var allamount = allamountmap.get(Id);
-				var paidamout = paidamoutmap.get(Id);
-				var thispayamount = parseFloat($("#PAYMENTAMOUNT").val());
+		function settleone(Id,type){
+			var ids=Id+","+type;
+			if(settledinordermap.get(ids) != 1){
+				var unpaid = unpaidamountmap.get(ids);
+				var allamount = allamountmap.get(ids);
+				var paidamout = paidamoutmap.get(ids);
+			 	var thispayamount = parseFloat($("#PAYMENTAMOUNT").val());
+				var ablepayamount =parseFloat($("#PAYABLEAMOUNT").val()); 
+				if(thispayamount==ablepayamount){
+					thispayamount=0;
+					allamountmap.forEach(function(value, key) {
+						var str=key.split(",");
+						var type=str[1];
+						if(type=='1'){
+							thispayamount+=value;
+						}
+					});
+				}
 				if(thispayamount == 0.0){
 					$("#PAYMENTAMOUNT").tips({
 						side : 1,
@@ -585,74 +634,56 @@
 						time : 5
 					});
 				}
-				var canpaidamount = thispayamount-supphaspaidamount;  //可进行进货单结算的余额=结算单付款金额-已结算进货单总额 
-				if(canpaidamount == 0.0){
-					$("#PAYMENTAMOUNT").tips({
-						side : 1,
-						msg : "当前实付金额已用于结算了，请增加额度，才可进行接下来的进货单结算",
-						bg : '#FF5080',
-						time : 5
-					});
-				}else {
-					var nextinordercanpaid = 0.0;
-					var nosettle = 0;
-					if(canpaidamount < unpaid){
-						nextinordercanpaid = canpaidamount;
-						nosettle = 0;
-					}else{
-						nextinordercanpaid = unpaid;
-						nosettle = 1;
+				if(type=='1'){
+					var canpaidamount = thispayamount-supphaspaidamount;  //可进行进货单结算的余额=结算单付款金额-已结算进货单总额 
+					/* if( thispayamount==ablepayamount){//如果应付金额等于实付金额，
+						canpaidamount =unpaid;
+					}		 */
+					if(canpaidamount == 0.0){
+						$("#PAYMENTAMOUNT").tips({
+							side : 1,
+							msg : "当前实付金额已用于结算了，请增加额度，才可进行接下来的进货单结算",
+							bg : '#FF5080',
+							time : 5
+						});
+					}else {
+						var nextinordercanpaid = 0.0;
+						var nosettle = 0;
+						if(canpaidamount < unpaid){
+							nextinordercanpaid = canpaidamount;
+							nosettle = 0;
+						}else{
+							nextinordercanpaid = unpaid;
+							nosettle = 1;
+						}
+						bootbox.confirm("确定要结算该进货单吗?", function(result) {
+							if(result) {
+								supphaspaidamount += nextinordercanpaid;
+					       		$("#"+Id+" #UNPAIDAMOUNT").html(unpaid-nextinordercanpaid);
+					       	    $("#"+Id+" #PAIDAMOUNT").html(paidamout+nextinordercanpaid);
+					       		$("#"+Id+" #THISPAY").html(nextinordercanpaid);
+					       		$("#"+Id+" #ISSETTLEMENTED").html(2);
+					       		settledinordermap.set(ids,nosettle);
+					       		paidamoutmap.set(ids,paidamoutmap.get(ids)+nextinordercanpaid);
+					       		unpaidamountmap.set(ids,unpaidamountmap.get(ids)-nextinordercanpaid);
+					       		compu();
+							}
+						})
 					}
+				}else{
 					bootbox.confirm("确定要结算该进货单吗?", function(result) {
 						if(result) {
-							supphaspaidamount += nextinordercanpaid;
-			        		$("#"+Id+" #UNPAIDAMOUNT").html(unpaid-nextinordercanpaid);
-			        	    $("#"+Id+" #PAIDAMOUNT").html(paidamout+nextinordercanpaid);
-			        		$("#"+Id+" #THISPAY").html(nextinordercanpaid);
+			        		$("#"+Id+" #UNPAIDAMOUNT").html(0);
+			        	    $("#"+Id+" #PAIDAMOUNT").html("-"+allamount);
+			        		$("#"+Id+" #THISPAY").html("-"+allamount);
 			        		$("#"+Id+" #ISSETTLEMENTED").html(2);
-			        		settledinordermap.set(Id,nosettle);
-			        		paidamoutmap.set(Id,paidamoutmap.get(Id)+nextinordercanpaid);
-			        		unpaidamountmap.set(Id,unpaidamountmap.get(Id)-nextinordercanpaid);
+			        		settledinordermap.set(ids,1);
+			        		paidamoutmap.set(ids,allamount);
+			        		unpaidamountmap.set(ids,0);
 			        		compu();
 						}
 					})
-					
-					
-					
-					/*					bootbox.confirm("确定要结算该进货单吗?", function(result) {
-						if(result) {
-							supphaspaidamount += nextinordercanpaid;
-			        		$("#"+Id+" #UNPAIDAMOUNT").html(unpaid-nextinordercanpaid);
-			        	    $("#"+Id+" #PAIDAMOUNT").html(paidamout+nextinordercanpaid);
-			        		$("#"+Id+" #THISPAY").html(nextinordercanpaid);
-			        		$("#"+Id+" #ISSETTLEMENTED").html(0);
-			        		settledinordermap.set(Id,Id);
-			        		paidamoutmap.set(Id,paidamoutmap.get(Id)+nextinordercanpaid);
-			        		unpaidamountmap.set(Id,unpaidamountmap.get(Id)-nextinordercanpaid);
-			        		compu();
- 							$.ajax({
-						        method:'POST',
-						        url:'inorder/settleOneInOrder',
-						        data:{INORDER_ID:Id,CANPAID:nextinordercanpaid,UNPAIDAMOUNT:unpaid,ALLAMOUNT:allamount,PAIDAMOUNT:paidamout},
-						        dataType:'json',
-						        success: function (res) {
-						        	if(res.msg == "success"){// UNPAIDAMOUNT  PAIDAMOUNT  THISPAY  ISSETTLEMENTED
-						        		$("#"+res.pd.INORDER_ID+" #UNPAIDAMOUNT").html(res.pd.UNPAIDAMOUNT);
-						        	    $("#"+res.pd.INORDER_ID+" #PAIDAMOUNT").html(res.pd.PAIDAMOUNT);
-						        		$("#"+res.pd.INORDER_ID+" #THISPAY").html(res.pd.THISPAY);
-						        		$("#"+res.pd.INORDER_ID+" #ISSETTLEMENTED").html(res.pd.ISSETTLEMENTED);
-						        		settledinordermap.set(res.pd.INORDER_ID,res.pd.INORDER_ID);
-						        		paidamoutmap.set(res.pd.INORDER_ID,paidamoutmap.get(res.pd.INORDER_ID)+res.pd.THISPAY);
-						        		unpaidamountmap.set(res.pd.INORDER_ID,unpaidamountmap.get(res.pd.INORDER_ID)-res.pd.THISPAY);
-						        		compu();
-						        	}else if(res.msg == "error"){
-						        		supphaspaidamount -= nextinordercanpaid;
-						        		
-						        	}
-						        }
-						    }); 
-						}
-					});*/
+				
 				}
 			}else{
 				$("#"+Id+" #settleOnInorder").tips({
@@ -666,8 +697,8 @@
 		
 		//批量结算
 		function settleAll(msg){
-			var thispayamount = $("#PAYMENTAMOUNT").val();
 			
+			var thispayamount = parseFloat($("#PAYMENTAMOUNT").val());
 			if(thispayamount == 0.0 || thispayamount == null ){
 				$("#PAYMENTAMOUNT").tips({
 					side : 1,
@@ -676,6 +707,19 @@
 					time : 5
 				});
 			}
+			
+			var ablepayamount =parseFloat($("#PAYABLEAMOUNT").val()); 
+			if(thispayamount==ablepayamount){
+				thispayamount=0;
+				allamountmap.forEach(function(value, key) {
+					var str=key.split(",");
+					var type=str[1];
+					if(type=='1'){
+						thispayamount+=value;
+					}
+				});
+			}
+			
 			var canpaidamount = thispayamount-supphaspaidamount;  //可进行进货单结算的余额=结算单付款金额-已结算进货单总额 
 			var canback = canpaidamount;
 			if(canpaidamount == 0.0){
@@ -691,7 +735,6 @@
 						var isnone = 0;
 						for(var i=0;i < document.getElementsByName('ids').length;i++){
 						  if(document.getElementsByName('ids')[i].checked){
-							  
 						  	isnone = 1;
 						  	break;
 						  }
@@ -730,85 +773,49 @@
 							if(msg == '确定要结算选中的数据吗?'){
 								for(var i=0;i < document.getElementsByName('ids').length;i++){
 									if(document.getElementsByName('ids')[i].checked){
-										  var id = document.getElementsByName('ids')[i].value;
-										  var unpaid = unpaidamountmap.get(id);
-										  if(canpaidamount == 0 || canpaidamount == 0.0){
-											  break;
-										  }
-										  if(canpaidamount >= unpaid){//可结算的单
-											  canpaidamount -= unpaid;
-											  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(id)-unpaid);
-								        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(id)+unpaid);
-								        	  $("#"+id+" #THISPAY").html(unpaid);
+										  var ids = document.getElementsByName('ids')[i].value;
+										  var str=ids.split(",");
+										  var id=str[0];
+										  var type=str[1];
+										  if(type=='1'){
+											  var unpaid = unpaidamountmap.get(ids);
+											  if(canpaidamount == 0 || canpaidamount == 0.0){
+												  break;
+											  }
+											  if(canpaidamount >= unpaid){//可结算的单
+												  canpaidamount -= unpaid;
+												  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(ids)-unpaid);
+									        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(ids)+unpaid);
+									        	  $("#"+id+" #THISPAY").html(unpaid);
+									        	  $("#"+id+" #ISSETTLEMENTED").html(2);
+									        	  paidamoutmap.set(ids,paidamoutmap.get(ids)+unpaid);
+									              unpaidamountmap.set(id,unpaidamountmap.get(ids)-unpaid);
+									              settledinordermap.set(ids,1);
+											  }else{//不可结算
+												  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(ids)-canpaidamount);
+									        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(ids)+canpaidamount);
+									        	  $("#"+id+" #THISPAY").html(canpaidamount);
+									        	  $("#"+id+" #ISSETTLEMENTED").html(2);
+									              settledinordermap.set(ids,0);
+									        	  paidamoutmap.set(ids,paidamoutmap.get(ids)+canpaidamount);
+									              unpaidamountmap.set(ids,unpaidamountmap.get(ids)-canpaidamount);
+												  break;
+											  }
+										  }else{
+											  var amount=allamountmap.get(ids);
+											  $("#"+id+" #UNPAIDAMOUNT").html(0);
+								        	  $("#"+id+" #PAIDAMOUNT").html("-"+amount);
+								        	  $("#"+id+" #THISPAY").html("-"+amount);
 								        	  $("#"+id+" #ISSETTLEMENTED").html(2);
-								        	  paidamoutmap.set(id,paidamoutmap.get(id)+unpaid);
-								              unpaidamountmap.set(id,unpaidamountmap.get(id)-unpaid);
-								              settledinordermap.set(id,1);
-										  }else{//不可结算
-											  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(id)-canpaidamount);
-								        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(id)+canpaidamount);
-								        	  $("#"+id+" #THISPAY").html(canpaidamount);
-								        	  $("#"+id+" #ISSETTLEMENTED").html(2);
-								              settledinordermap.set(id,0);
-								        	  paidamoutmap.set(id,paidamoutmap.get(id)+canpaidamount);
-								              unpaidamountmap.set(id,unpaidamountmap.get(id)-canpaidamount);
-											  break;
+								        	  paidamoutmap.set(ids,amount);
+								              unpaidamountmap.set(ids,0);
+								              settledinordermap.set(ids,1);
 										  }
 									}
 								}
 								compu();
 								supphaspaidamount += canback;
-								
-/* 								var j=0;
-								for(var i=0;i < document.getElementsByName('ids').length;i++){
-									if(document.getElementsByName('ids')[i].checked && settledinordermap.get(document.getElementsByName('ids')[i].value) == null){
-										  settleList[j] = new Object();
-										  var id = document.getElementsByName('ids')[i].value;
-										  settleList[j].INORDER_ID=id;
-										  var unpaid = unpaidamountmap.get(id);
-										  if(canpaidamount >= unpaid){//可结算的单
-											  canpaidamount -= unpaid;
-											  settleList[j].THISPAY=unpaid;
-											  settleList[j].UNPAIDAMOUNT=unpaid;
-											  settleList[j].ALLAMOUNT=allamountmap.get(id);
-											  settleList[j].PAIDAMOUNT=paidamoutmap.get(id);
-											  settleList[j].ISSETTLEMENTED="1";
-											  j++;
-										  }else{//不可结算
-											  settleList[j].THISPAY=canpaidamount;
-											  settleList[j].UNPAIDAMOUNT=unpaid;
-											  settleList[j].ALLAMOUNT=allamountmap.get(id);
-											  settleList[j].PAIDAMOUNT=paidamoutmap.get(id);
-											  settleList[j].ISSETTLEMENTED="0";
-											  break;
-										  }
-									}
-								}
-								supphaspaidamount += canback;
-								$.ajax({
-							        method:'POST',
-							        url:'inorder/settleAllInOrder',
-							        data:{SettleList:JSON.stringify(eval(settleList))},
-							        dataType:'json',
-							        success: function (res) {
-							        	if(res.msg == "success"){// UNPAIDAMOUNT  PAIDAMOUNT  THISPAY  ISSETTLEMENTED JSON.stringify(eval(settleList))
-							        		for(var i = 0; i < res.varList.length; i++){
-							        			$("#"+res.varList[i].INORDER_ID+" #UNPAIDAMOUNT").html(res.varList[i].UNPAIDAMOUNT);
-								        	    $("#"+res.varList[i].INORDER_ID+" #PAIDAMOUNT").html(res.varList[i].PAIDAMOUNT);
-								        		$("#"+res.varList[i].INORDER_ID+" #THISPAY").html(res.varList[i].THISPAY);
-								        		$("#"+res.varList[i].INORDER_ID+" #ISSETTLEMENTED").html(res.varList[i].ISSETTLEMENTED);
-								        		paidamoutmap.set(res.varList[i].INORDER_ID,paidamoutmap.get(res.varList[i].INORDER_ID)+res.varList[i].THISPAY);
-								        		unpaidamountmap.set(res.varList[i].INORDER_ID,unpaidamountmap.get(res.varList[i].INORDER_ID)-res.varList[i].THISPAY);
-								        		settledinordermap.set(res.varList[i].INORDER_ID,res.varList[i].INORDER_ID);
-							        		}
-							        		compu();
-							        	}else if(res.msg == "error"){
-							        		supphaspaidamount -= canback;
-							        		
-							        	}
-							        }
-							    }); */
-								
+							
 								
 							}
 						}
@@ -869,11 +876,13 @@
 						if(msg == '确定要删除选中的数据吗?'){
 							for(var i=0;i < document.getElementsByName('ids').length;i++){
 								  if(document.getElementsByName('ids')[i].checked){
-									  	var Id = document.getElementsByName('ids')[i].value;
-									  	allamountmap.delete(Id);
-										paidamoutmap.delete(Id);
-										unpaidamountmap.delete(Id);
-										inorderitemmap.delete(Id);
+									  	var ids = document.getElementsByName('ids')[i].value;
+									  	var str = ids.split(",");
+									  	var id=str[0];
+									  	allamountmap.delete(ids);
+										paidamoutmap.delete(ids);
+										unpaidamountmap.delete(ids);
+										inorderitemmap.delete(id);
 										
 								  }
 							}
@@ -886,7 +895,12 @@
 							compu();
 							var unpaidam=0.0;
 				            unpaidamountmap.forEach(function(value, key) {
-				            	unpaidam += value;
+				            	var str = key.split(",");
+				            	if(str[0]=='1'){
+				            		unpaidam += value;
+				            	}else{
+				            		unpaidam -= value;
+				            	}
 							});
 				            $("#PAYABLEAMOUNT").val(unpaidam);
 						}
@@ -963,16 +977,39 @@
 			}
 			var hasmoney= $("#PAYMENTAMOUNT").val();
 			var settleInOrder_ID = "";
+			var flag=1;
 			settledinordermap.forEach(function(value, key){
-				var unpaid = firstmap.get(key);
-				hasmoney-=unpaid;
-				if(hasmoney>=0){
-					if(settleInOrder_ID == ""){
-						settleInOrder_ID += "'"+key+"'";
+				var str = key.split(",");
+				var id=str[0];
+				var type=str[1];
+				if(type=='1'){
+					var unpaid = firstmap.get(key);
+					flag=0;
+					if(hasmoney <= unpaid){
+						if(settleInOrder_ID == ""){
+							settleInOrder_ID += "'"+id+"'";
+						}else{
+							settleInOrder_ID += ",'"+id+"'";
+						}
+						return;
 					}else{
-						settleInOrder_ID += ",'"+key+"'";
+						if(hasmoney>=0){
+							if(settleInOrder_ID == ""){
+								settleInOrder_ID += "'"+id+"'";
+							}else{
+								settleInOrder_ID += ",'"+id+"'";
+							}
+						}
+						hasmoney-=unpaid;
+					}
+				}else{
+					if(flag==1){
+						settleInOrder_ID += "'"+id+"'";
+					}else{
+						settleInOrder_ID += ",'"+id+"'";
 					}
 				}
+				
 			});
 			
 			/* select_suppsetbill DISTRIBUTIONMODE INVOICETYPE BILLNO select_paymethod PAYABLEALLAM PAYABLEAMOUNT PAYMENTAMOUNT NOTE unpaidamountmap */
@@ -1082,14 +1119,27 @@
 			}
 			var hasmoney= $("#PAYMENTAMOUNT").val();
 			var settleInOrder_ID = "";
+			var flag=1;
 			settledinordermap.forEach(function(value, key){
 				var unpaid = firstmap.get(key);
-				hasmoney-=unpaid;
-				if(hasmoney>=0){
-					if(settleInOrder_ID == ""){
-						settleInOrder_ID += "'"+key+"'";
+				var str=key.split(",");
+				var id=str[0];
+				var type=str[1];
+				if(type=='1'){
+					flag=0;
+					hasmoney-=unpaid;
+					if(hasmoney>=0){
+						if(settleInOrder_ID == ""){
+							settleInOrder_ID += "'"+id+"'";
+						}else{
+							settleInOrder_ID += ",'"+id+"'";
+						}
+					}
+				}else{
+					if(flag==1){
+						settleInOrder_ID += "'"+id+"'";
 					}else{
-						settleInOrder_ID += ",'"+key+"'";
+						settleInOrder_ID += ",'"+id+"'";
 					}
 				}
 			});

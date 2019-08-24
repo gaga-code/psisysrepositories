@@ -105,7 +105,7 @@
 								<td style="width:90px;text-align: right;padding-top: 1px;">应收金额:</td>
 								<td><input type="number" name="PAYABLEAMOUNT" id="PAYABLEAMOUNT" value="${pd.PAYABLEAMOUNT }" maxlength="32" placeholder="这里输入应收金 额" title="应收金额" style="width:98%;" readonly="readonly" /></td>
 								<td style="width:90px;text-align: right;padding-top: 1px;">实收金额:</td>
-								<td><input type="number" name="PAYMENTAMOUNT" id="PAYMENTAMOUNT" value="${pd.PAYMENTAMOUNT }" maxlength="32" placeholder="这里输入实收金额" title="实收金额" style="width:98%;"  /></td>
+								<td><input type="number" name="PAYMENTAMOUNT" id="PAYMENTAMOUNT" onchange="changepay()" value="${pd.PAYMENTAMOUNT }" maxlength="32" placeholder="这里输入实收金额" title="实收金额" style="width:98%;"  /></td>
 								<td style="width:90px;text-align: right;padding-top: 1px;">备注:</td>
 								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE }" maxlength="32" placeholder="这里输入备注" title="备注" style="width:98%;" /></td>
 							</tr>
@@ -120,6 +120,7 @@
 									</th>
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">单据编号</th>
+									<th class="center">单据类型</th>
 									<th class="center">客户</th>
 									<th class="center">总金额</th>
 									<th class="center">未收金额</th>
@@ -274,15 +275,27 @@
 			            		if(res.QX.cha == 1){
 				            		html +="<tr id='"+res.varList[i].SALEBILL_ID+"'>";
 					            	html +="<td class='center'>";
-					            	html +="	<label class='pos-rel'><input type='checkbox' name='ids' value='"+res.varList[i].SALEBILL_ID+"' class='ace' /><span class='lbl'></span></label>";
+					            	html +="	<label class='pos-rel'><input type='checkbox' name='ids' value='"+res.varList[i].SALEBILL_ID+","+ res.varList[i].BILLTYPE+"' class='ace' /><span class='lbl'></span></label>";
 				            		html +="</td>";
 				            		html +="<td class='center' style='width: 30px;'>"+(i+1)+"</td>";
 				            		html +="<td class='center'>"+res.varList[i].BILLCODE+"</td>";
-				            		html +="<td class='center'>"+res.varList[i].CUATOMERNAME+"</td>";
-				            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].ALLAMOUNT+"</td>";
-				            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
-				            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
-				            		html +="<td class='center' id='THISPAY'>"+res.varList[i].THISPAY+"</td>";
+				            		if(res.varList[i].BILLTYPE=='2'){
+				            			html +="<td class='center' style='color:green'>进货单</td>";
+				            			html +="<td class='center'>"+res.varList[i].CUATOMERNAME+"</td>";
+					            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].ALLAMOUNT+"</td>";
+					            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].UNPAIDAMOUNT+"</td>";
+					            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
+					            		html +="<td class='center' id='THISPAY'>"+res.varList[i].THISPAY+"</td>";
+				            		}else{
+
+				            			html +="<td class='center' style='color:red'>退货单</td>";
+				            			html +="<td class='center'>"+res.varList[i].CUATOMERNAME+"</td>";
+					            		html +="<td class='center' id='ALLAMOUNT' >-"+res.varList[i].ALLAMOUNT+"</td>";
+					            		html +="<td class='center' id='UNPAIDAMOUNT'>-"+res.varList[i].UNPAIDAMOUNT+"</td>";
+					            		html +="<td class='center' id='PAIDAMOUNT'>"+res.varList[i].PAIDAMOUNT+"</td>";
+					            		html +="<td class='center' id='THISPAY'>"+res.varList[i].THISPAY+"</td>";		
+				            		}
+				            	
 				            		
 				            		if(res.varList[i].ISSETTLEMENTED == 2){
 					            		html +="<td class='center' id='ISSETTLEMENTEDName'>结算中</td>";
@@ -302,12 +315,12 @@
 				            		}
 				            		if(res.QX.SUPPSETBILLSET == 1 ){
 					            		html += "	<div class='hidden-sm hidden-xs btn-group'> ";
-										html += "		<a class='btn btn-xs btn-success' title='结算' id='settleOnsalebill' onclick=\"settleone('"+res.varList[i].SALEBILL_ID+"');\"> ";
+										html += "		<a class='btn btn-xs btn-success' title='结算' id='settleOnsalebill' onclick=\"settleone('"+res.varList[i].SALEBILL_ID+"','"+res.varList[i].BILLTYPE+"');\"> ";
 										html += "			<i class='ace-icon fa fa-eye bigger-120' title='结算'></i> ";
 										html += "		</a> ";
 				            		}
 									if(res.QX.del == 1){
-										html += "		<a class='btn btn-xs btn-danger' id='delsalebill' onclick=\"del('"+res.varList[i].SALEBILL_ID+"');\" > ";
+										html += "		<a class='btn btn-xs btn-danger' id='delsalebill' onclick=\"del('"+res.varList[i].SALEBILL_ID+"','"+res.varList[i].BILLTYPE+"');\" > ";
 										html += "			<i class='ace-icon fa fa-trash-o bigger-120' title='删除'></i> ";
 										html += "		</a> ";
 									}
@@ -321,7 +334,7 @@
 									html += "			<ul class='dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close'> ";
 									if(res.QX.SUPPSETBILLSET == 1){
 										html += "				<li> ";
-										html += "					<a style='cursor:pointer;' id='settleOnsalebill' onclick=\"settleone('"+res.varList[i].SALEBILL_ID+"');\" class='tooltip-success' data-rel='tooltip' title='结算'> ";
+										html += "					<a style='cursor:pointer;' id='settleOnsalebill' onclick=\"settleone('"+res.varList[i].SALEBILL_ID+"','"+res.varList[i].BILLTYPE+"');\" class='tooltip-success' data-rel='tooltip' title='结算'> ";
 										html += "						<span class='green'> ";
 										html += "							<i class='ace-icon fa fa-eye bigger-120'></i> ";
 										html += "						</span> ";
@@ -330,7 +343,7 @@
 									}
 									if(res.QX.del == 1){
 										html += "				<li> ";
-										html += "					<a style='cursor:pointer;' id='delsalebill' onclick='del('"+res.varList[i].SALEBILL_ID+"');' class='tooltip-error' data-rel='tooltip' title='删除'> ";
+										html += "					<a style='cursor:pointer;' id='delsalebill' onclick='del('"+res.varList[i].SALEBILL_ID+"','"+res.varList[i].BILLTYPE+"');' class='tooltip-error' data-rel='tooltip' title='删除'> ";
 										html += "						<span class='red'> ";
 										html += "							<i class='ace-icon fa fa-trash-o bigger-120'></i> ";
 										html += "						</span> ";
@@ -343,10 +356,10 @@
 									html += " </td>";
 									html += " </tr>";
 									salebillitemmap.set(res.varList[i].SALEBILL_ID,html);
-									allamountmap.set(res.varList[i].SALEBILL_ID,res.varList[i].ALLAMOUNT);  //总金额
-				            		unpaidamountmap.set(res.varList[i].SALEBILL_ID,res.varList[i].UNPAIDAMOUNT);  //未收金额
-				            		firstmap.set(res.varList[i].SALEBILL_ID,res.varList[i].UNPAIDAMOUNT);  //未收金额
-				            		paidamoutmap.set(res.varList[i].SALEBILL_ID,res.varList[i].PAIDAMOUNT);  //已收金额
+									allamountmap.set(res.varList[i].SALEBILL_ID+","+res.varList[i].BILLTYPE,res.varList[i].ALLAMOUNT);  //总金额
+				            		unpaidamountmap.set(res.varList[i].SALEBILL_ID+","+res.varList[i].BILLTYPE,res.varList[i].UNPAIDAMOUNT);  //未收金额
+				            		firstmap.set(res.varList[i].SALEBILL_ID+","+res.varList[i].BILLTYPE,res.varList[i].UNPAIDAMOUNT);  //未收金额
+				            		paidamoutmap.set(res.varList[i].SALEBILL_ID+","+res.varList[i].BILLTYPE,res.varList[i].PAIDAMOUNT);  //已收金额
 				            	}else if(res.QX.cha == 0){
 				            		html += "<tr> ";
 				            		html += "	<td colspan='100' class='center'>您无权查看</td> ";
@@ -358,7 +371,13 @@
 			            compu();//统计额度
 			            var unpaidam=0.0;
 			            unpaidamountmap.forEach(function(value, key) {
-			            	unpaidam += value;
+			            	var str=key.split(",");
+			            	if(str[1]=='2'){
+			            		unpaidam += value;
+			            	}else{
+
+			            		unpaidam -= value;
+			            	}
 						});
 			            $("#PAYABLEAMOUNT").val(unpaidam);
 			            $("#realtbody").html("");
@@ -383,6 +402,7 @@
 					time : 3
 				});
             }else  if($("#select_paymethod").val() == '0' ){
+            	$("#PAYMENTAMOUNT").val('');
             	$("#PAYMENTAMOUNT").tips({
 					side : 1,
 					msg : "请先选择收款方式",
@@ -397,7 +417,7 @@
 						bg : '#FF5080',
 						time : 3
 					});
-	            	$("#PAYMENTAMOUNT").val(parseInt($("#PAYABLEAMOUNT").val())+customerhaspaidamount)
+	            	$("#PAYMENTAMOUNT").val(parseInt($("#PAYABLEAMOUNT").val()))
 	            }
 	            if(parseInt($("#PAYMENTAMOUNT").val()) < customerhaspaidamount && customerhaspaidamount != 0.0){
 	            	$("#PAYMENTAMOUNT").tips({
@@ -466,11 +486,12 @@
 		
 				
 		//删除销售单
-		function del(Id){
-			if(settledsalebillmap.get(Id) == null){
+		function del(Id,type){
+			var ids=Id+","+type;
+			if(settledsalebillmap.get(ids) == null){
 				bootbox.confirm("确定要删除吗?", function(result) {
 					if(result) {
-						delreal(Id);
+						delreal(Id,type);
 					}
 				});
 				
@@ -483,10 +504,11 @@
 				});
 			}
 		}
-		function delreal(Id){
-			allamountmap.delete(Id);
-			paidamoutmap.delete(Id);
-			unpaidamountmap.delete(Id);
+		function delreal(Id,type){
+			var ids=Id+","+type;
+			allamountmap.delete(ids);
+			paidamoutmap.delete(ids);
+			unpaidamountmap.delete(ids);
 			salebillitemmap.delete(Id);
 			var strhtml = "";
 			salebillitemmap.forEach(function(value, key) {
@@ -497,19 +519,35 @@
 			compu();
 			var unpaidam=0.0;
             unpaidamountmap.forEach(function(value, key) {
-            	unpaidam += value;
+            	var str=key.split(",");
+            	if(str[1]=='2'){
+            		unpaidam += value;
+            	}else{
+            		unpaidam -= value;
+            	}
 			});
             $("#PAYABLEAMOUNT").val(unpaidam);
+            $("#PAYMENTAMOUNT").val(unpaidam);
 		}
 		//统计额度
 		function compu(){
 			var allam = 0.0;
             allamountmap.forEach(function(value, key) {
-            	allam += value;
+            	var str=key.split(",");
+            	if(str[1]=='2'){
+            		allam += value;
+            	}else{
+            		allam -= value;
+            	}
 			});
             var paidam=0.0;
             paidamoutmap.forEach(function(value, key) {
-            	paidam += value;
+            	var str=key.split(",");
+            	if(str[1]=='2'){
+            		paidam += value;
+            	}else{
+            		paidam -= value;
+            	}
 			});
            
             $("#PAYABLEALLAM").val(allam);
@@ -548,8 +586,9 @@
 		}
 		
 		//反审销售单 retrialsalebill
-		function retrial(Id){
-			if(settledsalebillmap.get(Id) != null){
+		function retrial(Id,type){
+			var ids=Id+","+type;
+			if(settledsalebillmap.get(ids) != null){
 				bootbox.confirm("确定要反审该销售单吗?", function(result) {
 					if(result) {
 						$.ajax({
@@ -558,7 +597,7 @@
 					        data:{SALEBILL_ID:Id},
 					        dataType:'json',
 					        success: function (res) {
-					        	delreal(Id);
+					        	delreal(Id,type);
 					        }
 					    });
 					}
@@ -573,12 +612,25 @@
 			}
 		}
 		//结算一张销售单
-		function settleone(Id){
-			if(settledsalebillmap.get(Id) != 1){
-				var unpaid = unpaidamountmap.get(Id);
-				var allamount = allamountmap.get(Id);
-				var paidamout = paidamoutmap.get(Id);
-				var thispayamount = parseInt($("#PAYMENTAMOUNT").val());
+		function settleone(Id,type){
+			var ids=Id+","+type;
+			if(settledsalebillmap.get(ids) != 1){
+				var unpaid = unpaidamountmap.get(ids);
+				var allamount = allamountmap.get(ids);
+				var paidamout = paidamoutmap.get(ids);
+				var thispayamount = parseFloat($("#PAYMENTAMOUNT").val());
+				var ablepayamount =parseFloat($("#PAYABLEAMOUNT").val()); 
+				if(thispayamount==ablepayamount){
+					thispayamount=0;
+					allamountmap.forEach(function(value, key) {
+						var str=key.split(",");
+						var type=str[1];
+						if(type=='2'){
+							thispayamount+=value;
+						}
+					});
+				}
+				
 				if(thispayamount == 0.0){
 					$("#PAYMENTAMOUNT").tips({
 						side : 1,
@@ -587,34 +639,49 @@
 						time : 5
 					});
 				}
-				var canpaidamount = thispayamount-customerhaspaidamount;  //可进行销售单结算的余额=结算单收款金额-已结算销售单总额 
-				if(canpaidamount == 0.0){
-					$("#PAYMENTAMOUNT").tips({
-						side : 1,
-						msg : "当前实收金额已用于结算了，请增加额度，才可进行接下来的销售单结算",
-						bg : '#FF5080',
-						time : 5
-					});
-				}else {
-					var nextsalebillcanpaid = 0.0;
-					var nosettle = 0;
-					if(canpaidamount < unpaid){
-						nextsalebillcanpaid = canpaidamount;
-						nosettle = 0;
-					}else{
-						nextsalebillcanpaid = unpaid;
-						nosettle = 1;
+				if(type=='2'){
+					var canpaidamount = thispayamount-customerhaspaidamount;  //可进行销售单结算的余额=结算单收款金额-已结算销售单总额 
+					if(canpaidamount == 0.0){
+						$("#PAYMENTAMOUNT").tips({
+							side : 1,
+							msg : "当前实收金额已用于结算了，请增加额度，才可进行接下来的销售单结算",
+							bg : '#FF5080',
+							time : 5
+						});
+					}else {
+						var nextsalebillcanpaid = 0.0;
+						var nosettle = 0;
+						if(canpaidamount < unpaid){
+							nextsalebillcanpaid = canpaidamount;
+							nosettle = 0;
+						}else{
+							nextsalebillcanpaid = unpaid;
+							nosettle = 1;
+						}
+						bootbox.confirm("确定要结算该销售单吗?", function(result) {
+							if(result) {
+								customerhaspaidamount += nextsalebillcanpaid;
+				        		$("#"+Id+" #UNPAIDAMOUNT").html(unpaid-nextsalebillcanpaid);
+				        	    $("#"+Id+" #PAIDAMOUNT").html(paidamout+nextsalebillcanpaid);
+				        		$("#"+Id+" #THISPAY").html(nextsalebillcanpaid);
+				        		$("#"+Id+" #ISSETTLEMENTED").html(2);
+				        		settledsalebillmap.set(ids,nosettle);
+				        		paidamoutmap.set(ids,paidamoutmap.get(ids)+nextsalebillcanpaid);
+				        		unpaidamountmap.set(ids,unpaidamountmap.get(ids)-nextsalebillcanpaid);
+				        		compu();
+							}
+						})
 					}
+				}else{
 					bootbox.confirm("确定要结算该销售单吗?", function(result) {
 						if(result) {
-							customerhaspaidamount += nextsalebillcanpaid;
-			        		$("#"+Id+" #UNPAIDAMOUNT").html(unpaid-nextsalebillcanpaid);
-			        	    $("#"+Id+" #PAIDAMOUNT").html(paidamout+nextsalebillcanpaid);
-			        		$("#"+Id+" #THISPAY").html(nextsalebillcanpaid);
+			        		$("#"+Id+" #UNPAIDAMOUNT").html(0);
+			        	    $("#"+Id+" #PAIDAMOUNT").html("-"+allamount);
+			        		$("#"+Id+" #THISPAY").html("-"+allamount);
 			        		$("#"+Id+" #ISSETTLEMENTED").html(2);
-			        		settledsalebillmap.set(Id,nosettle);
-			        		paidamoutmap.set(Id,paidamoutmap.get(Id)+nextsalebillcanpaid);
-			        		unpaidamountmap.set(Id,unpaidamountmap.get(Id)-nextsalebillcanpaid);
+			        		settledsalebillmap.set(ids,1);
+			        		paidamoutmap.set(ids,allamount);
+			        		unpaidamountmap.set(ids,0);
 			        		compu();
 						}
 					})
@@ -641,6 +708,20 @@
 					time : 5
 				});
 			}
+			
+			var ablepayamount =parseFloat($("#PAYABLEAMOUNT").val()); 
+			if(thispayamount==ablepayamount){
+				thispayamount=0;
+				allamountmap.forEach(function(value, key) {
+					var str=key.split(",");
+					var type=str[1];
+					if(type=='2'){
+						thispayamount+=value;
+					}
+				});
+			}
+			
+			
 			var canpaidamount = thispayamount-customerhaspaidamount;  //可进行销售单结算的余额=结算单收款金额-已结算销售单总额 
 			var canback = canpaidamount;
 			if(canpaidamount == 0.0){
@@ -695,26 +776,44 @@
 							if(msg == '确定要结算选中的数据吗?'){
 								for(var i=0;i < document.getElementsByName('ids').length;i++){
 									if(document.getElementsByName('ids')[i].checked){
-										  var id = document.getElementsByName('ids')[i].value;
-										  var unpaid = unpaidamountmap.get(id);
-										  if(canpaidamount >= unpaid){//可结算的单
-											  canpaidamount -= unpaid;
-											  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(id)-unpaid);
-								        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(id)+unpaid);
-								        	  $("#"+id+" #THISPAY").html(unpaid);
+										  var ids = document.getElementsByName('ids')[i].value;
+										  var str = ids.split(",");
+										  var id= str[0];
+										  var type= str[1];
+										  if(type=='2'){
+											  var unpaid = unpaidamountmap.get(ids);
+											  if(canpaidamount == 0 || canpaidamount == 0.0){
+												  break;
+											  }
+											 /*  var unpaid = unpaidamountmap.get(id); */
+											  if(canpaidamount >= unpaid){//可结算的单
+												  canpaidamount -= unpaid;
+												  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(ids)-unpaid);
+									        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(ids)+unpaid);
+									        	  $("#"+id+" #THISPAY").html(unpaid);
+									        	  $("#"+id+" #ISSETTLEMENTED").html(2);
+									        	  paidamoutmap.set(ids,paidamoutmap.get(ids)+unpaid);
+									              unpaidamountmap.set(ids,unpaidamountmap.get(ids)-unpaid);
+									              settledsalebillmap.set(ids,1);
+											  }else{//不可结算
+												  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(ids)-canpaidamount);
+									        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(ids)+canpaidamount);
+									        	  $("#"+id+" #THISPAY").html(canpaidamount);
+									        	  $("#"+id+" #ISSETTLEMENTED").html(2);
+									              settledsalebillmap.set(ids,0);
+									        	  paidamoutmap.set(ids,paidamoutmap.get(ids)+canpaidamount);
+									              unpaidamountmap.set(ids,unpaidamountmap.get(ids)-canpaidamount);
+												  break;
+											  }
+										  }else{
+											  var amount=allamountmap.get(ids);
+											  $("#"+id+" #UNPAIDAMOUNT").html(0);
+								        	  $("#"+id+" #PAIDAMOUNT").html("-"+amount);
+								        	  $("#"+id+" #THISPAY").html("-"+amount);
 								        	  $("#"+id+" #ISSETTLEMENTED").html(2);
-								        	  paidamoutmap.set(id,paidamoutmap.get(id)+unpaid);
-								              unpaidamountmap.set(id,unpaidamountmap.get(id)-unpaid);
-								              settledsalebillmap.set(id,1);
-										  }else{//不可结算
-											  $("#"+id+" #UNPAIDAMOUNT").html(unpaidamountmap.get(id)-canpaidamount);
-								        	  $("#"+id+" #PAIDAMOUNT").html(paidamoutmap.get(id)+canpaidamount);
-								        	  $("#"+id+" #THISPAY").html(canpaidamount);
-								        	  $("#"+id+" #ISSETTLEMENTED").html(2);
-								              settledsalebillmap.set(id,0);
-								        	  paidamoutmap.set(id,paidamoutmap.get(id)+canpaidamount);
-								              unpaidamountmap.set(id,unpaidamountmap.get(id)-canpaidamount);
-											  break;
+								        	  paidamoutmap.set(ids,amount);
+								              unpaidamountmap.set(ids,0);
+								              settledsalebillmap.set(ids,1);
 										  }
 									}
 								}
@@ -779,11 +878,13 @@
 						if(msg == '确定要删除选中的数据吗?'){
 							for(var i=0;i < document.getElementsByName('ids').length;i++){
 								  if(document.getElementsByName('ids')[i].checked){
-									  	var Id = document.getElementsByName('ids')[i].value;
-									  	allamountmap.delete(Id);
-										paidamoutmap.delete(Id);
-										unpaidamountmap.delete(Id);
-										salebillitemmap.delete(Id);
+									  	var ids = document.getElementsByName('ids')[i].value;
+									  	var str = ids.split(",");
+									  	var id=str[0];
+									  	allamountmap.delete(ids);
+										paidamoutmap.delete(ids);
+										unpaidamountmap.delete(ids);
+										salebillitemmap.delete(id);
 										
 								  }
 							}
@@ -796,9 +897,15 @@
 							compu();
 							var unpaidam=0.0;
 				            unpaidamountmap.forEach(function(value, key) {
-				            	unpaidam += value;
+				            	var str=key.split(",");
+				            	if(str[1]=='2'){
+				            		unpaidam += value;
+				            	}else{
+				            		unpaidam -= value;
+				            	}
 							});
 				            $("#PAYABLEAMOUNT").val(unpaidam);
+				            $("#PAYMENTAMOUNT").val(unpaidam);
 						}
 					}
 				}
@@ -873,14 +980,35 @@
 			}
 			var hasmoney= $("#PAYMENTAMOUNT").val();
 			var settleSALEBILL_ID = "";
+			var flag=1;
 			settledsalebillmap.forEach(function(value, key){
-				var unpaid = firstmap.get(key);
-				hasmoney-=unpaid;
-				if(hasmoney>=0){
-					if(settleSALEBILL_ID == ""){
-						settleSALEBILL_ID += "'"+key+"'";
+				var str = key.split(",");
+				var id=str[0];
+				if(str[1]=='2'){
+					flag=0;
+					var unpaid = firstmap.get(key);
+					if(hasmoney <= unpaid){
+						if(settleSALEBILL_ID == ""){
+							settleSALEBILL_ID += "'"+id+"'";
+						}else{
+							settleSALEBILL_ID += ",'"+id+"'";
+						}
+						return;
 					}else{
-						settleSALEBILL_ID += ",'"+key+"'";
+						if(hasmoney>=0){
+							if(settleSALEBILL_ID == ""){
+								settleSALEBILL_ID += "'"+id+"'";
+							}else{
+								settleSALEBILL_ID += ",'"+id+"'";
+							}
+						}
+						hasmoney-=unpaid;
+					}
+				}else{
+					if(flag==1){
+						settleSALEBILL_ID += "'"+id+"'";
+					}else{
+						settleSALEBILL_ID += ",'"+id+"'";
 					}
 				}
 			});
@@ -992,14 +1120,26 @@
 			}
 			var hasmoney= $("#PAYMENTAMOUNT").val();
 			var settleSALEBILL_ID = "";
+			var flag=1;
 			settledsalebillmap.forEach(function(value, key){
-				var unpaid = firstmap.get(key);
-				hasmoney-=unpaid;
-				if(hasmoney>=0){
-					if(settleSALEBILL_ID == ""){
-						settleSALEBILL_ID += "'"+key+"'";
+				var str = key.split(",");
+				var id=str[0];
+				if(str[1]=='2'){
+					flag=0;
+					var unpaid = firstmap.get(key);
+					hasmoney-=unpaid;
+					if(hasmoney>=0){
+						if(settleSALEBILL_ID == ""){
+							settleSALEBILL_ID += "'"+id+"'";
+						}else{
+							settleSALEBILL_ID += ",'"+id+"'";
+						}
+					}
+				}else{
+					if(flag==1){
+						settleSALEBILL_ID += "'"+id+"'";
 					}else{
-						settleSALEBILL_ID += ",'"+key+"'";
+						settleSALEBILL_ID += ",'"+id+"'";
 					}
 				}
 			});

@@ -76,6 +76,7 @@
 									<tr>
 										<th class="center" style="width:50px;">序号</th>
 										<th class="center">单据编号</th>
+										<th class="center">单据类型</th>
 										<th class="center">商品</th>
 										<th class="center">单价</th>
 										<th class="center">数量</th>
@@ -97,6 +98,12 @@
 											<tr >
 												<td class='center' style="width: 30px;">${vs.index+1}</td>
 												<td class='center'>${var.BILLCODE}</td>
+												<c:if test="${var.BILLTYPE=='1'}">
+													<td class='center'>进货单</td>
+												</c:if>
+												<c:if test="${var.BILLTYPE=='2'}">
+													<td class='center'>销售单</td>
+												</c:if>
 												<td class='center'>${var.GOODNAME}</td>
 												<td class='center'>${var.UNITPRICE_ID}</td>
 												<td class='center'>${var.PNUMBER}</td>

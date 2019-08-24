@@ -74,7 +74,7 @@
 												<%-- <a onclick="erweima('${var.GOOD_ID}');"><img style="cursor:pointer;" width="15" src="static/images/erwei.png"  title="商品二维码"/></a> --%>
 												<a onclick="barcode('${var.GOOD_ID}','${var.BARCODE}');"><img style="cursor:pointer;" width="15" src="static/images/barcode.png"  title="商品条形码"/></a>
 											</td>
-											<td class='center'>${var.BARCODE}</td>
+											<td class='center'>${var.GOODCODE}</td>
 											<td class='center'>${var.GOODSPECIF}</td>
 											<td class='center'>${var.UNITNAME}</td>
 											<td class="center">

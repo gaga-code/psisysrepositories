@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InOrderAndSuppsetBackMapper">
+	
+	<!--表名 -->
+	<sql id="inBackTableName">
+		psi_inorder_back
+	</sql>
+	<!--表名 -->
+	<sql id="inBodyBackTableName">
+		psi_inorder_body_back
+	</sql>
+	<!--表名 -->
+	<sql id="suppBackTableName">
+		psi_suppsetbill_back
+	</sql>
+	<sql id="InAllField">
+		INORDERBACK_ID,
+		INORDER_ID,     
+		LDATE,          
+		BILLCODE,       
+		SUPPLIERNO,       
+		SUPPLIER_ID,    
+		USER_ID,        
+		WAREHOUSE_ID,   
+		ALLAMOUNT,      
+		BILLTYPE,       
+		BILLSTATUS,     
+		PAIDAMOUNT,     
+		UNPAIDAMOUNT,   
+		THISPAY,        
+		SUBBRANCH,      
+		SUPPSETBILL_ID, 
+		NOTE,       
+		ISSETTLEMENTED, 
+		SETTEDNUMANDID, 
+		PK_SOBOOKS,     
+		DEF1,           
+		DEF2,           
+		DEF3,           
+		DEF4,           
+		DEF5,           
+		CREATETIME,     
+		LASTTIME,       
+		DR            
+	</sql>
+	<sql id="InBodyAllField">
+	INORDERBODYBACK_ID,
+		INORDERBODY_ID,    
+		INORDER_ID,        
+		GOODCODE_ID,       
+		WAREHOUSE_ID,       
+		PNUMBER,           
+		UNITPRICE_ID,      
+		AMOUNT,            
+		APPBILLNO,         
+		NOTE,    
+		BARCODE,      
+		SETTEDNUMANDID,    
+		PK_SOBOOKS,        
+		DEF1,              
+		DEF2,              
+		DEF3,              
+		DEF4,              
+		DEF5,              
+		CREATETIME,        
+		LASTTIME,          
+		DR
+	</sql>
+	<sql id="SuppAllField">
+			SUPPSETBILLBACK_ID,
+			SUPPSETBILL_ID,                                              
+			  LDATE,                                                       
+			  BILLCODE,                                                    
+			  BILLTYPE,                                                    
+			  BILLSTATUS,                                                  
+			  USER_ID,                                                     
+			  FROMUNIT,                                                    
+			  DISTRIBUTIONMODE,                                            
+			  INVOICETYPE,                                                 
+			  BILLNO,                                                      
+			  PAYMETHOD,                                                   
+			  PAYABLEAMOUNT,                                               
+			  PAYMENTAMOUNT,                                               
+			  PAYABLEALLAM,
+			  SETTEDNUMANDID,  
+			  INORDER_IDS,                                              
+			  NOTE,                                                        
+			  PK_SOBOOKS,
+			  DEF1,
+			  DEF2,
+			  DEF3,
+			  DEF4,
+			  DEF5,
+			  CREATETIME,
+			  LASTTIME,
+			  DR
+	</sql>
+	
+	<sql id="InAllFieldValue">
+		#{INORDERBACK_ID},
+		#{INORDER_ID},        
+		#{LDATE},             
+		#{BILLCODE},          
+		#{SUPPLIERNO},          
+		#{SUPPLIER_ID},       
+		#{USER_ID},           
+		#{WAREHOUSE_ID},      
+		#{ALLAMOUNT},         
+		#{BILLTYPE},          
+		#{BILLSTATUS},        
+		#{PAIDAMOUNT},        
+		#{UNPAIDAMOUNT},      
+		#{THISPAY},           
+		#{SUBBRANCH},         
+		#{SUPPSETBILL_ID},    
+		#{NOTE},          
+		#{ISSETTLEMENTED},    
+		#{SETTEDNUMANDID},    
+		#{PK_SOBOOKS},        
+		#{DEF1},              
+		#{DEF2},              
+		#{DEF3},              
+		#{DEF4},              
+		#{DEF5},              
+		#{CREATETIME},        
+		#{LASTTIME},          
+		#{DR}                
+	</sql>
+	<sql id="InBodyAllFieldValue">
+		#{INORDERBODYBACK_ID},
+		#{INORDERBODY_ID}, 
+		#{INORDER_ID},     
+		#{GOODCODE_ID},    
+		#{WAREHOUSE_ID},    
+		#{PNUMBER},         
+		#{UNITPRICE_ID},    
+		#{AMOUNT},          
+		#{APPBILLNO},       
+		#{NOTE},        
+		#{BARCODE},        
+		#{SETTEDNUMANDID},  
+		#{PK_SOBOOKS},      
+		#{DEF1},            
+		#{DEF2},            
+		#{DEF3},            
+		#{DEF4},            
+		#{DEF5},            
+		#{CREATETIME},      
+		#{LASTTIME},        
+		#{DR}
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="SuppAllFieldValue">
+		#{SUPPSETBILLBACK_ID},
+	    #{SUPPSETBILL_ID},     
+		#{LDATE},              
+		#{BILLCODE},           
+		#{BILLTYPE},           
+		#{BILLSTATUS},         
+		#{USER_ID},            
+		#{FROMUNIT},           
+		#{DISTRIBUTIONMODE},   
+		#{INVOICETYPE},        
+		#{BILLNO},             
+		#{PAYMETHOD},          
+		#{PAYABLEAMOUNT},      
+		#{PAYMENTAMOUNT},      
+		#{PAYABLEALLAM},
+		#{SETTEDNUMANDID},  
+		#{INORDER_IDS},        
+		#{NOTE},               
+		#{PK_SOBOOKS},
+		#{DEF1},
+		#{DEF2},
+		#{DEF3},
+		#{DEF4},
+		#{DEF5},
+		#{CREATETIME},
+		#{LASTTIME},
+		#{DR}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="savesuppback" parameterType="pd">
+		insert into 
+	<include refid="suppBackTableName"></include>
+		(
+	<include refid="SuppAllField"></include>
+		) values (
+	<include refid="SuppAllFieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="deletesuppback" parameterType="pd">
+		update 
+		<include refid="suppBackTableName"></include>
+		set
+			DR = 1 
+		where 
+			SUPPSETBILLBACK_ID = #{SUPPSETBILLBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
+	<!-- 修改商品编码 -->
+	<update id="editGOODCODE" parameterType="pd">
+		update
+		<include refid="inBodyBackTableName"></include>
+		set 
+			GOODCODE_ID = #{newGOODCODE}
+		where 
+		GOODCODE_ID = #{GOODCODE}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	<!-- 修改 -->
+	<update id="editsuppback" parameterType="pd">
+		update
+			 SUPPSETBILL_ID=#{SUPPSETBILL_ID},                                              
+			  LDATE=#{LDATE},                                                       
+			  BILLCODE=#{BILLCODE},                                                    
+			  BILLTYPE=#{BILLTYPE},                                                    
+			  BILLSTATUS=#{BILLSTATUS},                                                  
+			  USER_ID=#{USER_ID},                                                     
+			  FROMUNIT=#{FROMUNIT},                                                    
+			  DISTRIBUTIONMODE=#{DISTRIBUTIONMODE},                                            
+			  INVOICETYPE=#{INVOICETYPE},                                                 
+			  BILLNO=#{BILLNO},                                                      
+			  PAYMETHOD=#{PAYMETHOD},                                                   
+			  PAYABLEAMOUNT=#{PAYABLEAMOUNT},                                               
+			  PAYMENTAMOUNT=#{PAYMENTAMOUNT},                                               
+			  PAYABLEALLAM=#{PAYABLEALLAM},
+			  SETTEDNUMANDID=#{SETTEDNUMANDID},  
+			  INORDER_IDS=#{INORDER_IDS},                                              
+			  NOTE=#{NOTE},                                                        
+			  PK_SOBOOKS=#{PK_SOBOOKS},
+			  DEF1=#{DEF1},
+			  DEF2=#{DEF2},
+			  DEF3=#{DEF3},
+			  DEF4=#{DEF4},
+			  DEF5=#{DEF5},
+			  CREATETIME=#{CREATETIME},
+			  LASTTIME=#{LASTTIME},
+			  DR=#{DR}
+		set                                                                                                       
+			<include refid="SuppAllFieldValue"></include>
+		where 
+			PK_SOBOOKS = #{PK_SOBOOKS} and
+			SUPPSETBILLBACK_ID = #{SUPPSETBILLBACK_ID}
+			and IFNULL(DR,0)=0
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findSuppBackById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="SuppAllField"></include>
+		from 
+		<include refid="suppBackTableName"></include>
+		where 
+			SUPPSETBILLBACK_ID = #{SUPPSETBILLBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
+	
+	
+	<!-- 进货单 -->
+	
+	<!-- 新增-->
+	<insert id="saveinback" parameterType="pd">
+		insert into 
+	<include refid="inBackTableName"></include>
+		(
+	<include refid="InAllField"></include>
+		) values (
+	<include refid="InAllFieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="deleteinback" parameterType="pd">
+		update 
+		<include refid="inBackTableName"></include>
+		set
+			DR = 1 
+		where 
+			INORDERBACK_ID = #{INORDERBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="editinback" parameterType="pd">
+		update
+		<include refid="inBackTableName"></include>
+		set                                                                                                       
+			INORDER_ID=#{INORDER_ID},     
+			LDATE=#{LDATE},          
+			BILLCODE=#{BILLCODE},       
+			SUPPLIERNO=#{SUPPLIERNO},       
+			SUPPLIER_ID=#{SUPPLIER_ID},    
+			USER_ID=#{USER_ID},        
+			WAREHOUSE_ID=#{WAREHOUSE_ID},   
+			ALLAMOUNT=#{ALLAMOUNT},      
+			BILLTYPE=#{BILLTYPE},       
+			BILLSTATUS=#{BILLSTATUS},     
+			PAIDAMOUNT=#{PAIDAMOUNT},     
+			UNPAIDAMOUNT=#{UNPAIDAMOUNT},   
+			THISPAY=#{THISPAY},        
+			SUBBRANCH=#{SUBBRANCH},      
+			SUPPSETBILL_ID=#{SUPPSETBILL_ID}, 
+			NOTE=#{NOTE},       
+			ISSETTLEMENTED=#{ISSETTLEMENTED}, 
+			SETTEDNUMANDID=#{SETTEDNUMANDID}, 
+			PK_SOBOOKS=#{PK_SOBOOKS},     
+			DEF1=#{DEF1},           
+			DEF2=#{DEF2},           
+			DEF3=#{DEF3},           
+			DEF4=#{DEF4},           
+			DEF5=#{DEF5},           
+			CREATETIME=#{CREATETIME},     
+			LASTTIME=#{LASTTIME},       
+			DR=#{DR}  
+		where 
+			PK_SOBOOKS = #{PK_SOBOOKS} and
+			INORDERBACK_ID = #{INORDERBACK_ID}
+			and IFNULL(DR,0)=0
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findInBackById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="InAllField"></include>
+		from 
+		<include refid="inBackTableName"></include>
+		where 
+			INORDERBACK_ID = #{INORDERBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
+	
+	
+	
+	
+	<!--     进货单明细的CRUD          -->
+	
+	<!-- 新增-->
+	<insert id="saveinbodyback" parameterType="pd">
+		insert into 
+	<include refid="inBodyBackTableName"></include>
+		(
+	<include refid="InBodyAllField"></include>
+		) values (
+	<include refid="InBodyAllFieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="deleteinbodyback" parameterType="pd">
+		update 
+		<include refid="inBodyBackTableName"></include>
+		set
+			DR = 1 
+		where 
+			INORDERBODYBACK_ID = #{INORDERBODYBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="editinbodyback" parameterType="pd">
+		update
+		<include refid="inBodyBackTableName"></include>
+		set                                                                                                       
+			INORDERBODY_ID=#{INORDERBODY_ID},    
+			INORDER_ID=#{INORDER_ID},        
+			GOODCODE_ID=#{GOODCODE_ID},       
+			WAREHOUSE_ID=#{WAREHOUSE_ID},       
+			PNUMBER=#{PNUMBER},           
+			UNITPRICE_ID=#{UNITPRICE_ID},      
+			AMOUNT=#{AMOUNT},            
+			APPBILLNO=#{APPBILLNO},         
+			NOTE=#{NOTE},          
+			BARCODE=#{BARCODE},          
+			SETTEDNUMANDID=#{SETTEDNUMANDID},    
+			PK_SOBOOKS=#{PK_SOBOOKS},        
+			DEF1=#{DEF1},              
+			DEF2=#{DEF2},              
+			DEF3=#{DEF3},              
+			DEF4=#{DEF4},              
+			DEF5=#{DEF5},              
+			CREATETIME=#{CREATETIME},        
+			LASTTIME=#{LASTTIME},          
+			DR=#{DR}
+		where 
+			PK_SOBOOKS = #{PK_SOBOOKS} and
+			INORDERBODYBACK_ID = #{INORDERBODYBACK_ID}
+			and IFNULL(DR,0)=0
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findInBodyBackById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="InBodyAllField"></include>
+		from 
+		<include refid="inBodyBackTableName"></include>
+		where 
+			INORDERBODYBACK_ID = #{INORDERBODYBACK_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
+	
+	
+</mapper>

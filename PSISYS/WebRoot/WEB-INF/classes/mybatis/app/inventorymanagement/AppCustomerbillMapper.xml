@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppCustomersetbillMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		psi_customersetbill
+	</sql>
+	<sql id="customertn">
+		base_customer
+	</sql>
+	<sql id="paymethod">
+		base_paymethod
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+	  CUSTOMERSETBILL_ID,                                              
+	  LDATE,                                                       
+	  BILLCODE,                                                    
+	  BILLTYPE,                                                    
+	  BILLSTATUS,                                                  
+	  USER_ID,                                                     
+	  FROMUNIT,                                                    
+	  DISTRIBUTIONMODE,                                            
+	  INVOICETYPE,                                                 
+	  BILLNO,                                                      
+	  PAYMETHOD,                                                   
+	  PAYABLEAMOUNT,                                               
+	  PAYMENTAMOUNT,                                               
+	  PAYABLEALLAM,  
+	  SALEBILL_IDS,                                              
+	  NOTE,                                                        
+	  PK_SOBOOKS
+	</sql>
+	
+	<sql id="FieldAll">
+			CUSTOMERSETBILL_ID,                                              
+			  LDATE,                                                       
+			  BILLCODE,                                                    
+			  BILLTYPE,                                                    
+			  BILLSTATUS,                                                  
+			  USER_ID,                                                     
+			  FROMUNIT,                                                    
+			  DISTRIBUTIONMODE,                                            
+			  INVOICETYPE,                                                 
+			  BILLNO,                                                      
+			  PAYMETHOD,                                                   
+			  PAYABLEAMOUNT,                                               
+			  PAYMENTAMOUNT,                                               
+			  PAYABLEALLAM,
+			  SETTEDNUMANDID,  
+			  SALEBILL_IDS,                                              
+			  NOTE,                                                        
+			  PK_SOBOOKS,
+			  DEF1,
+			  DEF2,
+			  DEF3,
+			  DEF4,
+			  DEF5,
+			  CREATETIME,
+			  LASTTIME,
+			  DR
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+	  #{CUSTOMERSETBILL_ID},                                              
+	  #{LDATE},                                                       
+	  #{BILLCODE},                                                    
+	  #{BILLTYPE},                                                    
+	  #{BILLSTATUS},                                                 
+	  #{USER_ID},                                                    
+	  #{FROMUNIT},                                                   
+	  #{DISTRIBUTIONMODE},                                            
+	  #{INVOICETYPE},                                                 
+	  #{BILLNO},                                                      
+	  #{PAYMETHOD},                                                   
+	  #{PAYABLEAMOUNT},                                               
+	  #{PAYMENTAMOUNT},                                              
+	  #{PAYABLEALLAM},                                                
+	  #{SALEBILL_IDS},                                                
+	  #{NOTE},                                                        
+	  #{PK_SOBOOKS}  
+	</sql>
+	
+	<select id="listPayAndAmountByMouth" parameterType="pd" resultType="pd">
+		select  b.PAYMETHODNAME ,a.PAYMENTAMOUNT
+		from psi_customersetbill as a left join base_paymethod as b on a.PAYMETHOD=b.PAYMETHOD_ID
+		where  a.BILLSTATUS !=3
+		and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
+		<if test="date!=null and date!='' ">
+			and date_format(a.CREATETIME,'%Y-%m')=#{date}
+		</if>
+	</select>
+	
+	<select id="listPayAndAmountByMouthDay" parameterType="pd" resultType="pd">
+		select  b.PAYMETHODNAME ,a.PAYMENTAMOUNT
+		from psi_customersetbill as a left join base_paymethod as b on a.PAYMETHOD=b.PAYMETHOD_ID
+		where  a.BILLSTATUS !=3
+		and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
+		<if test="date!=null and date!='' ">
+			and date_format(a.CREATETIME,'%Y-%m-%d')=#{date}
+		</if>
+	</select>
+
+</mapper>

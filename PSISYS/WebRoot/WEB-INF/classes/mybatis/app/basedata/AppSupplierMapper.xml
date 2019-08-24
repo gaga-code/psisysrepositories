@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppSupplierMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		base_supplier
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		SUPPLIERCODE,
+		SUPPLIERNAME,	
+		SIMPLENAME,	
+		PHONE,	
+		ADDRESS,	
+		YICODE,	
+		TELEPHONE,	
+		PAGING,
+		FAX,	
+		LINKMAN,
+		DISTRIBUTIONMODE,
+		CREDITDEGREE,	
+		NOTE,	
+		OPENBANK,
+		BANKACCOUNT,
+		MAILCODE,
+		EMAIL,
+		NETADDR,
+		USER_ID,
+		PK_SOBOOKS,	
+		SUPPLIER_ID
+	</sql>
+
+	<select id="listSuppliers" parameterType="pd" resultType="pd">
+		select SUPPLIERCODE ,SUPPLIERNAME,COMPANY,PHONE
+		from base_supplier
+		where PK_SOBOOKS=#{PK_SOBOOKS}
+		<if test="keyword!=null and keyword!='' ">
+			and SUPPLIERNAME like concat('%',#{keyword},'%')
+			or COMPANY  like concat('%',#{keyword},'%')
+		</if>
+		and IFNULL(DR,0)=0
+	</select>
+</mapper>

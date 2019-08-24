@@ -52,6 +52,10 @@
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入电子邮件" title="电子邮件" style="width:98%;"/></td>
 							</tr>
 							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">公司名称:</td>
+								<td><input type="text" name="COMPANY" id="COMPANY" value="${pd.COMPANY}" maxlength="100" placeholder="这里输入公司" title="公司" style="width:98%;"/></td>
+							</tr>
+							<tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;">传真:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="30" placeholder="这里输入网址" title="网址" style="width:98%;"/></td>
 							</tr>

@@ -114,7 +114,7 @@
 										<tr>
 <%-- 											<td class='center' style="width: 30px;">${vs.index+1}</td> --%>
 											<td class='center'>${var.GOODNAME}</td>
-											<td class='center'>${var.BARCODE}</td>
+											<td class='center'>${var.GOODCODE_ID}</td>
 											<td class='center'>${var.WHNAME}</td>
 											<td class='center'>${var.UNITPRICE_ID}</td>
 											<td class='center'>${var.PNUMBER}</td>
@@ -204,28 +204,28 @@
 	        if(ISFREE == '1'){
 	        	var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
-	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODCODE+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'value='"+PNUMBER+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='1' checked='checked' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' value='"+NOTE+"'/></td>"
-	                      + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
+	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
 //	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
 	                      +"</tr>";
 	      	}else{
 	      		var insertStr = "<tr id=" + rowId + ">"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
-		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODCODE+"'/></td>"
 		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+UNITPRICE_ID+"'/></td>"
 		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'value='"+PNUMBER+"'/></td>"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
 		                + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' readonly='readonly' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' value='"+NOTE+"'/></td>"
-		                + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
+		                + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
 		                + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
 		                +"</tr>";
 	      	}
@@ -358,11 +358,11 @@
 				var storage=window.localStorage;
 			    var GOOD_ID=localStorage.getItem("GOOD_ID");
 			    var GOODNAME=localStorage.getItem("GOODNAME");
-			    var BARCODE=localStorage.getItem("BARCODE");
+			    var GOODCODE=localStorage.getItem("GOODCODE");
 			    var UNITNAME=localStorage.getItem("UNITNAME");
 			    window.localStorage.removeItem("GOOD_ID");
 			    window.localStorage.removeItem("GOODNAME");
-			    window.localStorage.removeItem("BARCODE");
+			    window.localStorage.removeItem("GOODCODE");
 			    window.localStorage.removeItem("UNITNAME");
 			    if( GOOD_ID != null)
 			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME);

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SuppsetbillMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		psi_suppsetbill
+	</sql>
+	<sql id="suppliertn">
+		base_supplier
+	</sql>
+	<sql id="paymethod">
+		base_paymethod
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+	  SUPPSETBILL_ID,                                              
+	  LDATE,                                                       
+	  BILLCODE,                                                    
+	  BILLTYPE,                                                    
+	  BILLSTATUS,                                                  
+	  USER_ID,                                                     
+	  FROMUNIT,                                                    
+	  DISTRIBUTIONMODE,                                            
+	  INVOICETYPE,                                                 
+	  BILLNO,                                                      
+	  PAYMETHOD,                                                   
+	  PAYABLEAMOUNT,                                               
+	  PAYMENTAMOUNT,                                               
+	  PAYABLEALLAM,  
+	  INORDER_IDS,                                              
+	  NOTE,                                                        
+	  PK_SOBOOKS
+	</sql>
+	
+	<sql id="FieldAll">
+			SUPPSETBILL_ID,                                              
+			  LDATE,                                                       
+			  BILLCODE,                                                    
+			  BILLTYPE,                                                    
+			  BILLSTATUS,                                                  
+			  USER_ID,                                                     
+			  FROMUNIT,                                                    
+			  DISTRIBUTIONMODE,                                            
+			  INVOICETYPE,                                                 
+			  BILLNO,                                                      
+			  PAYMETHOD,                                                   
+			  PAYABLEAMOUNT,                                               
+			  PAYMENTAMOUNT,                                               
+			  PAYABLEALLAM,
+			  SETTEDNUMANDID,  
+			  INORDER_IDS,                                              
+			  NOTE,                                                        
+			  PK_SOBOOKS,
+			  DEF1,
+			  DEF2,
+			  DEF3,
+			  DEF4,
+			  DEF5,
+			  CREATETIME,
+			  LASTTIME,
+			  DR
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+	  #{SUPPSETBILL_ID},                                              
+	  #{LDATE},                                                       
+	  #{BILLCODE},                                                    
+	  #{BILLTYPE},                                                    
+	  #{BILLSTATUS},                                                 
+	  #{USER_ID},                                                    
+	  #{FROMUNIT},                                                   
+	  #{DISTRIBUTIONMODE},                                            
+	  #{INVOICETYPE},                                                 
+	  #{BILLNO},                                                      
+	  #{PAYMETHOD},                                                   
+	  #{PAYABLEAMOUNT},                                               
+	  #{PAYMENTAMOUNT},                                              
+	  #{PAYABLEALLAM},                                                
+	  #{INORDER_IDS},                                                
+	  #{NOTE},                                                        
+	  #{PK_SOBOOKS}  
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 快照修改 -->
+	<update id="snapshotedit" parameterType="pd" >
+		update
+		 <include refid="tableName"></include>
+		set
+		 	LDATE=#{LDATE},                                                       
+			  BILLCODE=#{BILLCODE},                                                    
+			  BILLTYPE=#{BILLTYPE},                                                    
+			  BILLSTATUS=#{BILLSTATUS},                                                  
+			  USER_ID=#{USER_ID},                                                     
+			  FROMUNIT=#{FROMUNIT},                                                    
+			  DISTRIBUTIONMODE=#{DISTRIBUTIONMODE},                                            
+			  INVOICETYPE=#{INVOICETYPE},                                                 
+			  BILLNO=#{BILLNO},                                                      
+			  PAYMETHOD=#{PAYMETHOD},                                                   
+			  PAYABLEAMOUNT=#{PAYABLEAMOUNT},                                               
+			  PAYMENTAMOUNT=#{PAYMENTAMOUNT},                                               
+			  PAYABLEALLAM=#{PAYABLEALLAM},
+			  SETTEDNUMANDID=#{SETTEDNUMANDID},  
+			  INORDER_IDS=#{INORDER_IDS},                                              
+			  NOTE=#{NOTE},                                                        
+			  PK_SOBOOKS=#{PK_SOBOOKS},
+			  DEF1=#{DEF1},
+			  DEF2=#{DEF2},
+			  DEF3=#{DEF3},
+			  DEF4=#{DEF4},
+			  DEF5=#{DEF5},
+			  CREATETIME=#{CREATETIME},
+			  LASTTIME=#{LASTTIME},
+			  DR=#{DR}
+		where 
+		 	 SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</update>
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update 
+		<include refid="tableName"></include>
+		set
+			DR = 1 
+		where 
+			SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</update>
+	<!-- 删除-->
+	<update id="updateForSettle" parameterType="pd">
+		update 
+		<include refid="tableName"></include>
+		set
+			SETTEDNUMANDID = #{SETTEDNUMANDID},
+			BILLSTATUS = #{BILLSTATUS}
+		where 
+			SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</update>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set                                                                                                       
+			FROMUNIT=#{FROMUNIT},                                                   
+			DISTRIBUTIONMODE=#{DISTRIBUTIONMODE},                                            
+			INVOICETYPE=#{INVOICETYPE},                                                 
+			BILLNO=#{BILLNO},                                                      
+			PAYMETHOD=#{PAYMETHOD},                                                   
+			PAYABLEAMOUNT=#{PAYABLEAMOUNT},                                               
+			PAYMENTAMOUNT=#{PAYMENTAMOUNT},                                              
+			PAYABLEALLAM=#{PAYABLEALLAM},                                                
+			NOTE=#{NOTE}
+		where 
+			PK_SOBOOKS = #{PK_SOBOOKS} and
+			SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			and IFNULL(DR,0)=0
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="FieldAll"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			SUPPSETBILL_ID = #{SUPPSETBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				  a.SUPPSETBILL_ID,                                              
+				  a.LDATE,                                                       
+				  a.BILLCODE,                                                    
+				  a.BILLTYPE,                                                    
+				  a.BILLSTATUS,                                                  
+				  a.USER_ID,    
+				  a.FROMUNIT,                                                  
+				  s.SUPPLIERNAME as FROMUNITNAME,                                                    
+				  a.DISTRIBUTIONMODE,                                            
+				  a.INVOICETYPE,                                                 
+				  a.BILLNO,                                                      
+				  p.PAYMETHODNAME as PAYMETHOD,                                                   
+				  a.PAYABLEAMOUNT,                                               
+				  a.PAYMENTAMOUNT,                                               
+				  a.PAYABLEALLAM,                                                
+				  a.NOTE,                                                        
+				  a.PK_SOBOOKS
+		from 
+		<include refid="tableName"></include> a,<include refid="suppliertn"></include> s,<include refid="paymethod"></include> p
+		where 1=1
+		and a.FROMUNIT = s.SUPPLIER_ID 
+		and a.PAYMETHOD = p.PAYMETHOD_ID
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					s.SUPPLIERNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					a.BILLCODE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					a.PAYMETHOD LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					a.DISTRIBUTIONMODE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or 
+					a.NOTE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				)
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart!=''">
+			and a.CREATETIME &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and a.CREATETIME &lt;= #{pd.lastEnd} 
+		</if>
+		<if test="pd.billstatus!=null and pd.billstatus!='' ">
+			and a.BILLSTATUS = #{pd.billstatus} 
+		</if>
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+			and IFNULL(a.DR,0)=0 
+		order by a.LASTTIME desc
+		
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where
+			1=1
+		<if test="days!=null and days!=''"><!-- 几天内 -->
+			and DATE_SUB(CURDATE(), INTERVAL ${days} DAY) &lt;= date(CREATETIME)
+		</if>
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</select>
+	
+
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		update 
+		<include refid="tableName"></include>
+		set 
+			DR = 1
+		where 
+			SUPPSETBILL_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")" >
+                 #{item}
+		</foreach>
+		   and PK_SOBOOKS = #{PK_SOBOOKS}
+		   and IFNULL(DR,0)=0 
+	</update>
+	
+	<select id="listByCondition" parameterType="pd" resultType="pd">
+		select  a.BILLCODE ,a.INORDER_IDS,b.PAYMETHODNAME, a.BILLNO,c.NAME
+		from psi_suppsetbill as a left join base_paymethod as b on a.PAYMETHOD=b.PAYMETHOD_ID
+		left join sys_user as c on a.USER_ID=c.USER_ID
+		where  a.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(a.DR,0)=0 
+		and a.BILLSTATUS=2
+		<if test="date!=null and date!='' ">
+			and	date_format(a.LASTTIME,'%Y-%m-%d')=#{date}
+			or date_format(a.CREATETIME,'%Y-%m-%d')=#{date}
+		</if>
+		<if test="lastStart!=null and lastStart!=''">
+			<if test="lastEnd!=null and lastEnd!='' ">
+				and a.CREATETIME BETWEEN #{lastStart} and  #{lastEnd}	
+			</if>
+		</if>
+		
+		<if test="PAYMETHOD_ID!=null and PAYMETHOD_ID!='' ">
+			and a.PAYMETHOD=#{PAYMETHOD_ID}
+		</if>
+		<if test="keywords!=null and keywords!=''">
+			and c.NAME like concat('%',#{keywords},'%')
+		</if>
+	</select>
+</mapper>

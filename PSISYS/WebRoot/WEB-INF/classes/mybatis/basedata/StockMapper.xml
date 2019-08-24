@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FQ_StockMapper">  <!-- 已作废 -->
+	
+	<!--表名 -->
+	<sql id="tableName">
+		base_stock
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="FieldCha">	
+		WAREHOUSE_GOOD_ID,
+		WAREHOUSE_ID,
+		GOOD_ID,
+		STOCK
+	</sql>
+	<!-- 字段 -->
+	<sql id="FieldAddOREDIT">	
+		WAREHOUSE_GOOD_ID,
+		WAREHOUSE_ID,
+		GOOD_ID,
+		STOCK,
+		PK_SOBOOKS
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValueAddOREDIT">
+		#{WAREHOUSE_GOOD_ID},
+		#{WAREHOUSE_ID},
+		#{GOOD_ID},
+		#{STOCK},
+		#{PK_SOBOOKS}
+	</sql>
+
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="FieldAddOREDIT"></include>
+		) values (
+	<include refid="FieldValueAddOREDIT"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update 
+		<include refid="tableName"></include>
+		set
+			DR = 1 
+		where 
+			WAREHOUSE_ID = #{WAREHOUSE_ID}
+			and GOOD_ID = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</update>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			STOCK = #{STOCK}
+		where 
+		WAREHOUSE_ID = #{WAREHOUSE_ID}	
+		and GOOD_ID = #{GOOD_ID}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(DR,0)=0 
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="FieldCha"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			WAREHOUSE_ID = #{WAREHOUSE_ID} 
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 通过ID获取库存数量 -->
+	<select id="getStock" parameterType="pd" resultType="pd">
+		select 
+		<include refid="FieldCha"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			WAREHOUSE_ID = #{WAREHOUSE_ID}
+			and GOOD_ID = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 通过ID获取库存数量 -->
+	<select id="getStockWH" parameterType="pd" resultType="pd">
+		select 
+		<include refid="FieldCha"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			WAREHOUSE_ID = #{WAREHOUSE_ID} 
+			and GOOD_ID = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 通过仓库-商品 ID 获取数据 -->
+	<select id="findByWarehouseAndGood" parameterType="pd" resultType="pd">
+		select 
+		<include refid="FieldCha"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			WAREHOUSE_ID = #{WAREHOUSE_ID} 
+			and GOOD_ID = #{GOOD_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="FieldCha"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+		and
+			(
+				WHNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			)
+		</if>
+		<!-- 仓库筛选 -->
+		<if test="pd.WAREHOUSE_ID!= null and pd.WAREHOUSE_ID != ''">
+		and	WAREHOUSE_ID = #{WAREHOUSE_ID}
+		</if>
+		<!-- 商品筛选 -->
+		<if test="pd.GOOD_ID!= null and pd.GOOD_ID != ''">
+		and	GOOD_ID = #{GOOD_ID}
+		</if>
+		<!-- 供应商筛选 -->
+<!-- 		<if test="pd.SUPPLIER_ID!= null and pd.SUPPLIER_ID != ''"> -->
+<!-- 		and	SUPPLIER_ID = #{SUPPLIER_ID} -->
+<!-- 		</if> -->
+		and PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 库存列表 -->
+	<select id="stocklistPage" parameterType="page" resultType="pd">
+		select
+			a.STOCK,
+			b.GOODCODE,
+			b.GOOD_ID,
+			b.GOODNAME,
+			b.GOODTYPECODE,
+			b.GOODSPECIF,
+			b.BARCODE,
+			b.UNITPROP,
+			b.CPRICE,
+			b.SUBGZ_ID,
+			b.STOCKUPNUM,
+			b.STOCKDOWNNUM,
+			b.SUPPLIER_ID,
+			c.WHNAME,
+			d.TYPENAME,
+			e.NAME CUNITNAME,
+			f.NAME FZUNITNAME
+		from 
+			<include refid="tableName"></include>a
+			left join base_good b
+			on a.GOOD_ID = b.GOODCODE
+			left join base_warehouse c
+			on a.WAREHOUSE_ID = c.WAREHOUSE_ID
+			left join base_goodtype d
+			on b.GOODTYPE_ID = d.GOODTYPE_ID
+			left join cp_spunit e
+			on b.CUNIT_ID = e.SPUNIT_ID
+			left join cp_spunit f
+			on b.FZUNIT_ID = f.SPUNIT_ID
+		where 1=1 
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+		and
+			(
+				b.GOODNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			)
+		</if>
+		<!-- 仓库筛选 -->
+		<if test="pd.WAREHOUSE_ID!= null and pd.WAREHOUSE_ID != ''">
+		and	a.WAREHOUSE_ID = #{pd.WAREHOUSE_ID}
+		</if>
+		<!-- 商品筛选 -->
+		<if test="pd.GOOD_ID!= null and pd.GOOD_ID != ''">
+		and	a.GOOD_ID = #{pd.GOOD_ID}
+		</if>
+		<!-- 超过上限 -->
+		<if test="pd.STOCKSTATE0!= null and pd.STOCKSTATE0!=''">
+			and	b.STOCKNUM > b.STOCKUPNUM
+		</if>
+		<!-- 低于下限 -->
+		<if test="pd.STOCKSTATE1!= null and pd.STOCKSTATE1!=''">
+			and	b.STOCKDOWNNUM > b.STOCKNUM
+		</if>
+		<!-- 积压过久      当前时间   -  某商品库存最后修改日期  >  XXX天  -->
+		<if test="pd.STOCKSTATE2!= null and pd.STOCKSTATE2!='' ">
+			and DATEDIFF(now(),STR_TO_DATE(     (SELECT MAX(LASTTIME) FROM base_stock z WHERE z.GOOD_ID = a.GOOD_ID )      , '%Y-%m-%d %H:%i:%s')) > #{pd.OVERDATE}
+		</if>
+		<!-- 日期筛选 -->
+		<if test="pd.lastStart!=null and pd.lastStart!=''">
+			and a.LASTTIME &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and a.LASTTIME &lt;= #{pd.lastEnd} 
+		</if>
+		and a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+		and IFNULL(a.DR,0)=0 
+		
+		ORDER BY a.WAREHOUSE_ID,a.GOOD_ID,a.STOCK DESC
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="FieldCha"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+		    PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+	</select>
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		update 
+		<include refid="tableName"></include>
+		set 
+			DR = 1
+		where 
+			WAREHOUSE_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+		   and PK_SOBOOKS = #{PK_SOBOOKS}
+		   and IFNULL(DR,0)=0 
+	</update>
+</mapper>

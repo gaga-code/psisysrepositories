@@ -257,6 +257,9 @@
 			 INORDER_ID = #{INORDER_ID}
 		    and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
+			<if test="BILLTYPE!=null and BILLTYPE!=''">
+				and BILLTYPE = #{BILLTYPE}
+			</if>
 	</select>
 	<select id="listForBySuppsetId" parameterType="pd" resultType="pd" >
 		select 
@@ -267,6 +270,9 @@
 			 SUPPSETBILL_ID = #{SUPPSETBILL_ID}
 		    and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
+			<if test="BILLTYPE!=null and BILLTYPE!=''">
+				and BILLTYPE = #{BILLTYPE}
+			</if>
 	</select>
 	
 	<!-- 列表 -->
@@ -318,6 +324,9 @@
 		<if test="pd.BILLSTATUS != null and pd.BILLSTATUS != ''">
 			and  a.BILLSTATUS = #{pd.BILLSTATUS}
 		</if>
+		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+				and a.BILLTYPE = #{pd.BILLTYPE}
+		</if>
 		order by a.LASTTIME DESC
 	</select>
 	
@@ -333,6 +342,7 @@
 			a.UNPAIDAMOUNT,
 			a.PAIDAMOUNT,
 			a.THISPAY,
+			a.BILLTYPE,
 			a.ISSETTLEMENTED,
 			a.USER_ID,
 			a.NOTE
@@ -372,6 +382,7 @@
 			a.BILLCODE,
 			b.SUPPLIERNAME SUPPLIERNAME,
 			a.SUPPLIERNO,
+			a.BILLTYPE,
 			a.ALLAMOUNT,
 			a.UNPAIDAMOUNT,
 			a.PAIDAMOUNT,
@@ -399,6 +410,9 @@
 			1=1
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
+			<if test="BILLTYPE!=null and BILLTYPE!=''">
+				and BILLTYPE = #{BILLTYPE}
+			</if>
 		<!-- <if test="USERNAME!=null and USERNAME!=''">
 			and USERNAME = #{USERNAME} 
 		</if> -->
@@ -445,7 +459,7 @@
 	<update id="shenpi" parameterType="pd">
 		update
 		<include refid="tableName"></include>
-		set BILLSTATUS = 2
+		set BILLSTATUS = #{BILLSTATUS}
 		where 
 			INORDER_ID = #{INORDER_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
@@ -455,7 +469,7 @@
 	<update id="fanshen" parameterType="pd">
 		update
 		<include refid="tableName"></include>
-		set BILLSTATUS = 1
+		set BILLSTATUS = #{BILLSTATUS}
 		where 
 			INORDER_ID = #{INORDER_ID}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
@@ -487,6 +501,42 @@
 		<if test="pd.WAREHOUSE_ID!=null and pd.WAREHOUSE_ID!=''">
 			and b.WAREHOUSE_ID=#{pd.WAREHOUSE_ID}
 		</if>
+		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+				and a.BILLTYPE = #{pd.BILLTYPE}
+		</if>
 		order by a.LASTTIME desc
+	</select>
+	
+	<select id="datalistPageByCondition" parameterType="page" resultType="pd">
+		select a.INORDER_ID,a.BILLCODE , a.BILLTYPE,c.GOODNAME ,d.NAME , e.SUPPLIERNAME , f.WHNAME ,a.ALLAMOUNT,a.PAIDAMOUNT,a.UNPAIDAMOUNT,
+		b.PNUMBER,a.CREATETIME,b.UNITPRICE_ID,g.PAYMETHOD,h.PAYMETHODNAME
+		from 	
+		psi_inorder as a left JOIN psi_inorder_body as b on a.INORDER_ID=b.INORDER_ID
+		left join base_good as c on b.GOODCODE_ID=c.GOODCODE
+		left join  sys_user as d on a.USER_ID=d.USER_ID
+		left join base_supplier as e on  a.SUPPLIER_ID=e.SUPPLIER_ID
+		left join base_warehouse as f on b.WAREHOUSE_ID=f.WAREHOUSE_ID
+		left join psi_suppsetbill as g on a.SUPPSETBILL_ID=g.SUPPSETBILL_ID
+		left join base_paymethod as h on  h.PAYMETHOD_ID=g.PAYMETHOD
+		where a.PK_SOBOOKS=#{pd.PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		and a.BILLSTATUS=2
+		<if test="pd.keywords!=null and pd.keywords!=''">
+			and c.GOODNAME like concat('%',#{pd.keywords},'%')
+			or e.SUPPLIERNAME like concat('%',#{pd.keywords},'%')
+			or d.NAME  like concat('%',#{pd.keywords},'%')
+	    	or f.WHNAME  like concat('%',#{pd.keywords},'%')
+		</if>
+		and a.INORDER_ID  in 
+	    <foreach collection="list" item="item" index="index"
+	            open="(" close=")" separator=",">
+	            ${item}
+	     </foreach>
+		<if test="pd.PAYMETHOD_ID!=null and pd.PAYMETHOD_ID!='' ">
+			and h.PAYMETHOD_ID=#{pd.PAYMETHOD_ID}
+		</if>
+		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
+				and a.BILLTYPE = #{pd.BILLTYPE}
+		</if>
 	</select>
 </mapper>

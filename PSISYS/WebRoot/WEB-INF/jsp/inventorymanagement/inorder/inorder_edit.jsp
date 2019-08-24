@@ -186,7 +186,7 @@
 	      //每次往下标为flag+1的下面添加tr,因为append是往标签内追加。所以用after
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
-	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODCODE+"'/></td>"
 	                      +'<td class="center"><select class="chosen-select form-control" style="vertical-align:top;width:98%;" >'
 						  +	selecthtml
 						  +'</select></td>'
@@ -195,7 +195,7 @@
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
-	                      + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
+	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
 // 	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
 	                      +"</tr>";
@@ -255,7 +255,7 @@
 	      //每次往下标为flag+1的下面添加tr,因为append是往标签内追加。所以用after
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
-	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODCODE+"'/></td>"
 	                      +'<td class="center"><select class="chosen-select form-control" style="vertical-align:top;width:98%;" >'
 						  +	selecthtml
 						  +'</select></td>'
@@ -264,7 +264,7 @@
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' value='"+NOTE+"'/></td>"
-	                      + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
+	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
 //	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
 	                      +"</tr>";

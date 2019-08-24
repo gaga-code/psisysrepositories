@@ -45,6 +45,9 @@
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
+								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if>
+								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="fromExcel();" title="从EXCEL导入"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon blue"></i></a></td></c:if>
+								
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -55,6 +58,7 @@
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">商品名称</th>
 									<th class="center">商品编号</th>
+									<th class="center">商品条码</th>
 									<th class="center">商品规格</th>
 									<th class="center">计量单位</th>
 									<th class="center">操作</th>
@@ -74,6 +78,7 @@
 <%-- 												<a onclick="erweima('${var.GOOD_ID}');"><img style="cursor:pointer;" width="15" src="static/images/erwei.png"  title="商品二维码"/></a> --%>
 												<a onclick="barcode('${var.GOOD_ID}','${var.BARCODE}');"><img style="cursor:pointer;" width="15" src="static/images/barcode.png"  title="商品条形码"/></a>
 											</td>
+											<td class='center'>${var.GOODCODE}</td>
 											<td class='center'>${var.BARCODE}</td>
 											<td class='center'>${var.GOODSPECIF}</td>
 											<td class='center'>${var.UNITNAME}</td>
@@ -385,6 +390,29 @@
 		//导出excel
 		function toExcel(){
 			window.location.href='<%=basePath%>goods/excel.do';
+		}
+		
+		//打开上传excel页面
+		function fromExcel(){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="EXCEL 导入到数据库";
+			 diag.URL = '<%=basePath%>goods/goUploadExcel.do';
+			 diag.Width = 300;
+			 diag.Height = 150;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 if('${page.currentPage}' == '0'){
+						 top.jzts();
+						 setTimeout("self.location.reload()",100);
+					 }else{
+						 nextPage(${page.currentPage});
+					 }
+				}
+				diag.close();
+			 };
+			 diag.show();
 		}
 	</script>
 

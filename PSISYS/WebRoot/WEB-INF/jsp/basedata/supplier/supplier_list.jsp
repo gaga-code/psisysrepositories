@@ -48,6 +48,7 @@
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
 								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if>
+								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="fromExcel();" title="从EXCEL导入"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon blue"></i></a></td></c:if>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -61,7 +62,7 @@
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">供应商编号</th>
 									<th class="center">姓名</th>
-									<th class="center">手机</th>
+									<th class="center">电话</th>
 									<th class="center">建档时间</th>
 									<th class="center">地址</th>
 									<th class="center">经销方式</th>
@@ -86,7 +87,7 @@
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.SUPPLIERCODE}</td>
 											<td class='center'>${var.SUPPLIERNAME}</td>
-											<td class='center'>${var.PHONE}</td>
+											<td class='center'>${var.TELEPHONE}</td>
 											<td class='center'>${var.CREATETIME}</td>
 											<td class='center'>${var.ADDRESS}</td>
 											<c:if test="${var.DISTRIBUTIONMODE == 1 }">
@@ -440,7 +441,32 @@
 		function toExcel(){
 			window.location.href='<%=basePath%>supplier/excel.do';
 		}
+		
+		//打开上传excel页面
+		function fromExcel(){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="EXCEL 导入到数据库";
+			 diag.URL = '<%=basePath%>supplier/goUploadExcel.do';
+			 diag.Width = 300;
+			 diag.Height = 150;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 if('${page.currentPage}' == '0'){
+						 top.jzts();
+						 setTimeout("self.location.reload()",100);
+					 }else{
+						 nextPage(${page.currentPage});
+					 }
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}	
 	</script>
+	
+	
 
 
 </body>

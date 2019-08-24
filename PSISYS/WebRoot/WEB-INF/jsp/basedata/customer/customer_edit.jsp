@@ -55,6 +55,10 @@
 								<td><input type="number" name="PHONE" id="PHONE" value="${pd.PHONE}" maxlength="11" placeholder="这里输入手机" title="手机" style="width:98%;"/></td>
 							</tr>
 							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">公司名称:</td>
+								<td><input type="text" name="COMPANY" id="COMPANY" value="${pd.COMPANY}" maxlength="100" placeholder="这里输入公司" title="公司" style="width:98%;"/></td>
+							</tr>
+							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">信誉程度:</td>
 								<td><input type="number" name="CREDITDEGREE" id="CREDITDEGREE" value="${pd.CREDITDEGREE}" maxlength="11" placeholder="这里输入信誉程度" title="信誉程度" style="width:98%;"/></td>
 							</tr>

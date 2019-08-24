@@ -198,7 +198,7 @@
 	      //每次往下标为flag+1的下面添加tr,因为append是往标签内追加。所以用after
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
-	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODCODE+"'/></td>"
 	                      +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" id="select_wh" >'
 						  +	selecthtml
 						  +'</select></td>'
@@ -208,7 +208,7 @@
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
-	                      + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
+	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
 // 	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
 	                      +"</tr>";
@@ -307,7 +307,7 @@
 	      	if(ISFREE == '1'){
 	        	var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
-	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODCODE+"'/></td>"
 	                      +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" id="select_wh" >'
 						  +	selecthtml
 						  +'</select></td>'
@@ -317,14 +317,14 @@
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='1' checked='checked' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' value='"+NOTE+"'/></td>"
-	                      + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
+	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
 //	                      + "<td><input  type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
 	                      +"</tr>";
 	      	}else{
 	      		var insertStr = "<tr id=" + rowId + ">"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
-		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODCODE+"'/></td>"
 		                +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" id="select_wh">'
 						+ selecthtml
 						+'</select></td>'
@@ -334,7 +334,7 @@
 		                + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly' value='"+AMOUNT+"'/></td>"
 		                + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 		                + "<td class='center'><input type='text' maxlength='100' style='width:100px' value='"+NOTE+"'/></td>"
-		                + "<td style='display:none'><input type='hidden' value='"+GOODCODE+"'/></td>"
+		                + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
 		                + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
 		                +"</tr>";
 	      	}
@@ -487,7 +487,7 @@
 	  
 		function addgoods(){
 			//如果没有选择仓库，不能选择商品
-			var wh = $("#WAREHOUSE_ID").val();
+		/* 	var wh = $("#WAREHOUSE_ID").val();
 			if(wh ==""){
 				$("#tishi").tips({
 					side:3,
@@ -497,13 +497,12 @@
 		        });
 				//$("#WAREHOUSE_ID").focus();
 				return false;
-			}
-			
+			} */
 			top.jzts();
 			var diag = new top.Dialog();
 			diag.Drag=true;
 			diag.Title ="查看商品信息";
-			diag.URL = '<%=basePath%>salebill/goaddgoods.do?WAREHOUSE_ID=' + wh;
+			diag.URL = '<%=basePath%>salebill/goaddgoods.do?WAREHOUSE_ID=';
 			diag.Width = 1000;
 			diag.Height = 800;
 			diag.Modal = true;				//有无遮罩窗口

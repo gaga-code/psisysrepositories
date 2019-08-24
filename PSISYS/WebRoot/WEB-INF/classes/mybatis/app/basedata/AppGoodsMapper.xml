@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppGoodsMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		base_good
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		GOOD_ID,
+		PK_SOBOOKS,
+		USER_ID,
+		GOODTYPE_ID,
+		GOODCODE,
+		GOODNAME,
+		BARCODE,
+		SIMPLENAME,
+		SUBGZ_ID,
+		GOODSPECIF,
+		CUNIT_ID,
+		GOODTYPECODE,
+		FZUNIT_ID,
+		YICODE,
+		UNITPROP,
+		SUPPLIER_ID,
+		NOTE,
+		LASTPPRICE,
+		CPRICE,
+		RPRICE,
+		LFZUPPRICE,
+		FZUCPRICE,
+		MPRICE,
+		STOCKNUM,
+		STOCKUPNUM,
+		STOCKDOWNNUM
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{GOOD_ID},	
+		#{PK_SOBOOKS},	
+		#{USER_ID},	
+		#{GOODTYPE_ID},	
+		#{GOODCODE},	
+		#{GOODNAME},	
+		#{BARCODE},	
+		#{SIMPLENAME},	
+		#{SUBGZ_ID},	
+		#{GOODSPECIF},	
+		#{CUNIT_ID},	
+		#{GOODTYPECODE},	
+		#{FZUNIT_ID},	
+		#{YICODE},	
+		#{UNITPROP},	
+		#{SUPPLIER_ID},	
+		#{NOTE},	
+		#{LASTPPRICE},	
+		#{CPRICE},	
+		#{RPRICE},	
+		#{LFZUPPRICE},	
+		#{FZUCPRICE},	
+		#{MPRICE},	
+		#{STOCKNUM},	
+		#{STOCKUPNUM},	
+		#{STOCKDOWNNUM}
+	</sql>
+	
+	
+	<!-- 列表 -->
+	<select id="checkGoodsStockDownNum" parameterType="page" resultType="pd">
+		select
+			GOODNAME,
+			GOODCODE,
+			STOCKNUM,
+			STOCKDOWNNUM	
+		from 
+		<include refid="tableName"></include>
+			where 1=1
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+			and STOCKDOWNNUM > STOCKNUM
+	</select>
+	<!-- 列表 -->
+	<!-- 列表(全部) -->
+	<select id="listGoodsListByClass" parameterType="pd" resultType="pd">
+		
+			select
+			a.GOODTYPE_ID,
+			a.GOODCODE,
+			a.GOODNAME,	
+			a.GOODPIC,
+			a.GOODSPECIF,
+			a.FZUNIT_ID,
+			a.CPRICE,
+			a.BARCODE,
+			a.RPRICE,
+			a.CUNIT_ID,
+			a.STOCKNUM,
+			a.FZUNIT_ID,
+			a.UNITPROP,
+			a.PK_SOBOOKS,
+			b.TYPENAME,
+			c.NAME as CUNIT,
+			d.NAME as FZUNIT
+		from 
+		base_good as a left join base_goodtype as b
+		on a.GOODTYPE_ID =b.GOODTYPE_ID
+		left join cp_spunit as c on c.SPUNIT_ID=a.CUNIT_ID
+		left join cp_spunit as d on d.SPUNIT_ID=a.FZUNIT_ID
+		where
+		    b.TYPENAME=#{TYPENAME}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
+			limit #{pageNum},10
+	</select>
+	
+<select id="listGoodsListByName" parameterType="pd" resultType="pd">
+			select
+			a.GOODTYPE_ID,
+			a.GOODCODE,
+			a.GOODNAME,	
+			a.GOODPIC,
+			a.GOODSPECIF,
+			a.FZUNIT_ID,
+			a.CPRICE,
+			a.RPRICE,
+			a.CUNIT_ID,
+			a.BARCODE,
+			a.STOCKNUM,
+			a.FZUNIT_ID,
+			a.UNITPROP,
+			a.PK_SOBOOKS,
+			b.TYPENAME,
+			c.NAME as CUNIT,
+			d.NAME as FZUNIT
+		from 
+		base_good as a left join base_goodtype as b
+		on a.GOODTYPE_ID=b.GOODTYPE_ID
+		left join cp_spunit as c on c.SPUNIT_ID=a.CUNIT_ID
+		left join cp_spunit as d on d.SPUNIT_ID=a.FZUNIT_ID
+		where
+			a.GOODNAME like concat('%',#{keyword},'%')
+			or b.TYPENAME like concat('%',#{keyword},'%')
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
+			limit #{pageNum},10
+	</select>
+	
+	<select id="listGoods" parameterType="pd" resultType="pd">
+			select
+			a.GOODTYPE_ID,
+			a.GOODCODE,
+			a.GOODNAME,	
+			a.GOODPIC,
+			a.GOODSPECIF,
+			a.FZUNIT_ID,
+			a.CPRICE,
+			a.RPRICE,
+			a.BARCODE,
+			a.CUNIT_ID,
+			a.STOCKNUM,
+			a.FZUNIT_ID,
+			a.UNITPROP,
+			a.PK_SOBOOKS,
+			b.TYPENAME,
+			c.NAME as CUNIT,
+			d.NAME as FZUNIT
+		from 
+		base_good as a left join base_goodtype as b
+		on  a.GOODTYPE_ID=b.GOODTYPE_ID
+		left join cp_spunit as c on c.SPUNIT_ID=a.CUNIT_ID
+		left join cp_spunit as d on d.SPUNIT_ID=a.FZUNIT_ID
+		where
+			a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
+			limit #{pageNum},10
+	</select>
+	
+	<update id="editGoodsPhoto" parameterType="pd">
+		update base_good set GOODPIC=#{GOODPIC} 
+		where GOODCODE=#{GOODCODE}
+		and PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
+	</update>
+</mapper>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppSalebillMapper">
+	
+	
+	<!--表名 -->
+	<sql id="tableName">
+		psi_salebill
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		SALEBILL_ID,
+		PK_SOBOOKS,
+		LDATE,
+		BILLCODE,
+		CUSTOMER_ID,
+		USER_ID,
+		WAREHOUSE_ID,
+		ALLAMOUNT,
+		BILLTYPE,
+		BILLSTATUS,
+		PAIDAMOUNT,
+		UNPAIDAMOUNT,
+		THISPAY,
+		SUBBRANCH,
+		PAYDATE,
+		CUSBILLNO,
+		TOADDRESS,
+		NOTE,
+		ISSETTLEMENTED
+	</sql>
+	
+	<select id="listDataAndNumAndPrice" parameterType="pd" resultType="pd">
+		select a.PNUMBER,a.AMOUNT,a.CREATETIME,d.NAME as UNIT
+		from psi_salebillbody as a left join psi_salebill as b on a.SALEBILL_ID=b.SALEBILL_ID
+		left join base_good as c  on c.GOODCODE=a.GOODCODE_ID
+		left join cp_spunit as d on d.SPUNIT_ID=c.CUNIT_ID 
+		where a.GOODCODE_ID=#{GOODCODE}
+		 and a.PK_SOBOOKS=#{PK_SOBOOKS} 
+		and IFNULL(a.dr,0)=0  
+		ORDER BY a.CREATETIME desc limit 0,5;
+		
+	</select>
+	
+	<select id="listSaleInfoByToday" parameterType="pd" resultType="pd">
+		select c.GOODCODE, c.GOODNAME,sum(a.PNUMBER) as PNUMBER,sum(a.AMOUNT) as AMOUNT,sum(a.PNUMBER)*(a.UNITPRICE_ID-c.DEF1) as 	maoLi,d.NAME,b.BILLTYPE,count(d.NAME) as NUM
+		from psi_salebillbody as  a left join psi_salebill as b on a.SALEBILL_ID=b.SALEBILL_ID
+		left join base_good as c on a.GOODCODE_ID =c.GOODCODE
+		left join cp_spunit as d on d.SPUNIT_ID=c.CUNIT_ID
+		where  a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		and b.BILLTYPE=#{BILLTYPE}
+		GROUP BY c.GOODCODE
+		
+	</select>
+	
+	<select id="listSaledGoodsBySTT" parameterType="pd" resultType="pd">
+		select a.GOODCODE_ID, c.GOODPIC ,c.GOODNAME,sum(a.AMOUNT) as ALLAMOUNT ,sum( a.PNUMBER ) as 	PNUMBER, count(*) as NUM, sum(a.PNUMBER)*(a.UNITPRICE_ID-c.DEF1) as maoLi
+		from psi_salebillbody as a left join psi_salebill as b on 	a.SALEBILL_ID=b.SALEBILL_ID 
+		left join  	base_good as c on     a.GOODCODE_ID=c.GOODCODE 
+		left join   base_goodtype as d on c.GOODTYPE_ID=d.GOODTYPE_ID
+		where 
+		  a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and b.BILLTYPE=#{BILLTYPE}
+		and IFNULL(a.dr,0)=0 
+		<if test="yearMouth != null and yearMouth != '' "> 
+			and date_format(a.LASTTIME,'%Y-%m')=#{yearMouth}
+		</if>
+		<if test="startTime!=null and startTime!=''">
+			<if test="endTime!=null and endTime!=''">
+			 and date_format(a.LASTTIME,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime}
+			</if>
+		</if>
+		<if test="TYPENAME!=null and TYPENAME!='' ">
+			and d.TYPENAME like concat('%',#{TYPENAME},'%')
+		</if> 
+			GROUP BY a.GOODCODE_ID
+		<if test="sortType==1">
+			ORDER BY ALLAMOUNT desc
+		</if>
+		<if test="sortType==2">
+			ORDER BY saleNum  desc
+		</if>
+		<if test="sortType==3">
+			ORDER BY NUM desc
+		</if>
+		<if test="sortType==4">
+			ORDER BY maoLi desc
+		</if>
+			
+	</select>
+	
+	<select id="listsalebill" parameterType="pd" resultType="pd">
+		SELECT a.SALEBILL_ID, a.BILLCODE,b.NAME ,c.CUATOMERNAME,a.NOTE,date_format(a.CREATETIME,'%Y-%m-%d') as CREATETIME ,a.ALLAMOUNT
+		from 
+		psi_salebill as a left join sys_user as b on a.USER_ID=b.USER_ID
+		left join base_customer as c on a.CUSTOMER_ID=c.CUSTOMER_ID
+		where a.BILLTYPE='2'
+		and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
+		<if test="lastStart!=null and lastStart!=''">
+			<if test="lastEnd!=null and lastEnd!=''">
+				 and date_format(a.CREATETIME,'%Y-%m-%d') BETWEEN #{lastStart} and #{lastEnd}
+			</if>
+		</if>
+		<if test="date!=null and date!='' ">
+			and date_format(a.CREATETIME,'%Y-%m')=#{date}
+		</if>
+	</select>
+	
+	<select id="listsalebillBody" parameterType="pd" resultType="pd">
+		select b.GOODCODE,b.GOODNAME, b.GOODSPECIF ,b.RPRICE, c.NAME as UNIT,a.PNUMBER,a.AMOUNT,d.WHNAME,a.NOTE
+		from  psi_salebillbody as a left join base_good as b  on a.GOODCODE_ID=b.GOODCODE 
+		left join cp_spunit as c on c.SPUNIT_ID = b.CUNIT_ID
+		left join base_warehouse as d on a.WAREHOUSE_ID=d.WAREHOUSE_ID
+		where  a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
+		and a.SALEBILL_ID=#{SALEBILL_ID}
+	</select>
+	
+	
+	<select id="listSalebillByMouth" parameterType="pd" resultType="pd">
+		select CUSTOMERSETBILL_ID,UNPAIDAMOUNT,ALLAMOUNT,SALEBILL_ID,BILLTYPE
+		from psi_salebill
+		where  PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
+		<if test="date!=null and date!='' ">
+			and date_format(CREATETIME,'%Y-%m')=#{date}
+		</if>
+	</select>
+	
+	<select id="findPureAmountById" parameterType="String" resultType="pd">
+		select sum((a.AMOUNT-b.DEF1*a.PNUMBER)) as pureamount,sum(a.PNUMBER) as pnumber
+		from psi_salebillbody as a left join base_good as b on a.GOODCODE_ID=b.GOODCODE
+		where SALEBILL_ID=#{Id}
+	</select>
+	
+	<select id="listSaleInfoDayByMouth" parameterType="pd" resultType="pd">
+		select CUSTOMERSETBILL_ID,UNPAIDAMOUNT,ALLAMOUNT,SALEBILL_ID,BILLTYPE
+		from psi_salebill
+		where  PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
+		<if test="date!=null and date!='' ">
+			and date_format(CREATETIME,'%Y-%m-%d')=#{date}
+		</if>
+	</select>
+	
+	<select id="listSaledByCustomer" parameterType="pd" resultType="pd">
+		select a.GOODCODE_ID, c.GOODPIC ,c.GOODNAME,a.AMOUNT , a.PNUMBER ,a.PNUMBER*(a.UNITPRICE_ID-c.DEF1) as 	MONEY,
+		d.CUATOMERNAME,d.TELEPHONE,d.CUSTOMERCODE
+		from psi_salebillbody as a left join psi_salebill as b on 	a.SALEBILL_ID=b.SALEBILL_ID 
+		left join  	base_good as c on     a.GOODCODE_ID=c.GOODCODE 
+		left join base_customer as d on d.CUSTOMER_ID = b.CUSTOMER_ID
+		where 
+		  a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and b.BILLTYPE=#{BILLTYPE}
+		and IFNULL(a.dr,0)=0 
+		and date_format(a.LASTTIME,'%Y-%m')='2019-08'
+		<if test="yearMouth != null and yearMouth != '' "> 
+			and date_format(a.LASTTIME,'%Y-%m')=#{yearMouth}
+		</if>
+		<if test="startTime!=null and startTime!=''">
+			<if test="endTime!=null and endTime!=''">
+			 and date_format(a.LASTTIME,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime}
+			</if>
+		</if>
+		<if test="sortType==1">
+			ORDER BY ALLAMOUNT desc
+		</if>
+		<if test="sortType==2">
+			ORDER BY PNUMBER  desc
+		</if>
+		<if test="sortType==3">
+			ORDER BY MONEY desc
+		</if>
+		
+	</select>
+	
+	
+	<select id="listSaledByUser" parameterType="pd" resultType="pd">	
+		select a.GOODCODE_ID, c.GOODPIC ,c.GOODNAME,a.AMOUNT , a.PNUMBER ,a.PNUMBER*(a.UNITPRICE_ID-c.DEF1) as 	MONEY,
+		d.NAME,e.ENTERPRISENAME,d.USER_ID
+		from psi_salebillbody as a left join psi_salebill as b on 	a.SALEBILL_ID=b.SALEBILL_ID 
+		left join  	base_good as c on     a.GOODCODE_ID=c.GOODCODE 
+		left join  sys_user as d on d.USER_ID= b.USER_ID
+		left join  base_sobooks as e on e.SOBOOKS_ID = d.PK_SOBOOKS
+		where 
+		  a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and b.BILLTYPE=#{BILLTYPE}
+		and IFNULL(a.dr,0)=0 
+		and date_format(a.LASTTIME,'%Y-%m')='2019-08'
+		<if test="yearMouth != null and yearMouth != '' "> 
+			and date_format(a.LASTTIME,'%Y-%m')=#{yearMouth}
+		</if>
+		<if test="startTime!=null and startTime!=''">
+			<if test="endTime!=null and endTime!=''">
+			 and date_format(a.LASTTIME,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime}
+			</if>
+		</if>
+		<if test="sortType==1">
+			ORDER BY ALLAMOUNT desc
+		</if>
+		<if test="sortType==2">
+			ORDER BY PNUMBER  desc
+		</if>
+		<if test="sortType==3">
+			ORDER BY MONEY desc
+		</if>
+		
+	</select>
+	
+	
+	
+</mapper>

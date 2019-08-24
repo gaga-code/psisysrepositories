@@ -48,6 +48,7 @@
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
 								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if>
+								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="fromExcel();" title="从EXCEL导入"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon blue"></i></a></td></c:if>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -113,6 +114,12 @@
 													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.CUSTOMER_ID}');">
 														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
 													</a>
+													</c:if>
+													<c:if test="${QX.duizhang == 1 }">
+														<a class="btn btn-xs btn-success" title="对账单" onclick="duizhang('${var.CUSTOMER_ID}');">
+															对账单
+														</a>
+														
 													</c:if>
 													<c:if test="${QX.del == 1 }">
 													<a class="btn btn-xs btn-danger" onclick="del('${var.CUSTOMER_ID}');">
@@ -276,6 +283,15 @@
 			});
 		});
 		
+		
+		//打印对账单
+		function duizhang(CUSTOMER_ID){
+			bootbox.confirm("确定要打印客户对账单吗?", function(result) {
+				if(result) {
+					window.location.href='<%=basePath%>daying/duizhang.do?CUSTOMER_ID='+CUSTOMER_ID;
+				}
+			});
+		}
 		//新增
 		function add(){
 			 top.jzts();
@@ -442,6 +458,32 @@
 		function toExcel(){
 			window.location.href='<%=basePath%>customer/excel.do';
 		}
+		
+
+		
+		//打开上传excel页面
+		function fromExcel(){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="EXCEL 导入到数据库";
+			 diag.URL = '<%=basePath%>customer/goUploadExcel.do';
+			 diag.Width = 300;
+			 diag.Height = 150;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 if('${page.currentPage}' == '0'){
+						 top.jzts();
+						 setTimeout("self.location.reload()",100);
+					 }else{
+						 nextPage(${page.currentPage});
+					 }
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}	
+		
 	</script>
 
 

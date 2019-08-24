@@ -52,6 +52,10 @@
 								<td style="padding-top: 13px;">${pd.PHONE}</td>
 							</tr>
 							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">公司名称:</td>
+								<td style="padding-top: 13px;">${pd.COMPANY}</td>
+							</tr>
+							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">地址:</td>
 								<td style="padding-top: 13px;">${pd.ADDRESS}</td>
 							</tr>

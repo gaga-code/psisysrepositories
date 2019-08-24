@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SalebillBodyMapper">
+	
+	
+	<!--表名 -->
+	<sql id="tableName">
+		psi_salebillbody
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		FGROUP_ID,
+		SALEBILL_ID,
+		GOODCODE_ID,
+		WAREHOUSE_ID,
+		PNUMBER,
+		UNITPRICE_ID,
+		AMOUNT,
+		APPBILLNO,
+		ISFREE,
+		NOTE,
+		BARCODE,
+		PK_SOBOOKS
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{FGROUP_ID},	
+		#{SALEBILL_ID},
+		#{GOODCODE_ID},	
+		#{WAREHOUSE_ID},	
+		#{PNUMBER},	
+		#{UNITPRICE_ID},	
+		#{AMOUNT},	
+		#{APPBILLNO},	
+		#{ISFREE},	
+		#{NOTE},	
+		#{BARCODE},	
+		#{PK_SOBOOKS}
+	</sql>
+	<sql id="InBodyAllField">
+		FGROUP_ID,    
+		SALEBILL_ID,        
+		GOODCODE_ID,       
+		WAREHOUSE_ID,       
+		PNUMBER,           
+		UNITPRICE_ID,      
+		AMOUNT,            
+		APPBILLNO,  
+		ISFREE,       
+		NOTE,          
+		BARCODE,          
+		SETTEDNUMANDID,    
+		PK_SOBOOKS,        
+		DEF1,              
+		DEF2,              
+		DEF3,              
+		DEF4,              
+		DEF5,              
+		CREATETIME,        
+		LASTTIME,          
+		DR
+	</sql>
+	<sql id="InBodyAllFieldValue">
+		#{FGROUP_ID}, 
+		#{SALEBILL_ID},     
+		#{GOODCODE_ID},    
+		#{WAREHOUSE_ID},    
+		#{PNUMBER},         
+		#{UNITPRICE_ID},    
+		#{AMOUNT},          
+		#{APPBILLNO},  
+		#{ISFREE},     
+		#{NOTE},        
+		#{BARCODE},        
+		#{SETTEDNUMANDID},  
+		#{PK_SOBOOKS},      
+		#{DEF1},            
+		#{DEF2},            
+		#{DEF3},            
+		#{DEF4},            
+		#{DEF5},            
+		#{CREATETIME},      
+		#{LASTTIME},        
+		#{DR}
+	</sql>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findInBodyById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="InBodyAllField"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			SALEBILL_ID = #{SALEBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0
+	</select>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set DR = 1
+		where 
+			SALEBILL_ID = #{SALEBILL_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	<!-- 删除-->
+	<update id="updatebodysettleid" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set SETTEDNUMANDID = #{SETTEDNUMANDID}
+		where 
+			FGROUP_ID = #{FGROUP_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	
+		<!-- 修改商品编码 -->
+	<update id="editGOODCODE" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			GOODCODE_ID = #{newGOODCODE}
+		where 
+		GOODCODE_ID = #{GOODCODE}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+	</update>
+	<!-- 修改 -->
+	<update id="salebillbodysnapshotedit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set
+			SALEBILL_ID=#{SALEBILL_ID},        
+			GOODCODE_ID=#{GOODCODE_ID},       
+			WAREHOUSE_ID=#{WAREHOUSE_ID},       
+			PNUMBER=#{PNUMBER},           
+			UNITPRICE_ID=#{UNITPRICE_ID},      
+			AMOUNT=#{AMOUNT},            
+			APPBILLNO=#{APPBILLNO},         
+			ISFREE=#{ISFREE},          
+			NOTE=#{NOTE},          
+			BARCODE=#{BARCODE},          
+			SETTEDNUMANDID=#{SETTEDNUMANDID},    
+			PK_SOBOOKS=#{PK_SOBOOKS},        
+			DEF1=#{DEF1},              
+			DEF2=#{DEF2},              
+			DEF3=#{DEF3},              
+			DEF4=#{DEF4},              
+			DEF5=#{DEF5},              
+			CREATETIME=#{CREATETIME},        
+			LASTTIME=#{LASTTIME},          
+			DR=#{DR}
+		where 
+		PK_SOBOOKS = #{PK_SOBOOKS}
+		and FGROUP_ID=#{FGROUP_ID}
+		and IFNULL(dr,0)=0
+	</update>
+	<!-- 结算一张进货单 -->
+	<update id="settleOneSalebill" parameterType="pd"  >
+		update
+		<include refid="tableName"></include>
+		set 
+			UNPAIDAMOUNT = #{UNPAIDAMOUNT},
+			THISPAY = #{THISPAY},
+			PAIDAMOUNT = #{PAIDAMOUNT},
+			ISSETTLEMENTED = #{ISSETTLEMENTED}
+		where 
+		    SALEBILL_ID = #{SALEBILL_ID}
+		and PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			a.FGROUP_ID,
+			a.SALEBILL_ID,
+			a.GOODCODE_ID,
+			a.WAREHOUSE_ID,
+			a.PNUMBER,
+			a.UNITPRICE_ID,
+			a.AMOUNT,
+			a.APPBILLNO,
+			a.ISFREE,
+			a.NOTE,
+			a.BARCODE,
+			b.GOODNAME,
+			b.WAREHOUSE_IDs,
+			d.WHNAME,
+			c.NAME
+		from 
+		<include refid="tableName"></include> a
+		left join base_good b
+		on a.GOODCODE_ID = b.GOODCODE		
+		left join cp_spunit c
+		on b.CUNIT_ID = c.SPUNIT_ID		
+		left join base_warehouse d
+		on a.WAREHOUSE_ID = d.WAREHOUSE_ID	
+		where 
+			a.SALEBILL_ID = #{SALEBILL_ID}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where
+			1=1
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+		<!-- <if test="USERNAME!=null and USERNAME!=''">
+			and USERNAME = #{USERNAME} 
+		</if> -->
+		<!-- <if test="days!=null and days!=''">几天内
+			and DATE_SUB(CURDATE(), INTERVAL ${days} DAY) &lt;= date(CTIME)
+		</if> -->
+	</select>
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		update 
+		<include refid="tableName"></include>
+		set DR = 1 
+		where 
+			SALEBILL_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</update>
+	<!-- *结算单反审进货单功能 使进货单的单据状态为审核不通过 -->
+	<update id="retrialSalebill" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			BILLSTATUS = 3
+		where 
+		    SALEBILL_ID = #{SALEBILL_ID}
+		    and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</update>
+	
+	<select id="printSalebill"  parameterType="pd" resultType="pd">
+		select c.CUATOMERNAME,	c.ADDRESS as CADDRESS,c.TELEPHONE, e.ADDRESS as GADDRESS,e.ENTERPRISENAME,e.PHONE,b.BILLCODE,i.GOODCODE,
+		i.GOODNAME,i.GOODSPECIF,a.PNUMBER,g.NAME , a.UNITPRICE_ID,a.AMOUNT,i.SUBGZ_ID,a.NOTE,d.WHNAME,u.NAME as USERNAME,b.ALLAMOUNT
+		from psi_salebillbody as a left join psi_salebill as b  on a.SALEBILL_ID= b.SALEBILL_ID
+		left join base_customer as c on b.CUSTOMER_ID =c.CUSTOMER_ID
+		left join base_warehouse as d on a.WAREHOUSE_ID = d.WAREHOUSE_ID
+		left join base_sobooks as e on e.SOBOOKS_ID = b.PK_SOBOOKS
+		left join base_good as i  on  i.GOODCODE =  a.GOODCODE_ID
+		left join cp_spunit as g on g.SPUNIT_ID=i.CUNIT_ID
+		left join sys_user as u on u.USER_ID = b.USER_ID
+		where 
+		    a.SALEBILL_ID = #{SALEBILL_ID}
+		    and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0
+	</select>
+</mapper>

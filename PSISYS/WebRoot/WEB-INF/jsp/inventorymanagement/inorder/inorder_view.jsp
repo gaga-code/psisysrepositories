@@ -102,7 +102,7 @@
 										<tr>
 <%-- 											<td class='center' style="width: 30px;">${vs.index+1}</td> --%>
 											<td class='center'>${var.GOODNAME}</td>
-											<td class='center'>${var.BARCODE}</td>
+											<td class='center'>${var.GOODCODE}</td>
 											<td class='center'>${var.WHNAME}</td>
 											<td class='center'>${var.UNITPRICE_ID}</td>
 											<td class='center'>${var.PNUMBER}</td>
@@ -177,7 +177,7 @@
 // 	        fourthCell = $("#row0 td:eq(3)").html();
 // 	    });
 	
-		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME) {
+		function insertNewRow(GOOD_ID,GOODNAME,GOODCODE,UNITNAME) {
 			 //获取表格有多少行
 	        var rowLength = $("#simple-table tr").length;
 	        //这里的rowId就是row加上标志位的组合。是每新增一行的tr的id。
@@ -185,7 +185,7 @@
 	      //每次往下标为flag+1的下面添加tr,因为append是往标签内追加。所以用after
 	        var insertStr = "<tr id=" + rowId + ">"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODNAME+"'/></td>"
-	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+BARCODE+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODCODE+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
@@ -311,14 +311,14 @@
 				var storage=window.localStorage;
 			    var GOOD_ID=localStorage.getItem("GOOD_ID");
 			    var GOODNAME=localStorage.getItem("GOODNAME");
-			    var BARCODE=localStorage.getItem("BARCODE");
+			    var GOODCODE=localStorage.getItem("GOODCODE");
 			    var UNITNAME=localStorage.getItem("UNITNAME");
 			    window.localStorage.removeItem("GOOD_ID");
 			    window.localStorage.removeItem("GOODNAME");
-			    window.localStorage.removeItem("BARCODE");
+			    window.localStorage.removeItem("GOODCODE");
 			    window.localStorage.removeItem("UNITNAME");
 			    if( GOOD_ID != null)
-			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME);
+			    	insertNewRow(GOOD_ID,GOODNAME,GOODCODE,UNITNAME);
 				diag.close();
 			};
 			diag.show();

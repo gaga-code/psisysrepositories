@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppUserMapper">
+
+	
+	<!--表名 -->
+	<sql id="tableName">
+		SYS_USER
+	</sql>
+	<sql id="roleTableName">
+		SYS_ROLE
+	</sql>
+	<sql id="staffTableName">
+		OA_STAFF
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		USER_ID,
+		USERNAME,
+		PASSWORD,
+		NAME,
+		RIGHTS,
+		YICODE,
+		BIRTHDATEDATE,
+		SEX,
+		EDUCATION,
+		NPLACE,
+		HIREDATE,
+		ROLE_ID,
+		LAST_LOGIN,
+		IP,
+		STATUS,
+		BZ,
+		SKIN,
+		EMAIL,
+		NUMBER,
+		PHONE,
+ 		PK_SOBOOKS
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{USER_ID},
+		#{USERNAME},
+		#{PASSWORD},
+		#{NAME},
+		#{RIGHTS},
+		#{YICODE},
+		#{BIRTHDATEDATE},
+		#{SEX},
+		#{EDUCATION},
+		#{NPLACE},
+		#{HIREDATE},
+		#{ROLE_ID},
+		#{LAST_LOGIN},
+		#{IP},
+		#{STATUS},
+		#{BZ},
+		#{SKIN},
+		#{EMAIL},
+		#{NUMBER},
+		#{PHONE},
+ 		#{PK_SOBOOKS}
+	</sql>
+	
+	<!-- 判断用户名和密码 -->
+	<select id="getUserInfo" parameterType="pd" resultType="pd">
+		select a.USERNAME,a.NAME,a.PASSWORD,a.USER_ID,a.RIGHTS,a.PHONE,a.HIREDATE,b.PHOTO0 from
+		sys_user as a left join sys_userphoto as b on  a.USERNAME=b.USERNAME
+		where  IFNULL(a.dr,0)=0 
+		<if test="USERNAME!=null and PASSWORD!=null and PK_SOBOOKS!=null">
+		and a.USERNAME = #{USERNAME} and a.PASSWORD=#{PASSWORD} and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		</if>
+		limit 1
+	</select>
+	
+	
+	<select id="listUsers" parameterType="pd" resultType="pd">
+		select a.USER_ID,a.NAME,a.ROLE_ID,a.PHONE,a.RIGHTS,b.PHOTO0
+		from sys_user as a left join sys_userphoto as b 
+		on  a.USERNAME=b.USERNAME
+		where PK_SOBOOKS=#{PK_SOBOOKS}
+	</select>
+	
+</mapper>

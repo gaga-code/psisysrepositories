@@ -150,10 +150,13 @@
 													<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
 													</c:if>
 													<div class="hidden-sm hidden-xs btn-group">
-														<c:if test="${QX.InOrdershenpiApproval == 1 }">
+														<c:if test="${QX.SalebillApproval == 1 }">
 														<a class="btn btn-mini btn-success" style="height:26px;" onclick="shenpi('${var.SALEBILL_ID}','${var.BILLSTATUS}');">审批</a>
 														</c:if>
-														<c:if test="${QX.InOrderfanshenApproval == 1 }">
+														<c:if test="${QX.daying == 1 }">
+														<a class="btn btn-mini btn-success"  style="height:26px;" onclick="daying('${var.SALEBILL_ID}');">打印</a>
+														</c:if>
+														<c:if test="${QX.Sailbillfanshen == 1 }">
 														<a class="btn btn-mini btn-danger"  style="height:26px;" onclick="fanshen('${var.SALEBILL_ID}','${var.ISSETTLEMENTED}','${var.BILLSTATUS}');">反审</a>
 														</c:if>
 														<a class="btn btn-xs btn-success" title="查看" onclick="view('${var.SALEBILL_ID}');">
@@ -255,7 +258,7 @@
 								<tr>
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">商品名称</th>
-									<th class="center">商品编号</th>
+									<th class="center">商品编码</th>
 									<th class="center">仓库</th>
 									<th class="center">单价</th>
 									<th class="center">数量</th>
@@ -364,7 +367,7 @@
 	            		html +="<tr id='"+res.varList[i].INORDER_ID+"'>";
 	            		html +="<td class='center' style='width: 30px;'>"+(i+1)+"</td>";
 	            		html +="<td class='center'>"+res.varList[i].GOODNAME+"</td>";
-	            		html +="<td class='center'>"+res.varList[i].BARCODE+"</td>";
+	            		html +="<td class='center'>"+res.varList[i].GOODCODE_ID+"</td>";
 	            		html +="<td class='center'>"+res.varList[i].WHNAME+"</td>";
 	            		html +="<td class='center' id='ALLAMOUNT' >"+res.varList[i].UNITPRICE_ID+"</td>";
 	            		html +="<td class='center' id='UNPAIDAMOUNT'>"+res.varList[i].PNUMBER+"</td>";
@@ -577,6 +580,15 @@
 				
 			}); */
 		}
+		//打印
+		function daying(SALEBILL_ID){
+			bootbox.confirm("确定要打印送货单吗?", function(result) {
+				if(result) {
+					window.location.href='<%=basePath%>daying/createExcel.do?SALEBILL_ID='+SALEBILL_ID;
+				}
+			});
+		}
+		
 		//反审
 		function fanshen(Id,ISSETTLEMENTED,BILLSTATUS){
 			if($("#"+Id).text().match(RegExp(/作废/)) ){
