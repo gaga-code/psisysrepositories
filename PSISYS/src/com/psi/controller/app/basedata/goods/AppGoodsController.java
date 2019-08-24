@@ -329,7 +329,7 @@ public class AppGoodsController extends BaseController {
 			pd.put("PICTURES_ID", this.get32UUID());			//主键
 			pd.put("TITLE", "商品图片");								//标题
 			pd.put("NAME", filename);							//文件名
-			pd.put("PATH", "/"+ffile+"/"+filename);				//路径
+			pd.put("PATH", fullFilename);				//路径
 			pd.put("CREATETIME", Tools.date2Str(new Date()));	//创建时间
 			pd.put("MASTER_ID", MASTER_ID);						//附属与
 			pd.put("BZ", "商品图片");							//备注
