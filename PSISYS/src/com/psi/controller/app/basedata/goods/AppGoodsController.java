@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -78,13 +79,14 @@ public class AppGoodsController extends BaseController {
 	//获取商品表
 	@RequestMapping("/getGoodsList")
 	@ResponseBody
-	public Object getGoodsList( HttpServletRequest request) throws Exception{
+	public HashMap<String,Object> getGoodsList( HttpServletRequest request) throws Exception{
 		PageData pd=new PageData();
 		pd=this.getPageData();
 
 		String path = request.getContextPath();
 		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 		
+		HashMap<String,Object> map =  new HashMap();
 		Session session = Jurisdiction.getSession();
 		Object PK_SOBOOKS;
 		if(pd.getString("PK_SOBOOKS")!=null){
@@ -93,6 +95,8 @@ public class AppGoodsController extends BaseController {
 		     PK_SOBOOKS=session.getAttribute("PK_SOBOOKS");
 		}
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))); 
+		Double TOTALNUM = appGoodsService.findAll(pd);
+		map.put("TOTALNUM", TOTALNUM);
 		List<PageData> lists=appGoodsService.listGoods(pd); //获取商品信息
 		for(int i=0;i<lists.size();i++){
 			String GOODCODE=lists.get(i).getString("GOODCODE");
@@ -106,7 +110,7 @@ public class AppGoodsController extends BaseController {
 			lists.get(i).put("stockNum", fpd);
 			pd.put("PK_SOBOOKS", PK_SOBOOKS);
 			pd.put("GOODCODE", GOODCODE);
-			lists.get(i).put("basePath", basePath);
+			lists.get(i).put("Path", basePath+lists.get(i).getString("GOODPIC"));
 			List<PageData> lpd=appSalelbillService.listDataAndNumAndPrice(pd); //获取商品最近五次销售信息
 			if(lpd!=null&&lpd.size()!=0){
 				  SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -119,19 +123,24 @@ public class AppGoodsController extends BaseController {
 			     lists.get(i).put("PNDlist","");
 			}
 		}
-		
-		return lists;
+		map.put("lists", lists);
+		return map;
 	}
 	//根据类别搜索商品信息
 	@RequestMapping("/getGoodsListByClass")
 	@ResponseBody
-	public Object getGoodsListByClass( HttpServletRequest request) throws Exception{
+	public 	HashMap<String,Object>  getGoodsListByClass( HttpServletRequest request) throws Exception{
 		PageData pd=new PageData();
 		pd=this.getPageData();
 
 		String path = request.getContextPath();
 		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum")));
+		
+		HashMap<String,Object> map =  new HashMap();
+		Double TOTALNUM = appGoodsService.findAllByClass(pd);
+		map.put("TOTALNUM", TOTALNUM);
+		
 		List<PageData> lists=appGoodsService.listGoodsListByClass(pd);//获取商品信息
 		for(int i=0;i<lists.size();i++){
 			String GOODCODE=lists.get(i).getString("GOODCODE");
@@ -146,7 +155,7 @@ public class AppGoodsController extends BaseController {
 				pd.put("PK_SOBOOKS", fpd.get(0).getString("PK_SOBOOKS"));
 			}
 			pd.put("GOODCODE", GOODCODE);
-			lists.get(i).put("basePath", basePath);
+			lists.get(i).put("Path", basePath+lists.get(i).getString("GOODPIC"));
 			List<PageData> lpd=appSalelbillService.listDataAndNumAndPrice(pd); //获取商品最近五次销售信息
 			if(lpd!=null&&lpd.size()!=0){
 			    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -159,7 +168,8 @@ public class AppGoodsController extends BaseController {
 			     lists.get(i).put("PNDlist","");
 			}
 		}
-		return lists;
+		map.put("lists", lists);
+		return map;
 	}
 	
 	//根据名称搜索商品信息
@@ -172,6 +182,13 @@ public class AppGoodsController extends BaseController {
 			PageData pd=new PageData();
 			pd=this.getPageData();
 			pd.put("pageNum", Integer.valueOf(pd.getString("pageNum")));
+			
+
+			HashMap<String,Object> map =  new HashMap();
+			Double TOTALNUM = appGoodsService.findAllByClass(pd);
+			map.put("TOTALNUM", TOTALNUM);
+			
+			
 			List<PageData> lists=appGoodsService.listGoodsListByName(pd);//获取商品信息
 			for(int i=0;i<lists.size();i++){
 				String GOODCODE=lists.get(i).getString("GOODCODE");
@@ -182,7 +199,7 @@ public class AppGoodsController extends BaseController {
 					lists.get(i).put("PostionNum", PostionNum);
 				}*/
 				lists.get(i).put("stockNum", fpd);
-				lists.get(i).put("basePath", basePath);
+				lists.get(i).put("Path", basePath+lists.get(i).getString("GOODPIC"));
 				if(fpd!=null&&fpd.size()!=0){
 					pd.put("PK_SOBOOKS", fpd.get(0).getString("PK_SOBOOKS"));
 				}
