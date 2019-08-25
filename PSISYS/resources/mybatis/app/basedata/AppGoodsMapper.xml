@@ -112,7 +112,6 @@
 		    b.TYPENAME=#{TYPENAME}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
-			and a.STOCKNUM > 0
 			limit #{pageNum},10
 	</select>
 	
@@ -128,7 +127,6 @@
 		    b.TYPENAME=#{TYPENAME}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
-			and a.STOCKNUM > 0
 	</select>
 	
 <select id="listGoodsListByName" parameterType="pd" resultType="pd">
@@ -160,7 +158,6 @@
 			or b.TYPENAME like concat('%',#{keyword},'%')
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
-			and a.STOCKNUM > 0
 			limit #{pageNum},10
 	</select>
 	
@@ -176,7 +173,6 @@
 			a.GOODNAME like concat('%',#{keyword},'%')
 			or b.TYPENAME like concat('%',#{keyword},'%')
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
-			and a.STOCKNUM > 0
 			and IFNULL(a.dr,0)=0 
 	</select>
 	
@@ -207,7 +203,6 @@
 		where
 			a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
-			and a.STOCKNUM > 0
 			limit #{pageNum},10
 	</select>
 	
@@ -220,7 +215,6 @@
 			left join cp_spunit as c on c.SPUNIT_ID=a.CUNIT_ID
 			left join cp_spunit as d on d.SPUNIT_ID=a.FZUNIT_ID
 		where  a.PK_SOBOOKS = #{PK_SOBOOKS}
-			and a.STOCKNUM>0
 			and IFNULL(a.dr,0)=0 
 	</select>
 	
