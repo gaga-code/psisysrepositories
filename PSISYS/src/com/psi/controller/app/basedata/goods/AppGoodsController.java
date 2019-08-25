@@ -230,6 +230,9 @@ public class AppGoodsController extends BaseController {
         PageData pd =new PageData();
         pd= this.getPageData();
 		
+    	String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
+		
         HashMap<String,Object> map =  new HashMap();
 		MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
 		// 获取文件名集合放入迭代器
@@ -293,7 +296,7 @@ public class AppGoodsController extends BaseController {
 			picturesService.save(pd);
 			goodsService.editPic(pd);
 			map.put("Message", "OK");
-			map.put("Path", serverFile);
+			map.put("Path", basePath+ffile+"/"+filename);
 			return map;
 		}
 		map.put("Message", "Error");
