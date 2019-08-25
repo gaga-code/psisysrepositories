@@ -162,7 +162,7 @@
 			limit #{pageNum},10
 	</select>
 	
-	<select id="listGoods" parameterType="pd" resultType="pd">
+	<select id="findAllByClass" parameterType="pd" resultType="Double">
 			select
 			a.GOODTYPE_ID,
 			a.GOODCODE,
@@ -172,8 +172,8 @@
 			a.FZUNIT_ID,
 			a.CPRICE,
 			a.RPRICE,
-			a.BARCODE,
 			a.CUNIT_ID,
+			a.BARCODE,
 			a.STOCKNUM,
 			a.FZUNIT_ID,
 			a.UNITPROP,
@@ -181,6 +181,20 @@
 			b.TYPENAME,
 			c.NAME as CUNIT,
 			d.NAME as FZUNIT
+		from 
+		base_good as a left join base_goodtype as b
+		on a.GOODTYPE_ID=b.GOODTYPE_ID
+		left join cp_spunit as c on c.SPUNIT_ID=a.CUNIT_ID
+		left join cp_spunit as d on d.SPUNIT_ID=a.FZUNIT_ID
+		where
+			a.GOODNAME like concat('%',#{keyword},'%')
+			or b.TYPENAME like concat('%',#{keyword},'%')
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
+	</select>
+	
+	<select id="listGoods" parameterType="pd" resultType="pd">
+		select count(*) as TOTALNUM
 		from 
 		base_good as a left join base_goodtype as b
 		on  a.GOODTYPE_ID=b.GOODTYPE_ID

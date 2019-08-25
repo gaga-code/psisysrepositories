@@ -22,4 +22,7 @@ public interface AppGoodsManager {
 
 	Double findAllByClass(PageData pd) throws Exception;
 
+
+	Double findAllByName(PageData pd) throws Exception;
+
 }
