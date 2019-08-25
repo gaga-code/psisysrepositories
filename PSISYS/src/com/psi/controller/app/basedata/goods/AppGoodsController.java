@@ -94,7 +94,7 @@ public class AppGoodsController extends BaseController {
 		}else{
 		     PK_SOBOOKS=session.getAttribute("PK_SOBOOKS");
 		}
-		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))); 
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10); 
 		Double TOTALNUM = appGoodsService.findAll(pd);
 		map.put("TOTALNUM", TOTALNUM);
 		List<PageData> lists=appGoodsService.listGoods(pd); //获取商品信息
@@ -135,7 +135,7 @@ public class AppGoodsController extends BaseController {
 
 		String path = request.getContextPath();
 		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum")));
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
 		
 		HashMap<String,Object> map =  new HashMap();
 		Double TOTALNUM = appGoodsService.findAllByClass(pd);
@@ -181,7 +181,7 @@ public class AppGoodsController extends BaseController {
 			String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 			PageData pd=new PageData();
 			pd=this.getPageData();
-			pd.put("pageNum", Integer.valueOf(pd.getString("pageNum")));
+			pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
 			
 
 			HashMap<String,Object> map =  new HashMap();
