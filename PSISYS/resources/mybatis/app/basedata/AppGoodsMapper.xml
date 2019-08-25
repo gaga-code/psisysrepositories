@@ -85,7 +85,6 @@
 	<!-- 列表 -->
 	<!-- 列表(全部) -->
 	<select id="listGoodsListByClass" parameterType="pd" resultType="pd">
-		
 			select
 			a.GOODTYPE_ID,
 			a.GOODCODE,
@@ -114,6 +113,21 @@
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
 			limit #{pageNum},10
+	</select>
+	
+	<select id="findAllByClass" parameterType="pd" resultType="Double">
+		select count(*) as TOTALNUM
+		
+		from 
+		base_good as a left join base_goodtype as b
+		on a.GOODTYPE_ID =b.GOODTYPE_ID
+		left join cp_spunit as c on c.SPUNIT_ID=a.CUNIT_ID
+		left join cp_spunit as d on d.SPUNIT_ID=a.FZUNIT_ID
+		where
+		    b.TYPENAME=#{TYPENAME}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
+		
 	</select>
 	
 <select id="listGoodsListByName" parameterType="pd" resultType="pd">
@@ -176,6 +190,18 @@
 			a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
 			limit #{pageNum},10
+	</select>
+	
+	
+	<select id="findAll" parameterType="pd" resultType="Double">
+		select count(*) as TOTALNUM
+		from 
+			base_good as a left join base_goodtype as b
+			on  a.GOODTYPE_ID=b.GOODTYPE_ID
+			left join cp_spunit as c on c.SPUNIT_ID=a.CUNIT_ID
+			left join cp_spunit as d on d.SPUNIT_ID=a.FZUNIT_ID
+		where  a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
 	</select>
 	
 	<update id="editGoodsPhoto" parameterType="pd">

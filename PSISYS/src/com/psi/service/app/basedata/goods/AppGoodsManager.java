@@ -16,4 +16,10 @@ public interface AppGoodsManager {
 
 	void editGoodsPhoto(PageData pd) throws Exception;
 
+
+	Double findAll(PageData pd) throws Exception;
+
+
+	Double findAllByClass(PageData pd) throws Exception;
+
 }

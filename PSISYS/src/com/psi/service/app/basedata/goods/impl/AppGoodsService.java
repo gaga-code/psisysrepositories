@@ -46,4 +46,18 @@ public class AppGoodsService implements AppGoodsManager{
 		
 	}
 
+
+	@Override
+	public Double findAll(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return  (Double)dao.findForObject("AppGoodsMapper.findAll", pd);
+	}
+
+
+	@Override
+	public Double findAllByClass(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return  (Double)dao.findForObject("AppGoodsMapper.findAllByClass", pd);
+	}
+
 }
