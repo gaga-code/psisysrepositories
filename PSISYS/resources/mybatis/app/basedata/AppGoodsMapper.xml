@@ -112,7 +112,7 @@
 		    b.TYPENAME=#{TYPENAME}
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
-			limit #{pageNum},10
+			limit #{pageNum},#{pageSize}
 	</select>
 	
 	<select id="findAllByClass" parameterType="pd" resultType="Double">
@@ -158,7 +158,7 @@
 			or b.TYPENAME like concat('%',#{keyword},'%')
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
-			limit #{pageNum},10
+			limit #{pageNum},#{pageSize}
 	</select>
 	
 	<select id="findAllByName" parameterType="pd" resultType="Double">
@@ -203,7 +203,7 @@
 		where
 			a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0 
-			limit #{pageNum},10
+			limit #{pageNum},#{pageSize}
 	</select>
 	
 	
