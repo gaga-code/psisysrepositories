@@ -84,7 +84,7 @@ public class AppGoodsController extends BaseController {
 		pd=this.getPageData();
 
 		String path = request.getContextPath();
-		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
 		
 		HashMap<String,Object> map =  new HashMap();
 		Session session = Jurisdiction.getSession();
@@ -134,7 +134,7 @@ public class AppGoodsController extends BaseController {
 		pd=this.getPageData();
 
 		String path = request.getContextPath();
-		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
 		
 		HashMap<String,Object> map =  new HashMap();
@@ -178,7 +178,7 @@ public class AppGoodsController extends BaseController {
 		public 	HashMap<String,Object>  getGoodsListByName( HttpServletRequest request) throws Exception{
 
 			String path = request.getContextPath();
-			String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+			String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
 			PageData pd=new PageData();
 			pd=this.getPageData();
 			pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);

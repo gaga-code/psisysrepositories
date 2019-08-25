@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -248,9 +249,15 @@ public class AppSalebillController extends BaseController {
 	// 商品分类名称：`TYPENAME`（默认是全部）
 	@RequestMapping("/getSaledGoodsList")
 	@ResponseBody
-	public List<PageData> getSaledGoodsBySTT() throws Exception {
+	public List<PageData> getSaledGoodsBySTT(HttpServletRequest request) throws Exception {
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		
+
+		String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
+		
+		
 		if (pd.getString("sortType") == null) { // 默认是销售额 sorttype=1
 			pd.put("sortType", 1);
 		}
@@ -276,6 +283,7 @@ public class AppSalebillController extends BaseController {
 		pd.put("BILLTYPE", 8);
 		List<PageData> list2 = appSalebillService.listSaledGoodsBySTT(pd);
 		for (int i = 0; i < list1.size(); i++) {
+			list1.get(i).put("Path", basePath+list1.get(i).getString("GOODPIC"));
 			for (int j = 0; j < list2.size(); j++) {
 				if (list1.get(i).get("GOODCODE_ID").equals(list2.get(j).get("GOODCODE_ID"))) {
 					double ALLAMOUNT = (Double) list1.get(i).get("ALLAMOUNT") - (Double) list2.get(j).get("ALLAMOUNT");
