@@ -226,10 +226,11 @@ public class AppGoodsController extends BaseController {
 
 	@RequestMapping(value = "/insLetter")
 	@ResponseBody
-	public String insLetter(String details, HttpSession session, HttpServletRequest request) throws Exception {
+	public HashMap<String,Object> insLetter(String details, HttpSession session, HttpServletRequest request) throws Exception {
         PageData pd =new PageData();
         pd= this.getPageData();
 		
+        HashMap<String,Object> map =  new HashMap();
 		MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
 		// 获取文件名集合放入迭代器
 		Iterator<String> files = mRequest.getFileNames();
@@ -250,7 +251,7 @@ public class AppGoodsController extends BaseController {
 	        // 需要上传的相对地址（application.properties中获取）
 	      //  String relativePath = "letterImg";
 			String  ffile = DateUtil.getDays();
-	    	String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG +"/"+ffile+"/";		//文件上传路径
+	    	String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG +ffile;		//文件上传路径
 	        // 文件夹是否存在，不存在就创建
 	        File dir = new File(filePath);
 	        if (!dir.exists())
@@ -263,7 +264,7 @@ public class AppGoodsController extends BaseController {
 	        String filename = java.util.UUID.randomUUID().toString() + "." + fileExtension;
 	 
 	        // 文件全名
-	        String fullFilename = dir.getAbsolutePath() + filename;
+	        String fullFilename = dir.getAbsolutePath() + "/"+filename;
 	 
 	 
 	        // 保存图片
@@ -291,10 +292,12 @@ public class AppGoodsController extends BaseController {
 			pd.put("ORDER_BY", 1);								//排序
 			picturesService.save(pd);
 			goodsService.editPic(pd);
-			return "OK";
-			
+			map.put("Message", "OK");
+			map.put("Path", serverFile);
+			return map;
 		}
-		return "ERROR";
+		map.put("Message", "Error");
+		return map;
 	}
 
 
