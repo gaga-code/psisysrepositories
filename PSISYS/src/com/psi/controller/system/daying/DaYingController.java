@@ -1,6 +1,7 @@
 package com.psi.controller.system.daying;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -431,10 +432,13 @@ public class DaYingController extends BaseController{
         sheet.addMergedRegion(new CellRangeAddress(nowrow,nowrow,1,10));
         
         
-        setSizeColumn(sheet);
+      //  setSizeColumn(sheet);
         //sheet表加密：等效excel的审阅菜单下的保护工作表
         //sheet.protectSheet(new String("333"));//333是密码
-        
+        for(int j = 1; j < 11; j++) {
+            sheet.setColumnWidth(j, MSExcelUtil.pixel2WidthUnits(100)); //设置列宽
+        }
+    
         sheet.protectSheet(get32UUID());
 
         //输出Excel文件
@@ -449,9 +453,17 @@ public class DaYingController extends BaseController{
         output.close();
         
         
-  
-        boolean b= printjpg(file,"1");
-        return b?"OK":"false";
+        
+        String  filePath= PathUtil.getClasspath() + Const.FILEPATHFILE +"songhuodan.xls";
+        FileOutputStream output1=new FileOutputStream(filePath);  
+        wb.write(output1);//写入磁盘  
+        output1.close();  
+        
+        boolean b1 = printjpg(filePath,"1");
+        
+        boolean b2 = deleteFile(filePath);
+        
+        return b1 && b2 ?"OK":"false";
     }
 
  // 自适应宽度(中文支持)
@@ -516,45 +528,18 @@ public class DaYingController extends BaseController{
 		return true;
 	}
 
-	
-/*	public boolean createfile(){
-		JFileChooser fileChooser = new JFileChooser(); // 创建打印作业
-		int state = fileChooser.showOpenDialog(null);
-		if (state == fileChooser.APPROVE_OPTION) {
-			File file = fileChooser.getSelectedFile(); // 获取选择的文件
-			// 构建打印请求属性集
-			HashPrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
-			// 设置打印格式，因为未确定类型，所以选择autosense
-			DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
-			// 查找所有的可用的打印服务
-			PrintService printService[] = PrintServiceLookup.lookupPrintServices(flavor, pras);
-			// 定位默认的打印服务
-			PrintService defaultService = PrintServiceLookup.lookupDefaultPrintService();
-			// 显示打印对话框
-			PrintService service = ServiceUI.printDialog(null, 200, 200,
-					printService, defaultService, flavor, pras);
-			if (service != null){
-				try {
-					DocPrintJob job = service.createPrintJob(); // 创建打印作业
-					FileInputStream fis = new FileInputStream(file); // 构造待打印的文件流
-					DocAttributeSet das = new HashDocAttributeSet();
-					Doc doc = new SimpleDoc(fis, flavor, das);
-					job.print(doc, pras);
-				}catch(Exception e){
-					e.printStackTrace();
-					
-				} 	
-			}
+	public static boolean deleteFile(String fileName) {
+		File file = new File(fileName);
+		if (file.isFile() && file.exists()) {
+			file.delete();
+			System.out.println("删除单个文件" + fileName + "成功！");
+			return true;
+		} else {
+			System.out.println("删除单个文件" + fileName + "失败！");
+			return false;
 		}
-		return true;
 	}
-*/
-	
-	
-	
-	
-	
-	
+
 	
 	
 	//---------------------------------------------------------------------------------
@@ -763,7 +748,7 @@ public class DaYingController extends BaseController{
    
  
       //加入图片
-        String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG+"1566560051.png";
+        String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG+pd.getString("PICTURE");
         byte[] bt = FileUtils.readFileToByteArray(new File(filePath));
         int pictureIdx = wb.addPicture(bt, Workbook.PICTURE_TYPE_PNG);
         CreationHelper helper = wb.getCreationHelper();
@@ -954,10 +939,11 @@ public class DaYingController extends BaseController{
     
         sheet.protectSheet(get32UUID());
 
+
         //输出Excel文件
         OutputStream output=response.getOutputStream();
         response.reset();
-      
+        
         String file= sdf1.format(new Date())+".xls";
         response.setHeader("Content-disposition", "attachment; filename="+file);//文件名这里可以改
         response.setContentType("application/msexcel");
@@ -965,9 +951,17 @@ public class DaYingController extends BaseController{
         output.close();
         
         
-  
-        boolean b= printjpg(file,"1");
-        return b?"OK":"false";
+        
+        String  filePath1= PathUtil.getClasspath() + Const.FILEPATHFILE +"songhuodan.xls";
+        FileOutputStream output1=new FileOutputStream(filePath1);  
+        wb.write(output1);//写入磁盘  
+        output1.close();  
+        
+        boolean b1 = printjpg(filePath1,"1");
+        
+        boolean b2 = deleteFile(filePath1);
+        
+        return b1 && b2 ?"OK":"false";
     }
     
     public static class MSExcelUtil {
