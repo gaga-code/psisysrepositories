@@ -175,7 +175,7 @@ public class AppGoodsController extends BaseController {
 	//根据名称搜索商品信息
 		@RequestMapping("/getGoodsListByName")
 		@ResponseBody
-		public Object getGoodsListByName( HttpServletRequest request) throws Exception{
+		public 	HashMap<String,Object>  getGoodsListByName( HttpServletRequest request) throws Exception{
 
 			String path = request.getContextPath();
 			String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -185,7 +185,7 @@ public class AppGoodsController extends BaseController {
 			
 
 			HashMap<String,Object> map =  new HashMap();
-			Double TOTALNUM = appGoodsService.findAllByClass(pd);
+			Double TOTALNUM = appGoodsService.findAllByName(pd);
 			map.put("TOTALNUM", TOTALNUM);
 			
 			
@@ -217,7 +217,8 @@ public class AppGoodsController extends BaseController {
 				     lists.get(i).put("PNDlist","");
 				}
 			}
-			return lists;
+			map.put("lists", lists);
+			return map;
 		}
 		
 
