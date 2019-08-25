@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -73,13 +74,17 @@ public class AppGoodsController extends BaseController {
 	@Resource(name="appSalebillService")
 	private AppSalebillManager appSalelbillService;
 	
+
 	//获取商品表
 	@RequestMapping("/getGoodsList")
 	@ResponseBody
-	public Object getGoodsList() throws Exception{
+	public Object getGoodsList( HttpServletRequest request) throws Exception{
 		PageData pd=new PageData();
 		pd=this.getPageData();
 
+		String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+		
 		Session session = Jurisdiction.getSession();
 		Object PK_SOBOOKS;
 		if(pd.getString("PK_SOBOOKS")!=null){
@@ -97,10 +102,11 @@ public class AppGoodsController extends BaseController {
 				String PostionNum=fpd.get(i).getString("WHNAME")+"的库存数量："+fpd.get(i).get("STOCK");
 				lists.get(i).put("PostionNum", PostionNum);
 			}*/
+			
 			lists.get(i).put("stockNum", fpd);
 			pd.put("PK_SOBOOKS", PK_SOBOOKS);
 			pd.put("GOODCODE", GOODCODE);
-			
+			lists.get(i).put("basePath", basePath);
 			List<PageData> lpd=appSalelbillService.listDataAndNumAndPrice(pd); //获取商品最近五次销售信息
 			if(lpd!=null&&lpd.size()!=0){
 				  SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -119,9 +125,12 @@ public class AppGoodsController extends BaseController {
 	//根据类别搜索商品信息
 	@RequestMapping("/getGoodsListByClass")
 	@ResponseBody
-	public Object getGoodsListByClass() throws Exception{
+	public Object getGoodsListByClass( HttpServletRequest request) throws Exception{
 		PageData pd=new PageData();
 		pd=this.getPageData();
+
+		String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum")));
 		List<PageData> lists=appGoodsService.listGoodsListByClass(pd);//获取商品信息
 		for(int i=0;i<lists.size();i++){
@@ -137,7 +146,7 @@ public class AppGoodsController extends BaseController {
 				pd.put("PK_SOBOOKS", fpd.get(0).getString("PK_SOBOOKS"));
 			}
 			pd.put("GOODCODE", GOODCODE);
-			
+			lists.get(i).put("basePath", basePath);
 			List<PageData> lpd=appSalelbillService.listDataAndNumAndPrice(pd); //获取商品最近五次销售信息
 			if(lpd!=null&&lpd.size()!=0){
 			    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -156,7 +165,10 @@ public class AppGoodsController extends BaseController {
 	//根据名称搜索商品信息
 		@RequestMapping("/getGoodsListByName")
 		@ResponseBody
-		public Object getGoodsListByName() throws Exception{
+		public Object getGoodsListByName( HttpServletRequest request) throws Exception{
+
+			String path = request.getContextPath();
+			String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 			PageData pd=new PageData();
 			pd=this.getPageData();
 			pd.put("pageNum", Integer.valueOf(pd.getString("pageNum")));
@@ -170,6 +182,7 @@ public class AppGoodsController extends BaseController {
 					lists.get(i).put("PostionNum", PostionNum);
 				}*/
 				lists.get(i).put("stockNum", fpd);
+				lists.get(i).put("basePath", basePath);
 				if(fpd!=null&&fpd.size()!=0){
 					pd.put("PK_SOBOOKS", fpd.get(0).getString("PK_SOBOOKS"));
 				}
@@ -190,83 +203,7 @@ public class AppGoodsController extends BaseController {
 			return lists;
 		}
 		
-	//编辑商品图片路径
-	@RequestMapping("/editGoodsPhoto")
-	@ResponseBody
-	public String editGoodsPhoto(){
-		
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		try{
-		appGoodsService.editGoodsPhoto(pd);
-		}catch(Exception e){
-			return "Error";
-		}
-		return "OK";
-	}
-	
-	
 
-	@RequestMapping(value = "/uploadData")
-	@ResponseBody
-	public String uploadData(HttpServletRequest request) throws Exception {
-	
-		PageData pd = new PageData();
-		pd = this.getPageData();  
-/*		String base64Image  = request.getParameter("IMGCODE"); //图base64编码字符串
-		String base64img = base64Image.substring(22, base64Image.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
-*/		
-		String string1 = null;
-		if(pd.getString("string1")!=null){
-			string1=pd.getString("string1");
-		}
-		String string2;
-		if(pd.getString("string2")!=null){
-			string2=pd.getString("string2");
-			string1+=string2;
-		}
-		String string3;
-		if(pd.getString("string3")!=null){
-			string3=pd.getString("string3");
-			string1+=string3;
-		}
-		
-		String base64img = string1.substring(22, string1.length());//去掉base64前面22个字符 data:image/png;base64,是固定值 
-		
-		String  fileName = "";
-		String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG +"/";		//文件上传路径
-		fileName=this.get32UUID()+".jpg";
-	
-		logger.info(" 图片保存路径："+ filePath);
-		
-		//保存图片
-		//boolean bool = Base64Image.GenerateImage(base64Image, filePath,fileName);
-	//	boolean bool = ImageAnd64Binary.generateImage(base64Image,  filePath+fileName);
-		boolean bool =  Base64Image.toImage(base64img,  filePath+fileName);
-		if(bool){
-			String GOOD_ID= request.getParameter("GOODCODE");
-			pd.put("GOOD_ID", GOOD_ID);
-			PageData p = (PageData) goodsService.findByGOODCODE(pd);
-			String MASTER_ID=p.getString("GOOD_ID");
-			
-			pd.put("PICTURES_ID", this.get32UUID());			//主键
-			pd.put("TITLE", "商品图片");								//标题
-			pd.put("NAME", fileName);							//文件名
-			pd.put("PATH", fileName);				//路径
-			pd.put("CREATETIME", Tools.date2Str(new Date()));	//创建时间
-			pd.put("MASTER_ID", MASTER_ID);						//附属与
-			pd.put("BZ", "商品图片");							//备注
-			pd.put("ORDER_BY", 1);								//排序
-			picturesService.save(pd);
-			goodsService.editPic(pd);
-			return "OK";
-		}
-		
-		return "Error";
-	
-
-	}
-	
 	
 
 	@RequestMapping(value = "/insLetter")
