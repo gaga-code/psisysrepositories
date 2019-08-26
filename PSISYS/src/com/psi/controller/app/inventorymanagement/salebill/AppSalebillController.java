@@ -555,7 +555,7 @@ public class AppSalebillController extends BaseController {
 		pd.put("USER_ID", sale[4]);
 		pd.put("ALLAMOUNT", sale[5]);
 		pd.put("TOADDRESS", sale[6]);
-	
+		pd.put("WAREHOUSE_ID","");
 		
 		pd.put("SALEBILL_ID", this.get32UUID());		//主键
 		pd.put("LDATE",DateUtil.getTime().toString());	//录入日期
