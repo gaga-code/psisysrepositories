@@ -540,7 +540,7 @@ public class AppSalebillController extends BaseController {
 	public String  saveSailbill() throws Exception{
 		String menuUrl = "salebill/list.do"; //菜单地址(权限用)
 		logBefore(logger, Jurisdiction.getUsername()+"新增salebill");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
 		
 		PageData pd = new PageData();
 		pd =  this.getPageData();
