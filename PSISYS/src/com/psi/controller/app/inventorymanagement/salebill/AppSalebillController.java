@@ -554,7 +554,11 @@ public class AppSalebillController extends BaseController {
 		pd.put("CUSTOMER_ID",sale[3]);
 		pd.put("USER_ID", sale[4]);
 		pd.put("ALLAMOUNT", sale[5]);
-		pd.put("TOADDRESS", sale[6]);
+		if(sale.length==7){
+			pd.put("TOADDRESS", sale[6]);	
+		}else{
+			pd.put("TOADDRESS", "");
+		}
 		pd.put("WAREHOUSE_ID","");
 		
 		pd.put("SALEBILL_ID", this.get32UUID());		//主键
