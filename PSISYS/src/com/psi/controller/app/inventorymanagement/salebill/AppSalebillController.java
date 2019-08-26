@@ -19,6 +19,7 @@ import com.psi.controller.base.BaseController;
 import com.psi.service.app.inventorymanagement.customerbill.AppCustomerbillManager;
 import com.psi.service.app.inventorymanagement.salebill.AppSalebillManager;
 import com.psi.util.DateUtil;
+import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
 
 @Controller
@@ -537,21 +538,12 @@ public class AppSalebillController extends BaseController {
 	@RequestMapping("/insertSailbill")
 	@ResponseBody
 	public String  saveSailbill() throws Exception{
+		String menuUrl = "salebill/list.do"; //菜单地址(权限用)
+		logBefore(logger, Jurisdiction.getUsername()+"新增salebill");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
 		
 		PageData pd = new PageData();
 		pd =  this.getPageData();
-		
-		String str = pd.getString("salebill");
-		String[] sale = str.split(",");
-		
-		pd.put("CUSBILLNO", sale[0]);
-		pd.put("PAYDATE",sale[1]);
-		pd.put("NOTE",sale[2]);
-		pd.put("CUSTOMER_ID",sale[3]);
-		pd.put("USER_ID", sale[4]);
-		pd.put("ALLAMOUNT", sale[5]);
-		pd.put("TOADDRESS", sale[6]);
-		pd.put("WAREHOUSE_ID", null);
 		
 		pd.put("SALEBILL_ID", this.get32UUID());		//主键
 		pd.put("LDATE",DateUtil.getTime().toString());	//录入日期
