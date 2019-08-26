@@ -537,7 +537,7 @@ public class AppSalebillController extends BaseController {
 	//出库商品的数据更新到数据库
 	@RequestMapping("/insertSailbill")
 	@ResponseBody
-	public String  saveSailbill() throws Exception{
+	public HashMap<String,Object>  saveSailbill() throws Exception{
 		String menuUrl = "salebill/list.do"; //菜单地址(权限用)
 		logBefore(logger, Jurisdiction.getUsername()+"新增salebill");
 		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
@@ -570,8 +570,10 @@ public class AppSalebillController extends BaseController {
 		pd.put("THISPAY", 0);
 		pd.put("ISSETTLEMENTED", 0);
 		pd = appSalebillService.save(pd);
-		
-		return "OK";
+		HashMap<String,Object> map  = new HashMap();
+		map.put("BILLCODE", pd.get("BILLCODE"));
+		map.put("OK", "OK");
+		return map ;
 	}
 	
 	
