@@ -107,6 +107,7 @@
 		<if test="date!=null and date!='' ">
 			and date_format(a.CREATETIME,'%Y-%m')=#{date}
 		</if>
+		order by a.CREATETIME
 	</select>
 	
 	<select id="listsalebillBody" parameterType="pd" resultType="pd">
