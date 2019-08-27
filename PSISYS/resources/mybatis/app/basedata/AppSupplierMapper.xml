@@ -33,7 +33,7 @@
 	</sql>
 
 	<select id="listSuppliers" parameterType="pd" resultType="pd">
-		select SUPPLIERCODE ,SUPPLIERNAME,COMPANY,PHONE
+		select SUPPLIERCODE ,SUPPLIERNAME,COMPANY,PHONE,SUPPLIER_ID
 		from base_supplier
 		where PK_SOBOOKS=#{PK_SOBOOKS}
 		<if test="keyword!=null and keyword!='' ">
