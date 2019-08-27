@@ -40,6 +40,7 @@ public class AppCustomerController extends BaseController{
 	public List<PageData> getCustomerList() throws Exception{
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
 		List<PageData> list=appCustomerService.listCutomer(pd);
 		return list;
 	}

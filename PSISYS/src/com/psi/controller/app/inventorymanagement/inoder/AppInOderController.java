@@ -305,6 +305,7 @@ public class AppInOderController extends BaseController{
 			String date =sdf.format(new Date());
 			pd.put("date", date);
 		}
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
 		List<PageData> lpd=appInOderService.listInOrder(pd);
 		if(lpd!=null){
 			for(int i=0;i<lpd.size();i++){

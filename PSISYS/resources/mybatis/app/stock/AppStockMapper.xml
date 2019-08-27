@@ -49,6 +49,7 @@
 			where now() >SUBDATE(b.LASTTIME,interval -#{pd.OVERDATE} day)
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.DR,0)=0 
+			limit #{pageNum},10
 	</select>
 	
 	<select id="listGoodsDownNum" parameterType="pd" resultType="pd">	

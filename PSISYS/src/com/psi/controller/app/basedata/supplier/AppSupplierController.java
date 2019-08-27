@@ -24,6 +24,7 @@ public class AppSupplierController extends BaseController {
 	public List<PageData> getSupplierList() throws Exception{
 		PageData pd = new PageData();
 		pd=this.getPageData();
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
 		List<PageData> list= appSupplierService.listSuppliers(pd);
 		return list;
 	}

@@ -39,7 +39,7 @@ public class AppStockController extends BaseController{
 
 		String path = request.getContextPath();
 		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
-		
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
 		List<PageData> list1=appStockService.listGoodsUpDate(pd);//查询积压过久的商品
 		if(list1!=null){
 			for(int i=0;i<list1.size();i++){

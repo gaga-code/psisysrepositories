@@ -192,7 +192,7 @@ public class AppSalebillController extends BaseController {
 			end = new SimpleDateFormat("yyyy-MM-dd").parse(yearmouth + "-" + dayOfMonth);
 		}
 		cal.setTime(start);// 设置日期起始时间
-
+		//int pageNum= Integer.valueOf(pd.getString("pageNum"))*10;
 		List<PageData> list = new ArrayList();
 		while (cal.getTime().getTime() <= end.getTime()) {// 判断是否到结束日期
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -201,7 +201,6 @@ public class AppSalebillController extends BaseController {
 
 			System.out.println(str);// 输出日期结果
 			pd.put("date", str);
-
 			List<PageData> lpd = appSalebillService.listSaleInfoDayByMouth(pd);
 			if (lpd != null && lpd.size() != 0) {
 				PageData p = new PageData();
@@ -279,6 +278,7 @@ public class AppSalebillController extends BaseController {
 			}
 			pd.put("yearMouth", yearMouth);
 		}
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
 		pd.put("BILLTYPE", 2);
 		List<PageData> list1 = appSalebillService.listSaledGoodsBySTT(pd);
 		pd.put("BILLTYPE", 8);
@@ -324,6 +324,7 @@ public class AppSalebillController extends BaseController {
 			String date = sdf.format(new Date());
 			pd.put("date", date);
 		}
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
 		List<PageData> lpd = appSalebillService.listsalebill(pd);
 		if (lpd != null && lpd.size() != 0) {
 			for (int i = 0; i < lpd.size(); i++) {
@@ -360,6 +361,7 @@ public class AppSalebillController extends BaseController {
 			}
 			pd.put("yearMouth", yearMouth);
 		}
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
 		pd.put("BILLTYPE", 2);
 		List<PageData> list1 = appSalebillService.listSaledByCustomer(pd);
 		pd.put("BILLTYPE", 8);
@@ -459,6 +461,7 @@ public class AppSalebillController extends BaseController {
 			}
 			pd.put("yearMouth", yearMouth);
 		}
+		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
 		pd.put("BILLTYPE", 2);
 		List<PageData> list1 = appSalebillService.listSaledByUser(pd);
 		pd.put("BILLTYPE", 8);
