@@ -393,6 +393,7 @@ public class GoodsController extends BaseController {
 				titles.add("拼音编码");  //20
 				titles.add("最后辅助单位进价"); //21
 				titles.add("辅助单位零售价"); //22
+				titles.add("加权平均价");//23
 				titles.add("备注");//23
 				titles.add("帐套");//24
 				titles.add("经手人");//25
@@ -425,10 +426,11 @@ public class GoodsController extends BaseController {
 					vpd.put("var20", goodsList.get(i).get("YICODE").toString());//	20
 					vpd.put("var21", goodsList.get(i).get("LFZUPPRICE").toString());//21	
 					vpd.put("var22", goodsList.get(i).get("FZUCPRICE").toString());//	22
-					vpd.put("var23", goodsList.get(i).getString("NOTE"));//	23
-					vpd.put("var24", goodsList.get(i).getString("ENTERPRISENAME"));//24	
+					vpd.put("var23", goodsList.get(i).getString("DEF1"));
+					vpd.put("var24", goodsList.get(i).getString("NOTE"));//	23
+					vpd.put("var25", goodsList.get(i).getString("ENTERPRISENAME"));//24	
 					vpd.put("var25", goodsList.get(i).getString("NAME"));//	25
-					vpd.put("var26", goodsList.get(i).getString("GOODTYPE_ID"));//26	
+					vpd.put("var27", goodsList.get(i).getString("GOODTYPE_ID"));//26	
 					
 					String  wid=goodsList.get(i).getString("WAREHOUSE_IDs");//27
 					String[] str=wid.split(",");
@@ -550,16 +552,17 @@ public class GoodsController extends BaseController {
 				pd.put("YICODE", listPd.get(i).get("var19").toString());//	20
 				pd.put("LFZUPPRICE", listPd.get(i).get("var20"));//	21
 				pd.put("FZUCPRICE", listPd.get(i).get("var21"));//	22
-				pd.put("NOTE", listPd.get(i).getString("var22"));//	23
+				pd.put("DEF1", listPd.get(i).getString("var22"));//	23
+				pd.put("NOTE", listPd.get(i).getString("var23"));//	23
 				
-				String PK_NAME=listPd.get(i).getString("var23");//24
+				String PK_NAME=listPd.get(i).getString("var24");//24
 				pd.put("PK_NAME", PK_NAME);
 				String PK_ID=goodsService.findPKBYName(pd);
 				if(PK_ID!=null){
 					pd.put("PK_SOBOOKS",PK_ID);//	24
 				}
 				
-				String username=listPd.get(i).getString("var24");//25
+				String username=listPd.get(i).getString("var25");//25
 				pd.put("username", username);
 				String userId = userService.findByname(pd);
 				if(userId!=null){

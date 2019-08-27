@@ -465,55 +465,53 @@ public class PassTimeSaleBillController extends BaseController {
 		return AppUtil.returnObject(pd, map);
 	}
 	
-	 /**导出到excel
-	 * @param
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/excel")
-	public ModelAndView exportExcel() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"导出salebill到excel");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
-		ModelAndView mv = new ModelAndView();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		Map<String,Object> dataMap = new HashMap<String,Object>();
-		List<String> titles = new ArrayList<String>();
-		titles.add("姓名");	//1
-		titles.add("年龄");	//2
-		titles.add("手机");	//3
-		titles.add("地址");	//4
-		titles.add("QQ");	//5
-		titles.add("微信");	//6
-		titles.add("建档时间");	//7
-		titles.add("消费金额");	//8
-		titles.add("级别");	//9
-		titles.add("备注1");	//10
-		titles.add("备注2");	//11
-		dataMap.put("titles", titles);
-		pd.put("USERNAME", Jurisdiction.getUsername());
-		List<PageData> varOList = salebillService.listAll(pd);
-		List<PageData> varList = new ArrayList<PageData>();
-		for(int i=0;i<varOList.size();i++){
-			PageData vpd = new PageData();
-			vpd.put("var1", varOList.get(i).getString("NAME"));	    //1
-			vpd.put("var2", varOList.get(i).getString("AGE"));	    //2
-			vpd.put("var3", varOList.get(i).get("PHONE").toString());	//3
-			vpd.put("var4", varOList.get(i).getString("ADDRESS"));	    //4
-			vpd.put("var5", varOList.get(i).get("QQ").toString());	//5
-			vpd.put("var6", varOList.get(i).getString("WEIXIN"));	    //6
-			vpd.put("var7", varOList.get(i).getString("CTIME"));	    //7
-			vpd.put("var8", varOList.get(i).get("MONEY").toString());	//8
-			vpd.put("var9", varOList.get(i).getString("LEVEL"));	    //9
-			vpd.put("var10", varOList.get(i).getString("REMARKS1"));	    //10
-			vpd.put("var11", varOList.get(i).getString("REMARKS2"));	    //11
-			varList.add(vpd);
-		}
-		dataMap.put("varList", varList);
-		ObjectExcelView erv = new ObjectExcelView();
-		mv = new ModelAndView(erv,dataMap);
-		return mv;
-	}
 	
+	 /**导出到excel
+		 * @param
+		 * @throws Exception
+		 */
+		@RequestMapping(value="/excel")
+		public ModelAndView exportExcel() throws Exception{
+			logBefore(logger, Jurisdiction.getUsername()+"导出客户对账单到excel");
+		//	if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
+			ModelAndView mv = new ModelAndView();
+			PageData pd = new PageData();
+			pd = this.getPageData();
+			Map<String,Object> dataMap = new HashMap<String,Object>();
+			List<String> titles = new ArrayList<String>();
+			titles.add("单据编号");	//1
+			titles.add("客户名称");	//2
+			titles.add("总金额");	//3
+			titles.add("未付金额");	//4
+			titles.add("已付金额");	//5
+			titles.add("开单日期");	//6
+			titles.add("结款日期");	//7
+			titles.add("备注");	//8
+			titles.add("送货地址");	//9
+			titles.add("经手人");	//10
+			dataMap.put("titles", titles);
+			List<PageData>	varOList = salebillService.listPassTimeSaleBill(pd);	//列出salebill列表
+			List<PageData> varList = new ArrayList<PageData>();
+			for(int i=0;i<varOList.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", varOList.get(i).getString("BILLCODE"));	    //1
+				vpd.put("var2", varOList.get(i).getString("CUATOMERNAME"));	    //2
+				vpd.put("var3", String.valueOf(varOList.get(i).get("ALLAMOUNT")));	//3
+				vpd.put("var4", String.valueOf(varOList.get(i).get("UNPAIDAMOUNT")));	    //4
+				vpd.put("var5", String.valueOf(varOList.get(i).get("PAIDAMOUNT")));	//5
+				vpd.put("var6", varOList.get(i).get("LDATE"));	//6
+				vpd.put("var7", varOList.get(i).get("PAYDATE"));	    //7
+				vpd.put("var8", varOList.get(i).getString("NOTE"));	//8
+				vpd.put("var9", varOList.get(i).getString("TOADDRESS"));	    //9
+				vpd.put("var10", varOList.get(i).getString("NAME"));	    //10
+				varList.add(vpd);
+			}
+			dataMap.put("varList", varList);
+			ObjectExcelView erv = new ObjectExcelView();
+			mv = new ModelAndView(erv,dataMap);
+			return mv;
+		}
+		
 	@InitBinder
 	public void initBinder(WebDataBinder binder){
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");

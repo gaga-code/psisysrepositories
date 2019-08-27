@@ -418,6 +418,37 @@
 		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > IFNULL(b.FREETIME,0)
 		<!-- 未结算或结算中 -->
 		and a.ISSETTLEMENTED !=1  
+		and a.BILLTYPE=2
+		and a.BILLSTATUS = 2
+		order by a.LASTTIME DESC
+	</select>
+	
+	<!-- 客户超期账款的查询-->
+	<select id="listPassTimeSaleBill" parameterType="pd" resultType="pd">
+			select
+			a.LDATE,
+			a.BILLCODE,
+			a.ALLAMOUNT,
+			a.PAIDAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.THISPAY,
+			a.PAYDATE,
+			a.CUSBILLNO,
+			a.TOADDRESS,
+			a.NOTE,
+			b.CUATOMERNAME CUATOMERNAME,
+			c.NAME
+		from 
+		psi_salebill as a 
+		left join base_customer b
+		on a.CUSTOMER_ID = b.CUSTOMER_ID
+		left join sys_user c on c.USER_ID=a.USER_ID
+		where 1=1
+		and a.PK_SOBOOKS = 1
+		and IFNULL(a.dr,0)=0
+		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > IFNULL(b.FREETIME,0)
+		and a.ISSETTLEMENTED !=1  
+		and a.BILLTYPE=2
 		and a.BILLSTATUS = 2
 		order by a.LASTTIME DESC
 	</select>
