@@ -78,7 +78,7 @@ public class AppInOderService implements AppInOderManager {
 	 * @param pd
 	 * @throws Exception
 	 */
-	public void save(PageData pd)throws Exception{
+	public PageData save(PageData pd)throws Exception{
 		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_INORDER_PFIX); //获取该编号类型的最大编号
 		pd.put("BILLCODE", strs[0]);
 		//保存商品
@@ -123,5 +123,6 @@ public class AppInOderService implements AppInOderManager {
 			ppp.put("Code_ID", strs[1]);
 			billCodeService.updateMaxNo(ppp);
 		}
+		return pd;
 	}
 }

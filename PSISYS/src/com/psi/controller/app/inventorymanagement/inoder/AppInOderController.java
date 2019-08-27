@@ -327,7 +327,7 @@ public class AppInOderController extends BaseController{
 	 */
 	@RequestMapping(value="/saveInOrder")
 	@ResponseBody
-	public String save() throws Exception{
+	public HashMap<String,Object> save() throws Exception{
 	
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -349,8 +349,11 @@ public class AppInOderController extends BaseController{
 		pd.put("PAIDAMOUNT", 0);
 		pd.put("THISPAY", 0);
 		pd.put("ISSETTLEMENTED", 0);
-		appInOderService.save(pd);
-		return "OK";
+		pd=appInOderService.save(pd);
+		HashMap<String,Object> map =new HashMap();
+		map.put("OK", "OK");
+		map.put("BILLCODE", pd.get("BILLCODE"));
+		return map;
 	}
 	
 	
