@@ -326,11 +326,21 @@ public class AppInOderController extends BaseController{
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/saveInOrder")
+	@ResponseBody
 	public String save() throws Exception{
 	
-//		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		
+		String str =pd.getString("inorder");
+		String[] inorder=str.split(",");
+		pd.put("SUPPLIERNO", inorder[0]);
+		pd.put("NOTE",  inorder[1]);
+		pd.put("USER_ID",  inorder[2]);
+		pd.put("ALLAMOUNT",  inorder[3]);
+		pd.put("SUPPLIER_ID",  inorder[4]);
+		
+		
 		pd.put("INORDER_ID", this.get32UUID());		//主键
 		pd.put("LDATE",DateUtil.getTime().toString());	//录入日期
 		pd.put("BILLSTATUS", 1);
@@ -340,10 +350,7 @@ public class AppInOderController extends BaseController{
 		pd.put("THISPAY", 0);
 		pd.put("ISSETTLEMENTED", 0);
 		appInOderService.save(pd);
-//		mv.addObject("msg","success");
-//		mv.setViewName("save_result");
-//		mv.setViewName("inventorymanagement/inorder/inorder_list");
-		return "redirect:/inorder/list.do";
+		return "OK";
 	}
 	
 	

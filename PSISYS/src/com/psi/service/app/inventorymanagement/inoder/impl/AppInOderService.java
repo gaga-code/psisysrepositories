@@ -82,7 +82,7 @@ public class AppInOderService implements AppInOderManager {
 		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_INORDER_PFIX); //获取该编号类型的最大编号
 		pd.put("BILLCODE", strs[0]);
 		//保存商品
-		String goodslist = (String) pd.get("goodslist");
+		String goodslist = (String) pd.get("inorderbody");
 		String[] split = goodslist.split("#");
 		//遍历每行数据
 		for(int i = 0; i < split.length; i++) {
