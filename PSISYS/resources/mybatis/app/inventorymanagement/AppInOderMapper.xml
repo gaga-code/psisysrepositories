@@ -79,7 +79,7 @@
 	</select>
 	
 	<select id="listInOrder" parameterType="pd" resultType="pd">
-		SELECT a.INORDER_ID,a.BILLCODE,b.NAME ,c.SUPPLIERNAME,a.NOTE,date_format(a.CREATETIME,'%Y-%m-%d') as CREATETIME,a.ALLAMOUNT
+		SELECT a.INORDER_ID,a.BILLCODE,b.NAME ,c.SUPPLIERNAME,a.NOTE,date_format(a.CREATETIME,'%Y-%m-%d')as CREATETIME,a.ALLAMOUNT
 		from 
 		psi_inorder as a left join sys_user as b on a.USER_ID=b.USER_ID
 		left join base_supplier as c on a.SUPPLIER_ID=c.SUPPLIER_ID
@@ -94,6 +94,7 @@
 		<if test="date!=null and date!='' ">
 			and date_format(a.CREATETIME,'%Y-%m')=#{date}
 		</if>
+		order by a.CREATETIME desc
 	</select>
 	
 	<select id="listInOrderBody" parameterType="pd" resultType="pd">

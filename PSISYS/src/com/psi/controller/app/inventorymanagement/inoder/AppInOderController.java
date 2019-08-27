@@ -311,8 +311,8 @@ public class AppInOderController extends BaseController{
 				pd.put("INORDER_ID", lpd.get(i).get("INORDER_ID"));
 				List<PageData> ipd = appInOderService.listInOrderBody(pd);
 				lpd.get(i).put("listgood", ipd);
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				String CREATETIME=sdf.format(lpd.get(0).getString("CREATETIME"));
+				
+				String CREATETIME=lpd.get(i).getString("CREATETIME");
 				pd.put("CREATETIME", CREATETIME);
 			}
 		}
@@ -339,7 +339,7 @@ public class AppInOderController extends BaseController{
 		pd.put("USER_ID",  inorder[2]);
 		pd.put("ALLAMOUNT",  inorder[3]);
 		pd.put("SUPPLIER_ID",  inorder[4]);
-		
+		pd.put("WAREHOUSE_ID","");
 		
 		pd.put("INORDER_ID", this.get32UUID());		//主键
 		pd.put("LDATE",DateUtil.getTime().toString());	//录入日期
