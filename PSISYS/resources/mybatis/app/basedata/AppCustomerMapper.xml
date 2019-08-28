@@ -101,5 +101,19 @@
    	and IFNULL(a.DR,0)=0
    	limit #{pageNum},10
 	</select>
-
+	
+	<select id="listCutomerNum" parameterType="pd" resultType="int">
+	select count(*)
+	from base_customer as a left join sys_user as b on a.USER_ID=b.USER_ID
+	where 1=1
+	<if test="keyword!=null and keyword!=''">
+		and a.CUATOMERNAME like concat('%',#{keyword},'%')
+		or a.COMPANY like concat('%',#{keyword},'%')
+		or a.PHONE like concat('%',#{keyword},'%')
+		or b.NAME like concat('%',#{keyword},'%')
+	</if>		
+	and a.PK_SOBOOKS = #{PK_SOBOOKS}
+   	and IFNULL(a.DR,0)=0
+	</select>
+	
 </mapper>

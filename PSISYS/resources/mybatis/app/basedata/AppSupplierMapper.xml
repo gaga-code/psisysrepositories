@@ -43,4 +43,16 @@
 		and IFNULL(DR,0)=0
 		limit #{pageNum},10
 	</select>
+	
+	<select id="listSuppliersNum" parameterType="pd" resultType="int">
+		select count(*)
+		from base_supplier
+		where PK_SOBOOKS=#{PK_SOBOOKS}
+		<if test="keyword!=null and keyword!='' ">
+			and SUPPLIERNAME like concat('%',#{keyword},'%')
+			or COMPANY  like concat('%',#{keyword},'%')
+		</if>
+		and IFNULL(DR,0)=0
+
+	</select>
 </mapper>
