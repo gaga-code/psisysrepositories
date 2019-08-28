@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		SYS_FHSMS
+		sys_fhsms
 	</sql>
 	
 	<!-- 字段 -->

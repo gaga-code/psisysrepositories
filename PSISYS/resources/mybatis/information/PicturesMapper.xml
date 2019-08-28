@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		TB_PICTURES
+		tb_pictures
 	</sql>
 	
 	<!-- 字段 -->

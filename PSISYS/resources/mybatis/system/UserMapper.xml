@@ -46,10 +46,10 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		SYS_USER
+		sys_user
 	</sql>
 	<sql id="roleTableName">
-		SYS_ROLE
+		sys_role
 	</sql>
 	<sql id="staffTableName">
 		OA_STAFF

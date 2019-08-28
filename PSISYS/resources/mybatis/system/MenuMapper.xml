@@ -27,7 +27,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		SYS_MENU
+		sys_menu
 	</sql>
 	
 	<!-- 字段 -->
