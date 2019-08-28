@@ -8,4 +8,6 @@ public interface AppSupplierManager {
 
 	List<PageData> listSuppliers(PageData pd) throws Exception;
 
+	int listSuppliersNum(PageData pd) throws Exception;
+
 }

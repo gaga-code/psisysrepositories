@@ -21,4 +21,10 @@ public class AppSupplierService implements AppSupplierManager {
 	public List<PageData> listSuppliers(PageData pd) throws Exception {
 		return (List<PageData>)dao.findForList("AppSupplierMapper.listSuppliers",pd);
 	}
+
+	@Override
+	public int listSuppliersNum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return  (Integer)dao.findForObject("AppSupplierMapper.listSuppliersNum",pd);
+	}
 }

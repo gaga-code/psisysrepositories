@@ -125,4 +125,10 @@ public class AppInOderService implements AppInOderManager {
 		}
 		return pd;
 	}
+
+	@Override
+	public int listInOrderNum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (Integer)dao.findForObject("AppInOderMapper.listInOrderNum", pd);
+	}
 }

@@ -28,5 +28,11 @@ public class AppCustomerService implements AppCustomerManager{
 		return  (List<PageData>)dao.findForList("AppCustomerMapper.listCutomer", pd);
 	}
 
+	@Override
+	public int listCutomerNum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return   (Integer)dao.findForObject("AppCustomerMapper.listCutomerNum", pd);
+	}
+
 
 }

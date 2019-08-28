@@ -29,5 +29,13 @@ public interface AppSalebillManager {
 
 	PageData save(PageData pd) throws Exception;
 
+	int listSaledGoodsBySTTNum(PageData pd) throws Exception;
+
+	int listSaledByCustomerNum(PageData pd) throws Exception;
+
+	int listSaledByUserNum(PageData pd) throws Exception;
+
+	int listsalebillNum(PageData pd) throws Exception;
+
 
 }

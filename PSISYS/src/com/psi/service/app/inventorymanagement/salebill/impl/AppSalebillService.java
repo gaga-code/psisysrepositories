@@ -137,4 +137,29 @@ public class AppSalebillService implements AppSalebillManager {
 		return pd;
 	}
 
+	@Override
+	public int listSaledGoodsBySTTNum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (Integer)dao.findForObject("AppSalebillMapper.listSaledGoodsBySTTNum", pd);
+	
+	}
+
+	@Override
+	public int listSaledByCustomerNum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (Integer)dao.findForObject("AppSalebillMapper.listSaledByCustomerNum", pd);
+	}
+
+	@Override
+	public int listSaledByUserNum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (Integer)dao.findForObject("AppSalebillMapper.listSaledByUserNum", pd);
+	}
+
+	@Override
+	public int listsalebillNum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (Integer)dao.findForObject("AppSalebillMapper.listsalebillNum", pd);
+	}
+
 }

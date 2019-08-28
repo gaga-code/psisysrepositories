@@ -23,4 +23,6 @@ public interface AppInOderManager {
 
 	PageData save(PageData pd) throws Exception;
 
+	int listInOrderNum(PageData pd) throws Exception;
+
 }

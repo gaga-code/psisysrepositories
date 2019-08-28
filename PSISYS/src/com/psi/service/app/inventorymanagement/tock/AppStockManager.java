@@ -12,4 +12,8 @@ public interface AppStockManager {
 
 	List<PageData> listGoodsDownNum(PageData pd) throws Exception;
 
+	int listGoodsUpDateNum(PageData pd) throws Exception;
+
+	int listGoodsDownNums(PageData pd) throws Exception;
+
 }

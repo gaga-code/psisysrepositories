@@ -40,4 +40,18 @@ public class AppStockService implements AppStockManager{
 		return ( List<PageData> )dao.findForList("AppStockMapper.listGoodsDownNum", pd);
 	}
 
+
+	@Override
+	public int listGoodsUpDateNum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return  (Integer)dao.findForList("AppStockMapper.listGoodsUpDateNum", pd);
+	}
+
+
+	@Override
+	public int listGoodsDownNums(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (Integer)dao.findForList("AppStockMapper.listGoodsDownNums", pd);
+	}
+
 }
