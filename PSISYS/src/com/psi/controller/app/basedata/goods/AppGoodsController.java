@@ -135,8 +135,8 @@ public class AppGoodsController extends BaseController {
 
 		String path = request.getContextPath();
 		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
-		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
-		
+		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		pd.put("pageNum", (pageNum-1)*10);
 		HashMap<String,Object> map =  new HashMap();
 		Double TOTALNUM = appGoodsService.findAllByClass(pd);
 		map.put("TOTALNUM", TOTALNUM);
@@ -181,8 +181,8 @@ public class AppGoodsController extends BaseController {
 			String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
 			PageData pd=new PageData();
 			pd=this.getPageData();
-			pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
-			
+			int pageNum= Integer.valueOf(pd.getString("pageNum"));
+			pd.put("pageNum", (pageNum-1)*10);
 
 			HashMap<String,Object> map =  new HashMap();
 			Double TOTALNUM = appGoodsService.findAllByName(pd);

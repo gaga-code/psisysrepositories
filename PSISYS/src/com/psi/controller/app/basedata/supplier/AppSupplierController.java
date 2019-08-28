@@ -25,7 +25,8 @@ public class AppSupplierController extends BaseController {
 	public  HashMap<String,Object> getSupplierList() throws Exception{
 		PageData pd = new PageData();
 		pd=this.getPageData();
-		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		pd.put("pageNum", (pageNum-1)*10);
 		int TOTALNUM = appSupplierService.listSuppliersNum(pd);
 		List<PageData> list= appSupplierService.listSuppliers(pd);
 		HashMap<String,Object> map= new HashMap();

@@ -375,16 +375,30 @@ public class AppSalebillController extends BaseController {
 			pd.put("yearMouth", yearMouth);
 		}
 		int pageNum= Integer.valueOf(pd.getString("pageNum"));
-		pd.put("pageNum", (pageNum-1)*10);
-		pd.put("BILLTYPE", 2);
-		int TOTALNUM=appSalebillService.listSaledByCustomerNum(pd);
 	
+		List<HashMap<String,Object>> list1=getlist(pd,pageNum); //根据分页查询
+		List<HashMap<String,Object>> list2= null;
+		
+		int i=pageNum*10 ;
+		int j=0;
+		for( ;i<list1.size()&&j<10;i++){
+			list2.add(list1.get(i));
+			j++;
+		}
+		HashMap<String,Object> map=new HashMap();
+		map.put("list", list2);
+		map.put("TOTALNUM1", list1.size());
+		return map;
+	}
+	
+	public List<HashMap<String,Object>>  getlist(PageData pd,int pageNum) throws Exception{
+		pd.put("BILLTYPE", 2);
 		List<PageData> list1 = appSalebillService.listSaledByCustomer(pd);
 		pd.put("BILLTYPE", 8);
 		List<PageData> list2 = appSalebillService.listSaledByCustomer(pd);
 		for (int i = 0; i < list1.size(); i++) {
 			for (int j = 0; j < list2.size(); j++) {
-				if (list1.get(i).get("CUSTOMERCODE").equals(list2.get(j).get("CUSTOMERCODE"))) {
+				if (list1.get(i).get("CUSTOMERCODE").equals(list2.get(j).get("CUSTOMERCODE"))) { //客户id相等
 					if (list1.get(i).get("GOODCODE_ID").equals(list2.get(j).get("GOODCODE_ID"))) {
 						double AMOUNT = (Double) list1.get(i).get("AMOUNT") - (Double) list2.get(j).get("AMOUNT");
 						int PNUMBER = Integer.valueOf(list1.get(i).get("PNUMBER").toString())
@@ -448,12 +462,8 @@ public class AppSalebillController extends BaseController {
 				list.add(map);
 			}
 		}
-		HashMap<String,Object> map=new HashMap();
-		map.put("list", list);
-		map.put("TOTALNUM1", TOTALNUM);
-		return map;
+		return list;
 	}
-	
 	// 根据排序类型（销售额/销量/单数/毛利）sorttype=(销售额=1，销量=2，单数=3，毛利=4)
 	// 时间段（默认是当前月） yyyy-MM 2019-8
 	// 商品分类名称：`TYPENAME`（默认是全部）
@@ -480,8 +490,7 @@ public class AppSalebillController extends BaseController {
 			pd.put("yearMouth", yearMouth);
 		}
 		int pageNum= Integer.valueOf(pd.getString("pageNum"));
-		pd.put("pageNum", (pageNum-1)*10);
-		int TOTALNUM=appSalebillService.listSaledByUserNum(pd);
+	
 		pd.put("BILLTYPE", 2);
 		List<PageData> list1 = appSalebillService.listSaledByUser(pd);
 		pd.put("BILLTYPE", 8);
@@ -553,9 +562,16 @@ public class AppSalebillController extends BaseController {
 				list.add(map);
 			}
 		}
+		List<HashMap<String,Object>> list3= null;
+		int i=pageNum*10 ;
+		int j=0;
+		for( ;i<list1.size()&&j<10;i++){
+			list2.add(list1.get(i));
+			j++;
+		}
 		HashMap<String,Object> map=new HashMap();
-		map.put("list", list);
-		map.put("TOTALNUM1", TOTALNUM);
+		map.put("list", list3);
+		map.put("TOTALNUM1", list.size());
 		return map;
 	}
 

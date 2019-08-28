@@ -40,7 +40,8 @@ public class AppCustomerController extends BaseController{
 	public HashMap<String,Object> getCustomerList() throws Exception{
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		pd.put("pageNum", (pageNum-1)*10);
  		int TOTALNUM=appCustomerService.listCutomerNum(pd);
 		List<PageData> list=appCustomerService.listCutomer(pd);
 		HashMap<String,Object> map= new HashMap();
