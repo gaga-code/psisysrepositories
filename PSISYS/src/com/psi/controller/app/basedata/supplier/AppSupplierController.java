@@ -1,5 +1,6 @@
 package com.psi.controller.app.basedata.supplier;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -21,12 +22,16 @@ public class AppSupplierController extends BaseController {
 	
 	@RequestMapping("/getSupplierList")
 	@ResponseBody
-	public List<PageData> getSupplierList() throws Exception{
+	public  HashMap<String,Object> getSupplierList() throws Exception{
 		PageData pd = new PageData();
 		pd=this.getPageData();
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int TOTALNUM = appSupplierService.listSuppliersNum(pd);
 		List<PageData> list= appSupplierService.listSuppliers(pd);
-		return list;
+		HashMap<String,Object> map= new HashMap();
+		map.put("list", list);
+		map.put("TOTALNUM", TOTALNUM);
+		return map;
 	}
 
 }

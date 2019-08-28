@@ -40,12 +40,14 @@ public class AppStockController extends BaseController{
 		String path = request.getContextPath();
 		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int TOTALNUM1=appStockService.listGoodsUpDateNum(pd);
 		List<PageData> list1=appStockService.listGoodsUpDate(pd);//查询积压过久的商品
 		if(list1!=null){
 			for(int i=0;i<list1.size();i++){
 				list1.get(i).put("Path", basePath+list1.get(i).getString("GOODPIC"));
 			}
 		}
+		int TOTALNUM2=appStockService.listGoodsDownNums(pd);
 		List<PageData> list2=appStockService.listGoodsDownNum(pd);//查询商品库存不足
 		if(list2!=null){
 			for(int i=0;i<list2.size();i++){
@@ -55,6 +57,8 @@ public class AppStockController extends BaseController{
 		HashMap<String,Object> map=new HashMap();
 		map.put("list1", list1);
 		map.put("list2", list2);
+		map.put("TOTALNUM1", TOTALNUM1);
+		map.put("TOTALNUM2", TOTALNUM2);
 		return map;
 	}
 	

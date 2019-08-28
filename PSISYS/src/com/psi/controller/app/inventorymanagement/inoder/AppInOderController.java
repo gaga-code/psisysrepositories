@@ -285,7 +285,7 @@ public class AppInOderController extends BaseController{
 	///入库单据（进货单）
 	@RequestMapping("/getInOrder")
 	@ResponseBody
-	public List<PageData> getSailbill() throws Exception{
+	public HashMap<String,Object> getSailbill() throws Exception{
 		PageData pd= new PageData();
 		pd = this.getPageData();
 		
@@ -306,6 +306,7 @@ public class AppInOderController extends BaseController{
 			pd.put("date", date);
 		}
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int TOTALNUM =appInOderService.listInOrderNum(pd);
 		List<PageData> lpd=appInOderService.listInOrder(pd);
 		if(lpd!=null){
 			for(int i=0;i<lpd.size();i++){
@@ -317,7 +318,10 @@ public class AppInOderController extends BaseController{
 				pd.put("CREATETIME", CREATETIME);
 			}
 		}
-		return lpd;
+		HashMap<String,Object> map =new HashMap();
+		map.put("TOTALNUM", TOTALNUM);
+		map.put("list", lpd);
+		return map;
 	}
 	
 	

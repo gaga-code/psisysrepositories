@@ -37,12 +37,16 @@ public class AppCustomerController extends BaseController{
 	
 	@RequestMapping("/getCustomerList")
 	@ResponseBody
-	public List<PageData> getCustomerList() throws Exception{
+	public HashMap<String,Object> getCustomerList() throws Exception{
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int TOTALNUM=appCustomerService.listCutomerNum(pd);
 		List<PageData> list=appCustomerService.listCutomer(pd);
-		return list;
+		HashMap<String,Object> map= new HashMap();
+		map.put("list", list);
+		map.put("TOTALNUM", TOTALNUM);
+		return map;
 	}
 	
 }

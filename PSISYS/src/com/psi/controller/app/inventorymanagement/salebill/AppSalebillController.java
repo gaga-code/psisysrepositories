@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -249,7 +250,7 @@ public class AppSalebillController extends BaseController {
 	// 商品分类名称：`TYPENAME`（默认是全部）
 	@RequestMapping("/getSaledGoodsList")
 	@ResponseBody
-	public List<PageData> getSaledGoodsBySTT(HttpServletRequest request) throws Exception {
+	public  Map<String,Object> getSaledGoodsBySTT(HttpServletRequest request) throws Exception {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		
@@ -279,6 +280,7 @@ public class AppSalebillController extends BaseController {
 			pd.put("yearMouth", yearMouth);
 		}
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int TOTALNUM=appSalebillService.listSaledGoodsBySTTNum(pd);
 		pd.put("BILLTYPE", 2);
 		List<PageData> list1 = appSalebillService.listSaledGoodsBySTT(pd);
 		pd.put("BILLTYPE", 8);
@@ -298,13 +300,16 @@ public class AppSalebillController extends BaseController {
 				}
 			}
 		}
-		return list1;
+		HashMap<String,Object> map=new HashMap();
+		map.put("list1", list1);
+		map.put("TOTALNUM1", TOTALNUM);
+		return map;
 	}
 
 	/// 出库单据（销售单）
 	@RequestMapping("/getSailbill")
 	@ResponseBody
-	public List<PageData> getSailbill() throws Exception {
+	public 	HashMap<String,Object>   getSailbill() throws Exception {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 
@@ -325,6 +330,7 @@ public class AppSalebillController extends BaseController {
 			pd.put("date", date);
 		}
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int TOTALNUM=appSalebillService.listsalebillNum(pd);
 		List<PageData> lpd = appSalebillService.listsalebill(pd);
 		if (lpd != null && lpd.size() != 0) {
 			for (int i = 0; i < lpd.size(); i++) {
@@ -333,7 +339,10 @@ public class AppSalebillController extends BaseController {
 				lpd.get(i).put("listgood", ipd);
 			}
 		}
-		return lpd;
+		HashMap<String,Object> map=new HashMap();
+		map.put("list", lpd);
+		map.put("TOTALNUM1", TOTALNUM);
+		return map;
 	}
 
 	// 根据排序类型（销售额/销量/单数/毛利）sorttype=(销售额=1，销量=2，单数=3，毛利=4)
@@ -341,7 +350,7 @@ public class AppSalebillController extends BaseController {
 	// 商品分类名称：`TYPENAME`（默认是全部）
 	@RequestMapping("/getSaledByCustomer")
 	@ResponseBody
-	public List<HashMap<String,Object>> getSaledByCustomer() throws Exception {
+	public 	HashMap<String,Object>  getSaledByCustomer() throws Exception {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		if (pd.getString("sortType") == null) { // 默认是销售额 sorttype=1
@@ -362,6 +371,7 @@ public class AppSalebillController extends BaseController {
 			pd.put("yearMouth", yearMouth);
 		}
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int TOTALNUM=appSalebillService.listSaledByCustomerNum(pd);
 		pd.put("BILLTYPE", 2);
 		List<PageData> list1 = appSalebillService.listSaledByCustomer(pd);
 		pd.put("BILLTYPE", 8);
@@ -432,8 +442,10 @@ public class AppSalebillController extends BaseController {
 				list.add(map);
 			}
 		}
-		
-		return list;
+		HashMap<String,Object> map=new HashMap();
+		map.put("list", list);
+		map.put("TOTALNUM1", TOTALNUM);
+		return map;
 	}
 	
 	// 根据排序类型（销售额/销量/单数/毛利）sorttype=(销售额=1，销量=2，单数=3，毛利=4)
@@ -441,7 +453,7 @@ public class AppSalebillController extends BaseController {
 	// 商品分类名称：`TYPENAME`（默认是全部）
 	@RequestMapping("/getSaledByUser")
 	@ResponseBody
-	public	List<HashMap<String,Object>>  getSaledByUser() throws Exception {
+	public		HashMap<String,Object>   getSaledByUser() throws Exception {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		if (pd.getString("sortType") == null) { // 默认是销售额 sorttype=1
@@ -462,6 +474,7 @@ public class AppSalebillController extends BaseController {
 			pd.put("yearMouth", yearMouth);
 		}
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int TOTALNUM=appSalebillService.listSaledByUserNum(pd);
 		pd.put("BILLTYPE", 2);
 		List<PageData> list1 = appSalebillService.listSaledByUser(pd);
 		pd.put("BILLTYPE", 8);
@@ -533,8 +546,10 @@ public class AppSalebillController extends BaseController {
 				list.add(map);
 			}
 		}
-		
-		return list;
+		HashMap<String,Object> map=new HashMap();
+		map.put("list", list);
+		map.put("TOTALNUM1", TOTALNUM);
+		return map;
 	}
 
 	//出库商品的数据更新到数据库
