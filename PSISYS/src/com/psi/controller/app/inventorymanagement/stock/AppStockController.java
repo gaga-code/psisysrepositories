@@ -30,36 +30,52 @@ public class AppStockController extends BaseController{
 		return list;
 	}
 
-	// 获取今日商品库存预警信息
-	@RequestMapping("/getGoosWarning")
+	// 获取今日商品库存预警信息 预断货品数 
+	@RequestMapping("/getGoosWarningDown")
 	@ResponseBody
-	public Map<String,Object> getGoosWarning( HttpServletRequest request) throws Exception{
+	public Map<String,Object> getGoosWarningDown( HttpServletRequest request) throws Exception{
 		PageData pd = new PageData();
 		pd=this.getPageData();
 
 		String path = request.getContextPath();
 		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
-		int TOTALNUM1=appStockService.listGoodsUpDateNum(pd);
-		List<PageData> list1=appStockService.listGoodsUpDate(pd);//查询积压过久的商品
-		if(list1!=null){
-			for(int i=0;i<list1.size();i++){
-				list1.get(i).put("Path", basePath+list1.get(i).getString("GOODPIC"));
-			}
-		}
-		int TOTALNUM2=appStockService.listGoodsDownNums(pd);
-		List<PageData> list2=appStockService.listGoodsDownNum(pd);//查询商品库存不足
-		if(list2!=null){
-			for(int i=0;i<list2.size();i++){
-				list2.get(i).put("Path", basePath+list2.get(i).getString("GOODPIC"));
+		int TOTALNUM=appStockService.listGoodsDownNums(pd);
+		List<PageData> list=appStockService.listGoodsDownNum(pd);//查询商品库存不足
+		if(list!=null){
+			for(int i=0;i<list.size();i++){
+				list.get(i).put("Path", basePath+list.get(i).getString("GOODPIC"));
 			}
 		}
 		HashMap<String,Object> map=new HashMap();
-		map.put("list1", list1);
-		map.put("list2", list2);
-		map.put("TOTALNUM1", TOTALNUM1);
-		map.put("TOTALNUM2", TOTALNUM2);
+		map.put("list", list);
+		map.put("TOTALNUM", TOTALNUM);
 		return map;
 	}
+	
+	// 获取今日商品库存预警信息积压货品数
+		@RequestMapping("/getGoosWarningUpdate")
+		@ResponseBody
+		public Map<String,Object> getGoosWarning( HttpServletRequest request) throws Exception{
+			PageData pd = new PageData();
+			pd=this.getPageData();
+
+			String path = request.getContextPath();
+			String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
+			pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+			int TOTALNUM=appStockService.listGoodsUpDateNum(pd);
+			List<PageData> list=appStockService.listGoodsUpDate(pd);//查询积压过久的商品
+			if(list!=null){
+				for(int i=0;i<list.size();i++){
+					list.get(i).put("Path", basePath+list.get(i).getString("GOODPIC"));
+				}
+			}
+			HashMap<String,Object> map=new HashMap();
+			map.put("list", list);
+			map.put("TOTALNUM", TOTALNUM);
+			return map;
+		}
+		
+	
 	
 }
