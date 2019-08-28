@@ -74,7 +74,7 @@
 								<%-- <c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if> --%>
 								
 								<c:if test="${QX.PUSHPASSTIMEBILL == 1 }">
-									<td style="vertical-align:top;padding-left:2px"><a class="btn btn-mini btn-success" onclick="pushpasstimesaletimetocustomer();">推出对账单</a></td>
+									<td style="vertical-align:top;padding-left:2px"><a class="btn btn-mini btn-success" onclick="pushpasstimesaletimetocustomer();">导出Excel</a></td>
 								</c:if>
 							</tr>
 						</table>
@@ -93,7 +93,7 @@
 									<th class="center">未付金额</th>
 									<th class="center">已付金额</th>
 									<th class="center">开单日期</th>
-									<th class="center">借款日期</th>
+									<th class="center">结款日期</th>
 									<th class="center">经手人</th>
 									<th class="center">备注</th>
 									
@@ -520,7 +520,7 @@
 		}
 		
 		function pushpasstimesaletimetocustomer(){
-			
+			window.location.href='<%=basePath%>ptsalebill/excel.do';
 		}
 		
 	</script>

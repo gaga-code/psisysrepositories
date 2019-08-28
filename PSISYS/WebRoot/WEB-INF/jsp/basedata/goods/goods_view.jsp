@@ -29,18 +29,17 @@
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品名称:</td>
-								<td colspan="10" style="padding-top: 13px;">${pd.GOODNAME}</td>
-							</tr>
-							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
-								<td colspan="10" style="padding-top: 13px;">${pd.PSI_NAME}</td>
-							</tr>
-							<tr>
+								<td style="padding-top: 13px;">${pd.GOODNAME}</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品编号:</td>
-								<td style="padding-top: 13px;">${pd.GOODCODE}</td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">简称:</td>
-								<td style="padding-top: 13px;">${pd.SIMPLENAME}</td>
+								<td style="width:280px">${pd.GOODCODE}</td>
 							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">商品简称:</td>
+								<td style="padding-top: 13px;">${pd.SIMPLENAME}</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
+								<td  style="padding-top: 13px;">${pd.PSI_NAME}</td>
+							</tr>
+						
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品规格:</td>
 								<td style="padding-top: 13px;">${pd.GOODSPECIF}</td>
@@ -67,12 +66,11 @@
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
-								<td colspan="10" style="padding-top: 13px;"><div>${pd.SUPPLIER_NAME}</div></td>
-							</tr>
-							<tr>
+								<td style="padding-top: 13px;">${pd.SUPPLIER_NAME}</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
-								<td colspan="10" style="padding-top: 13px;"><div>${pd.NOTE}</div></td>
+								<td  style="padding-top: 13px;">${pd.NOTE}</td>
 							</tr>
+							
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">最后进价:</td>
 								<td style="padding-top: 13px;">${pd.LASTPPRICE}</td>
@@ -93,7 +91,8 @@
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">库存数量:</td>
-								<td colspan="10" style="padding-top: 13px;">${pd.STOCKNUM}</td>
+								<td  style="padding-top: 13px;">${pd.STOCKNUM}</td>
+								
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">库存上限:</td>
@@ -102,13 +101,14 @@
 								<td style="padding-top: 13px;">${pd.STOCKDOWNNUM}</td>
 							</tr>
 							<tr>
-								<td style="width:90px;text-align: right;padding-top: 1px;" id="select_stock_name">仓库:</td>
+								<td style="width:75px;text-align: right;padding-top: 1px;" id="select_stock_name">仓库:</td>
 								<input type="hidden" id="WAREHOUSE_IDs" name="WAREHOUSE_IDs" value="${pd.WAREHOUSE_IDs}"   />
 								<td style="vertical-align:top;" disabled="disabled">
 								 	<select class="chosen-select form-control" disabled="disabled" name="Select_WAREHOUSE_IDs" id="Select_WAREHOUSE_IDs" data-placeholder="请选择仓库" multiple="multiple"  style="vertical-align:top;width: 98%;"  >
 									<option value=""></option>
 								  	</select>
 								</td>
+				
 							</tr>
 						</table>
 						</div>
