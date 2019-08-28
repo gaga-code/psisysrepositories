@@ -71,7 +71,7 @@
 	</select>
 	
 		
-	<select id="listGoodsDownNum" parameterType="pd" resultType="int">	
+	<select id="listGoodsDownNums" parameterType="pd" resultType="int">	
 			select count(*)
 			from base_good as a left join cp_spunit as  b on a.CUNIT_ID=b.SPUNIT_ID
 			where 

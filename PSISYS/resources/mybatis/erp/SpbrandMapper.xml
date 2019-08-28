@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		CP_SPBRAND
+		cp_spbrand
 	</sql>
 	
 	<!-- 字段 -->

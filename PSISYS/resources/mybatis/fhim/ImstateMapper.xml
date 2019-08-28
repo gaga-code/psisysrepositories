@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		IM_IMSTATE
+		im_imstate
 	</sql>
 	
 	<!--数据字典表名 -->

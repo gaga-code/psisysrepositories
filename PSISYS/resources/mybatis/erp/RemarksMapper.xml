@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		ERP_REMARKS
+		erp_remarks
 	</sql>
 	
 	<!-- 字段 -->

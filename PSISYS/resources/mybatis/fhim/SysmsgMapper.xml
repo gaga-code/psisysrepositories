@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		IM_SYSMSG
+		im_sysmsg
 	</sql>
 	
 	<!--个人状态表名 -->

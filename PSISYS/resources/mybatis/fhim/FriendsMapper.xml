@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		IM_FRIENDS
+		im_friends
 	</sql>
 	
 	<!--表名(好友分组) -->

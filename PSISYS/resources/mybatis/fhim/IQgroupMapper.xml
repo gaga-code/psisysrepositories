@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		IM_IQGROUP
+		im_iqgroup
 	</sql>
 	
 	<!--表名(状态) -->

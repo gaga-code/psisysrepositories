@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		DB_FHDB
+		db_fhdb
 	</sql>
 	
 	<!-- 字段 -->

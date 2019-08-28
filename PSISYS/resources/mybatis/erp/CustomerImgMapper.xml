@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		ERP_CUSTOMERIMG
+		erp_customerimg
 	</sql>
 	
 	<!-- 字段 -->

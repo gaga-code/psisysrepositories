@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		ERP_INTOKU
+		erp_intoku
 	</sql>
 	
 	<!-- 字段 -->
