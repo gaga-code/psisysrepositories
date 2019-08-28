@@ -90,8 +90,8 @@
 		</if>
 		limit #{pageNum},10
 	</select>
-	<select id="listSaledGoodsBySTTNum" parameterType="pd" resultType="int">
-		select count(*)
+	<select id="listSaledGoodsBySTTNum" parameterType="pd" resultType="pd">
+		select a.GOODCODE_ID,c.GOODNAME
 		from psi_salebillbody as a left join psi_salebill as b on 	a.SALEBILL_ID=b.SALEBILL_ID 
 		left join  	base_good as c on     a.GOODCODE_ID=c.GOODCODE 
 		left join   base_goodtype as d on c.GOODTYPE_ID=d.GOODTYPE_ID
@@ -210,7 +210,6 @@
 		  a.PK_SOBOOKS=#{PK_SOBOOKS}
 		and b.BILLTYPE=#{BILLTYPE}
 		and IFNULL(a.dr,0)=0 
-		and date_format(a.LASTTIME,'%Y-%m')='2019-08'
 		<if test="yearMouth != null and yearMouth != '' "> 
 			and date_format(a.LASTTIME,'%Y-%m')=#{yearMouth}
 		</if>

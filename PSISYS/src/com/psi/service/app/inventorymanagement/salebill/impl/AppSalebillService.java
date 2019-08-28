@@ -140,7 +140,13 @@ public class AppSalebillService implements AppSalebillManager {
 	@Override
 	public int listSaledGoodsBySTTNum(PageData pd) throws Exception {
 		// TODO Auto-generated method stub
-		return (Integer)dao.findForObject("AppSalebillMapper.listSaledGoodsBySTTNum", pd);
+	
+		List<PageData> lpd=(List<PageData>)dao.findForList("AppSalebillMapper.listSaledGoodsBySTTNum", pd);
+		if(lpd==null&&lpd.size()==0) {
+			return 0;
+		}else {
+			return lpd.size();
+		}
 	
 	}
 

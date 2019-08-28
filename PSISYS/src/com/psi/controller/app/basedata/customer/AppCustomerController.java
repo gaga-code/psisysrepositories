@@ -41,7 +41,7 @@ public class AppCustomerController extends BaseController{
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
-		int TOTALNUM=appCustomerService.listCutomerNum(pd);
+ 		int TOTALNUM=appCustomerService.listCutomerNum(pd);
 		List<PageData> list=appCustomerService.listCutomer(pd);
 		HashMap<String,Object> map= new HashMap();
 		map.put("list", list);

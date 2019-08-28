@@ -279,9 +279,12 @@ public class AppSalebillController extends BaseController {
 			}
 			pd.put("yearMouth", yearMouth);
 		}
-		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
-		int TOTALNUM=appSalebillService.listSaledGoodsBySTTNum(pd);
 		pd.put("BILLTYPE", 2);
+		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		pd.put("pageNum", (pageNum-1)*10);
+
+		int TOTALNUM=appSalebillService.listSaledGoodsBySTTNum(pd);
+		
 		List<PageData> list1 = appSalebillService.listSaledGoodsBySTT(pd);
 		pd.put("BILLTYPE", 8);
 		List<PageData> list2 = appSalebillService.listSaledGoodsBySTT(pd);
@@ -301,8 +304,8 @@ public class AppSalebillController extends BaseController {
 			}
 		}
 		HashMap<String,Object> map=new HashMap();
-		map.put("list1", list1);
-		map.put("TOTALNUM1", TOTALNUM);
+		map.put("list", list1);
+		map.put("TOTALNUM", TOTALNUM);
 		return map;
 	}
 
@@ -329,7 +332,8 @@ public class AppSalebillController extends BaseController {
 			String date = sdf.format(new Date());
 			pd.put("date", date);
 		}
-		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		pd.put("pageNum", (pageNum-1)*10);
 		int TOTALNUM=appSalebillService.listsalebillNum(pd);
 		List<PageData> lpd = appSalebillService.listsalebill(pd);
 		if (lpd != null && lpd.size() != 0) {
@@ -341,7 +345,7 @@ public class AppSalebillController extends BaseController {
 		}
 		HashMap<String,Object> map=new HashMap();
 		map.put("list", lpd);
-		map.put("TOTALNUM1", TOTALNUM);
+		map.put("TOTALNUM", TOTALNUM);
 		return map;
 	}
 
@@ -370,9 +374,11 @@ public class AppSalebillController extends BaseController {
 			}
 			pd.put("yearMouth", yearMouth);
 		}
-		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
-		int TOTALNUM=appSalebillService.listSaledByCustomerNum(pd);
+		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		pd.put("pageNum", (pageNum-1)*10);
 		pd.put("BILLTYPE", 2);
+		int TOTALNUM=appSalebillService.listSaledByCustomerNum(pd);
+	
 		List<PageData> list1 = appSalebillService.listSaledByCustomer(pd);
 		pd.put("BILLTYPE", 8);
 		List<PageData> list2 = appSalebillService.listSaledByCustomer(pd);
@@ -473,7 +479,8 @@ public class AppSalebillController extends BaseController {
 			}
 			pd.put("yearMouth", yearMouth);
 		}
-		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		pd.put("pageNum", (pageNum-1)*10);
 		int TOTALNUM=appSalebillService.listSaledByUserNum(pd);
 		pd.put("BILLTYPE", 2);
 		List<PageData> list1 = appSalebillService.listSaledByUser(pd);
