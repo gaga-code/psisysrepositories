@@ -41,7 +41,7 @@
 			or COMPANY  like concat('%',#{keyword},'%')
 		</if>
 		and IFNULL(DR,0)=0
-		limit #{pageNum},10
+		limit #{pageNum},#{pageSize}
 	</select>
 	
 	<select id="listSuppliersNum" parameterType="pd" resultType="int">

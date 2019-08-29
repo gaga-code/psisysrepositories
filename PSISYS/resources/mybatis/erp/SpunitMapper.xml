@@ -77,8 +77,6 @@
 				NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 				)
 		</if>
-		and
-			USERNAME = #{pd.USERNAME}
 		order by NAME
 	</select>
 	

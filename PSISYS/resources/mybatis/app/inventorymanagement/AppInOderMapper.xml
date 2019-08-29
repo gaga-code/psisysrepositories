@@ -95,7 +95,7 @@
 			and date_format(a.CREATETIME,'%Y-%m')=#{date}
 		</if>
 		order by a.CREATETIME desc
-		limit #{pageNum},10
+		limit #{pageNum},#{pageSize}
 	</select>
 	
 	<select id="listInOrderNum" parameterType="pd" resultType="int">

@@ -99,7 +99,7 @@
 	</if>		
 	and a.PK_SOBOOKS = #{PK_SOBOOKS}
    	and IFNULL(a.DR,0)=0
-   	limit #{pageNum},10
+   	limit #{pageNum},#{pageSize}
 	</select>
 	
 	<select id="listCutomerNum" parameterType="pd" resultType="int">

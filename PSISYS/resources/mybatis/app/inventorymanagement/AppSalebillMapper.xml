@@ -88,7 +88,7 @@
 		<if test="sortType==4">
 			ORDER BY maoLi desc
 		</if>
-		limit #{pageNum},10
+		limit #{pageNum},#{pageSize}
 	</select>
 	<select id="listSaledGoodsBySTTNum" parameterType="pd" resultType="pd">
 		select a.GOODCODE_ID,c.GOODNAME
@@ -141,7 +141,7 @@
 			and date_format(a.CREATETIME,'%Y-%m')=#{date}
 		</if>
 		order by a.CREATETIME
-		limit #{pageNum},10
+		limit #{pageNum},#{pageSize}
 	</select>
 	
 	<select id="listsalebillNum" parameterType="pd" resultType="int">
