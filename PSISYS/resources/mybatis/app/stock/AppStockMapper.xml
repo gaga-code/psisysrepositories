@@ -49,7 +49,7 @@
 			where now() >SUBDATE(b.LASTTIME,interval -#{pd.OVERDATE} day)
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.DR,0)=0 
-			limit #{pageNum},10
+			limit #{pageNum},#{pageSize}
 	</select>
 	<select id="listGoodsUpDateNum" parameterType="pd" resultType="int">
 			select count(*)
@@ -67,7 +67,7 @@
 			 a.PK_SOBOOKS =#{PK_SOBOOKS}
 			and a.STOCKDOWNNUM > a.STOCKNUM
 			and IFNULL(a.DR,0)=0 
-			limit #{pageNum},10
+			limit #{pageNum},#{pageSize}
 	</select>
 	
 		

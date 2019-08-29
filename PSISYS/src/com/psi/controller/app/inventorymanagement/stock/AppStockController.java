@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.psi.controller.base.BaseController;
 import com.psi.service.app.inventorymanagement.tock.AppStockManager;
+import com.psi.util.Const;
 import com.psi.util.PageData;
 
 @Controller
@@ -39,7 +40,10 @@ public class AppStockController extends BaseController{
 
 		String path = request.getContextPath();
 		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
-		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10);
+		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		int pageSize= Integer.valueOf(pd.getString("pageSize"));
+		pd.put("pageNum", (pageNum-1)*10);
+		pd.put("pageSize", pageSize);
 		int TOTALNUM=appStockService.listGoodsDownNums(pd);
 		List<PageData> list=appStockService.listGoodsDownNum(pd);//查询商品库存不足
 		if(list!=null){
@@ -63,7 +67,10 @@ public class AppStockController extends BaseController{
 			String path = request.getContextPath();
 			String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
 			int pageNum= Integer.valueOf(pd.getString("pageNum"));
+			int pageSize= Integer.valueOf(pd.getString("pageSize"));
 			pd.put("pageNum", (pageNum-1)*10);
+			pd.put("pageSize", pageSize);
+			pd.put("OVERDATE", Const.OVERDATE);
 			int TOTALNUM=appStockService.listGoodsUpDateNum(pd);
 			List<PageData> list=appStockService.listGoodsUpDate(pd);//查询积压过久的商品
 			if(list!=null){

@@ -26,7 +26,9 @@ public class AppSupplierController extends BaseController {
 		PageData pd = new PageData();
 		pd=this.getPageData();
 		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		int pageSize= Integer.valueOf(pd.getString("pageSize"));
 		pd.put("pageNum", (pageNum-1)*10);
+		pd.put("pageSize", pageSize);
 		int TOTALNUM = appSupplierService.listSuppliersNum(pd);
 		List<PageData> list= appSupplierService.listSuppliers(pd);
 		HashMap<String,Object> map= new HashMap();

@@ -306,7 +306,9 @@ public class AppInOderController extends BaseController{
 			pd.put("date", date);
 		}
 		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		int pageSize= Integer.valueOf(pd.getString("pageSize"));
 		pd.put("pageNum", (pageNum-1)*10);
+		pd.put("pageSize", pageSize);
 		int TOTALNUM =appInOderService.listInOrderNum(pd);
 		List<PageData> lpd=appInOderService.listInOrder(pd);
 		if(lpd!=null){

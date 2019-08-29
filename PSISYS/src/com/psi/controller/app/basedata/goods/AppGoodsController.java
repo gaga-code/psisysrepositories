@@ -94,7 +94,10 @@ public class AppGoodsController extends BaseController {
 		}else{
 		     PK_SOBOOKS=session.getAttribute("PK_SOBOOKS");
 		}
-		pd.put("pageNum", Integer.valueOf(pd.getString("pageNum"))*10); 
+		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		int pageSize= Integer.valueOf(pd.getString("pageSize"));
+		pd.put("pageNum", (pageNum-1)*10);
+		pd.put("pageSize", pageSize);
 		Double TOTALNUM = appGoodsService.findAll(pd);
 		map.put("TOTALNUM", TOTALNUM);
 		List<PageData> lists=appGoodsService.listGoods(pd); //获取商品信息
@@ -136,7 +139,9 @@ public class AppGoodsController extends BaseController {
 		String path = request.getContextPath();
 		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
 		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		int pageSize= Integer.valueOf(pd.getString("pageSize"));
 		pd.put("pageNum", (pageNum-1)*10);
+		pd.put("pageSize", pageSize);
 		HashMap<String,Object> map =  new HashMap();
 		Double TOTALNUM = appGoodsService.findAllByClass(pd);
 		map.put("TOTALNUM", TOTALNUM);
@@ -182,8 +187,9 @@ public class AppGoodsController extends BaseController {
 			PageData pd=new PageData();
 			pd=this.getPageData();
 			int pageNum= Integer.valueOf(pd.getString("pageNum"));
+			int pageSize= Integer.valueOf(pd.getString("pageSize"));
 			pd.put("pageNum", (pageNum-1)*10);
-
+			pd.put("pageSize", pageSize);
 			HashMap<String,Object> map =  new HashMap();
 			Double TOTALNUM = appGoodsService.findAllByName(pd);
 			map.put("TOTALNUM", TOTALNUM);

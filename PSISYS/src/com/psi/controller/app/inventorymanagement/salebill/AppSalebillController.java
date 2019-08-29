@@ -281,8 +281,9 @@ public class AppSalebillController extends BaseController {
 		}
 		pd.put("BILLTYPE", 2);
 		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		int pageSize= Integer.valueOf(pd.getString("pageSize"));
 		pd.put("pageNum", (pageNum-1)*10);
-
+		pd.put("pageSize", pageSize);
 		int TOTALNUM=appSalebillService.listSaledGoodsBySTTNum(pd);
 		
 		List<PageData> list1 = appSalebillService.listSaledGoodsBySTT(pd);
@@ -333,7 +334,9 @@ public class AppSalebillController extends BaseController {
 			pd.put("date", date);
 		}
 		int pageNum= Integer.valueOf(pd.getString("pageNum"));
+		int pageSize= Integer.valueOf(pd.getString("pageSize"));
 		pd.put("pageNum", (pageNum-1)*10);
+		pd.put("pageSize", pageSize);
 		int TOTALNUM=appSalebillService.listsalebillNum(pd);
 		List<PageData> lpd = appSalebillService.listsalebill(pd);
 		if (lpd != null && lpd.size() != 0) {
@@ -375,7 +378,9 @@ public class AppSalebillController extends BaseController {
 			pd.put("yearMouth", yearMouth);
 		}
 		int pageNum= Integer.valueOf(pd.getString("pageNum"));
-	
+		int pageSize= Integer.valueOf(pd.getString("pageSize"));
+		pd.put("pageNum", (pageNum-1)*10);
+		pd.put("pageSize", pageSize);
 		List<HashMap<String,Object>> list1=getlist(pd,pageNum); //根据分页查询
 		List<HashMap<String,Object>> list2= null;
 		
@@ -490,7 +495,9 @@ public class AppSalebillController extends BaseController {
 			pd.put("yearMouth", yearMouth);
 		}
 		int pageNum= Integer.valueOf(pd.getString("pageNum"));
-	
+		int pageSize= Integer.valueOf(pd.getString("pageSize"));
+		pd.put("pageNum", (pageNum-1)*10);
+		pd.put("pageSize", pageSize);
 		pd.put("BILLTYPE", 2);
 		List<PageData> list1 = appSalebillService.listSaledByUser(pd);
 		pd.put("BILLTYPE", 8);
