@@ -44,10 +44,10 @@ public class AppInOderController extends BaseController{
 					int flag=0;
 					for(int j=0;j<list.size();j++){
 						if(list.get(j).get("GOODCODE").equals(lpd.get(i).get("GOODCODE"))){//商品编号相同
-							int PNUMBER=(Integer)list.get(i).get("PNUMBER")+(Integer)lpd.get(i).get("PNUMBER");
-							double ALLAMOUNT=(Double)list.get(i).get("ALLAMOUNT")+(Double)lpd.get(i).get("ALLAMOUNT");
-							list.get(i).put("PNUMBER", PNUMBER);
-							list.get(i).put("ALLAMOUNT", ALLAMOUNT);
+							int PNUMBER=(Integer)list.get(j).get("PNUMBER")+(Integer)lpd.get(i).get("PNUMBER");
+							double ALLAMOUNT=(Double)list.get(j).get("ALLAMOUNT")+(Double)lpd.get(i).get("ALLAMOUNT");
+							list.get(j).put("PNUMBER", PNUMBER);
+							list.get(j).put("ALLAMOUNT", ALLAMOUNT);
 							flag=1;
 						}
 					}
@@ -62,8 +62,8 @@ public class AppInOderController extends BaseController{
 			for(int i=0;i<list.size();i++){
 				for(int j=0;j<ipd.size();j++){
 					if(list.get(i).get("GOODCODE").equals(ipd.get(j).get("GOODCODE"))){
-						int PNUMBER=(Integer)list.get(i).get("PNUMBER")-(Integer)ipd.get(i).get("PNUMBER");
-						double ALLAMOUNT=(Double)list.get(i).get("ALLAMOUNT")-(Double)ipd.get(i).get("ALLAMOUNT");
+						int PNUMBER=(Integer)list.get(i).get("PNUMBER")-(Integer)ipd.get(j).get("PNUMBER");
+						double ALLAMOUNT=(Double)list.get(i).get("ALLAMOUNT")-(Double)ipd.get(j).get("ALLAMOUNT");
 						list.get(i).put("PNUMBER", PNUMBER);
 						list.get(i).put("ALLAMOUNT", ALLAMOUNT);
 						ipd.remove(j);
