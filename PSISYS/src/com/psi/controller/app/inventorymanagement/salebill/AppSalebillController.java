@@ -384,9 +384,10 @@ public class AppSalebillController extends BaseController {
 		List<HashMap<String,Object>> list1=getlist(pd,pageNum); //根据分页查询
 		List<HashMap<String,Object>> list2= null;
 		
-		int i=pageNum*10 ;
+		int i=(pageNum-1)*10 ;
 		int j=0;
-		for( ;i<list1.size()&&j<10;i++){
+		int num=i+pageSize;
+		for( ;i<list1.size()&&j<num;i++){
 			list2.add(list1.get(i));
 			j++;
 		}
@@ -570,9 +571,10 @@ public class AppSalebillController extends BaseController {
 			}
 		}
 		List<HashMap<String,Object>> list3= null;
-		int i=pageNum*10 ;
+		int i=(pageNum-1)*10 ;
 		int j=0;
-		for( ;i<list1.size()&&j<10;i++){
+		int num=i+pageSize;
+		for( ;i<list1.size()&&j<num;i++){
 			list2.add(list1.get(i));
 			j++;
 		}
