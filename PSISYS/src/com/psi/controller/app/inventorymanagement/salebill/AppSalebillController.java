@@ -392,7 +392,7 @@ public class AppSalebillController extends BaseController {
 		}
 		HashMap<String,Object> map=new HashMap();
 		map.put("list", list2);
-		map.put("TOTALNUM1", list1.size());
+		map.put("TOTALNUM", list1.size());
 		return map;
 	}
 	
@@ -578,7 +578,7 @@ public class AppSalebillController extends BaseController {
 		}
 		HashMap<String,Object> map=new HashMap();
 		map.put("list", list3);
-		map.put("TOTALNUM1", list.size());
+		map.put("TOTALNUM", list.size());
 		return map;
 	}
 
