@@ -382,7 +382,7 @@ public class AppSalebillController extends BaseController {
 		pd.put("pageNum", (pageNum-1)*10);
 		pd.put("pageSize", pageSize);
 		List<HashMap<String,Object>> list1=getlist(pd,pageNum); //根据分页查询
-		List<HashMap<String,Object>> list2= null;
+		List<HashMap<String,Object>> list2= new ArrayList<HashMap<String,Object>>();
 		
 		int i=(pageNum-1)*10 ;
 		int j=0;
@@ -570,12 +570,13 @@ public class AppSalebillController extends BaseController {
 				list.add(map);
 			}
 		}
-		List<HashMap<String,Object>> list3= null;
+		List<HashMap<String,Object>> list3= new ArrayList<HashMap<String,Object>>();
+		
 		int i=(pageNum-1)*10 ;
 		int j=0;
 		int num=i+pageSize;
 		for( ;i<list1.size()&&j<num;i++){
-			list2.add(list1.get(i));
+			list3.add(list1.get(i));
 			j++;
 		}
 		HashMap<String,Object> map=new HashMap();
