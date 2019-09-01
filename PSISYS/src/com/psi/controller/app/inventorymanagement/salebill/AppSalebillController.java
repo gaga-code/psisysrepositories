@@ -328,7 +328,7 @@ public class AppSalebillController extends BaseController {
 		}
 		if (lastLoginEnd != null && !"".equals(lastLoginEnd)) {
 			flag = 0;
-			pd.put("lastEnd", lastLoginEnd + " 00:00:00");
+			pd.put("lastEnd", lastLoginEnd + " 23:59:59");
 		}
 		if (flag == 1) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");

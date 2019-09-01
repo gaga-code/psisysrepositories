@@ -88,7 +88,7 @@
 		and IFNULL(a.dr,0)=0 
 		<if test="lastStart!=null and lastStart!=''">
 			<if test="lastEnd!=null and lastEnd!=''">
-				 and date_format(a.CREATETIME,'%Y-%m-%d') BETWEEN #{lastStart} and #{lastEnd}
+				 and a.CREATETIME BETWEEN #{lastStart} and #{lastEnd}
 			</if>
 		</if>
 		<if test="date!=null and date!='' ">
@@ -108,7 +108,7 @@
 		and IFNULL(a.dr,0)=0 
 		<if test="lastStart!=null and lastStart!=''">
 			<if test="lastEnd!=null and lastEnd!=''">
-				 and date_format(a.CREATETIME,'%Y-%m-%d') BETWEEN #{lastStart} and #{lastEnd}
+				 and a.CREATETIME  BETWEEN #{lastStart} and #{lastEnd}
 			</if>
 		</if>
 		<if test="date!=null and date!='' ">
