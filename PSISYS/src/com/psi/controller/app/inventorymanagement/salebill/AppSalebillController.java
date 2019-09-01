@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.psi.controller.base.BaseController;
 import com.psi.service.app.inventorymanagement.customerbill.AppCustomerbillManager;
 import com.psi.service.app.inventorymanagement.salebill.AppSalebillManager;
+import com.psi.service.inventorymanagement.salebill.SalebillManager;
 import com.psi.util.DateUtil;
 import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
@@ -31,7 +32,8 @@ public class AppSalebillController extends BaseController {
 	private AppSalebillManager appSalebillService;
 	@Resource(name = "appCustomerbillService")
 	private AppCustomerbillManager appCustomerbillService;
-
+	@Resource(name="salebillService")
+	private SalebillManager salebillService;
 	public List<PageData> listDataAndNumAndPrice() throws Exception {
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -624,6 +626,9 @@ public class AppSalebillController extends BaseController {
 		HashMap<String,Object> map  = new HashMap();
 		map.put("BILLCODE", pd.get("BILLCODE"));
 		map.put("OK", "OK");
+		
+		salebillService.updateshenpi(pd);
+		
 		return map ;
 	}
 	

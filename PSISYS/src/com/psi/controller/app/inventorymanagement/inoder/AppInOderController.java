@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.psi.controller.base.BaseController;
 import com.psi.service.app.inventorymanagement.inoder.AppInOderManager;
 import com.psi.service.app.inventorymanagement.inoder.impl.AppInOderService;
+import com.psi.service.inventorymanagement.inorder.InOrderManager;
 import com.psi.util.DateUtil;
 import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
@@ -29,6 +30,9 @@ public class AppInOderController extends BaseController{
 	@Resource(name="appInOderService")
 	private AppInOderManager appInOderService;
 
+	@Resource(name="inOrderService")
+	private InOrderManager inOrderService;
+	
 	//获取今日入库信息
 	@RequestMapping("/getInOderByToday")
 	@ResponseBody
@@ -361,6 +365,10 @@ public class AppInOderController extends BaseController{
 		HashMap<String,Object> map =new HashMap();
 		map.put("OK", "OK");
 		map.put("BILLCODE", pd.get("BILLCODE"));
+		
+		pd.put("BILLSTATUS", 2);
+		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
+		inOrderService.updateshenpi(pd);
 		return map;
 	}
 	
