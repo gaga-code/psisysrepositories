@@ -25,4 +25,7 @@ public interface AppGoodsManager {
 
 	Double findAllByName(PageData pd) throws Exception;
 
+
+	PageData findByBarCode(PageData pd) throws Exception;
+
 }

@@ -67,4 +67,11 @@ public class AppGoodsService implements AppGoodsManager{
 		return (Double)dao.findForObject("AppGoodsMapper.findAllByName", pd);
 	}
 
+
+	@Override
+	public PageData findByBarCode(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (PageData)dao.findForObject("AppGoodsMapper.findByBarCode", pd);
+	}
+
 }

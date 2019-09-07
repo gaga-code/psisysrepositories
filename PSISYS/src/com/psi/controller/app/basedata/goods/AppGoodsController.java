@@ -75,6 +75,17 @@ public class AppGoodsController extends BaseController {
 	@Resource(name="appSalebillService")
 	private AppSalebillManager appSalelbillService;
 	
+	
+	//获取商品表
+		@RequestMapping("/findByBarCode")
+		@ResponseBody
+		public HashMap<String,Object> findByBarCode( HttpServletRequest request) throws Exception{
+			PageData pd=new PageData();
+			pd=this.getPageData();
+			pd=appGoodsService.findByBarCode(pd);
+			return pd;
+		}
+	
 
 	//获取商品表
 	@RequestMapping("/getGoodsList")

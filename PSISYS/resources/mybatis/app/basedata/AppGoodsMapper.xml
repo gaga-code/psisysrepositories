@@ -227,4 +227,12 @@
 		and PK_SOBOOKS=#{PK_SOBOOKS}
 		and IFNULL(dr,0)=0 
 	</update>
+
+	<select id="findByBarCode" parameterType="pd" resultType="pd">
+		select *
+		from base_good
+		where  BARCODE=#{BARCODE}
+		and PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
+	</select>
 </mapper>
