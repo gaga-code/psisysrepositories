@@ -218,9 +218,7 @@
 		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
 			and a.CREATETIME &lt;= #{pd.lastEnd} 
 		</if>
-		<if test="pd.USER_ID!=null and pd.USER_ID!=''">
-			and a.USER_ID = #{pd.USER_ID} 
-		</if>
+		
 		and PK_SOBOOKS = #{pd.PK_SOBOOKS}
 			and IFNULL(DR,0)=0 
 		order by a.LASTTIME desc
@@ -287,5 +285,12 @@
 		left join base_sobooks as c on a.PK_SOBOOKS=c.SOBOOKS_ID
 		where  a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.DR,0)=0 
+	</select>
+	
+	<select id="finNameById" parameterType="pd" resultType="String">
+		select CUATOMERNAME
+		from base_customer
+		where CUSTOMER_ID=#{CUSTOMER_ID}
+		and IFNULL(DR,0)=0 
 	</select>
 </mapper>

@@ -80,7 +80,7 @@
 	<!-- 通过CUSTOMERCODE获取数据 -->
 	<select id="findCustomerByCode" parameterType="pd" resultType="pd">
 	select 
-	CUSTOMERCODE,CUATOMERNAME,PHONE,ADDRESS,USER_ID,COMPANY
+	CUSTOMERCODE,CUATOMERNAME,PHONE,ADDRESS,USER_ID,COMPANY,CUSTOMER_ID
 	from base_customer
 	WHERE	CUSTOMERCODE=#{CUSTOMERCODE}
 			and PK_SOBOOKS = #{PK_SOBOOKS}
@@ -88,7 +88,22 @@
 	</select>
 	
 	<select id="listCutomer" parameterType="pd" resultType="pd">
-	select a.CUSTOMERCODE,a.CUATOMERNAME,a.PHONE,a.ADDRESS,a.COMPANY,b.NAME
+	select a.CUSTOMERCODE,a.CUATOMERNAME,a.PHONE,a.ADDRESS,a.COMPANY,b.NAME,a.CUSTOMER_ID
+	from base_customer as a left join sys_user as b on a.USER_ID=b.USER_ID
+	where 1=1
+	<if test="keyword!=null and keyword!=''">
+		and a.CUATOMERNAME like concat('%',#{keyword},'%')
+		or a.COMPANY like concat('%',#{keyword},'%')
+		or a.PHONE like concat('%',#{keyword},'%')
+		or b.NAME like concat('%',#{keyword},'%')
+	</if>		
+	and a.PK_SOBOOKS = #{PK_SOBOOKS}
+   	and IFNULL(a.DR,0)=0
+   	limit #{pageNum},#{pageSize}
+	</select>
+	
+	<select id="listCutomerNum" parameterType="pd" resultType="int">
+	select count(*)
 	from base_customer as a left join sys_user as b on a.USER_ID=b.USER_ID
 	where 1=1
 	<if test="keyword!=null and keyword!=''">
@@ -100,5 +115,5 @@
 	and a.PK_SOBOOKS = #{PK_SOBOOKS}
    	and IFNULL(a.DR,0)=0
 	</select>
-
+	
 </mapper>

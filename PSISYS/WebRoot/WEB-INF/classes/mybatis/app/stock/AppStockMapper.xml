@@ -46,13 +46,33 @@
 			select a.GOODNAME, a.GOODPIC,a.STOCKNUM,a.LASTPPRICE ,c.NAME,a.FZUNIT_ID,b.STOCK 
 			from base_good as a left join base_stock as b on a.GOODCODE=b.GOOD_ID 
 			left join cp_spunit as c on a.CUNIT_ID=c.SPUNIT_ID
-			where now() >SUBDATE(b.LASTTIME,interval -#{pd.OVERDATE} day)
+			where now() >SUBDATE(b.LASTTIME,interval -#{OVERDATE} day)
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.DR,0)=0 
+			limit #{pageNum},#{pageSize}
+	</select>
+	<select id="listGoodsUpDateNum" parameterType="pd" resultType="int">
+			select count(*)
+			from base_good as a left join base_stock as b on a.GOODCODE=b.GOOD_ID 
+			left join cp_spunit as c on a.CUNIT_ID=c.SPUNIT_ID
+			where now() >SUBDATE(b.LASTTIME,interval - #{OVERDATE} day)
 			and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.DR,0)=0 
 	</select>
 	
 	<select id="listGoodsDownNum" parameterType="pd" resultType="pd">	
 			select a.GOODNAME,a.GOODPIC,a.STOCKNUM,b.NAME,a.FZUNIT_ID ,a.LASTPPRICE
+			from base_good as a left join cp_spunit as  b on a.CUNIT_ID=b.SPUNIT_ID
+			where 
+			 a.PK_SOBOOKS =#{PK_SOBOOKS}
+			and a.STOCKDOWNNUM > a.STOCKNUM
+			and IFNULL(a.DR,0)=0 
+			limit #{pageNum},#{pageSize}
+	</select>
+	
+		
+	<select id="listGoodsDownNums" parameterType="pd" resultType="int">	
+			select count(*)
 			from base_good as a left join cp_spunit as  b on a.CUNIT_ID=b.SPUNIT_ID
 			where 
 			 a.PK_SOBOOKS =#{PK_SOBOOKS}

@@ -88,9 +88,42 @@
 		<if test="sortType==4">
 			ORDER BY maoLi desc
 		</if>
-			
+		limit #{pageNum},#{pageSize}
 	</select>
-	
+	<select id="listSaledGoodsBySTTNum" parameterType="pd" resultType="pd">
+		select a.GOODCODE_ID,c.GOODNAME
+		from psi_salebillbody as a left join psi_salebill as b on 	a.SALEBILL_ID=b.SALEBILL_ID 
+		left join  	base_good as c on     a.GOODCODE_ID=c.GOODCODE 
+		left join   base_goodtype as d on c.GOODTYPE_ID=d.GOODTYPE_ID
+		where 
+		  a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and b.BILLTYPE=#{BILLTYPE}
+		and IFNULL(a.dr,0)=0 
+		<if test="yearMouth != null and yearMouth != '' "> 
+			and date_format(a.LASTTIME,'%Y-%m')=#{yearMouth}
+		</if>
+		<if test="startTime!=null and startTime!=''">
+			<if test="endTime!=null and endTime!=''">
+			 and date_format(a.LASTTIME,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime}
+			</if>
+		</if>
+		<if test="TYPENAME!=null and TYPENAME!='' ">
+			and d.TYPENAME like concat('%',#{TYPENAME},'%')
+		</if> 
+			GROUP BY a.GOODCODE_ID
+		<if test="sortType==1">
+			ORDER BY ALLAMOUNT desc
+		</if>
+		<if test="sortType==2">
+			ORDER BY saleNum  desc
+		</if>
+		<if test="sortType==3">
+			ORDER BY NUM desc
+		</if>
+		<if test="sortType==4">
+			ORDER BY maoLi desc
+		</if>
+	</select>
 	<select id="listsalebill" parameterType="pd" resultType="pd">
 		SELECT a.SALEBILL_ID, a.BILLCODE,b.NAME ,c.CUATOMERNAME,a.NOTE,date_format(a.CREATETIME,'%Y-%m-%d') as CREATETIME ,a.ALLAMOUNT
 		from 
@@ -101,12 +134,33 @@
 		and IFNULL(a.dr,0)=0 
 		<if test="lastStart!=null and lastStart!=''">
 			<if test="lastEnd!=null and lastEnd!=''">
-				 and date_format(a.CREATETIME,'%Y-%m-%d') BETWEEN #{lastStart} and #{lastEnd}
+				 and a.CREATETIME BETWEEN #{lastStart} and #{lastEnd}
 			</if>
 		</if>
 		<if test="date!=null and date!='' ">
 			and date_format(a.CREATETIME,'%Y-%m')=#{date}
 		</if>
+		order by a.CREATETIME
+		limit #{pageNum},#{pageSize}
+	</select>
+	
+	<select id="listsalebillNum" parameterType="pd" resultType="int">
+		SELECT count(*)
+		from 
+		psi_salebill as a left join sys_user as b on a.USER_ID=b.USER_ID
+		left join base_customer as c on a.CUSTOMER_ID=c.CUSTOMER_ID
+		where a.BILLTYPE='2'
+		and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
+		<if test="lastStart!=null and lastStart!=''">
+			<if test="lastEnd!=null and lastEnd!=''">
+				 and a.CREATETIME BETWEEN #{lastStart} and #{lastEnd}
+			</if>
+		</if>
+		<if test="date!=null and date!='' ">
+			and date_format(a.CREATETIME,'%Y-%m')=#{date}
+		</if>
+		order by a.CREATETIME
 	</select>
 	
 	<select id="listsalebillBody" parameterType="pd" resultType="pd">
@@ -156,6 +210,34 @@
 		  a.PK_SOBOOKS=#{PK_SOBOOKS}
 		and b.BILLTYPE=#{BILLTYPE}
 		and IFNULL(a.dr,0)=0 
+		<if test="yearMouth != null and yearMouth != '' "> 
+			and date_format(a.LASTTIME,'%Y-%m')=#{yearMouth}
+		</if>
+		<if test="startTime!=null and startTime!=''">
+			<if test="endTime!=null and endTime!=''">
+			 and date_format(a.LASTTIME,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime}
+			</if>
+		</if>
+		<if test="sortType==1">
+			ORDER BY ALLAMOUNT desc
+		</if>
+		<if test="sortType==2">
+			ORDER BY PNUMBER  desc
+		</if>
+		<if test="sortType==3">
+			ORDER BY MONEY desc
+		</if>
+	</select>
+	
+	<select id="listSaledByCustomerNum" parameterType="pd" resultType="int">
+		select count(*)
+		from psi_salebillbody as a left join psi_salebill as b on 	a.SALEBILL_ID=b.SALEBILL_ID 
+		left join  	base_good as c on     a.GOODCODE_ID=c.GOODCODE 
+		left join base_customer as d on d.CUSTOMER_ID = b.CUSTOMER_ID
+		where 
+		  a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and b.BILLTYPE=#{BILLTYPE}
+		and IFNULL(a.dr,0)=0 
 		and date_format(a.LASTTIME,'%Y-%m')='2019-08'
 		<if test="yearMouth != null and yearMouth != '' "> 
 			and date_format(a.LASTTIME,'%Y-%m')=#{yearMouth}
@@ -176,7 +258,6 @@
 		</if>
 		
 	</select>
-	
 	
 	<select id="listSaledByUser" parameterType="pd" resultType="pd">	
 		select a.GOODCODE_ID, c.GOODPIC ,c.GOODNAME,a.AMOUNT , a.PNUMBER ,a.PNUMBER*(a.UNITPRICE_ID-c.DEF1) as 	MONEY,
@@ -207,9 +288,36 @@
 		<if test="sortType==3">
 			ORDER BY MONEY desc
 		</if>
-		
 	</select>
 	
-	
+	<select id="listSaledByUserNum" parameterType="pd" resultType="int">	
+		select count(*)
+		from psi_salebillbody as a left join psi_salebill as b on 	a.SALEBILL_ID=b.SALEBILL_ID 
+		left join  	base_good as c on     a.GOODCODE_ID=c.GOODCODE 
+		left join  sys_user as d on d.USER_ID= b.USER_ID
+		left join  base_sobooks as e on e.SOBOOKS_ID = d.PK_SOBOOKS
+		where 
+		  a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and b.BILLTYPE=#{BILLTYPE}
+		and IFNULL(a.dr,0)=0 
+		and date_format(a.LASTTIME,'%Y-%m')='2019-08'
+		<if test="yearMouth != null and yearMouth != '' "> 
+			and date_format(a.LASTTIME,'%Y-%m')=#{yearMouth}
+		</if>
+		<if test="startTime!=null and startTime!=''">
+			<if test="endTime!=null and endTime!=''">
+			 and date_format(a.LASTTIME,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime}
+			</if>
+		</if>
+		<if test="sortType==1">
+			ORDER BY ALLAMOUNT desc
+		</if>
+		<if test="sortType==2">
+			ORDER BY PNUMBER  desc
+		</if>
+		<if test="sortType==3">
+			ORDER BY MONEY desc
+		</if>
+	</select>
 	
 </mapper>

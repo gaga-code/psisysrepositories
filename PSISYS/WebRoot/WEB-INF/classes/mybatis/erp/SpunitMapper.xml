@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		CP_SPUNIT
+		cp_spunit
 	</sql>
 	
 	<!-- 字段 -->
@@ -77,8 +77,6 @@
 				NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 				)
 		</if>
-		and
-			USERNAME = #{pd.USERNAME}
 		order by NAME
 	</select>
 	

@@ -46,10 +46,10 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		SYS_USER
+		sys_user
 	</sql>
 	<sql id="roleTableName">
-		SYS_ROLE
+		sys_role
 	</sql>
 	<sql id="staffTableName">
 		OA_STAFF
@@ -109,15 +109,15 @@
 	<select id="getUserInfo" parameterType="pd" resultType="pd">
 		select <include refid="Field"></include> from
 		<include refid="tableName"></include>
-		where 1=1
-		<if test="USERNAME!=null and PASSWORD!=null and PK_SOBOOKS!=null">
-		and USERNAME = #{USERNAME} and PASSWORD=#{PASSWORD} and PK_SOBOOKS=#{PK_SOBOOKS}
+		where 
+		 PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(dr,0)=0 
+		<if test="USERNAME!=null and PASSWORD!=null">
+		and USERNAME = #{USERNAME} and PASSWORD=#{PASSWORD} 
 		</if>
 		<if test="USER_ID!=null and USER_ID>0">
 		and USER_ID = #{USER_ID}
 		</if>
-		and PK_SOBOOKS = #{PK_SOBOOKS}
-		and IFNULL(dr,0)=0 
 	</select>
 	
 	<!-- 更新登录时间 -->
@@ -468,5 +468,22 @@
 		select USER_ID
 		from sys_user
 		where NAME=#{username}
+			PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	
+	<select id="findMaxUserCode" parameterType="pd" resultType="String">
+		SELECT max(NUMBER) from sys_user
+		where PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	
+	<select id="listUserName" parameterType="pd" resultType="String">
+		select USERNAME 
+		from sys_user
+		where PK_SOBOOKS = #{accountset}
+			and IFNULL(dr,0)=0
+		ORDER BY LAST_LOGIN desc 
+		limit 0 ,5
 	</select>
 </mapper>

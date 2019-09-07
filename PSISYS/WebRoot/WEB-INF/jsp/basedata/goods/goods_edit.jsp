@@ -33,23 +33,24 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">商品名称:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 商品名称:</td>
 								<td><input type="text" name="GOODNAME" id="GOODNAME" value="${pd.GOODNAME}" maxlength="255"  style="width:98%;"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">商品条码:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 商品条码:</td>
 								<!-- <td colspan="10"> --><td><input type="text" name="BARCODE" id="BARCODE" value="${pd.BARCODE}" maxlength="255"  style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">商品分类编号:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 商品分类:</td>
 								<td>
-									<select class="chosen-select form-control" name="GOODTYPE_ID" id="GOODTYPE_ID"  style="vertical-align:top;width:210px;" >
+									<select class="chosen-select form-control" name="GOODTYPE_ID" id="GOODTYPE_ID"  onchange="selectTpye()" style="vertical-align:top;width:210px;" >
 										<option value="">无</option>
 										<c:forEach items="${goodsTypeList}" var="var">
 											<option value="${var.GOODTYPE_ID }" <c:if test="${var.GOODTYPE_ID == pd.GOODTYPE_ID }">selected</c:if>>${var.TYPENAME }</option>
 										</c:forEach>
 									</select>
 								</td>
+							
 								<%-- <td><input type="text" name="GOODTYPE_ID" id="GOODTYPE_ID" value="${pd.GOODTYPE_ID}" maxlength="30"   style="width:98%;"/></td> --%>
-								<td style="width:75px;text-align: right;padding-top: 13px;">商品编号:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 商品编号:</td>
 								<td><input type="text" onblur="getByBm(this.value);" name="GOODCODE" id="GOODCODE" value="${pd.GOODCODE}" maxlength="30"  style="width:98%;"/></td>
 							</tr>
 							<tr>
@@ -65,7 +66,7 @@
 								<td><input type="text" name="SUBGZ_ID" id="SUBGZ_ID" value="${pd.SUBGZ_ID}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">计量单位:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 计量单位:</td>
 								<td>
 									<select class="chosen-select form-control" name="CUNIT_ID" id="CUNIT_ID" data-placeholder="请选择计量单位" oninput="getUNITPROPtips();" style="vertical-align:top;width:210px;" >
 										<option value="">无</option>
@@ -74,7 +75,7 @@
 										</c:forEach>
 									</select>
 								</td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">辅助单位:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 辅助单位:</td>
 								<td>
 									<select class="chosen-select form-control" name="FZUNIT_ID" id="FZUNIT_ID" data-placeholder="请选择计量单位" oninput="getUNITPROPtips();" style="vertical-align:top;width:210px;" >
 										<option value="">无</option>
@@ -110,21 +111,21 @@
 								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">最后进价:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 最后进价:</td>
 								<td><input type="number" name="LASTPPRICE" id="LASTPPRICE" value="${pd.LASTPPRICE}" maxlength="30"   style="width:98%;"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">成本价:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 成本价:</td>
 								<td><input type="number" name="CPRICE" id="CPRICE" value="${pd.CPRICE}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">零售价:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 零售价:</td>
 								<td><input type="number" name="RPRICE" id="RPRICE" value="${pd.RPRICE}" maxlength="30"   style="width:98%;"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">最后辅助单位进价:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 最后辅助单位进价:</td>
 								<td><input type="number" name="LFZUPPRICE" id="LFZUPPRICE" value="${pd.LFZUPPRICE}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">辅助单位零售价:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 辅助单位零售价:</td>
 								<td><input type="number" name="FZUCPRICE" id="FZUCPRICE" value="${pd.FZUCPRICE}" maxlength="30"   style="width:98%;"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">会员价:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 会员价:</td>
 								<td><input type="number" name="MPRICE" id="MPRICE" value="${pd.MPRICE}" maxlength="30"   style="width:98%;"/></td>
 							</tr>
 							<c:if test="${'edit' == msg }">
@@ -134,14 +135,14 @@
 							</tr>
 							</c:if>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">库存上限:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 库存上限:</td>
 								<td><input type="number" name="STOCKUPNUM" id="STOCKUPNUM" value="${pd.STOCKUPNUM}" maxlength="30"   style="width:98%;"/></td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">库存下限:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;"><i style="color:red">*&nbsp;</i> 库存下限:</td>
 								<td><input type="number" name="STOCKDOWNNUM" id="STOCKDOWNNUM" value="${pd.STOCKDOWNNUM}" maxlength="30"   style="width:98%;"/></td>
 								<input type="hidden" id="wh" name="wh" value="${pd.wh}"   />
 							</tr>
 							<tr>
-								<td style="width:90px;text-align: right;padding-top: 1px;" id="select_stock_name">仓库:</td>
+								<td style="width:90px;text-align: right;padding-top: 1px;" id="select_stock_name"><i style="color:red">*&nbsp;</i> 仓库:</td>
 								<input type="hidden" id="WAREHOUSE_IDs" name="WAREHOUSE_IDs" value="${pd.WAREHOUSE_IDs}"   />
 								<td style="vertical-align:top;">
 								 	<select class="chosen-select form-control" name="Select_WAREHOUSE_IDs" id="Select_WAREHOUSE_IDs" data-placeholder="请选择仓库" multiple="multiple"  style="vertical-align:top;width: 98%;"  >
@@ -218,6 +219,21 @@
 		    }); 
 		});
 		
+		function selectTpye(){
+			var GOODTYPE_ID=$('#GOODTYPE_ID').val();
+			  $.ajax({
+			        method:'POST',
+			        url:'goods/findCodeByGOODTYPEID',
+			        data:{GOODTYPE_ID:GOODTYPE_ID},
+			        dataType:'json',
+			        success: function (data) {
+			          	$("#GOODCODE").val(data);
+			        },
+			        error: function (jqXHR, textStatus, errorThrown) {
+			    	     $("#GOODCODE").val(jqXHR.responseText);
+			        }
+			    }); 
+		}
 		
 		//单位比例提示
 		function getUNITPROPtips(){

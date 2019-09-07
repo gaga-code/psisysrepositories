@@ -96,6 +96,12 @@ public class CustomerService implements CustomerManager{
 		// TODO Auto-generated method stub
 		return (List<PageData>)dao.findForList("CustomerMapper.listAllCUS", pd);
 	}
+
+	@Override
+	public String finNameById(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (String)dao.findForObject("CustomerMapper.finNameById", pd);
+	}
 	
 }
 

@@ -182,8 +182,9 @@ public class SalebillController extends BaseController {
 		mv.addObject("pd", newpd);
 		mv.addObject("customerList", customerList);
 		mv.addObject("warehouseList", warehouseList);
-		return mv;*/
-		return "redirect:/salebill/goEdit.do?SALEBILL_ID="+pd.getString("SALEBILL_ID");
+		return mv;
+		*/
+		return "redirect:/salebill/list.do?SALEBILL_ID="+pd.getString("SALEBILL_ID");
 	}
 	
 	/**删除

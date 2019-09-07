@@ -136,7 +136,7 @@ public class InOutComeTypeController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd = inOutComeTypeService.findById(pd);	//根据ID读取
-		mv.setViewName("system/inoutcometype/inoutcometype_edit");
+		mv.setViewName("basedata/inoutcometype/inoutcometype_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
 		return mv;

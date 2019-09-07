@@ -158,6 +158,8 @@ public interface SalebillManager{
 
 	public List<PageData> listPassTimeSaleBill(PageData pd) throws Exception;
 
+	public List<PageData> listsalebillByGoodCode(Page page) throws Exception;
+
 
 	
 }

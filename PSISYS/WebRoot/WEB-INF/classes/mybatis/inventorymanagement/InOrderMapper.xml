@@ -294,6 +294,7 @@
 			a.THISPAY,
 			a.SUBBRANCH,
 			a.NOTE,
+			a.CREATETIME,
 			a.ISSETTLEMENTED,
 			b.SUPPLIERNAME SUPPLIERNAME
 		from 
@@ -485,7 +486,7 @@
 		left join  base_good as d on b.GOODCODE_ID=d.GOODCODE
 		left join base_supplier as e on a.SUPPLIER_ID=e.SUPPLIER_ID 
 		left join  base_warehouse as f on b.WAREHOUSE_ID=f.WAREHOUSE_ID
-		where a.PK_SOBOOKS=1
+		where a.PK_SOBOOKS=#{PK_SOBOOKS}
 		and ifnull(a.dr,0)=0
 		<if test="pd.keywords!=null and pd.keywords!='' ">
 			and d.GOODNAME like concat('%',#{pd.keywords},'%')

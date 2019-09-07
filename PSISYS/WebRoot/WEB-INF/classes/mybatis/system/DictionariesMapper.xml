@@ -10,7 +10,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		SYS_DICTIONARIES
+		sys_dictionaries
 	</sql>
 	
 	<!-- 字段 -->

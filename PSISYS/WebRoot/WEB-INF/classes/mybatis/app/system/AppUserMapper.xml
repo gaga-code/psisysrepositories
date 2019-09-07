@@ -67,8 +67,9 @@
 	
 	<!-- 判断用户名和密码 -->
 	<select id="getUserInfo" parameterType="pd" resultType="pd">
-		select a.USERNAME,a.NAME,a.PASSWORD,a.USER_ID,a.RIGHTS,a.PHONE,a.HIREDATE,b.PHOTO0 from
-		sys_user as a left join sys_userphoto as b on  a.USERNAME=b.USERNAME
+		select a.USERNAME,a.NAME,a.PASSWORD,c.ENTERPRISENAME,a.USER_ID,a.RIGHTS,a.PHONE,a.HIREDATE,b.PHOTO0
+		from sys_user as a left join sys_userphoto as b on  a.USERNAME=b.USERNAME
+		left join base_sobooks as c on c.SOBOOKS_ID = a.PK_SOBOOKS
 		where  IFNULL(a.dr,0)=0 
 		<if test="USERNAME!=null and PASSWORD!=null and PK_SOBOOKS!=null">
 		and a.USERNAME = #{USERNAME} and a.PASSWORD=#{PASSWORD} and a.PK_SOBOOKS=#{PK_SOBOOKS}

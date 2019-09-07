@@ -155,6 +155,11 @@
 			and IFNULL(DR,0)=0
 	</update>
 	
+	<update id="updateNoteById" parameterType="pd">
+		update psi_suppsetbill
+		set NOTE=#{NOTE}
+		where 	BILLCODE = #{BILLCODE}
+	</update>
 	<!-- 修改 -->
 	<update id="edit" parameterType="pd">
 		update

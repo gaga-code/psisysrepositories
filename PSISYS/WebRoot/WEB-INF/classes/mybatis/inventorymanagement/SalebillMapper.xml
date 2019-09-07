@@ -318,6 +318,7 @@
 			a.PAYDATE,
 			a.CUSBILLNO,
 			a.TOADDRESS,
+			a.CREATETIME,
 			a.NOTE,
 			a.ISSETTLEMENTED,
 			b.CUATOMERNAME CUATOMERNAME
@@ -418,6 +419,37 @@
 		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > IFNULL(b.FREETIME,0)
 		<!-- 未结算或结算中 -->
 		and a.ISSETTLEMENTED !=1  
+		and a.BILLTYPE=2
+		and a.BILLSTATUS = 2
+		order by a.LASTTIME DESC
+	</select>
+	
+	<!-- 客户超期账款的查询-->
+	<select id="listPassTimeSaleBill" parameterType="pd" resultType="pd">
+			select
+			a.LDATE,
+			a.BILLCODE,
+			a.ALLAMOUNT,
+			a.PAIDAMOUNT,
+			a.UNPAIDAMOUNT,
+			a.THISPAY,
+			a.PAYDATE,
+			a.CUSBILLNO,
+			a.TOADDRESS,
+			a.NOTE,
+			b.CUATOMERNAME CUATOMERNAME,
+			c.NAME
+		from 
+		psi_salebill as a 
+		left join base_customer b
+		on a.CUSTOMER_ID = b.CUSTOMER_ID
+		left join sys_user c on c.USER_ID=a.USER_ID
+		where 1=1
+		and a.PK_SOBOOKS = 1
+		and IFNULL(a.dr,0)=0
+		and DATEDIFF(now(),STR_TO_DATE(a.PAYDATE, '%Y-%m-%d %H:%i:%s')) > IFNULL(b.FREETIME,0)
+		and a.ISSETTLEMENTED !=1  
+		and a.BILLTYPE=2
 		and a.BILLSTATUS = 2
 		order by a.LASTTIME DESC
 	</select>
@@ -587,6 +619,12 @@
 			and IFNULL(dr,0)=0
 	</update>
 	
+	<update id="updateNoteByCode" parameterType="pd">
+		update 
+			psi_salebill 
+		set  NOTE=#{NOTE}
+		where SALEBILL_ID=#{SALEBILL_ID}
+	</update>
 	<select id="datalistPageByOderSale" parameterType="page" resultType="pd">
 		select a.BILLCODE,d.GOODNAME,b.UNITPRICE_ID,b.PNUMBER,a.ALLAMOUNT,a.PAIDAMOUNT,a.LASTTIME,c.USERNAME,a.BILLTYPE,
 		 f.WHNAME as startplace ,e.CUATOMERNAME as endplace 
@@ -596,7 +634,7 @@
 		left join  base_good as d on b.GOODCODE_ID=d.GOODCODE
 		left join base_customer as e on a.CUSTOMER_ID=e.CUSTOMER_ID 
 		left join  base_warehouse as f on b.WAREHOUSE_ID=f.WAREHOUSE_ID
-		where a.PK_SOBOOKS=#{PK_SOBOOKS}
+		where a.PK_SOBOOKS=#{pd.PK_SOBOOKS}
 		and ifnull(a.dr,0)=0
 		<if test="pd.keywords!=null and pd.keywords!='' ">
 			and d.GOODNAME like concat('%',#{pd.keywords},'%')
@@ -675,5 +713,34 @@
 		and  a.BILLTYPE=2
 		and  a.BILLSTATUS!=3
 		and a.ALLAMOUNT!=PAIDAMOUNT
+		and b.CUSTOMER_ID=#{CUSTOMER_ID}
+	</select>
+	
+	<!-- 根据商品列出销售情况 -->
+	<select id="datalistPageByGoodCode" parameterType="page" resultType="pd">
+		select a.BILLCODE,d.GOODNAME,d.GOODCODE,b.UNITPRICE_ID,b.PNUMBER,a.ALLAMOUNT,a.PAIDAMOUNT,a.LASTTIME,c.USERNAME,a.BILLTYPE,
+		 f.WHNAME as startplace ,e.CUATOMERNAME as endplace 
+		from psi_salebill as a 
+		left join  psi_salebillbody as b on  a.SALEBILL_ID=b.SALEBILL_ID
+		left join sys_user as c on a.USER_ID=c.USER_ID
+		left join  base_good as d on b.GOODCODE_ID=d.GOODCODE
+		left join base_customer as e on a.CUSTOMER_ID=e.CUSTOMER_ID 
+		left join  base_warehouse as f on b.WAREHOUSE_ID=f.WAREHOUSE_ID
+		where a.PK_SOBOOKS=#{pd.PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		and a.BILLTYPE = 2
+		and d.GOOD_ID= #{pd.GOOD_ID}
+		<if test="pd.keywords!=null and pd.keywords!='' ">
+			and d.GOODNAME like concat('%',#{pd.keywords},'%')
+			or  c.USERNAME like concat('%',#{pd.keywords},'%')
+			or  f.WHNAME   like concat('%',#{pd.keywords},'%')
+			or  e.CUATOMERNAME like concat('%',#{pd.keywords},'%')
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart!='' ">
+			<if test="pd.lastEnd!=null and vlastEnd!='' ">
+			 and Date(a.LASTTIME) BETWEEN #{pd.lastStart} and #{pd.lastEnd}
+			</if>
+		</if>
+		order by a.LASTTIME desc
 	</select>
 </mapper>

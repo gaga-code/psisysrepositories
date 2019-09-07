@@ -91,6 +91,7 @@
 									<th class="center">本次付款</th>
 									<th class="center">结算状态</th>
 									<th class="center">审核状态</th>
+									<th class="center">日期</th>
 									<th class="center">经手人</th>
 									<th class="center">备注</th>
 									<th class="center">操作</th><!-- style="width:150px;" -->
@@ -136,6 +137,7 @@
 													<font color="red">作废</font>
 												</c:if>
 											</td>
+											<td class='center'>${var.CREATETIME}</td>
 											<td class='center'>${var.PSI_NAME}</td>
 											<td class='center'>${var.NOTE}</td>
 											<td class="center">
@@ -232,8 +234,8 @@
 									<c:if test="${QX.del == 1 }"><c:if test="${'1' == pd.BILLSTATUS || '3' == pd.BILLSTATUS}">
 									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" >批量删除</i></a>
 									</c:if></c:if>
-									<c:if test="${'1' == pd.BILLSTATUS || '3' == pd.BILLSTATUS}">
-									<a class="btn btn-mini btn-success" onclick="shenpiAll('确定要批量审批选中的数据吗?');" title="批量审批" >批量审批</a>
+									<c:if test="${QX.InOrdershenpiApproval == 1 }">
+										<a class="btn btn-mini btn-success" onclick="shenpiAll('确定要批量审批选中的数据吗?');" title="批量审批" >批量审批</a>
 									</c:if>
 								</td>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
@@ -528,6 +530,7 @@
 			bootbox.confirm("确定要反审吗?", function(result) {
 				if(result) {
 					top.jzts();
+
 					var url = "<%=basePath%>inorder/fanshen.do?INORDER_ID="+Id+"&tm="+new Date().getTime();
 					$.get(url,function(data){
 						tosearch();
@@ -559,23 +562,6 @@
 				            time:8
 				        });
 						return;
-					}else{
-						if(msg == '确定要批量审批选中的数据吗?'){
-							top.jzts();
-							$.ajax({
-								type: "POST",
-								url: '<%=basePath%>inorder/shenpiAll.do?tm='+new Date().getTime(),
-						    	data: {DATA_IDS:str},
-								dataType:'json',
-								//beforeSend: validateData,
-								cache: false,
-								success: function(data){
-									 $.each(data.list, function(i, list){
-											tosearch();
-									 });
-								}
-							});
-						}
 					}
 				}
 			});

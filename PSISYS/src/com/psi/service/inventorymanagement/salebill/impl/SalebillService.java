@@ -437,6 +437,8 @@ public class SalebillService implements SalebillManager{
 	@Override
 	public void updatefanshen(PageData pd) throws Exception {
 		
+		String NOTE=pd.getString("NOTE");
+		String SALEBILL_ID= pd.getString("SALEBILL_ID");
 		//获取销售单表头数据
 		PageData head =  (PageData)dao.findForObject("SalebillMapper.findById", pd);
 		PageData newHead = (PageData)head.clone();
@@ -499,6 +501,10 @@ public class SalebillService implements SalebillManager{
 				dao.save("SalebillBodyMapper.save", pageData);
 			}
 		}
+		//作废单备注
+		pd.put("NOTE", NOTE);
+		pd.put("SALEBILL_ID", SALEBILL_ID);
+		dao.update("SalebillMapper.updateNoteByCode", pd);
 	}
 
 	/**
@@ -613,6 +619,13 @@ public class SalebillService implements SalebillManager{
 	public List<PageData> listPassTimeSaleBill(PageData pd) throws Exception {
 		// TODO Auto-generated method stub
 		return (List<PageData>)dao.findForList("SalebillMapper.listPassTimeSaleBill", pd);
+	}
+
+
+	@Override
+	public List<PageData> listsalebillByGoodCode(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("SalebillMapper.datalistPageByGoodCode", page);
 	}
 
 	

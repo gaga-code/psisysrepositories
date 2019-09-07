@@ -466,6 +466,62 @@ public class StockModpriService implements SalebillManager{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+
+	@Override
+	public PageData customerunpaidandgreen(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> salebillListBody(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> listInOderSale(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> listSalebillByCondition(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> listSalebillByID(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> printSalebill(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> listByCustomer(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> listPassTimeSaleBill(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> listsalebillByGoodCode(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
 

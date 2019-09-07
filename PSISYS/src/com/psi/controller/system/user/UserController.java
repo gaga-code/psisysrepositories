@@ -122,6 +122,8 @@ public class UserController extends BaseController {
 		pd = this.getPageData();
 		pd.put("ROLE_ID", "1");
 		List<Role> roleList = roleService.listAllRolesByPId(pd);//列出所有系统用户角色
+		String NUMBER = userService.findMaxUserCode(pd); //查询最大用户编码
+		pd.put("NUMBER", Integer.valueOf(NUMBER)+1); 
 		mv.setViewName("system/user/user_edit");
 		mv.addObject("msg", "saveU");
 		mv.addObject("pd", pd);

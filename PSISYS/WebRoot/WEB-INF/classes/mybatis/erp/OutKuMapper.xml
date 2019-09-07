@@ -4,7 +4,7 @@
 	
 	<!--出库表 -->
 	<sql id="tableName">
-		ERP_OUTKU
+		erp_outku
 	</sql>
 	
 	<!--出库临时表 -->

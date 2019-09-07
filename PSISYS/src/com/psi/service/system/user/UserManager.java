@@ -130,5 +130,9 @@ public interface UserManager {
 	public PageData getUserCount(String value)throws Exception;
 
 	public String findByname(PageData pd) throws Exception;
+
+	public String findMaxUserCode(PageData pd) throws Exception;
+
+	public List<String> listUserName(PageData pd) throws Exception;
 	
 }

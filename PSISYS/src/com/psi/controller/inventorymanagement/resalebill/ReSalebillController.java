@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,6 +21,7 @@ import com.psi.entity.system.User;
 import com.psi.service.basedata.customer.CustomerManager;
 import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.basedata.warehouse.WarehouseManager;
+import com.psi.service.inventorymanagement.resalebill.ReSalebillManager;
 import com.psi.service.inventorymanagement.salebill.SalebillManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
@@ -28,12 +30,16 @@ import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
 import com.psi.util.Tools;
 
+import net.sf.json.JSONArray;
+
 @Controller
 @RequestMapping("/resalebill")
 public class ReSalebillController extends BaseController{
 	String menuUrl = "resalebill/list.do"; //菜单地址(权限用)
 
-	
+
+	@Resource(name="reSalebillService")
+	private ReSalebillManager reSalebillService;
 	@Resource(name="salebillService")
 	private SalebillManager salebillService;
 	@Resource(name="goodsService")
@@ -131,7 +137,7 @@ public class ReSalebillController extends BaseController{
 		mv.addObject("customerList", customerList);
 		mv.addObject("warehouseList", warehouseList);
 		return mv;*/
-		return "redirect:/resalebill/goEdit.do?SALEBILL_ID="+pd.getString("SALEBILL_ID");
+		return "redirect:/resalebill/list.do?SALEBILL_ID="+pd.getString("SALEBILL_ID");
 	}
 	
 	 /**去修改页面
@@ -186,7 +192,7 @@ public class ReSalebillController extends BaseController{
 			PageData pd = new PageData();
 			pd = this.getPageData();
 			//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
-			salebillService.updatefanshen(pd);
+			reSalebillService.updatefanshen(pd);
 			List<PageData> goodslist = goodsService.checkGoodsStockDownNum(pd);
 			if(goodslist.isEmpty()) {
 				map.put("goodslist",null);
@@ -261,4 +267,61 @@ public class ReSalebillController extends BaseController{
 			salebillService.edit(pd);
 			return "redirect:/resalebill/list.do";
 		}
+		
+		
+		/**
+		 * 打开添加商品
+		 * @throws Exception 
+		 */
+		@RequestMapping(value="/goaddgoods")
+		public ModelAndView addgoods(Model model,String GOODTYPE_ID) throws Exception {
+			ModelAndView mv = this.getModelAndView();
+			PageData pd = new PageData();
+			pd = this.getPageData();
+			try{
+				Map<String,String> map = new HashMap<String, String>();
+				map.put("PK_SOBOOKS", pd.getString("PK_SOBOOKS"));
+				map.put("PARENTS", "-2");
+				JSONArray arr = JSONArray.fromObject(goodsService.inOrderListAllDict(map));
+				String json = arr.toString();
+				json = json.replaceAll("GOODTYPE_ID", "id").replaceAll("PARENTS", "pId").replaceAll("TYPENAME", "name").replaceAll("subDict", "nodes").replaceAll("hasDict", "checked").replaceAll("treeurl", "url");
+				model.addAttribute("zTreeNodes", json);
+				mv.addObject("GOODTYPE_ID",GOODTYPE_ID);
+				mv.addObject("pd", pd);	
+				mv.setViewName("inventorymanagement/resalebill/salebill_goods_ztree");
+			} catch(Exception e){
+				logger.error(e.toString(), e);
+			}
+			return mv;
+		}
+		
+		
+		/**
+		 * 商品列表（添加商品用）
+		 * @param page
+		 * @throws Exception
+		 */
+		@RequestMapping(value="/goodslist")
+		public ModelAndView goodslist(Page page) throws Exception{
+			logBefore(logger, Jurisdiction.getUsername()+"列表Goods");
+			//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+			ModelAndView mv = this.getModelAndView();
+			PageData pd = new PageData();
+			pd = this.getPageData();
+			String keywords = pd.getString("keywords");				//关键词检索条件
+			if(null != keywords && !"".equals(keywords)){
+				pd.put("keywords", keywords.trim());
+			}
+			pd.put("GOODTYPE_ID", pd.get("id"));
+			pd.put("USERNAME", "admin".equals(Jurisdiction.getUsername())?"":Jurisdiction.getUsername());
+			page.setPd(pd);
+			List<PageData>	varList = goodsService.list(page);	//列出Goods列表
+			mv.setViewName("inventorymanagement/resalebill/salebill_goods_list");
+			mv.addObject("varList", varList);
+			mv.addObject("pd", pd);
+			mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+			return mv;
+		}
+		
+		
 }

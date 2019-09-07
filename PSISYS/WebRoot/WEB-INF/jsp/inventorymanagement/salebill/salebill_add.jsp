@@ -220,7 +220,7 @@
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'>"
-	                      +"<a class='btn btn-xs btn-danger' onclick='detailsale(\"" + GOODCODE + "\")'>查看商品</a>"
+	                      +"<a class='btn btn-xs btn-success' onclick='detailsale(\"" + GOODCODE + "\")'>查看商品</a>"
 	                      +"<a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a>"
 	                      + "</div></td>"
 	                      +"</tr>";
@@ -406,8 +406,8 @@
 			 diag.Drag=true;
 			 diag.Title ="该商品的前十条销售记录";
 			 diag.URL = '<%=basePath%>salebill/getSaleInfo.do?GOODCODE='+GOODCODE+'&CUSTOMER_ID='+CUSTOMER_ID;
-			 diag.Width = 800;
-			 diag.Height = 500;
+			 diag.Width = 600;
+			 diag.Height = 400;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					top.jzts();
@@ -443,24 +443,39 @@
 			diag.Modal = true;				//有无遮罩窗口
 			diag.CancelEvent = function(){ //关闭事件
 				var storage=window.localStorage;
-			    var GOOD_ID=localStorage.getItem("GOOD_ID");
-			    var GOODNAME=localStorage.getItem("GOODNAME");
-			    var BARCODE=localStorage.getItem("BARCODE");
-			    var UNITNAME=localStorage.getItem("UNITNAME");
-			    var GOODCODE=localStorage.getItem("GOODCODE");
-			    var RPRICE=localStorage.getItem("RPRICE");
-			    var WAREHOUSE_ID_NAME_STOCK=localStorage.getItem("WAREHOUSE_ID_NAME_STOCK");
-			    window.localStorage.removeItem("GOOD_ID");
-			    window.localStorage.removeItem("GOODNAME");
-			    window.localStorage.removeItem("BARCODE");
-			    window.localStorage.removeItem("UNITNAME");
-			    window.localStorage.removeItem("GOODCODE");
-			    window.localStorage.removeItem("RPRICE");
-			    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
-			    if( GOOD_ID != null){
-			    	parseStr(GOODCODE,WAREHOUSE_ID_NAME_STOCK);
-			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,WAREHOUSE_ID_NAME_STOCK);
-			    }
+				var str=localStorage.getItem("str");
+				if(str==null){
+				    var GOOD_ID=localStorage.getItem("GOOD_ID");
+				    var GOODNAME=localStorage.getItem("GOODNAME");
+				    var BARCODE=localStorage.getItem("BARCODE");
+				    var UNITNAME=localStorage.getItem("UNITNAME");
+				    var GOODCODE=localStorage.getItem("GOODCODE");
+				    var RPRICE=localStorage.getItem("RPRICE");
+				    var WAREHOUSE_ID_NAME_STOCK=localStorage.getItem("WAREHOUSE_ID_NAME_STOCK");
+				    window.localStorage.removeItem("GOOD_ID");
+				    window.localStorage.removeItem("GOODNAME");
+				    window.localStorage.removeItem("BARCODE");
+				    window.localStorage.removeItem("UNITNAME");
+				    window.localStorage.removeItem("GOODCODE");
+				    window.localStorage.removeItem("RPRICE");
+				    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
+				    if( GOOD_ID != null){
+				    	parseStr(GOODCODE,WAREHOUSE_ID_NAME_STOCK);
+				    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,WAREHOUSE_ID_NAME_STOCK);
+				    }
+				}else{
+					var s1 = str.split("?");
+					for(var i=0;i<s1.length;i++){
+						var s2=s1[i];
+						var s3=s2.split(":");
+						var s4=s3[0].split(",");
+					    if( s4[0] != null){
+						  	parseStr(s4[0],s3[1]);
+						   	insertNewRow(s4[0],s4[1],s4[2],s4[3],s4[4],s4[5],s3[1]);
+						 }
+					}
+					  window.localStorage.removeItem("str");
+				}
 				diag.close();
 			};
 			diag.show();

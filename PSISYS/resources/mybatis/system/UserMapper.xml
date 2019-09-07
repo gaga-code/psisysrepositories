@@ -468,5 +468,22 @@
 		select USER_ID
 		from sys_user
 		where NAME=#{username}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	
+	<select id="findMaxUserCode" parameterType="pd" resultType="String">
+		SELECT max(NUMBER) from sys_user
+		where PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0
+	</select>
+	
+	<select id="listUserName" parameterType="pd" resultType="String">
+		select USERNAME 
+		from sys_user
+		where PK_SOBOOKS = #{accountset}
+			and IFNULL(dr,0)=0
+		ORDER BY LAST_LOGIN desc 
+		limit 0 ,5
 	</select>
 </mapper>

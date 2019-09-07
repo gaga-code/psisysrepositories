@@ -312,6 +312,12 @@
 					a.GOODNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 					 or 
 					a.GOODTYPECODE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+					or 
+					a.GOODSPECIF LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+					or 
+					a.SIMPLENAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+					or 
+					a.GOODCODE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
 				)
 		</if>
 		 <if test="pd.GOODTYPE_ID!= null and pd.GOODTYPE_ID != ''">
@@ -529,5 +535,39 @@
 		where GOOD_ID=#{MASTER_ID}
 		and IFNULL(dr,0)=0 
 	</update>
+	
+	<select id="findbyTypeId" parameterType="pd" resultType="String">
+		select max(GOODCODE)
+		from base_good
+		where 	GOODTYPE_ID=#{GOODTYPE_ID}
+			and PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(dr,0)=0 
+	</select>
+	
+	<select id="datalistPageByAllInorderSale" parameterType="page" resultType="pd">
+		 select * from (
+		 select  substring(b.BILLCODE,1,1) as bill, b.BILLCODE,d.GOODNAME,d.GOODCODE ,a.UNITPRICE_ID,a.PNUMBER,a.LASTTIME,c.USERNAME,b.BILLTYPE,d.STOCKNUM
+		from psi_inorder_body as a 
+		left join  psi_inorder as b on  a.INORDER_ID=b.INORDER_ID
+		left join sys_user as c on b.USER_ID=c.USER_ID
+		left join  base_good as d on a.GOODCODE_ID=d.GOODCODE
+		where a.PK_SOBOOKS=#{pd.PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		and  d.GOODCODE = #{pd.GOODCODE}
+		and b.BILLSTATUS=2
+		union 
+		
+		select  substring(b.BILLCODE,1,1) as bill, b.BILLCODE,d.GOODNAME,d.GOODCODE ,a.UNITPRICE_ID,a.PNUMBER,a.LASTTIME,c.USERNAME,b.BILLTYPE,d.STOCKNUM
+		from psi_salebillbody as a 
+		left join  psi_salebill as b on  a.SALEBILL_ID=b.SALEBILL_ID
+		left join sys_user as c on b.USER_ID=c.USER_ID
+		left join  base_good as d on a.GOODCODE_ID=d.GOODCODE
+		where a.PK_SOBOOKS=#{pd.PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		and b.BILLSTATUS=2
+		and  d.GOODCODE = #{pd.GOODCODE}
+		) as aa 
+		ORDER BY LASTTIME desc 
+	</select>
 	
 </mapper>

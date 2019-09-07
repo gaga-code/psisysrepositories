@@ -117,6 +117,8 @@ public class LoginController extends BaseController {
 		return varList;
 	}
 	
+	
+	
 	/**请求登录，验证用户
 	 * @return
 	 * @throws Exception
@@ -189,6 +191,20 @@ public class LoginController extends BaseController {
 		}
 		map.put("result", errInfo);
 		return AppUtil.returnObject(new PageData(), map);
+	}
+	
+	
+	//列出最近登陆的用户名
+	@RequestMapping(value="/selectAccount",produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public List<String> selectAccount()throws Exception{
+		
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		
+		List<String> list=userService.listUserName(pd);
+		
+		return list;
 	}
 	
 	/**访问系统首页

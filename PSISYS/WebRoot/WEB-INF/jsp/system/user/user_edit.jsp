@@ -48,9 +48,11 @@
 										<c:if test="${fx == 'head'}">
 											<input name="ROLE_ID" id="role_id" value="${pd.ROLE_ID }" type="hidden" />
 										</c:if>
+										
 										<tr>
 											<td style="width:79px;text-align: right;padding-top: 13px;">用户名:</td>
 											<td><input type="text" name="USERNAME" id="loginname" value="${pd.USERNAME }" maxlength="32" placeholder="这里输入用户名" title="用户名" style="width:98%;"/></td>
+										
 										</tr>
 										<tr>
 											<td style="width:79px;text-align: right;padding-top: 13px;">拼音编码:</td>
@@ -152,12 +154,12 @@
 </body>
 <script type="text/javascript">
 	$(top.hangge());
-	$(document).ready(function(){
+	/* $(document).ready(function(){
 		if($("#user_id").val()!=""){
 			$("#loginname").attr("readonly","readonly");
 			$("#loginname").css("color","gray");
 		}
-	});
+	}); */
 	//保存
 	function save(){
 		if($("#role_id").val()==""){
@@ -250,15 +252,7 @@
 			return false;
 		}
 		if($("#EMAIL").val()==""){
-			
-			$("#EMAIL").tips({
-				side:3,
-	            msg:'输入邮箱',
-	            bg:'#AE81FF',
-	            time:3
-	        });
-			$("#EMAIL").focus();
-			return false;
+
 		}else if(!ismail($("#EMAIL").val())){
 			$("#EMAIL").tips({
 				side:3,

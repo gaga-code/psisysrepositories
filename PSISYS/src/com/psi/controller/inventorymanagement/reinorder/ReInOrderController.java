@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,6 +24,7 @@ import com.psi.service.basedata.supplier.SupplierManager;
 import com.psi.service.basedata.warehouse.WarehouseManager;
 import com.psi.service.inventorymanagement.inorder.InOrderManager;
 import com.psi.service.inventorymanagement.reinorder.ReInOrderManager;
+import com.psi.service.inventorymanagement.reinorder.impl.ReInOrderService;
 import com.psi.service.inventorymanagement.salebill.SalebillManager;
 import com.psi.util.AppUtil;
 import com.psi.util.Const;
@@ -31,11 +33,15 @@ import com.psi.util.Jurisdiction;
 import com.psi.util.PageData;
 import com.psi.util.Tools;
 
+import net.sf.json.JSONArray;
+
 @Controller
 @RequestMapping(value="/reinorder")
 public class ReInOrderController extends BaseController {
 	String menuUrl = "reinorder/list.do"; //菜单地址(权限用)
 	
+	@Resource(name="reInOrderService")
+	private ReInOrderManager reInOrderService;
 	
 	@Resource(name="inOrderService")
 	private InOrderManager inOrderService;
@@ -74,6 +80,67 @@ public class ReInOrderController extends BaseController {
 		return mv;
 	}
 	
+	
+	/**
+	 * 打开添加商品
+	 * @throws Exception 
+	 */
+	@RequestMapping(value="/goaddgoods")
+	public ModelAndView addgoods(Model model,String GOODTYPE_ID) throws Exception {
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		try{
+			Map<String,String> map = new HashMap<String, String>();
+			map.put("PK_SOBOOKS", pd.getString("PK_SOBOOKS"));
+			map.put("PARENTS", "-2");
+			map.put("WAREHOUSE_ID", pd.getString("WAREHOUSE_ID"));
+			JSONArray arr = JSONArray.fromObject(goodsService.salebillListAllDict(map));
+			String json = arr.toString();
+			json = json.replaceAll("GOODTYPE_ID", "id").replaceAll("PARENTS", "pId").replaceAll("TYPENAME", "name").replaceAll("subDict", "nodes").replaceAll("hasDict", "checked").replaceAll("treeurl", "url");
+			model.addAttribute("zTreeNodes", json);
+			mv.addObject("GOODTYPE_ID",GOODTYPE_ID);
+			mv.addObject("pd", pd);	
+			mv.setViewName("inventorymanagement/reinorder/inorder_goods_ztree");
+		} catch(Exception e){
+			logger.error(e.toString(), e);
+		}
+		return mv;
+	}
+	
+	/**
+	 * 商品列表（添加商品用）
+	 * @param page
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/goodslist")
+	public ModelAndView goodslist(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表Goods");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+		pd.put("GOODTYPE_ID", pd.get("id"));
+		pd.put("USERNAME", "admin".equals(Jurisdiction.getUsername())?"":Jurisdiction.getUsername());
+		page.setPd(pd);
+		List<PageData>	result = new ArrayList<PageData>();	
+		List<PageData>	varList = goodsService.list(page);	//列出Goods列表
+		for (PageData pageData : varList) {
+			if((Integer)pageData.get("STOCKNUM") != 0) {
+				result.add(pageData);
+			}
+			
+		}
+		mv.setViewName("inventorymanagement/reinorder/inorder_goods_list");
+		mv.addObject("varList", result);
+		mv.addObject("pd", pd);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		return mv;
+	}
 	
 	/**去新增页面
 	 * @param
@@ -154,7 +221,7 @@ public class ReInOrderController extends BaseController {
 		pd = this.getPageData();
 		pd.put("BILLSTATUS", 2);
 		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
-		inOrderService.updatefanshen(pd);
+		reInOrderService.updatefanshen(pd);
 		out.write("success");
 		out.close();
 	}

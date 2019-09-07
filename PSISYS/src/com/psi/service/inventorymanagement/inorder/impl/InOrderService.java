@@ -65,16 +65,16 @@ public class InOrderService implements InOrderManager{
 			pageData.put("WAREHOUSE_ID", agoods[2]);
 			pageData.put("UNITPRICE_ID", agoods[3]);
 			pageData.put("PNUMBER", agoods[4]);
-			pageData.put("AMOUNT", agoods[6]);
+			pageData.put("AMOUNT", agoods[8]);
 			
-			if(agoods.length==8){ //如果BARCODE有值，agoods的长度是9
-				pageData.put("NOTE", agoods[7]);
+			if(agoods.length==10){ //如果BARCODE有值，agoods的长度是9
+				pageData.put("NOTE", agoods[9]);
 			}else{  //否则长度为8
 				pageData.put("NOTE", "");
 			}
 			
-			if(agoods.length==9){ //如果BARCODE有值，agoods的长度是9
-				pageData.put("BARCODE", agoods[8]);
+			if(agoods.length==11){ //如果BARCODE有值，agoods的长度是9
+				pageData.put("BARCODE", agoods[10]);
 			}else{  //否则长度为8
 				pageData.put("BARCODE", null);
 			}
@@ -369,6 +369,7 @@ public class InOrderService implements InOrderManager{
 	 */
 	@Override
 	public void updateshenpi(PageData pd) throws Exception {
+		
 		//把进货单的状态改为已审核
 		dao.update("InOrderMapper.shenpi", pd);
 		//获取进货单表头数据

@@ -99,7 +99,7 @@
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.WHNAME}</td>
 											<td class='center'>${var.GOODCODE}</td>
-											<td class='center'>${var.GOODNAME}</td>
+											<td class='center'><a style="cursor:pointer;" onclick="goodcode('${var.GOODCODE}')">${var.GOODNAME}</a></td>
 											<td class='center'>
 												${var.BARCODE}
 												<a onclick="barcode('${var.GOOD_ID}','${var.BARCODE}');"><img style="cursor:pointer;" width="15" src="static/images/barcode.png"  title="商品条形码"/></a>
@@ -309,6 +309,23 @@
 						 nextPage(${page.currentPage});
 					 }
 				}
+				diag.close();
+			 };
+			 diag.show();
+		}
+		
+		function goodcode(Id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="新增";
+			 diag.URL = '<%=basePath%>goods/goInorderSale.do?GOODCODE='+Id;
+			 diag.Width = 1000;
+			 diag.Height = 500;
+			 diag.Modal = true;				//有无遮罩窗口
+			 diag. ShowMaxButton = true;	//最大化按钮
+		     diag.ShowMinButton = true;		//最小化按钮
+			 diag.CancelEvent = function(){ //关闭事件
 				diag.close();
 			 };
 			 diag.show();

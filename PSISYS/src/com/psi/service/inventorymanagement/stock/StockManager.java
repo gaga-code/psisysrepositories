@@ -17,6 +17,7 @@ public interface StockManager{
 	 * @throws Exception
 	 */
 	public List<PageData> list(Page page)throws Exception;
+
 	
 }
 

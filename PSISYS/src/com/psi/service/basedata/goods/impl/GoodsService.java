@@ -213,7 +213,15 @@ public class GoodsService implements GoodsManager{
 					if(temp != null) {
 						stock =  (Integer) temp.get("STOCK");
 					}
-						WAREHOUSE_ID_NAME_STOCK = WAREHOUSE_ID_NAME_STOCK + WID + "," + WHNAME +"," + stock + "#";
+					WAREHOUSE_ID_NAME_STOCK = WAREHOUSE_ID_NAME_STOCK + WID + "," + WHNAME +"," + stock + "#";
+				
+				}
+			}else{
+				List<PageData> lpd=(List<PageData>)dao.findForList("WarehouseMapper.listAll", page.getPd());
+				if(lpd!=null&&lpd.size()!=0){
+					for(int i=0;i<lpd.size();i++){
+						WAREHOUSE_ID_NAME_STOCK=WAREHOUSE_ID_NAME_STOCK+lpd.get(i).getString("WAREHOUSE_ID")+","+lpd.get(i).getString("WHNAME")+",0#";
+					}
 				}
 			}
 			pageData.put("WAREHOUSE_ID_NAME_STOCK", WAREHOUSE_ID_NAME_STOCK);
@@ -318,6 +326,17 @@ public class GoodsService implements GoodsManager{
 	public void editPic(PageData pd) throws Exception {
 		// TODO Auto-generated method stub
 		dao.update("GoodsMapper.savePic", pd);
+	}
+
+	@Override
+	public String findbyTypeId(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (String)dao.findForObject("GoodsMapper.findbyTypeId", pd);
+	}
+	@Override
+	public List<PageData> listAllInorderSale(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("GoodsMapper.datalistPageByAllInorderSale", page);
 	}
 	
 	

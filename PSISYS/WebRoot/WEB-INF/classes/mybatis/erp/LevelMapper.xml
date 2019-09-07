@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		ERP_LEVEL
+		erp_level
 	</sql>
 	
 	<!-- 字段 -->

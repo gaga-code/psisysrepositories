@@ -125,12 +125,12 @@ public class Page {
 			sb.append("	<option value='20'>20</option>\n");
 			sb.append("	<option value='30'>30</option>\n");
 			sb.append("	<option value='40'>40</option>\n");
-			sb.append("	<option value='50'>50</option>\n");
+		/*	sb.append("	<option value='50'>50</option>\n");
 			sb.append("	<option value='60'>60</option>\n");
 			sb.append("	<option value='70'>70</option>\n");
 			sb.append("	<option value='80'>80</option>\n");
 			sb.append("	<option value='90'>90</option>\n");
-			sb.append("	<option value='99'>99</option>\n");
+			sb.append("	<option value='99'>99</option>\n");*/
 			sb.append("	</select>\n");
 			sb.append("	</li>\n");
 			

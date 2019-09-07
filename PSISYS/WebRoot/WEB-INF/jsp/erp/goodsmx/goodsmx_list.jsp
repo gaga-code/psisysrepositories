@@ -50,7 +50,7 @@
 <!--查看图片插件 -->
 </head>
 <body class="no-skin">
-	<div class="main-container" id="main-container">
+	<div class="main-container" id="main-container" >
 		<!-- /section:basics/sidebar -->
 		<div class="main-content">
 			<div class="main-content-inner">

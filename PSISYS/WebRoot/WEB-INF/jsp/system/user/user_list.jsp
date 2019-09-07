@@ -271,6 +271,7 @@ function add(){
 
 //修改
 function editUser(user_id){
+	
 	 top.jzts();
 	 var diag = new top.Dialog();
 	 diag.Drag=true;

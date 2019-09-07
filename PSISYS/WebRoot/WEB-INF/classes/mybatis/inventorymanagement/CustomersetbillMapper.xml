@@ -272,6 +272,14 @@
 		   and PK_SOBOOKS = #{PK_SOBOOKS}
 		   and IFNULL(DR,0)=0 
 	</update>
+	
+	
+	<update id="updateNoteByCode" parameterType="pd">
+		update 
+			psi_customersetbill
+		set NOTE = #{NOTE}
+		where BILLCODE = #{BILLCODE}
+	</update>
 	<select id="listByCondition" parameterType="pd" resultType="pd">		
 		select a.BILLCODE ,a.SALEBILL_IDS ,b.PAYMETHODNAME, a.BILLNO,c.NAME
 		from psi_customersetbill as a left join base_paymethod as b on a.PAYMETHOD=b.PAYMETHOD_ID

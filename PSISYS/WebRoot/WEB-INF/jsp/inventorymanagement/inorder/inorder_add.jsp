@@ -12,7 +12,7 @@
 	<base href="<%=basePath%>">
 	<!-- jsp文件头和头部 -->
 	<%@ include file="../../system/index/top.jsp"%>
-	<script type="text/javascript" src="static/js/myjs/head.js"></script>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
 </head>
 <body class="no-skin">
 <!-- /section:basics/navbar.layout -->
@@ -58,8 +58,8 @@
 <%-- 								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WAREHOUSE_ID}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td> --%>
 								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
 								<td>
-									<select class="chosen-select form-control" name="SUPPLIER_ID" id="SUPPLIER_ID"  style="vertical-align:top;width:98%;" >
-										<option value="">无</option>
+									<select class="chosen-select form-control singleSelect" name="SUPPLIER_ID" id="SUPPLIER_ID"    style="vertical-align:top;width:98%;" >
+									  <option value="">--请选择--</option>
 										<c:forEach items="${supplierList}" var="var">
 											<option value="${var.SUPPLIER_ID }" <c:if test="${var.SUPPLIER_ID == pd.SUPPLIER_ID }">selected</c:if>>${var.SUPPLIERNAME }</option>
 										</c:forEach>
@@ -88,6 +88,8 @@
 									<th class="center">单价</th>
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
+									<th class="center">型号</th>
+									<th class="center">规格</th>
 									<th class="center">金额</th>
 									<th class="center">备注</th>
 									<th class="center">操作</th>
@@ -117,10 +119,6 @@
 
 
 
-
-<!-- <script src="common/jquery-1.4.2.js" type="text/javascript"></script> -->
-<!--    <script src="common/jquery-1.7.2.js" type="text/javascript"></script> -->
-
 	<!-- 页面底部js¨ -->
 	<%@ include file="../../system/index/foot.jsp"%>
 
@@ -129,6 +127,15 @@
 	<script src="static/js/jquery.cookie.js" type="text/javascript"></script>
 	<!--提示框-->
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
+	
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+	 <script type="text/javascript">
+        $(document).ready(function() {
+                $('.singleSelect').select2();
+          });
+ 	  </script>
+ 	  
 		<script type="text/javascript">
 		$(top.hangge());
 		
@@ -150,7 +157,7 @@
 // 	    });
 		function parseStr(GOOD_ID,str){
 			 var Str = str.split('#');
-		        if (Str[0] != "") {
+		        if (Str.length!=0) {
 		            for (var i = 0; i < Str.length - 1; i++) {
 		                var value = Str[i].split(',');
 		                var wh_id = value[0];
@@ -161,7 +168,7 @@
 		        }
 		}
 		
-		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE,WAREHOUSE_ID_NAME_STOCK) {
+		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE,GOODTYPECODE,GOODSPECIF,WAREHOUSE_ID_NAME_STOCK) {
 			var Str = WAREHOUSE_ID_NAME_STOCK.split('#');
 			var selecthtml = "";
 	        if (Str[0] != "") {
@@ -170,7 +177,7 @@
 		                var wh_id = value[0];
 		                var wh_name = value[1]
 		                var stock = value[2];
-		                selecthtml += "<option value="+wh_id+">"+wh_name+","+stock+"</option>";
+		                selecthtml += "<option value="+wh_id+">"+wh_name+"</option>";
 	        	}
 	        }
 			//var str = 
@@ -188,6 +195,8 @@
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+CPRICE+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODTYPECODE +"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODSPECIF +"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
@@ -303,7 +312,7 @@
 	                var shuliang = value[4];
 	                if(danjia!= ''&& shuliang!= ''){
 	                	result = result + danjia * shuliang;
-	                	$("#simple-table tr").eq(i+1).children().eq(6).children().eq(0).val(danjia * shuliang);
+	                	$("#simple-table tr").eq(i+1).children().eq(8).children().eq(0).val(danjia * shuliang);
 	                	console.log(i);
 	                }
 	            }
@@ -325,24 +334,43 @@
 			diag.Modal = true;				//有无遮罩窗口
 			diag.CancelEvent = function(){ //关闭事件
 				var storage=window.localStorage;
-			    var GOOD_ID=localStorage.getItem("GOOD_ID");
-			    var GOODNAME=localStorage.getItem("GOODNAME");
-			    var BARCODE=localStorage.getItem("BARCODE");
-			    var UNITNAME=localStorage.getItem("UNITNAME");
-			    var GOODCODE=localStorage.getItem("GOODCODE");
-			    var CPRICE=localStorage.getItem("CPRICE");
-			    var WAREHOUSE_ID_NAME_STOCK=localStorage.getItem("WAREHOUSE_ID_NAME_STOCK");
-			    window.localStorage.removeItem("GOOD_ID");
-			    window.localStorage.removeItem("GOODNAME");
-			    window.localStorage.removeItem("BARCODE");
-			    window.localStorage.removeItem("UNITNAME");
-			    window.localStorage.removeItem("GOODCODE");
-			    window.localStorage.removeItem("CPRICE");
-			    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
-			    if( GOOD_ID != null){
-			    	parseStr(GOOD_ID,WAREHOUSE_ID_NAME_STOCK);
-			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE,WAREHOUSE_ID_NAME_STOCK);
-			    }
+				var str=localStorage.getItem("str");
+				if(str==null){
+				    var GOOD_ID=localStorage.getItem("GOOD_ID");
+				    var GOODNAME=localStorage.getItem("GOODNAME");
+				    var BARCODE=localStorage.getItem("BARCODE");
+				    var UNITNAME=localStorage.getItem("UNITNAME");
+				    var GOODCODE=localStorage.getItem("GOODCODE");
+				    var CPRICE=localStorage.getItem("CPRICE");
+				    var GOODTYPECODE=localStorage.getItem("GOODTYPECODE");
+				    var GOODSPECIF=localStorage.getItem("GOODSPECIF");
+				    var WAREHOUSE_ID_NAME_STOCK=localStorage.getItem("WAREHOUSE_ID_NAME_STOCK");
+				    window.localStorage.removeItem("GOOD_ID");
+				    window.localStorage.removeItem("GOODNAME");
+				    window.localStorage.removeItem("BARCODE");
+				    window.localStorage.removeItem("UNITNAME");
+				    window.localStorage.removeItem("GOODCODE");
+				    window.localStorage.removeItem("CPRICE");
+				    window.localStorage.removeItem("GOODTYPECODE");
+				    window.localStorage.removeItem("GOODSPECIF");
+				    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
+				    if( GOOD_ID != null){
+				    	parseStr(GOOD_ID,WAREHOUSE_ID_NAME_STOCK);
+				    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,CPRICE,GOODTYPECODE,GOODSPECIF,WAREHOUSE_ID_NAME_STOCK);
+				    }
+				}else{
+					var s1 = str.split("?");
+					for(var i=0;i<s1.length;i++){
+						var s2=s1[i];
+						var s3=s2.split(":");
+						var s4=s3[0].split(",");
+					    if( s4[0] != null){
+						  	parseStr(s4[0],s3[1]);
+						   	insertNewRow(s4[0],s4[1],s4[2],s4[3],s4[4],s4[5],s4[6],s4[7],s3[1]);
+						 }
+					}
+					  window.localStorage.removeItem("str");
+				}
 				diag.close();
 			};
 			diag.show();

@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		DB_TIMINGBACKUP
+		db_timingbackup
 	</sql>
 	
 	<!-- 字段 -->

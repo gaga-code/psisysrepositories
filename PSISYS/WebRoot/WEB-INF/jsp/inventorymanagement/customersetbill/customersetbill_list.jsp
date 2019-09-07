@@ -99,7 +99,7 @@
 									<th class="center">实收金额</th>
 									<th class="center">发票类型</th>
 									<th class="center">票号</th>
-									<th class="center">经销方式</th>
+									<th class="center">备注</th>
 									<th class="center">经手人</th>
 									<th class="center">操作</th>
 								</tr>
@@ -135,7 +135,7 @@
 											<td class='center'>${var.INVOICETYPE}</td>
 											<td class='center'>${var.BILLNO}</td>
 											
-											<td class='center'>${var.DISTRIBUTIONMODENAME }</td>
+											<td class='center'>${var.NOTE}</td>
 											<td class='center'>${var.PSI_NAME}</td>
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
@@ -463,9 +463,11 @@
 			bootbox.confirm("确定要反审吗?", function(result) {
 				if(result) {
 					top.jzts();
+					var note;
+					note=prompt("请你输入备注"); 
 					$.ajax({
 						type: "POST",
-						url: '<%=basePath%>customersetbill/unapprovalone.do?tm='+new Date().getTime(),
+						url: '<%=basePath%>customersetbill/unapprovalone.do?tm='+new Date().getTime()+"&NOTE="+note,
 				    	data: {CUSTOMERSETBILL_ID:Id},
 						dataType:'json',
 						cache: false,

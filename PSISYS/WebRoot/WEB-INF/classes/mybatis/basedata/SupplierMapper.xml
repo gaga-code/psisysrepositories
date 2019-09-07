@@ -252,9 +252,7 @@
 		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
 			and a.CREATETIME &lt;= #{pd.lastEnd} 
 		</if>
-		<if test="pd.USER_ID!=null and pd.USER_ID!=''">
-			and a.USER_ID = #{pd.USER_ID} 
-		</if>
+	
 		and PK_SOBOOKS = #{pd.PK_SOBOOKS}
 			and IFNULL(DR,0)=0 
 		order by a.CREATETIME desc

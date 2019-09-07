@@ -85,7 +85,7 @@ setTimeout("top.hangge()",500);
 							
 						</div>
 						<!-- /.col -->
-						
+				<%-- 		
 						<div class="span6" style="padding-top: 13px;">
 									<div class="tabbable">
 								            <ul class="nav nav-tabs" id="myTab">
@@ -133,7 +133,7 @@ setTimeout("top.hangge()",500);
 									</div>
 								 </div><!--/span-->		
 						
-					</div>
+					</div> --%>
 					<!-- /.row -->
 				</div>
 				<!-- /.page-content -->

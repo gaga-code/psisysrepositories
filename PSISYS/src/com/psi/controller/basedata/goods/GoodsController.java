@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpRequest;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -36,6 +39,8 @@ import com.psi.service.erp.spbrand.SpbrandManager;
 import com.psi.service.erp.sptype.SptypeManager;
 import com.psi.service.erp.spunit.SpunitManager;
 import com.psi.service.information.pictures.PicturesManager;
+import com.psi.service.inventorymanagement.salebill.SalebillManager;
+import com.psi.service.inventorymanagement.stock.StockManager;
 import com.psi.service.system.fhlog.FHlogManager;
 import com.psi.service.system.user.UserManager;
 import com.psi.util.AppUtil;
@@ -82,6 +87,10 @@ public class GoodsController extends BaseController {
 	private FHlogManager FHLOG;
 	@Resource(name="userService")
 	private UserManager userService;
+	@Resource(name="salebillService")
+	private SalebillManager salebillService;
+	@Resource(name="stockService")
+	private StockManager stockService;
 	/**
 	 * 库存预警
 	 * 检查商品的库存是否低于下限
@@ -281,8 +290,21 @@ public class GoodsController extends BaseController {
 		User user = (User)session.getAttribute(Const.SESSION_USER);
 		pd.put("PSI_NAME", user.getNAME());	//用户主键
 		List<PageData> supplierList = supplierService.listAll(pd);  //供应商列表
-		List<PageData> goodsTypeList =  goodsTypeService.listAll(pd); 						//商品分类列表
+		List<PageData> goodsType =  goodsTypeService.listAll(pd); 						//商品分类列表
 		List<PageData> spunitList = spunitService.listAll(Jurisdiction.getUsername()); 		//计量单位列表
+		List<PageData> goodsTypeList = new ArrayList<PageData>();
+		for(int i=0;i<goodsType.size();i++){
+			int flag=0;
+			for(int j=0;j<goodsType.size();j++){
+				if(goodsType.get(i).get("GOODTYPE_ID").equals(goodsType.get(j).get("PARENTS"))){
+					flag=1;
+					break;
+				}
+			}
+			if(flag==0){
+				goodsTypeList.add(goodsType.get(i));
+			}
+		}
 		mv.setViewName("basedata/goods/goods_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
@@ -303,8 +325,21 @@ public class GoodsController extends BaseController {
 		pd = this.getPageData();
 		pd = goodsService.findById(pd);	//根据ID读取
 		List<PageData> supplierList = supplierService.listAll(pd);  //供应商列表
+		List<PageData> goodsType =  goodsTypeService.listAll(pd); 						//商品分类列表
 		List<PageData> spunitList = spunitService.listAll(Jurisdiction.getUsername()); 		//计量单位列表
-		List<PageData> goodsTypeList =  goodsTypeService.listAll(pd); 						//商品分类列表
+		List<PageData> goodsTypeList = new ArrayList<PageData>();
+		for(int i=0;i<goodsType.size();i++){
+			int flag=0;
+			for(int j=0;j<goodsType.size();j++){
+				if(goodsType.get(i).get("GOODTYPE_ID").equals(goodsType.get(j).get("PARENTS"))){
+					flag=1;
+					break;
+				}
+			}
+			if(flag==0){
+				goodsTypeList.add(goodsType.get(i));
+			}
+		}
 		mv.setViewName("basedata/goods/goods_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
@@ -359,6 +394,8 @@ public class GoodsController extends BaseController {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(format,true));
 	}
+	
+
 	
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
@@ -561,7 +598,6 @@ public class GoodsController extends BaseController {
 				if(PK_ID!=null){
 					pd.put("PK_SOBOOKS",PK_ID);//	24
 				}
-				
 				String username=listPd.get(i).getString("var25");//25
 				pd.put("username", username);
 				String userId = userService.findByname(pd);
@@ -579,7 +615,7 @@ public class GoodsController extends BaseController {
 				String GOODTYPE_ID=GOODCODE.substring(0, GOODCODE.length()-4);
 				pd.put("GOODTYPE_ID", GOODTYPE_ID);
 
-				String whname= listPd.get(i).getString("var26");
+				String whname= listPd.get(i).getString("var27");
 				if(whname!=null&&!whname.equals("")){
 					String whId="";
 					String[] str=whname.split(",");
@@ -612,5 +648,86 @@ public class GoodsController extends BaseController {
 	@RequestMapping(value="/downExcel")
 	public void downExcel(HttpServletResponse response)throws Exception{
 		FileDownload.fileDownload(response, PathUtil.getClasspath() + Const.FILEPATHFILE + "Goods.xls", "Goods.xls");
+	}
+	
+	
+	@RequestMapping(value="/findCodeByGOODTYPEID")
+	@ResponseBody
+	public String findCodeByGOODTYPEID() throws Exception{	
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		int len=pd.getString("GOODTYPE_ID").length();
+		String code =goodsService.findbyTypeId(pd);
+		
+	
+
+		if(code!=null){
+		String code1=code.substring(len, code.length());
+			String ling="";
+			for(int i=0;i<code1.length();i++){
+				if(code1.charAt(i)!='0'){
+					break;
+				}else{
+					ling+="0";
+				}
+			}
+		
+			return pd.getString("GOODTYPE_ID")+ling+(Integer.parseInt(code1)+1);
+		}
+	
+		return pd.getString("GOODTYPE_ID")+"01";
+	}
+	
+	
+	
+	@RequestMapping(value="/listsalebill")
+	public ModelAndView listsalebill(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"查看商品销售情况列表");
+	
+		PageData pd = new PageData();
+		pd= this.getPageData();
+		
+
+		ModelAndView mv= new ModelAndView();
+		
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if( keywords !=null && !keywords.equals("")){
+			pd.put("keywords", keywords.trim());
+		}
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+		}
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 23:59:59");
+		} 
+		pd.put("USERNAME", Jurisdiction.getUsername());
+		page.setPd(pd);
+		List<PageData> list;
+		list=salebillService.listsalebillByGoodCode(page);//列出销售单列表
+		mv.setViewName("inventorymanagement/odersale/salebill_view");
+		
+		mv.addObject("pd", pd);
+		mv.addObject("varlist",list);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		return mv;
+	}
+	
+
+	
+	@RequestMapping(value="/goInorderSale")
+	public ModelAndView goInorderSale(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"查看商品库存进出列表");
+		PageData pd = new PageData();
+		pd= this.getPageData();
+		ModelAndView mv= new ModelAndView();
+		page.setPd(pd);
+		List<PageData> list = goodsService.listAllInorderSale(page); //获取商品的加减
+		
+		mv.addObject("varlist", list);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		mv.setViewName("inventorymanagement/stock/odersale_list");
+		return mv;
 	}
 }

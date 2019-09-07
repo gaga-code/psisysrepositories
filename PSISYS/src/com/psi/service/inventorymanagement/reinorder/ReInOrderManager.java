@@ -9,4 +9,6 @@ public interface ReInOrderManager {
 
 	List<PageData> list(Page page) throws Exception;
 
+	void updatefanshen(PageData pd) throws Exception;
+
 }

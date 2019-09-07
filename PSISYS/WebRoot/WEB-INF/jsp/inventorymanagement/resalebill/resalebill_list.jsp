@@ -98,6 +98,7 @@
 										<th class="center">本次付款</th>
 										<th class="center">结算状态</th>
 										<th class="center">审核状态</th>
+										<th class="center">日期</th>
 										<th class="center">经手人</th>
 										<th class="center">备注</th>
 										<th class="center">操作</th><!-- style="width:150px;" -->
@@ -143,6 +144,7 @@
 														<font color="red">作废</font>
 													</c:if>
 												</td>
+												<td class='center'>${var.CREATETIME}</td>
 												<td class='center'>${var.PSI_NAME}</td>
 												<td class='center'>${var.NOTE}</td>
 												<td class="center">
@@ -613,6 +615,7 @@
 			bootbox.confirm("确定要反审吗?", function(result) {
 				if(result) {
 					top.jzts();
+		
 					var url = "<%=basePath%>resalebill/fanshen.do?SALEBILL_ID="+Id+"&tm="+new Date().getTime();
 					$.get(url,function(data){
 						tosearch();

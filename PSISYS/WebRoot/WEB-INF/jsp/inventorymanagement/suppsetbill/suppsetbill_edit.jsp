@@ -37,6 +37,9 @@
 						<table style="margin-top:5px;">
 							<tr>
 								<td style="vertical-align:top;padding-left:2px;">
+									<c:if test="${QX.SUPPSETBILLSET == 1 }">
+									<a class="btn btn-mini btn-success" onclick="settleAll('确定要结算选中的数据吗?');" title="批量结算" >批量结算</a>
+									</c:if>
 									<c:if test="${QX.add == 1 && msg == 'save' }">
 									<a class="btn btn-mini btn-success" onclick="savesuppsetbill();">保存供应商结算单</a>
 									</c:if>
@@ -46,9 +49,7 @@
 									<c:if test="${QX.del == 1 }">
 									<a class="btn btn-mini btn-danger" id="delalldata" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'>批量删除</i></a>
 									</c:if>
-									<c:if test="${QX.SUPPSETBILLSET == 1 }">
-									<a class="btn btn-mini btn-success" onclick="settleAll('确定要结算选中的数据吗?');" title="批量结算" >批量结算</a>
-									</c:if>
+									
 									<a class="btn btn-mini btn-danger" onclick="top.Dialog.close();">取消</a>
 								</td>
 								

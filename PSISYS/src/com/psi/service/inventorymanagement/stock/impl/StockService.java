@@ -28,6 +28,7 @@ public class StockService implements StockManager{
 	public List<PageData> list(Page page)throws Exception{
 		return (List<PageData>)dao.findForList("StockMapper.stocklistPage", page);
 	}
-	
+
+
 }
 

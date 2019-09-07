@@ -1,5 +1,6 @@
 package com.psi.service.inventorymanagement.reinorder.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -22,5 +23,72 @@ public class ReInOrderService implements ReInOrderManager{
 		// TODO Auto-generated method stub
 		return (List<PageData>)dao.findForList("ReInOrderMapper.datalistPage", page);
 	}
-
+	
+	@Override
+	public void updatefanshen(PageData pd) throws Exception {
+		/**
+		 * 反审进货单
+		 */
+	
+			//把进货单的状态改为未审核
+			dao.update("InOrderMapper.fanshen", pd);
+			//获取进货单表头数据
+			PageData head =  (PageData)dao.findForObject("InOrderMapper.findById", pd);
+			//通过进货单ID获取该进货单的商品信息
+			List<PageData> goodslist = (List<PageData>)dao.findForList("InOrderBodyMapper.findById", pd);
+			
+			//依次把商品数量在 仓库-商品 表中删去
+			for (PageData pageData : goodslist) {
+				
+				
+				//=========================修改商品表的平均成本价===================
+				HashMap map=new HashMap();
+				map.put("GOODCODE",  pageData.get("GOODCODE_ID"));
+				map.put("PK_SOBOOKS", pageData.get("PK_SOBOOKS"));
+				PageData gpd=(PageData)dao.findForObject("GoodsMapper.findDefAndNumByCode", map); //查询数据库商品的平均成本价和库存
+				
+				int STOCKNUM= (Integer)gpd.get("STOCKNUM");
+				double price;
+				if(gpd.getString("DEF1")!=null){
+				    price= Double.parseDouble(gpd.getString("DEF1"));
+				}else{
+					price=0;
+				}
+				int num=(Integer)pageData.get("PNUMBER");
+				double amount=(Double)pageData.get("AMOUNT");
+				if((price*STOCKNUM-amount)==0 || (STOCKNUM-num)==0){
+					price=0;
+				}else{
+					price=(price*STOCKNUM-amount)/(STOCKNUM-num);
+				}
+				map.put("price", price);
+				map.put("GOODCODE", pageData.get("GOODCODE_ID"));
+				dao.save("GoodsMapper.updateDEF1ByCode", map);
+				
+				/////////////////////////////////////
+				head.put("WAREHOUSE_ID", pageData.get("WAREHOUSE_ID"));
+				head.put("GOOD_ID", pageData.get("GOODCODE_ID"));
+				//获取原来的库存
+				PageData aGood =  (PageData)dao.findForObject("StockMapper.findByWarehouseAndGood", head);
+				
+				//=========================操作商品表===================
+				//更新最后进价 和 库存总数量
+				PageData aGoods =  (PageData)dao.findForObject("GoodsMapper.findByGOODCODE", head);
+				head.put("LASTPPRICE", aGoods.get("LASTPPRICE"));
+				head.put("STOCKNUM", (Integer)aGoods.get("STOCKNUM") - (Integer)pageData.get("PNUMBER"));
+				dao.update("GoodsMapper.editStocknumAndLastprice", head);
+				
+				//=========================操作库存表===================
+				//把仓库中的库存减去进货单商品的数量
+				if(aGood!=null){
+					head.put("STOCK", (Integer)aGood.get("STOCK") - (Integer)pageData.get("PNUMBER"));
+				}
+				dao.update("StockMapper.edit", head);
+			}
+		
+		
+	}
+	
+	
+	
 }

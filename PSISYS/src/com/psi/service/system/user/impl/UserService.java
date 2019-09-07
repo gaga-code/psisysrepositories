@@ -199,5 +199,17 @@ public class UserService implements UserManager{
 		// TODO Auto-generated method stub
 		return (String)dao.findForObject("UserMapper.findByname", pd);
 	}
+
+	@Override
+	public String findMaxUserCode(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (String)dao.findForObject("UserMapper.findMaxUserCode",pd);
+	}
+
+	@Override
+	public List<String> listUserName(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return ( List<String>) dao.findForList("UserMapper.listUserName", pd);
+	}
 	
 }

@@ -28,16 +28,19 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">商品名称:</td>
-								<td style="padding-top: 13px;">${pd.GOODNAME}</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">商品图片:</td>
+								<td class='center'><a href="<%=basePath%>uploadFiles/uploadImgs/${pd.GOODPIC}" title="${pd.GOODNAME}" class="bwGal">
+									<img src="<%=basePath%>uploadFiles/uploadImgs/${pd.GOODPIC}"  width="80" height="40"></a>
+								</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品编号:</td>
 								<td style="width:280px">${pd.GOODCODE}</td>
+								
 							</tr>
 							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">商品名称:</td>
+								<td style="padding-top: 13px;">${pd.GOODNAME}</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品简称:</td>
 								<td style="padding-top: 13px;">${pd.SIMPLENAME}</td>
-								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
-								<td  style="padding-top: 13px;">${pd.PSI_NAME}</td>
 							</tr>
 						
 							<tr>
@@ -63,6 +66,11 @@
 								<td style="padding-top: 13px;">${pd.UNITPROP}</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">商品分类编号:</td>
 								<td style="padding-top: 13px;">${pd.GOODTYPE_CODE}</td>
+							</tr>
+							<tr>
+								
+								<td style="width:75px;text-align: right;padding-top: 13px;">经手人:</td>
+								<td  style="padding-top: 13px;">${pd.PSI_NAME}</td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">供应商:</td>
@@ -124,12 +132,12 @@
 </div>
 <!-- /.main-container -->
 
-<c:if test="${'edit' == msg }">
+<%-- <c:if test="${'edit' == msg }">
 	<div>
 		<iframe name="treeFrame" id="treeFrame" frameborder="0" src="<%=basePath%>/goodsmx/viewList.do?MASTER_ID=${pd.GOOD_ID}" style="margin:0 auto;width:805px;height:368px;;"></iframe>
 	</div>
 </c:if>
-
+ --%>
 	<!-- 页面底部js¨ -->
 	<%@ include file="../../system/index/foot.jsp"%>
 	<!-- 下拉框 -->

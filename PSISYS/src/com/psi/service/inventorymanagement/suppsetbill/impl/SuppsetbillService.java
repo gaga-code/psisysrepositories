@@ -317,7 +317,12 @@ public class SuppsetbillService implements SuppsetbillManager{
 	@Override
 	public void unapprovalone(PageData pd) throws Exception {
 		//====================================先做校验，判断是否有进货单存在多次结算情况========================================
+		String NOTE=pd.getString("NOTE");
+	
 		pd = (PageData)dao.findForObject("SuppsetbillMapper.findById", pd);
+		
+		String BILLCODE=pd.getString("BILLCODE");
+		
 		String inorder_ids = pd.getString("INORDER_IDS");
 		String[] ioids = inorder_ids.split(",");
 		PageData inorderpd = new PageData();
@@ -397,6 +402,11 @@ public class SuppsetbillService implements SuppsetbillManager{
 			dao.update("InOrderBodyMapper.inorderbodysnapshotedit", inbodyback);
 		}
 		dao.save("SuppsetbillMapper.save", zuofeipd);
+		
+		//给作废单加上备注
+		pd.put("NOTE", NOTE);
+		pd.put("BILLCODE", BILLCODE);
+		dao.update("SuppsetbillMapper.updateNoteById", pd);
 	}
 
 	

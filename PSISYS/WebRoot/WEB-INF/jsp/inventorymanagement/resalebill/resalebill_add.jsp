@@ -33,7 +33,7 @@
 						<input type="hidden" name="PK_SOBOOKS" id="PK_SOBOOKS" value="${pd.PK_SOBOOKS}"/>
 						<input type="hidden" name="SALEBILL_ID" id="SALEBILL_ID" value="${pd.SALEBILL_ID}"/>
 						<div id="zhongxin" style="padding-top: 13px;">&nbsp;&nbsp;&nbsp;&nbsp;
-							<td style="text-align: center;" colspan="10"><font size="6">添加退货单</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<td style="text-align: center;" colspan="10"><font size="6">添加客户退货单</font></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<tr>
 								<td style="text-align: center;" colspan="10">
 									<a class="btn btn-mini btn-primary" id='save' onclick="save();">保存</a>
@@ -77,12 +77,12 @@
 											<option value="${var.CUSTOMER_ID }" <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if>>${var.CUATOMERNAME }</option>
 										</c:forEach>
 									</select>
-								</td>
+								</td> 
 								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
 								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000"   style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;padding-left: 0px;padding-right: 0px;">送货地址:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;padding-left: 0px;padding-right: 0px;">取货地址:</td>
 								<td><input type="text" name="TOADDRESS" id="TOADDRESS"  maxlength="1000" style="width:98%;" /></td>
 							</tr>
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
@@ -220,6 +220,7 @@
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'>"
+	                      +"<a class='btn btn-xs btn-success' onclick='detailsale(\"" + GOODCODE + "\")'>查看商品</a>"
 	                      +"<a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a>"
 	                      + "</div></td>"
 	                      +"</tr>";
@@ -238,19 +239,22 @@
 		function checkstocknum(goodsnumID, GOOD_ID,rowId){
 			var WAREHOUSE_ID = $("#"+rowId+" #select_wh").val();
 			var stockNum = stockgoodsnummap.get(GOOD_ID+","+WAREHOUSE_ID);//查出库存数量
-			if(stockNum >= $("#"+goodsnumID).val() && $("#"+goodsnumID).val() >=0){
+			
+			
+				if($("#"+goodsnumID).val() >=0){
+					calculateTheTotalAmount();
+					return ;
+				}else{
+					$("#"+goodsnumID).tips({
+						side:3,
+			            msg:'数量不能少于0',
+			            bg:'#AE81FF',
+			            time:5
+			        });
+					$("#"+goodsnumID).val(0);
+					$("#"+goodsnumID).focus();
+				}
 				calculateTheTotalAmount();
-				return ;
-			}else{
-				$("#"+goodsnumID).tips({
-					side:3,
-		            msg:'当前库存为' + stockNum,
-		            bg:'#AE81FF',
-		            time:5
-		        });
-				$("#"+goodsnumID).val(stockNum);
-				$("#"+goodsnumID).focus();
-			}
 			<%-- console.log("test");
 			$.ajax({
 				type: "POST",
@@ -276,7 +280,7 @@
 					}
 				}
 			}); --%>
-			calculateTheTotalAmount();
+		
 		}
 		
 		//-----------------点击赠送复选框--------    
@@ -405,8 +409,8 @@
 			 diag.Drag=true;
 			 diag.Title ="该商品的前十条销售记录";
 			 diag.URL = '<%=basePath%>salebill/getSaleInfo.do?GOODCODE='+GOODCODE+'&CUSTOMER_ID='+CUSTOMER_ID;
-			 diag.Width = 800;
-			 diag.Height = 500;
+			 diag.Width = 600;
+			 diag.Height = 400;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					top.jzts();
@@ -436,30 +440,45 @@
 			var diag = new top.Dialog();
 			diag.Drag=true;
 			diag.Title ="查看商品信息";
-			diag.URL = '<%=basePath%>salebill/goaddgoods.do?WAREHOUSE_ID=';
+			diag.URL = '<%=basePath%>resalebill/goaddgoods.do?WAREHOUSE_ID=';
 			diag.Width = 1000;
 			diag.Height = 800;
 			diag.Modal = true;				//有无遮罩窗口
 			diag.CancelEvent = function(){ //关闭事件
 				var storage=window.localStorage;
-			    var GOOD_ID=localStorage.getItem("GOOD_ID");
-			    var GOODNAME=localStorage.getItem("GOODNAME");
-			    var BARCODE=localStorage.getItem("BARCODE");
-			    var UNITNAME=localStorage.getItem("UNITNAME");
-			    var GOODCODE=localStorage.getItem("GOODCODE");
-			    var RPRICE=localStorage.getItem("RPRICE");
-			    var WAREHOUSE_ID_NAME_STOCK=localStorage.getItem("WAREHOUSE_ID_NAME_STOCK");
-			    window.localStorage.removeItem("GOOD_ID");
-			    window.localStorage.removeItem("GOODNAME");
-			    window.localStorage.removeItem("BARCODE");
-			    window.localStorage.removeItem("UNITNAME");
-			    window.localStorage.removeItem("GOODCODE");
-			    window.localStorage.removeItem("RPRICE");
-			    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
-			    if( GOOD_ID != null){
-			    	parseStr(GOODCODE,WAREHOUSE_ID_NAME_STOCK);
-			    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,WAREHOUSE_ID_NAME_STOCK);
-			    }
+				var str=localStorage.getItem("str");
+				if(str==null){
+				    var GOOD_ID=localStorage.getItem("GOOD_ID");
+				    var GOODNAME=localStorage.getItem("GOODNAME");
+				    var BARCODE=localStorage.getItem("BARCODE");
+				    var UNITNAME=localStorage.getItem("UNITNAME");
+				    var GOODCODE=localStorage.getItem("GOODCODE");
+				    var RPRICE=localStorage.getItem("RPRICE");
+				    var WAREHOUSE_ID_NAME_STOCK=localStorage.getItem("WAREHOUSE_ID_NAME_STOCK");
+				    window.localStorage.removeItem("GOOD_ID");
+				    window.localStorage.removeItem("GOODNAME");
+				    window.localStorage.removeItem("BARCODE");
+				    window.localStorage.removeItem("UNITNAME");
+				    window.localStorage.removeItem("GOODCODE");
+				    window.localStorage.removeItem("RPRICE");
+				    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
+				    if( GOOD_ID != null){
+				    	parseStr(GOODCODE,WAREHOUSE_ID_NAME_STOCK);
+				    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,WAREHOUSE_ID_NAME_STOCK);
+				    }
+				}else{
+					var s1 = str.split("?");
+					for(var i=0;i<s1.length;i++){
+						var s2=s1[i];
+						var s3=s2.split(":");
+						var s4=s3[0].split(",");
+					    if( s4[0] != null){
+						  	parseStr(s4[0],s3[1]);
+						   	insertNewRow(s4[0],s4[1],s4[2],s4[3],s4[4],s4[5],s3[1]);
+						 }
+					}
+					  window.localStorage.removeItem("str");
+				}
 				diag.close();
 			};
 			diag.show();
@@ -525,8 +544,6 @@
 		
 		//保存
 		function save(){
-			
-			
 			if($("#CUSTOMER_ID").val()==""){
 				$("#CUSTOMER_select").tips({
 					side:3,

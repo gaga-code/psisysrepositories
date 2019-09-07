@@ -2,8 +2,10 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-	String path = request.getContextPath();
-	String basePath = "http://localhost:8080/PSISYS/";
+String path = request.getContextPath();
+String basePath = request.getScheme() + "://"
+		+ request.getServerName() + ":" + request.getServerPort()
+		+ path + "/";
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -105,7 +107,7 @@
 					</div>
 				</div> -->
 				<div>
-					<select name="accountset" id="accountset" placeholder="请选择账套" title="账套" style="width:81%; height:38px" >
+					<select name="accountset" id="accountset" placeholder="请选择账套" title="账套" onchange="selectAccount(this.value)"   style="width:81%; height:38px">
 						<c:forEach items="${pd.varList}" var="var">
 							<option value="${var.SOBOOKS_ID }" <c:if test="${var.SOBOOKS_ID == pd.SOBOOKS_ID }">selected</c:if>>${var.ENTERPRISENAME }</option>
 						</c:forEach>
@@ -116,7 +118,14 @@
 						<div class="main_input_box">
 							<span class="add-on bg_lg">
 							<i><img height="37" src="static/login/user.png" /></i>
-							</span><input type="text" name="loginname" id="loginname" value="" placeholder="请输入用户名" />
+							</span><input type="text" list="list1"  onmousedown="selectAccount(this.value)"  name="loginname" id="loginname" value="" placeholder="请输入用户名" />
+							<datalist id="list1" >
+								<option value=""></option>
+								<option value=""></option>
+								<option value=""></option>
+								<option value=""></option>
+								<option value=""></option>
+							</datalist>
 						</div>
 					</div>
 				</div>
@@ -268,6 +277,7 @@
 	</div>--%>
 
 	<script type="text/javascript">
+		
 		//服务器校验
 		function severCheck(){
 			if(check()){
@@ -426,6 +436,37 @@
 			}
 		});
 		
+		
+		
+		 function selectAccount(accountset){
+				var accountset1=$('#accountset').val();
+			  /*   var arr = new Array();
+			   <c:forEach items="${pd.varList}" var= "item">
+				        var item = {"SOBOOKS_ID":"${item.SOBOOKS_ID}","ENTERPRISENAME":"${item.ENTERPRISENAME}"};
+				        arr.push(item);
+				</c:forEach> */
+				$('#loginname').val("");
+				var selecthtml="";
+				$.ajax({
+					type: "POST",
+					url: 'selectAccount',
+			    	data: {accountset:accountset1,tm:new Date().getTime()},
+					dataType:'json',
+					cache: false,
+					success: function(data){	
+						var list1= document.getElementById("list1");
+						var op= document.getElementById("list1").options;
+						 for(var i=0;i<data.length;i++){
+							/*   $("#list1").append('<option label="'+data[i]+'"  value="'+data[i]+'"></option>'); */
+							
+							list1.options[i].text=data[i];
+							list1.options[i].value=data[i];
+						} 
+					}
+				});
+			} 
+		 
+		 
 		//登录注册页面切换
 		function changepage(value) {
 			if(value == 1){

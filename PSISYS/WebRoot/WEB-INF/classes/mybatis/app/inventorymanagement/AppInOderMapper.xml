@@ -79,7 +79,7 @@
 	</select>
 	
 	<select id="listInOrder" parameterType="pd" resultType="pd">
-		SELECT a.INORDER_ID,a.BILLCODE,b.NAME ,c.SUPPLIERNAME,a.NOTE,date_format(a.CREATETIME,'%Y-%m-%d') as CREATETIME,a.ALLAMOUNT
+		SELECT a.INORDER_ID,a.BILLCODE,b.NAME ,c.SUPPLIERNAME,a.NOTE,date_format(a.CREATETIME,'%Y-%m-%d')as CREATETIME,a.ALLAMOUNT
 		from 
 		psi_inorder as a left join sys_user as b on a.USER_ID=b.USER_ID
 		left join base_supplier as c on a.SUPPLIER_ID=c.SUPPLIER_ID
@@ -88,12 +88,33 @@
 		and IFNULL(a.dr,0)=0 
 		<if test="lastStart!=null and lastStart!=''">
 			<if test="lastEnd!=null and lastEnd!=''">
-				 and date_format(a.CREATETIME,'%Y-%m-%d') BETWEEN #{lastStart} and #{lastEnd}
+				 and a.CREATETIME BETWEEN #{lastStart} and #{lastEnd}
 			</if>
 		</if>
 		<if test="date!=null and date!='' ">
 			and date_format(a.CREATETIME,'%Y-%m')=#{date}
 		</if>
+		order by a.CREATETIME desc
+		limit #{pageNum},#{pageSize}
+	</select>
+	
+	<select id="listInOrderNum" parameterType="pd" resultType="int">
+		SELECT count(*)
+		from 
+		psi_inorder as a left join sys_user as b on a.USER_ID=b.USER_ID
+		left join base_supplier as c on a.SUPPLIER_ID=c.SUPPLIER_ID
+		where a.BILLTYPE='1'
+		and a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0 
+		<if test="lastStart!=null and lastStart!=''">
+			<if test="lastEnd!=null and lastEnd!=''">
+				 and a.CREATETIME  BETWEEN #{lastStart} and #{lastEnd}
+			</if>
+		</if>
+		<if test="date!=null and date!='' ">
+			and date_format(a.CREATETIME,'%Y-%m')=#{date}
+		</if>
+		order by a.CREATETIME desc
 	</select>
 	
 	<select id="listInOrderBody" parameterType="pd" resultType="pd">

@@ -57,6 +57,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.psi.controller.base.BaseController;
 import com.psi.service.basedata.bzbill.BZBillManager;
+import com.psi.service.basedata.customer.CustomerManager;
 import com.psi.service.inventorymanagement.inorder.InOrderManager;
 import com.psi.service.inventorymanagement.salebill.SalebillManager;
 import com.psi.util.Const;
@@ -75,6 +76,8 @@ public class DaYingController extends BaseController{
 	
 	@Resource(name="bZBillService")
 	private BZBillManager bZBillService;
+	@Resource(name="customerService")
+	private CustomerManager customerService;
 	
 	@Resource(name="salebillService")
 	private SalebillManager salebillService;
@@ -553,7 +556,7 @@ public class DaYingController extends BaseController{
     	
     	String CUSTOMER_ID= pd.getString("CUSTOMER_ID");
     	
- 
+    	String CUATOMERNAME=customerService.finNameById(pd);
         List<PageData> lpd = null;
         if(CUSTOMER_ID!=null&&CUSTOMER_ID!=""){
         	lpd = salebillService.listByCustomer(pd);
@@ -603,6 +606,39 @@ public class DaYingController extends BaseController{
         font1.setStrikeout(false); //是不是划掉 
         font1.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD); //字体加粗 
         
+        HSSFRow rowi=sheet.createRow(4);
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
+        style.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM); //下边框
+        for(int i=1;i<8;i++){
+        	  HSSFCell cx=rowi.createCell(i);
+        	   cx.setCellStyle(style);
+        	   cx.setCellValue("");
+        }
+        
+        
+        HSSFCellStyle stylea1 = wb.createCellStyle();
+//      style.setAlignment(HSSFCellStyle.ALIGN_CENTER);//设置居中样式
+        stylea1.setFont(font1); // 调用字体样式对象  
+        stylea1.setWrapText(true);  
+        stylea1.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 垂直
+        stylea1.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 水平
+        stylea1.setLocked(true);
+        stylea1.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
+        stylea1.setBorderRight(HSSFCellStyle.BORDER_MEDIUM); //下边框
+ 
+        
+        HSSFCellStyle stylea2 = wb.createCellStyle();
+//      style.setAlignment(HSSFCellStyle.ALIGN_CENTER);//设置居中样式
+        stylea2.setFont(font1); // 调用字体样式对象  
+        stylea2.setWrapText(true);  
+        stylea2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 垂直
+        stylea2.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 水平
+        stylea2.setLocked(true);
+        stylea2.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
+        stylea2.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM); //下边框
+ 
+ 
+        
         
         HSSFCellStyle style1 = wb.createCellStyle();
 //      style.setAlignment(HSSFCellStyle.ALIGN_CENTER);//设置居中样式
@@ -614,11 +650,19 @@ public class DaYingController extends BaseController{
         //在sheet里创建第二行
         HSSFRow row2=sheet.createRow(5);
         row2.setHeight((short)400);
+        
+        HSSFCell cell01=row2.createCell(0);
+        cell01.setCellStyle(stylea1);
+        cell01.setCellValue("");
+        HSSFCell cell08=row2.createCell(8);
+        cell08.setCellStyle(stylea2);
+        cell08.setCellValue("");
+        
         //创建单元格并设置单元格内容及样式
         HSSFCell cell0=row2.createCell(1);
         cell0.setCellStyle(style1);
         if(CUSTOMER_ID!=null){
-        	cell0.setCellValue("客户名称："+lpd.get(0).getString("CUATOMERNAME"));
+        	cell0.setCellValue("客户名称："+CUATOMERNAME);
         }else{
         	cell0.setCellValue("客户名称：");
         }
@@ -635,29 +679,62 @@ public class DaYingController extends BaseController{
         cell1.setCellStyle(style1);
         cell1.setCellValue("日期："+sdf.format(new Date()));
       //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
-        sheet.addMergedRegion(new CellRangeAddress(5,6,5,8));
+        sheet.addMergedRegion(new CellRangeAddress(5,6,5,7));
         
-   
+        
+        HSSFRow row06=sheet.createRow(6);
+        HSSFCell cell06=row06.createCell(0);
+        cell06.setCellStyle(stylea1);
+        cell06.setCellValue("");
+        HSSFCell cell09=row06.createCell(8);
+        cell09.setCellStyle(stylea2);
+        cell09.setCellValue("");
+        
+     
         //在sheet里创建第三行
         HSSFRow row3=sheet.createRow(7);
         row3.setHeight((short)400);
+        
+        
+        HSSFCell cell21=row3.createCell(0);
+        cell21.setCellStyle(stylea1);
+        cell21.setCellValue("");
+        HSSFCell cell29=row3.createCell(8);
+        cell29.setCellStyle(stylea2);
+        cell29.setCellValue("");
+        
+        
         //创建单元格并设置单元格内容及样式
         HSSFCell cell20=row3.createCell(1);
         cell20.setCellStyle(style1);
         cell20.setCellValue("如对以下款项有疑问,请致电我司对账,电话"+pd.getString("TELEPHONE")+";如无疑问,请安排付款事宜,谢谢！");
         //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
-        sheet.addMergedRegion(new CellRangeAddress(7,8,1,8));
+        sheet.addMergedRegion(new CellRangeAddress(7,8,1,7));
         
     
-        
+        HSSFRow row08=sheet.createRow(8);
+        HSSFCell cell18=row08.createCell(0);
+        cell18.setCellStyle(stylea1);
+        cell18.setCellValue("");
+        HSSFCell cell19=row08.createCell(8);
+        cell19.setCellStyle(stylea2);
+        cell19.setCellValue("");
         
         //在sheet里创建第四行
         HSSFRow row4=sheet.createRow(9);
         row4.setHeight((short)400);
+        
+        HSSFCell cell301=row4.createCell(0);
+        cell301.setCellStyle(stylea1);
+        cell301.setCellValue("");
+        HSSFCell cell309=row4.createCell(8);
+        cell309.setCellStyle(stylea2);
+        cell309.setCellValue("");
+        
         //创建单元格并设置单元格内容及样式
         HSSFCell cell30=row4.createCell(1);
         cell30.setCellStyle(style1);
-        cell30.setCellValue("付款方式一 : 二维码收款");
+        cell30.setCellValue("付款方式一 :     二维码收款");
       //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
         sheet.addMergedRegion(new CellRangeAddress(9,9,1,5));
         
@@ -665,6 +742,14 @@ public class DaYingController extends BaseController{
         //在sheet里创建第五行
         HSSFRow row5=sheet.createRow(10);
         row5.setHeight((short)400);
+        
+        HSSFCell cell501=row5.createCell(0);
+        cell501.setCellStyle(stylea1);
+        cell501.setCellValue("");
+        HSSFCell cell509=row5.createCell(8);
+        cell509.setCellStyle(stylea2);
+        cell509.setCellValue("");
+        
         //创建单元格并设置单元格内容及样式
         HSSFCell cell40=row5.createCell(2);
         cell40.setCellStyle(style1);
@@ -676,6 +761,14 @@ public class DaYingController extends BaseController{
         HSSFRow row6=sheet.createRow(11);
         row6.setHeight((short)400);
         //创建单元格并设置单元格内容及样式
+        
+        HSSFCell cell601=row6.createCell(0);
+        cell601.setCellStyle(stylea1);
+        cell601.setCellValue("");
+        HSSFCell cell609=row6.createCell(8);
+        cell609.setCellStyle(stylea2);
+        cell609.setCellValue("");
+        
         HSSFCell cell50=row6.createCell(2);
         cell50.setCellStyle(style1);
         cell50.setCellValue("步骤 2: 输入付款金额");
@@ -686,6 +779,14 @@ public class DaYingController extends BaseController{
         //在sheet里创建第7行
         HSSFRow row7=sheet.createRow(12);
         row7.setHeight((short)400);
+        
+        HSSFCell cell701=row7.createCell(0);
+        cell701.setCellStyle(stylea1);
+        cell701.setCellValue("");
+        HSSFCell cell709=row7.createCell(8);
+        cell709.setCellStyle(stylea2);
+        cell709.setCellValue("");
+        
         //创建单元格并设置单元格内容及样式
         HSSFCell cell60=row7.createCell(2);
         cell60.setCellStyle(style1);
@@ -697,10 +798,18 @@ public class DaYingController extends BaseController{
         //在sheet里创建第8行
         HSSFRow row8=sheet.createRow(13);
         row8.setHeight((short)400);
+        
+        
+        HSSFCell cell801=row8.createCell(0);
+        cell801.setCellStyle(stylea1);
+        cell801.setCellValue("");
+        HSSFCell cell809=row8.createCell(8);
+        cell809.setCellStyle(stylea2);
+        cell809.setCellValue("");
         //创建单元格并设置单元格内容及样式
         HSSFCell cell70=row8.createCell(1);
         cell70.setCellStyle(style1);
-        cell70.setCellValue("付款方式二 : 银行转账");
+        cell70.setCellValue("付款方式二 :     银行转账");
       //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
         sheet.addMergedRegion(new CellRangeAddress(13,13,1,5));
         
@@ -708,6 +817,14 @@ public class DaYingController extends BaseController{
         //在sheet里创建第10行
         HSSFRow row9=sheet.createRow(14);
         row9.setHeight((short)400);
+        
+        
+        HSSFCell cell901=row9.createCell(0);
+        cell901.setCellStyle(stylea1);
+        cell901.setCellValue("");
+        HSSFCell cell909=row9.createCell(8);
+        cell909.setCellStyle(stylea2);
+        cell909.setCellValue("");
         //创建单元格并设置单元格内容及样式
         HSSFCell cell80=row9.createCell(2);
         cell80.setCellStyle(style1);
@@ -718,6 +835,15 @@ public class DaYingController extends BaseController{
         //在sheet里创建第11行
         HSSFRow row10=sheet.createRow(15);
         row10.setHeight((short)400);
+        
+        
+        HSSFCell cell1001=row10.createCell(0);
+        cell1001.setCellStyle(stylea1);
+        cell1001.setCellValue("");
+        HSSFCell cell1009=row10.createCell(8);
+        cell1009.setCellStyle(stylea2);
+        cell1009.setCellValue("");
+        
         //创建单元格并设置单元格内容及样式
         HSSFCell cell90=row10.createCell(2);
         cell90.setCellStyle(style1);
@@ -729,6 +855,15 @@ public class DaYingController extends BaseController{
         //在sheet里创建第12行
         HSSFRow row11=sheet.createRow(16);
         row11.setHeight((short)400);
+        
+    
+        HSSFCell cell1101=row11.createCell(0);
+        cell1101.setCellStyle(stylea1);
+        cell1101.setCellValue("");
+        HSSFCell cell1109=row11.createCell(8);
+        cell1109.setCellStyle(stylea2);
+        cell1109.setCellValue("");
+        
         //创建单元格并设置单元格内容及样式
         HSSFCell cell100=row11.createCell(2);
         cell100.setCellStyle(style1);
@@ -744,7 +879,7 @@ public class DaYingController extends BaseController{
         cell91.setCellStyle(style1);
         cell91.setCellValue(pd.getString("NOTE"));
       //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
-        sheet.addMergedRegion(new CellRangeAddress(15,15,6,8));
+        sheet.addMergedRegion(new CellRangeAddress(15,15,6,7));
    
  
       //加入图片
@@ -851,7 +986,7 @@ public class DaYingController extends BaseController{
 	            //创建单元格并设置单元格内容及样式
 	            HSSFCell cellx0=rowx.createCell(0);
 	            cellx0.setCellStyle(style2);
-	            cellx0.setCellValue(i);
+	            cellx0.setCellValue(i+1);
 	            
 	            
 	            HSSFCell cellx1=rowx.createCell(1);
@@ -927,13 +1062,37 @@ public class DaYingController extends BaseController{
         }
         
         
+        
+        
+
+        HSSFCellStyle stylea3 = wb.createCellStyle();
+//      style.setAlignment(HSSFCellStyle.ALIGN_CENTER);//设置居中样式
+        stylea3.setFont(font); // 调用字体样式对象  
+        stylea3.setWrapText(true);  
+        stylea3.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 垂直
+        stylea3.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 水平
+        stylea3.setLocked(true);
+        stylea3.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
+        stylea3.setBorderTop(HSSFCellStyle.BORDER_MEDIUM); //下边框
+        
+        //在sheet里创建第五行
+        HSSFRow row17=sheet.createRow(17);
+        //创建单元格并设置单元格内容及样式
+        for(int i=1;i<8;i++){
+            HSSFCell cx=row17.createCell(i);
+            cx.setCellStyle(stylea3);
+            cx.setCellValue("");
+        }
+ 
+ 
        
         
    
         //  setSizeColumn(sheet);
         //sheet表加密：等效excel的审阅菜单下的保护工作表
         //sheet.protectSheet(new String("333"));//333是密码
-        for(int j = 1; j < 11; j++) {
+        sheet.setColumnWidth(1, MSExcelUtil.pixel2WidthUnits(120)); //设置列宽
+        for(int j = 2; j < 11; j++) {
             sheet.setColumnWidth(j, MSExcelUtil.pixel2WidthUnits(100)); //设置列宽
         }
     
@@ -943,9 +1102,15 @@ public class DaYingController extends BaseController{
         //输出Excel文件
         OutputStream output=response.getOutputStream();
         response.reset();
-        
         String file= sdf1.format(new Date())+".xls";
-        response.setHeader("Content-disposition", "attachment; filename="+file);//文件名这里可以改
+        if(CUSTOMER_ID!=null){
+        	String Name=CUATOMERNAME;
+        	file = Name+".xls";
+        }else{
+        	file= sdf1.format(new Date())+".xls";
+        }
+      //合并单元格Cell
+        response.setHeader("Content-disposition", "attachment; filename="+ new String(file.getBytes("gb2312"),"ISO8859-1"));
         response.setContentType("application/msexcel");
         wb.write(output);
         output.close();

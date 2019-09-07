@@ -45,6 +45,9 @@
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
+								<td>&nbsp;&nbsp;&nbsp;
+									<a class="btn btn-mini btn-success" onclick="selectSome('确定要添加选中的商品?');" title="批量添加" >批量添加</a>
+								</td>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -52,10 +55,14 @@
 						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
 								<tr>
+									<th class="center" style="width:35px;">
+									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
+									</th>
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">商品名称</th>
-									<th class="center">商品编号</th>
+									<th class="center">商品条码</th>
 									<th class="center">商品规格</th>
+									<th class="center">商品库存</th>
 									<th class="center">计量单位</th>
 									<th class="center">操作</th>
 								</tr>
@@ -68,14 +75,18 @@
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${varList}" var="var" varStatus="vs">
 										<tr>
+											<td class='center' id="checkbox">
+												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.GOOD_ID},${var.GOODNAME},${var.BARCODE},${var.UNITNAME},${var.GOODCODE},${var.CPRICE}:${var.WAREHOUSE_ID_NAME_STOCK}"  class="ace" /><span class="lbl"></span></label>
+											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>
 												${var.GOODNAME}
 												<%-- <a onclick="erweima('${var.GOOD_ID}');"><img style="cursor:pointer;" width="15" src="static/images/erwei.png"  title="商品二维码"/></a> --%>
 												<a onclick="barcode('${var.GOOD_ID}','${var.BARCODE}');"><img style="cursor:pointer;" width="15" src="static/images/barcode.png"  title="商品条形码"/></a>
 											</td>
-											<td class='center'>${var.GOODCODE}</td>
+											<td class='center'>${var.BARCODE}</td>
 											<td class='center'>${var.GOODSPECIF}</td>
+											<td class='center'>${var.STOCKNUM}</td>
 											<td class='center'>${var.UNITNAME}</td>
 											<td class="center">
 												<div class="hidden-md hidden-lg">
@@ -145,7 +156,7 @@
 	<!--提示框-->
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
 	
-<!-- 	<script src="static/js/jquery-1.7.2.js" type="text/javascript"></script>  -->
+
 	<script src="static/js/jquery.cookie.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		$(top.hangge());//关闭加载状态
@@ -184,6 +195,44 @@
 			top.Dialog.close();//关闭窗口
 		}
 		
+		//批量选择
+		function selectSome(msg){
+			bootbox.confirm(msg, function(result) {
+				if(result) {
+					var str = '';
+					for(var i=0;i < document.getElementsByName('ids').length;i++){
+					  if(document.getElementsByName('ids')[i].checked){
+					  	if(str=='') str += document.getElementsByName('ids')[i].value;
+					  	else str += '?' + document.getElementsByName('ids')[i].value;
+					  }
+					  
+					}
+					if(str==''){
+						bootbox.dialog({
+							message: "<span class='bigger-110'>您没有选择任何内容!</span>",
+							buttons: 			
+							{ "button":{ "label":"确定", "className":"btn-sm btn-success"}}
+						});
+						$("#zcheckbox").tips({
+							side:1,
+				            msg:'点这里全选',
+				            bg:'#AE81FF',
+				            time:8
+				        });
+						return;
+					}else{
+						 if(!window.localStorage){
+						     alert("浏览器不支持localstorage");
+					      }else{
+					             var storage=window.localStorage;
+					             localStorage.setItem("str",str);
+						}
+						top.Dialog.close();//关闭窗口
+					}
+					
+				}
+			});
+		};
 		//检索
 		function tosearch(){
 			top.jzts();

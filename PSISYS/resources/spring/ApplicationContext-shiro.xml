@@ -33,6 +33,7 @@
 			
 			<property name="filterChainDefinitions">
 				<value>
+				/selectAccount              = anon
 				/getaccountlist	            = anon
 				/static/login/** 			= anon
 				/plugins/keypad/** 			= anon

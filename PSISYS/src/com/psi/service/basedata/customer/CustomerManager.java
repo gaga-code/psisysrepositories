@@ -57,6 +57,8 @@ public interface CustomerManager{
 	public void saveCustomer(PageData pd) throws Exception;
 
 	public List<PageData> listAllCUS(PageData pd) throws Exception;
+
+	public String finNameById(PageData pd) throws Exception;
 	
 }
 

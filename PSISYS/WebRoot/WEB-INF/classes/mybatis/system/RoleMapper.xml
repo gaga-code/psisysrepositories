@@ -37,7 +37,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		SYS_ROLE
+		sys_role
 	</sql>
 	
 	<!-- 列出此组下的角色 -->

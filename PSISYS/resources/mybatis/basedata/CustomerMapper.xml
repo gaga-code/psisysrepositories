@@ -286,4 +286,11 @@
 		where  a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.DR,0)=0 
 	</select>
+	
+	<select id="finNameById" parameterType="pd" resultType="String">
+		select CUATOMERNAME
+		from base_customer
+		where CUSTOMER_ID=#{CUSTOMER_ID}
+		and IFNULL(DR,0)=0 
+	</select>
 </mapper>

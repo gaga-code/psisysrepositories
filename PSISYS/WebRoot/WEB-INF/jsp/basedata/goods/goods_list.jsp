@@ -14,6 +14,17 @@
 <base href="<%=basePath%>">
 <!-- 下拉框 -->
 <link rel="stylesheet" href="static/ace/css/chosen.css" />
+
+<!--查看图片插件 -->
+<link rel="stylesheet" media="screen" type="text/css" href="plugins/zoomimage/css/zoomimage.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="plugins/zoomimage/css/custom.css" />
+<script type="text/javascript" src="plugins/zoomimage/js/jquery.js"></script>
+<script type="text/javascript" src="plugins/zoomimage/js/eye.js"></script>
+<script type="text/javascript" src="plugins/zoomimage/js/utils.js"></script>
+<script type="text/javascript" src="plugins/zoomimage/js/zoomimage.js"></script>
+<script type="text/javascript" src="plugins/zoomimage/js/layout.js"></script>
+
+
 <!-- jsp文件头和头部 -->
 <%@ include file="../../system/index/top.jsp"%>
 <!-- 日期框 -->
@@ -52,10 +63,11 @@
 						</table>
 						<!-- 检索  -->
 					
-						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
+						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;" >	
 							<thead>
 								<tr>
 									<th class="center" style="width:50px;">序号</th>
+									<th class="center">商品图片</th>
 									<th class="center">商品名称</th>
 									<th class="center">商品编号</th>
 									<th class="center">商品条码</th>
@@ -74,6 +86,10 @@
 										<tr>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>
+												<a href="<%=basePath%>uploadFiles/uploadImgs/${var.GOODPIC}" title="${var.TITLE}" class="bwGal"><img src="<%=basePath%>uploadFiles/uploadImgs/${var.GOODPIC}"  width="80" height="40"></a>
+											</td>
+
+											<td class='center'>
 												${var.GOODNAME}
 <%-- 												<a onclick="erweima('${var.GOOD_ID}');"><img style="cursor:pointer;" width="15" src="static/images/erwei.png"  title="商品二维码"/></a> --%>
 												<a onclick="barcode('${var.GOOD_ID}','${var.BARCODE}');"><img style="cursor:pointer;" width="15" src="static/images/barcode.png"  title="商品条形码"/></a>
@@ -87,6 +103,9 @@
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
+													<a class="btn btn-xs btn-info" title="查看商品信息" onclick="viewSale('${var.GOOD_ID}');">
+														销售情况
+													</a>
 													<a class="btn btn-xs btn-info" title="查看商品信息" onclick="view('${var.GOOD_ID}');">
 														<i class="ace-icon fa fa-eye bigger-120" title="查看商品信息"></i>
 													</a>
@@ -386,6 +405,27 @@
 			 };
 			 diag.show();
 		}
+		
+		
+		//查看商品信息
+		function viewSale(Id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="查看商品销售情况";
+			 diag.URL = '<%=basePath%>goods/listsalebill.do?GOOD_ID='+Id;
+			 diag.Width = 1200;
+			 diag.Height = 600;
+			 diag.Modal = true;				//有无遮罩窗口
+			 diag. ShowMaxButton = true;	//最大化按钮
+		     diag.ShowMinButton = true;		//最小化按钮
+			 diag.CancelEvent = function(){ //关闭事件
+			
+				diag.close();
+			 };
+			 diag.show();
+		}
+		
 		
 		//导出excel
 		function toExcel(){

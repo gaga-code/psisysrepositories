@@ -19909,3 +19909,7 @@ input.typeahead.scrollable ~ .tt-dropdown-menu {
     display: none !important;
   }
 }
+
+.main-container:before {
+	height:150px;	
+}

@@ -322,7 +322,10 @@ public class CustomersetbillService implements CustomersetbillManager{
 	@Override
 	public void unapprovalone(PageData pd) throws Exception {
 		//====================================先做校验，判断是否有销售单存在多次结算情况========================================
+		String NOTE=pd.getString("NOTE");
 		pd = (PageData)dao.findForObject("CustomersetbillMapper.findById", pd);
+		String BILLCODE= pd.getString("BILLCODE");
+		
 		String SALEBILL_IDs = pd.getString("SALEBILL_IDS");
 		String[] ioids = SALEBILL_IDs.split(",");
 		PageData salebillpd = new PageData();
@@ -401,6 +404,12 @@ public class CustomersetbillService implements CustomersetbillManager{
 		}
 		
 		dao.save("CustomersetbillMapper.save", zuofeipd);
+		
+		
+		//作废单备注
+		pd.put("NOTE", NOTE);
+		pd.put("BILLCODE", BILLCODE);
+		dao.update("CustomersetbillMapper.updateNoteByCode", pd);
 	}
 
 	@Override

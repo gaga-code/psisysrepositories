@@ -4,7 +4,7 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		CP_SPTYPE
+		cp_sptype
 	</sql>
 	
 	<!-- 字段 -->
