@@ -141,5 +141,10 @@ public interface GoodsManager{
 
 	public void editPic(PageData pd) throws Exception;
 
+
+	public String findbyTypeId(PageData pd) throws Exception;
+
+	public List<PageData> listAllInorderSale(Page page) throws Exception;
+
 }
 

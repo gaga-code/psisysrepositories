@@ -92,6 +92,7 @@
 			a.GOODPIC,
 			a.GOODSPECIF,
 			a.FZUNIT_ID,
+			a.SUBGZ_ID,
 			a.CPRICE,
 			a.BARCODE,
 			a.RPRICE,
@@ -139,6 +140,7 @@
 			a.FZUNIT_ID,
 			a.CPRICE,
 			a.RPRICE,
+			a.SUBGZ_ID,
 			a.CUNIT_ID,
 			a.BARCODE,
 			a.STOCKNUM,
@@ -192,6 +194,7 @@
 			a.FZUNIT_ID,
 			a.UNITPROP,
 			a.PK_SOBOOKS,
+			a.SUBGZ_ID,
 			b.TYPENAME,
 			c.NAME as CUNIT,
 			d.NAME as FZUNIT
