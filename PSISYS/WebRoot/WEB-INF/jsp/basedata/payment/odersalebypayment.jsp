@@ -51,7 +51,7 @@
 									<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
 									<td>
 										<select class="chosen-select form-control" name="BILLTYPE" id="BILLTYPE" data-placeholder="选择进销" style="vertical-align:top;width:98%;" >
-											<option >选择进销</option>
+											<option value="1" >选择进销</option>
 											<option value="1" <c:if test="${varlist[0].BILLTYPE=='1'}">selected</c:if>>进货单</option>
 											<option value="2" <c:if test="${varlist[0].BILLTYPE=='2'}">selected</c:if>>销售单</option>
 										</select>
@@ -67,6 +67,8 @@
 									<c:if test="${QX.cha == 1 }">
 									<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 									</c:if>
+									<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;">	&nbsp;&nbsp;&nbsp;<a class="btn btn-xs btn-success" onclick="toExcel();" title="导出到EXCEL">导出EXCEL</a></td></c:if>
+							
 								</tr>
 							</table>
 							<!-- 检索  -->
@@ -233,6 +235,14 @@
 			}
 		
 		});
+		
+		
+		//导出excel
+		function toExcel(){
+			var lastStart =  $("#lastStart").val();
+			var lastEnd  = $("#lastEnd").val();
+			window.location.href='<%=basePath%>payment/inorderSaleExcel.do?lastStart='+lastStart+'&lastEnd='+lastEnd;
+		}
 	</script>
 
 

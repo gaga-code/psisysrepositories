@@ -63,17 +63,17 @@
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
-								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if>
-								
+								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;">	&nbsp;&nbsp;&nbsp;<a class="btn btn-mini btn-success" onclick="toExcel();" title="导出到EXCEL">导出EXCEL</a></td></c:if>
+							
 								
 								<td style="vertical-align:top;padding-left:2px;">
-									<c:if test="${QX.add == 1 }">
+									<c:if test="${QX.add == 1 }">&nbsp;&nbsp;&nbsp;
 									<a class="btn btn-mini btn-success" onclick="add();">新增供应商结算单</a>
 									</c:if>
 									<%-- <c:if test="${QX.del == 1 }">
 									<a class="btn btn-mini btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a>
 									</c:if> --%>
-									<c:if test="${QX.SUPPSETBILLAPPROVAL == 1 }">
+									<c:if test="${QX.SUPPSETBILLAPPROVAL == 1 }">&nbsp;&nbsp;&nbsp;
 									<a class="btn btn-mini btn-success" onclick="approvalAll('确定要审批选中的数据吗?');" title="批量审批" >批量审批</a>
 									</c:if>
 								</td>
@@ -350,6 +350,15 @@
 			});
 		});
 		
+		
+		
+		//导出excel
+		function toExcel(){
+			var lastStart =  $("#lastStart").val();
+			var lastEnd  = $("#lastEnd").val();
+			window.location.href='<%=basePath%>suppsetbill/excel.do?lastStart='+lastStart+'&lastEnd='+lastEnd;
+		}
+		
 		//新增
 		function add(){
 			 top.jzts();
@@ -410,7 +419,7 @@
 		
 		//修改
 		function edit(Id,status){
-			if(status == 1){
+			/* if(status == 1){ */
 				top.jzts();
 				 var diag = new top.Dialog();
 				 diag.Drag=true;
@@ -428,7 +437,7 @@
 					diag.close();
 				 };
 				 diag.show();
-			}else{//suppcheckbox
+		/* 	}else{//suppcheckbox
 				$("#"+Id+" #suppcheckbox").tips({
 					side : 1,
 					msg : "该单据无法修改！",
@@ -437,7 +446,7 @@
 				});
 				return ;
 			}
-			
+			 */
 			 
 		}
 		//反审

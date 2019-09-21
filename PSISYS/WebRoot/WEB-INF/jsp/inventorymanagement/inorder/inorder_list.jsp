@@ -66,11 +66,13 @@
 										<option value="3" <c:if test="${'3' == pd.BILLSTATUS }">selected</c:if>>作废</option>
 									</select>
 								</td>
-<%-- 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td> --%>
-<%-- 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td> --%>
+								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
+    							<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" id="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td> 
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
+							
+								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;">	&nbsp;&nbsp;&nbsp;<a class="btn btn-xs btn-success" onclick="toExcel();" title="导出到EXCEL">导出EXCEL</a></td></c:if>
 								<%-- <c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if> --%>
 							</tr>
 						</table>
@@ -91,6 +93,7 @@
 									<th class="center">本次付款</th>
 									<th class="center">结算状态</th>
 									<th class="center">审核状态</th>
+									
 									<th class="center">日期</th>
 									<th class="center">经手人</th>
 									<th class="center">备注</th>
@@ -137,6 +140,7 @@
 													<font color="red">作废</font>
 												</c:if>
 											</td>
+									
 											<td class='center'>${var.CREATETIME}</td>
 											<td class='center'>${var.PSI_NAME}</td>
 											<td class='center'>${var.NOTE}</td>
@@ -322,6 +326,15 @@
 	        document.forms.actionForm.submit();
 			//siMenu('z191','lm181','查看进货单',url);
 		}
+		
+		
+		//导出excel
+		function toExcel(){
+			var lastStart =  $("#lastStart").val();
+			var lastEnd  = $("#lastEnd").val();
+			window.location.href='<%=basePath%>inorder/excel.do?lastStart='+lastStart+'&lastEnd='+lastEnd;
+		}
+		
 		
 		//点击一行显示详情
 		function clickaction(INORDER_ID){
@@ -612,10 +625,6 @@
 			});
 		};
 		
-		//导出excel
-		function toExcel(){
-			window.location.href='<%=basePath%>inorder/excel.do';
-		}
 	</script>
 
 

@@ -164,7 +164,6 @@ public class DaYingController extends BaseController{
       //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
         sheet.addMergedRegion(new CellRangeAddress(5,6,1,3));
         
-        
         HSSFCell cell1=row2.createCell(4);
         cell1.setCellStyle(style1);
         cell1.setCellValue("经营地址："+lpd.get(0).getString("GADDRESS"));
@@ -194,13 +193,30 @@ public class DaYingController extends BaseController{
         
         //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
         sheet.addMergedRegion(new CellRangeAddress(7,8,1,3));
-        
+        HSSFRow row21=sheet.createRow(8);
+        row21.setHeightInPoints(22);
         
         HSSFCell cell21=row3.createCell(4);
         cell21.setCellStyle(style1);
         cell21.setCellValue("联系电话："+lpd.get(0).getString("PHONE"));
       //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
         sheet.addMergedRegion(new CellRangeAddress(7,8,4,7));
+        
+        if(pd.get("SALEBILL_ID")!=null){
+    	
+    	
+	        HSSFCell cell22=row3.createCell(8);
+	        cell22.setCellStyle(style1);
+	        String DISTRIBUTIONMODE=lpd.get(0).getString("DISTRIBUTIONMODE");
+	        if(DISTRIBUTIONMODE.equals("1")){
+	        	   cell22.setCellValue("结款方式：现结");	
+	        }else{
+	        	   cell22.setCellValue("结款方式：月结");
+	        }
+	      //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
+	        sheet.addMergedRegion(new CellRangeAddress(7,8,8,10));
+        }
+        
         
         
         //在sheet里创建第四行
@@ -295,7 +311,7 @@ public class DaYingController extends BaseController{
             //创建单元格并设置单元格内容及样式
             HSSFCell cellx0=rowx.createCell(0);
             cellx0.setCellStyle(style2);
-            cellx0.setCellValue(i);
+            cellx0.setCellValue(i+1);
             
             
             HSSFCell cellx1=rowx.createCell(1);
@@ -1091,7 +1107,7 @@ public class DaYingController extends BaseController{
         //  setSizeColumn(sheet);
         //sheet表加密：等效excel的审阅菜单下的保护工作表
         //sheet.protectSheet(new String("333"));//333是密码
-        sheet.setColumnWidth(1, MSExcelUtil.pixel2WidthUnits(120)); //设置列宽
+        sheet.setColumnWidth(1, MSExcelUtil.pixel2WidthUnits(150)); //设置列宽
         for(int j = 2; j < 11; j++) {
             sheet.setColumnWidth(j, MSExcelUtil.pixel2WidthUnits(100)); //设置列宽
         }

@@ -374,7 +374,7 @@
 				NUMBER					= #{NUMBER},
 				PHONE					= #{PHONE}
 			<if test="PASSWORD != null and PASSWORD != ''">
-				,PASSWORD				= #{PASSWORD}
+				,PASSWORD= #{PASSWORD}
 			</if>
 			where 
 				USER_ID = #{USER_ID}
@@ -389,7 +389,7 @@
 		set
 			DR = 1 
 		where 
-			USER_ID = #{USER_ID}
+			USER_ID = #{ID}
 		and PK_SOBOOKS = #{PK_SOBOOKS}
 		and IFNULL(dr,0)=0
 	</update>

@@ -2,10 +2,8 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-String path = request.getContextPath();
-String basePath = request.getScheme() + "://"
-		+ request.getServerName() + ":" + request.getServerPort()
-		+ path + "/";
+	String path = request.getContextPath();
+	String basePath = "http://localhost:80/PSISYS/";
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,35 +13,256 @@ String basePath = request.getScheme() + "://"
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+<!--使用加密狗 -->
+<object id="AuthIE" name="AuthIE" width="0px" height="0px"
+			codebase="DogAuth.CAB#version=2,3,1,58083"
+			classid="CLSID:05C384B0-F45D-46DB-9055-C72DC76176E3">
+</object>
+
 <link rel="stylesheet" href="static/login/bootstrap.min.css" />
 <link rel="stylesheet" href="static/login/css/camera.css" />
 <link rel="stylesheet" href="static/login/bootstrap-responsive.min.css" />
 <link rel="stylesheet" href="static/login/matrix-login.css" />
 <link href="static/login/font-awesome.css" rel="stylesheet" />
+
+<!-- 使用加密狗 static/js/superdog/login.js-->
+<script type="text/javascript" src="static/js/superdog/login.js"></script>
+
 <script type="text/javascript" src="static/login/js/jquery-1.5.1.min.js"></script>
 <!-- 软键盘控件start -->
 <!-- <link href="static/login/keypad/css/framework/form.css" rel="stylesheet" type="text/css"/> -->
 <!-- 软键盘控件end -->
  <style type="text/css">
-    /*
-   body{
-    -webkit-transform: rotate(-3deg);
-    -moz-transform: rotate(-3deg);
-    -o-transform: rotate(-3deg);
-	padding-top:20px;
+   
+    *{
+	    font-family: "微软雅黑";
+	    font-size: 16px;
+	    border: 0;
+	    padding: 0;
+	    margin: 0;
+	    color: #666;
+	    box-sizing:border-box;
+	    -moz-box-sizing:border-box;
+	    -webkit-box-sizing:border-box;
+	}
+	 html,body{
+	    width:100%;
+	}
+	 body{
+        background:url(static/login/images/back.jpg) no-repeat;
+	    background-size: 100%;
+	}
+    .cavs{
+	   	z-index:1;
+	   	position: fixed;
+	   	width:95%;
+	   	margin-left: 20px;
+	   	margin-right: 20px;
     }
-    */
+	.bg1{
+		width:100%;
+		height: 237px;
+		background: #347ebc;
+		opacity: 0.6;
+	    position:absolute;
+	    left:0;
+	    top:0px;
+	    right:0px;
+	    bottom:0px;
+	    margin:auto;
+	}
+	.gyl{
+		width:600px;
+		height: 237px;
+		color: #FFFFFF;
+		font-size: 72px;
+		position:absolute;
+	    left:15%;
+	    top:11%;
+	    
+	    bottom:0px;
+	    margin:auto;
+	}
+	.logo{
+		width: 240px;
+		background: rgba(255,255,255,0.4);
+		text-align: center;
+	}
+	.gy2{
+		color: #fff;
+		margin-left: 6px;
+		font-size: 18px;
+		text-align: center;
+		margin-top: 10px;
+	}
+	.bg{
+		width: 375px;
+		height: 400px;
+		background: #fff;
+		position: relative;
+	    position:absolute;
+	    left:56%;
+	    top:0px;
+	    right:0px;
+	    bottom:0px;
+	    margin:auto;
+	    z-index: 1;
+	    box-shadow:0px 0px 50px rgba(0, 0, 0, 0.4);
+	    border-radius: 5px;
+	}
+	.loginBox{
+		position: absolute;
+		top: 6rem;
+	    right: 2.5rem;
+	    width: 80%;
+	}
+	
+	.loginBox .btn{
+	     border: none;
+	     color: #fff;
+	     width: 18.825rem;
+	     text-align: center;
+	     background-color: #347ebc;
+	     text-indent: 0rem;
+	     border-radius: 5px;
+	}
+	.img{
+		width: 100%;
+		position: absolute;
+	    left: 0;
+	    right: 0;
+		margin: 0 auto;
+	    z-index: -1;
+	}
+	.wel{
+		width: 375px;
+		height: 35px;
+		color: #347ebc;
+	    font-size: 1.5rem;
+	    position: absolute;
+	    top: 2rem;
+	    text-align: center;
+	}
+	
+	input{
+	     height: 2.5625rem;
+	     width: 15.8125rem;
+	     /* text-indent: 3rem; */
+	     outline:none;
+	}
+	.user{
+		height: 47px;
+		display: flex;
+		justify-content: space-between;
+		border-bottom:1px solid #347ebc;
+	}
+	
+	.user .form-control{
+		display: inline-block;
+		width: 70%;
+		border: none;
+		padding: 0;
+		height: calc(1.5em + .75rem + 2px);
+		line-height: calc(1.5em + .75rem + 2px);
+		text-indent: 10px;
+		font-size:16px;
+	}
+	.user label{
+		font-size:18px;
+		display: inline-block;
+		width: 30%;
+		height: calc(1.5em + .75rem + 2px);
+		line-height: calc(1.5em + .75rem + 2px);
+	}
+	.form-group.user{
+		margin-bottom: 0;
+		margin-top: 5px;
+	}
+	.remeber{
+		display: flex;
+		justify-content: space-between;
+		height: 3rem;
+	}
+	.rem{
+	     border: none;
+	     color: #323333;
+	}
+	.rem input{
+		width: 0.8125rem;
+	}
+	.fg{
+	     border: none;
+	     color: #323333;
+	}
+	.yonghu{
+		height: 41px;
+		line-height: 41px;
+	}
+	#reb{
+		margin-top: -33px;
+		margin-left: 20px;
+		font-size: 11px;
+	}
+	.bottom{
+		width: 60%;
+		line-height: 30px;
+		position: absolute;
+		left: 20%;
+		bottom: 0;
+		text-align: center;
+		font-size: 12px;
+		border-top: 1px solid #347ebc;
+	}
+	.bottom p{
+		color: #fff;
+	}
+	
+	@media (min-width:1201px) and (max-width:1500px){
+		.gyl{
+			width: 535px;
+	    	font-size: 60px;
+	    	top: 16%;
+	    }
+	}
+	@media (min-width:800px) and (max-width:1200px)
+	
+	{
+	   .bg{
+	        width: 355px;
+		    height: 300px;
+	    }
+	    .gyl{
+	    	font-size: 50px;
+	    }
+	   .wel{
+	   	   width: 355px;
+	   } 
+	    .user{
+	    	top: 5rem;
+	        right: 3.5rem;
+	    }
+	    .password{
+	    	top: 8rem;
+	        right: 3.5rem;
+	    }
+	    input{
+	    	
+	        width: 12rem;
+	    }   
+	    .rem{
+		    top: 11rem;
+	        right: 14.3rem;
+	    }
+	    .fg{
+		    top: 11rem;
+	        right: 3.5rem;
+	    }
+	    .btn{
+	    	top: 14rem;
+	        width: 15rem;
+	    }
+	}
     
-   body{
-        background-image:url(static/login/images/banner_slide_05.jpg);
-    }
-      .cavs{
-    	z-index:1;
-    	position: fixed;
-    	width:95%;
-    	margin-left: 20px;
-    	margin-right: 20px;
-    }
   </style>
   <script>
   
@@ -81,22 +300,79 @@ String basePath = request.getScheme() + "://"
 		}; */
 	</script>
 </head>
-<body>
-
+<body onload="loadFunc()"> <!-- 使用加密狗  onload="loadFunc()-->
+	
 	<%-- <c:if test="${pd.isMusic == 'yes' }">
 	<div style="display: none">
 	    <audio src="static/login/music/fh1.mp3" autoplay=""></audio>
 	</div>	
 	</c:if> --%>
 	<canvas class="cavs"></canvas>
-	<div style="width:100%;text-align: center;margin: 0 auto;position: absolute;">
+	<!-- <div style="width:100%;text-align: center;margin: 0 auto;position: absolute;"> -->
+		<div class="bg1"></div>
+		<div class="gyl">
+		       <!-- 丰盛行 -->
+			   <div class="logo">
+				   <img src="static/login/images/kplogo.png" width="200" height="auto" alt=""/>
+			   </div>
+			   
+				<div class="gy2">致力于打造国内最具规模的、最符合行业标准的饰品制造供应平台 </div>   
+		</div>
+		<div class="bg">
+			<div class="wel">ERP进销存系统登录</div>		
+			<div class="loginBox">
+				<div class="form-group user">
+				    <label for="name">公司</label>
+				      <select class="form-control" name="accountset" id="accountset" onchange="selectAccount(this.value)" placeholder="请选择账套" title="账套">
+						<c:forEach items="${pd.varList}" var="var">
+							<option value="${var.SOBOOKS_ID }" <c:if test="${var.SOBOOKS_ID == pd.SOBOOKS_ID }">selected</c:if>>${var.ENTERPRISENAME }</option>
+						</c:forEach>
+					</select>
+				</div>
+				<div class="form-group user">
+				    <label class="yonghu" for="name">用户名</label>
+				    <input type="text" class="form-control" list="list1" onmousedown="selectAccount(this.value)"  name="loginname" id="loginname" value="" placeholder="请输入用户名" />
+					<datalist id="list1" >
+							<option value=""></option>
+							<option value=""></option>
+							<option value=""></option>
+							<option value=""></option>
+							<option value=""></option>
+					</datalist>
+				</div>
+				<div class="form-group user">
+				    <label class="yonghu" for="name">密&nbsp;&nbsp;&nbsp;码</label>
+					<input type="password" name="password" list="list1"id="password" placeholder="请输入密码" class="form-control keypad" keypadMode="full" allowKeyboard="true" value=""/>
+				</div>
+				<div class="remeber">
+					<div class="fg">
+					    <!-- <div style="font-size: 11px;margin-top: 11px;">
+					    	<a style="font-size: 11px;" href="#">忘记密码？</a>
+					    </div> -->
+					</div>
+					<div class="rem">
+					  <input name="form-field-checkbox" id="saveid" type="checkbox"
+							onclick="savePaw();"/>
+						 <div id="reb">
+						 	记住密码
+						 </div>
+					</div>
+					
+				</div>
+				<input id="to-recover" class="flip-link btn" type="button" name="登录" value="登录" onclick="severCheck();">
+			</div>
+		</div>
+		<div class="bottom">
+			<p>Copyright © 2019 丰盛行有限公司 版权所有</p>
+		</div>
+		
 		<!-- 登录 -->
-		<div id="windows1">
+		<!-- <div id="windows1">
 		<div id="loginbox" >
 			<form action="" method="post" name="loginForm" id="loginForm">
 				<div class="control-group normal_text">
 					<h3>ERP进销存系统</h3>
-				</div>
+				</div> -->
 				<!-- <div class="control-group">
 					<div class="controls">
 						<div class="main_input_box">
@@ -106,8 +382,8 @@ String basePath = request.getScheme() + "://"
 						</div>
 					</div>
 				</div> -->
-				<div>
-					<select name="accountset" id="accountset" placeholder="请选择账套" title="账套" onchange="selectAccount(this.value)"   style="width:81%; height:38px">
+				<!-- <div>
+					<select name="accountset" id="accountset" placeholder="请选择账套" title="账套" style="width:81%; height:38px" >
 						<c:forEach items="${pd.varList}" var="var">
 							<option value="${var.SOBOOKS_ID }" <c:if test="${var.SOBOOKS_ID == pd.SOBOOKS_ID }">selected</c:if>>${var.ENTERPRISENAME }</option>
 						</c:forEach>
@@ -118,14 +394,7 @@ String basePath = request.getScheme() + "://"
 						<div class="main_input_box">
 							<span class="add-on bg_lg">
 							<i><img height="37" src="static/login/user.png" /></i>
-							</span><input type="text" list="list1"  onmousedown="selectAccount(this.value)"  name="loginname" id="loginname" value="" placeholder="请输入用户名" />
-							<datalist id="list1" >
-								<option value=""></option>
-								<option value=""></option>
-								<option value=""></option>
-								<option value=""></option>
-								<option value=""></option>
-							</datalist>
+							</span><input type="text" name="loginname" id="loginname" value="" placeholder="请输入用户名" />
 						</div>
 					</div>
 				</div>
@@ -160,7 +429,7 @@ String basePath = request.getScheme() + "://"
 <!-- 						<div style="float: left;"> -->
 <!-- 							<i><img style="height:22px;" id="codeImg" alt="点击更换" title="点击更换" src="" /></i> -->
 <!-- 						</div> -->
-						<c:if test="${pd.isZhuce == 'yes' }">
+						<!-- <c:if test="${pd.isZhuce == 'yes' }">
 						<span class="pull-right" style="padding-right:3%;"><a href="javascript:changepage(1);" class="btn btn-success">注册</a></span>
 						</c:if>
 						<span class="pull-right"><a onclick="severCheck();" class="flip-link btn btn-info" id="to-recover">登录</a></span>
@@ -173,7 +442,7 @@ String basePath = request.getScheme() + "://"
 				</div>
 			</div>
 		</div>
-		</div>
+		</div>-->
 		<!-- 注册 -->
 		<div id="windows2" style="display: none;">
 		<div id="loginbox">
@@ -277,7 +546,7 @@ String basePath = request.getScheme() + "://"
 	</div>--%>
 
 	<script type="text/javascript">
-		
+		window.history.go(1);
 		//服务器校验
 		function severCheck(){
 			if(check()){
@@ -293,8 +562,23 @@ String basePath = request.getScheme() + "://"
 					cache: false,
 					success: function(data){
 						if("success" == data.result){
-							saveCookie();
-							window.location.href="main/index";
+							
+							/*	saveCookie();
+								window.location.href = "main/index";  */
+								
+							// <!-- 使用加密狗  validateLogin-->
+							if(validateLogin()===true) {
+								saveCookie();
+								window.location.href = "main/index";
+							}
+							else {
+								$("#loginname").tips({
+									side: 1,
+									msg: "加密狗错误",
+									bg: '#FF5080',
+									time: 15
+								});
+							}
 						}else if("usererror" == data.result){
 							$("#loginname").tips({
 								side : 1,
@@ -437,36 +721,40 @@ String basePath = request.getScheme() + "://"
 		});
 		
 		
-		
-		 function selectAccount(accountset){
-				var accountset1=$('#accountset').val();
-			  /*   var arr = new Array();
-			   <c:forEach items="${pd.varList}" var= "item">
-				        var item = {"SOBOOKS_ID":"${item.SOBOOKS_ID}","ENTERPRISENAME":"${item.ENTERPRISENAME}"};
-				        arr.push(item);
-				</c:forEach> */
-				$('#loginname').val("");
-				var selecthtml="";
-				$.ajax({
-					type: "POST",
-					url: 'selectAccount',
-			    	data: {accountset:accountset1,tm:new Date().getTime()},
-					dataType:'json',
-					cache: false,
-					success: function(data){	
-						var list1= document.getElementById("list1");
-						var op= document.getElementById("list1").options;
-						 for(var i=0;i<data.length;i++){
-							/*   $("#list1").append('<option label="'+data[i]+'"  value="'+data[i]+'"></option>'); */
-							
-							list1.options[i].text=data[i];
-							list1.options[i].value=data[i];
-						} 
-					}
-				});
+		function selectAccount(accountset){
+			var accountset1=$('#accountset').val();
+			$('#loginname').val("");
+			var flag=0;
+			var num;
+		    var arr = new Array();
+		    <c:forEach items="${pd.varList}" var= "item">
+		      var item = {"SOBOOKS_ID":"${item.SOBOOKS_ID}"};
+			   if(accountset1==item.SOBOOKS_ID){
+					num=flag;
+			   }
+			   flag+=1;
+			</c:forEach>
+			flag=0;
+		   var array =new Array();
+		   <c:forEach items="${map}" var= "item">
+		  		if(flag==num){
+		  			<c:forEach items="${item.value}" var="it">          
+		  		        array.push("${it}");
+		  			</c:forEach>
+		  		}
+		  	 flag+=1;
+			</c:forEach> 
+			
+			
+			var list1= document.getElementById("list1");
+			var op= document.getElementById("list1").options;
+			 for(var i=0;i<array.length;i++){
+				list1.options[i].text=array[i];
+				list1.options[i].value=array[i];
 			} 
-		 
-		 
+		}
+		
+		
 		//登录注册页面切换
 		function changepage(value) {
 			if(value == 1){

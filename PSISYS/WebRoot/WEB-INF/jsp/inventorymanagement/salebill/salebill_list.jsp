@@ -78,7 +78,7 @@
 									<c:if test="${QX.cha == 1 }">
 									<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 									</c:if>
-									<%-- <c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if> --%>
+									<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;">	&nbsp;&nbsp;&nbsp;<a class="btn btn-xs btn-success" onclick="toExcel();" title="导出到EXCEL">导出EXCEL</a></td></c:if>
 								</tr>
 							</table>
 							<!-- 检索  -->
@@ -98,6 +98,7 @@
 										<th class="center">本次付款</th>
 										<th class="center">结算状态</th>
 										<th class="center">审核状态</th>
+										<th class="center">结款方式</th>
 										<th class="center">日期</th>
 										<th class="center">经手人</th>
 										<th class="center">备注</th>
@@ -144,6 +145,15 @@
 														<font color="red">作废</font>
 													</c:if>
 												</td>
+												<td class='center' >
+													<c:if test="${var.DISTRIBUTIONMODE == 1}">
+														现结
+													</c:if>
+													<c:if test="${var.DISTRIBUTIONMODE == 2}">
+												 		月结
+													</c:if>
+									
+												</td>
 												<td class='center'>${var.CREATETIME}</td>
 												<td class='center'>${var.PSI_NAME}</td>
 												<td class='center'>${var.NOTE}</td>
@@ -156,7 +166,7 @@
 														<a class="btn btn-mini btn-success" style="height:26px;" onclick="shenpi('${var.SALEBILL_ID}','${var.BILLSTATUS}');">审批</a>
 														</c:if>
 														<c:if test="${QX.daying == 1 }">
-														<a class="btn btn-mini btn-success"  style="height:26px;" onclick="daying('${var.SALEBILL_ID}');">打印</a>
+														<a class="btn btn-mini btn-success"  style="height:26px;" onclick="daying('${var.SALEBILL_ID}','${var.BILLSTATUS}');">打印</a>
 														</c:if>
 														<c:if test="${QX.Sailbillfanshen == 1 }">
 														<a class="btn btn-mini btn-danger"  style="height:26px;" onclick="fanshen('${var.SALEBILL_ID}','${var.ISSETTLEMENTED}','${var.BILLSTATUS}');">反审</a>
@@ -343,6 +353,13 @@
 			//siMenu('z191','lm181','查看进货单',url);
 		}
 		
+		
+		//导出excel
+		function toExcel(){
+			var lastStart =  $("#lastStart").val();
+			var lastEnd  = $("#lastEnd").val();
+			window.location.href='<%=basePath%>salebill/excel.do?lastStart='+lastStart+'&lastEnd='+lastEnd;
+		}
 		//点击一行显示详情
 		function clickaction(SALEBILL_ID){
 			$.ajax({
@@ -583,7 +600,17 @@
 			}); */
 		}
 		//打印
-		function daying(SALEBILL_ID){
+		function daying(SALEBILL_ID,status){
+			if(status==1){
+				var ee = '#checkbox'+SALEBILL_ID;
+				 $(ee).tips({
+					side:1,
+		            msg:'先审批才能打印！',
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				return;
+			}
 			bootbox.confirm("确定要打印送货单吗?", function(result) {
 				if(result) {
 					window.location.href='<%=basePath%>daying/createExcel.do?SALEBILL_ID='+SALEBILL_ID;

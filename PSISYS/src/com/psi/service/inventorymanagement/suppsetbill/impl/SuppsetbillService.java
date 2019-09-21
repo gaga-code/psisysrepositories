@@ -415,6 +415,18 @@ public class SuppsetbillService implements SuppsetbillManager{
 		// TODO Auto-generated method stub
 		return (List<PageData>)dao.findForList("SuppsetbillMapper.listByCondition", pd);
 	}
+
+	@Override
+	public List<PageData> listAllToExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("SuppsetbillMapper.listAllToExcel", pd);
+	}
+
+	@Override
+	public List<PageData> listByConditionExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("SuppsetbillMapper.listByConditionExcel", pd);
+	}
 	
 }
 

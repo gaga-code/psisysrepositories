@@ -28,6 +28,12 @@ public class SalesProfitService implements SalesProfitManager{
 	public List<PageData> list(Page page)throws Exception{
 		return (List<PageData>)dao.findForList("SalesProfitMapper.datalistPage", page);
 	}
+
+	@Override
+	public List<PageData> listAllToExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("SalesProfitMapper.listAllToExcel", pd);
+	}
 	
 }
 

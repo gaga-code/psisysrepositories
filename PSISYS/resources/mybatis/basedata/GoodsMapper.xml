@@ -255,6 +255,7 @@
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0 
 			and STOCKDOWNNUM > STOCKNUM
+			order by STOCKDOWNNUM desc 
 	</select>
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">

@@ -274,43 +274,51 @@ public class ExpenseController extends BaseController {
 	 */
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"导出expense到excel");
+		logBefore(logger, Jurisdiction.getUsername()+"导出费用开支单到excel");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		List<String> titles = new ArrayList<String>();
-		titles.add("姓名");	//1
-		titles.add("年龄");	//2
-		titles.add("手机");	//3
-		titles.add("地址");	//4
-		titles.add("QQ");	//5
-		titles.add("微信");	//6
-		titles.add("建档时间");	//7
-		titles.add("消费金额");	//8
-		titles.add("级别");	//9
-		titles.add("备注1");	//10
-		titles.add("备注2");	//11
+		titles.add("付款方式");	//1
+		titles.add("付款来源");	//2
+		titles.add("付款金额");	//3
+		titles.add("票号");	//4
+		titles.add("经手人");	//5
+		titles.add("备注");	//6
 		dataMap.put("titles", titles);
 		pd.put("USERNAME", Jurisdiction.getUsername());
-		List<PageData> varOList = expenseService.listAll(pd);
+		
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		int flag1=1;
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+			flag1=0;
+		}
+		int flag2=1;
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 23:59:59");
+			flag2=0;
+		} 
+		if(flag1==0&&flag2==0){
+			pd.put("flag", 1);
+		}
+		List<PageData> varOList = expenseService.listAllToExcel(pd);
+		
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
-			vpd.put("var1", varOList.get(i).getString("NAME"));	    //1
-			vpd.put("var2", varOList.get(i).getString("AGE"));	    //2
-			vpd.put("var3", varOList.get(i).get("PHONE").toString());	//3
-			vpd.put("var4", varOList.get(i).getString("ADDRESS"));	    //4
-			vpd.put("var5", varOList.get(i).get("QQ").toString());	//5
-			vpd.put("var6", varOList.get(i).getString("WEIXIN"));	    //6
-			vpd.put("var7", varOList.get(i).getString("CTIME"));	    //7
-			vpd.put("var8", varOList.get(i).get("MONEY").toString());	//8
-			vpd.put("var9", varOList.get(i).getString("LEVEL"));	    //9
-			vpd.put("var10", varOList.get(i).getString("REMARKS1"));	    //10
-			vpd.put("var11", varOList.get(i).getString("REMARKS2"));	    //11
+			vpd.put("var1", varOList.get(i).getString("PAYMETHOD_NAME"));	    //1
+			vpd.put("var2", varOList.get(i).getString("PAYORIGIN"));	    //2
+			vpd.put("var3", String.valueOf(varOList.get(i).get("PAYAMOUNT")));	//3
+			vpd.put("var4", varOList.get(i).getString("TICKETNUM"));	    //4
+			vpd.put("var5", varOList.get(i).getString("PSI_NAME"));	//5
+			vpd.put("var6", varOList.get(i).getString("NOTE"));	    //6
 			varList.add(vpd);
 		}
+		dataMap.put("title", "费用开支单");
 		dataMap.put("varList", varList);
 		ObjectExcelView erv = new ObjectExcelView();
 		mv = new ModelAndView(erv,dataMap);

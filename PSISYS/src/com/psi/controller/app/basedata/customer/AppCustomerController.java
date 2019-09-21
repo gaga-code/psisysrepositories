@@ -32,6 +32,11 @@ public class AppCustomerController extends BaseController{
 		PageData pd=new PageData();
 		pd=this.getPageData();
 		pd=appCustomerService.findCustomerByCode(pd);	
+		if(pd.getString("DISTRIBUTIONMODE").equals("1")){
+			pd.put("DISTRIBUTIONMODE", "现结");
+		}else{
+			pd.put("DISTRIBUTIONMODE", "月结");
+		}
 		return pd;
 	}
 	
@@ -46,6 +51,15 @@ public class AppCustomerController extends BaseController{
 		pd.put("pageSize", pageSize);
  		int TOTALNUM=appCustomerService.listCutomerNum(pd);
 		List<PageData> list=appCustomerService.listCutomer(pd);
+		if(list!=null){
+			for(int i=0;i<list.size();i++){
+				if(list.get(i).getString("DISTRIBUTIONMODE").equals("1")){
+					list.get(i).put("DISTRIBUTIONMODE", "现结");
+				}else{
+					list.get(i).put("DISTRIBUTIONMODE", "月结");
+				}
+			}
+		}
 		HashMap<String,Object> map= new HashMap();
 		map.put("list", list);
 		map.put("TOTALNUM", TOTALNUM);

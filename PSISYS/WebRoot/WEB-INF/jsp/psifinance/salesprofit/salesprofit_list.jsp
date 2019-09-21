@@ -63,6 +63,15 @@
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
+								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;">	&nbsp;&nbsp;&nbsp;<a class="btn btn-xs btn-success" onclick="toExcel();" title="导出到EXCEL">导出EXCEL</a></td></c:if>
+								
+								<td style="width: 200px;"> </td>
+								<td style="width: 200px;">总成本金额:<font style="color: red"><b>${chenben}</b></font>&nbsp;元</td>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<td style="width: 200px;">总销售金额:<font style="color: red"><b>${saleAmount}</b></font>&nbsp;元</td>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<td style="width: 200px;">总利润金额:<font style="color: red"><b>${lirun}</b></font>&nbsp;元</td>
+							
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -76,11 +85,11 @@
 									<th class="center">条码</th>
 									<th class="center">型号</th>
 									<th class="center">规格</th>
-									<th class="center">品牌</th>
 									<th class="center">所属柜组</th>
 									<th class="center">商品类别</th>
 									<th class="center">数量</th>
 									<th class="center">单位</th>
+									<th class="center">日期</th>
 									<th class="center">辅助数量</th>
 									<th class="center">成本金额</th>
 									<th class="center">销售金额</th>
@@ -104,11 +113,11 @@
 											</td>
 											<td class='center'>${var.GOODTYPECODE}</td>
 											<td class='center'>${var.GOODSPECIF}</td>
-											<td class='center'>${var.BRANT}</td>
 											<td class='center'>${var.SUBGZ_ID}</td>
 											<td class='center'>${var.TYPENAME}</td>
 											<td class='center'>${var.PNUMBER}</td>
 											<td class='center'>${var.CUNITNAME}</td>
+											<td class='center'>${var.LASTTIME}</td>
 											<td class='center'>${var.FZ}</td>
 											<td class='center'>${var.CPRICE}</td>
 											<td class='center'>${var.UNITPRICE_ID}</td>
@@ -286,6 +295,14 @@
 			});
 		});
 		
+		
+		//导出excel
+		function toExcel(){
+			var lastStart =  $("#lastStart").val();
+			var lastEnd  = $("#lastEnd").val();
+			window.location.href='<%=basePath%>salesprofit/excel.do?lastStart='+lastStart+'&lastEnd='+lastEnd;
+		}
+		
 		//新增
 		function add(){
 			 top.jzts();
@@ -419,10 +436,7 @@
 			 diag.show();
 		}
 		
-		//导出excel
-		function toExcel(){
-			window.location.href='<%=basePath%>goods/excel.do';
-		}
+
 	</script>
 
 

@@ -26,8 +26,14 @@
 <!-- 	<link rel="stylesheet" href="plugins/fhim/dist/css/layui.css">
 	<link rel="stylesheet" href="plugins/fhim/dist/css/contextMenu.css"> -->
 	
+	<!--Strart 使用加密狗 -->
+	<script type="text/javascript" src="static/js/superdog/main.js"></script>
+	<object id="AuthIE" name="AuthIE" width="0px" height="0px"
+		codebase="DogAuth.CAB#version=2,3,1,58083"
+		classid="CLSID:05C384B0-F45D-46DB-9055-C72DC76176E3"> </object>
+	<!--End 使用加密狗 -->
 </head>
-	<body class="no-skin" id="bodyBox">
+	<body class="no-skin" id="bodyBox" onload="loadFunc()"> <!-- 使用加密狗  onload="loadFunc()-->
 		<input type="hidden" name="goodslist" id="goodslist" value="${sessionScope.goodslist}"/>
 		<!-- 預警提示彈窗  style="display:none;"-->
 		<div id="alertBox" style="display:none;" >
@@ -189,12 +195,12 @@
 		
 		<script type="text/javascript">
 			setSkin("${SKIN}");//用户的皮肤
+			
 		</script>
 		
 		<!-- 及时通讯js¨ -->
 		<!-- <script src="plugins/fhim/dist/layui.js"></script> -->
 		<!-- 及时通讯页面¨ -->
 		<%-- <%@ include file="im.jsp"%> --%>
-		
 	</body>
 </html>

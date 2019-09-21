@@ -89,7 +89,7 @@
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
 									<th class="center">型号</th>
-									<th class="center">规格</th>
+									<th class="center" width="200px">规格</th>
 									<th class="center">金额</th>
 									<th class="center">备注</th>
 									<th class="center">操作</th>
@@ -177,7 +177,7 @@
 		                var wh_id = value[0];
 		                var wh_name = value[1]
 		                var stock = value[2];
-		                selecthtml += "<option value="+wh_id+">"+wh_name+"</option>";
+		                selecthtml += "<option value="+wh_id+">"+wh_name+","+stock+"</option>";
 	        	}
 	        }
 			//var str = 
@@ -196,7 +196,7 @@
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODTYPECODE +"'/></td>"
-	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODSPECIF +"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:200px' readonly='readonly' value='"+GOODSPECIF +"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"

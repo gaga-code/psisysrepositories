@@ -238,7 +238,7 @@ function delUser(userId,msg){
 	bootbox.confirm("确定要删除["+msg+"]吗?", function(result) {
 		if(result) {
 			top.jzts();
-			var url = "<%=basePath%>user/deleteU.do?USER_ID="+userId+"&tm="+new Date().getTime();
+			var url = "<%=basePath%>user/deleteU.do?ID="+userId+"&tm="+new Date().getTime();
 			$.get(url,function(data){
 				nextPage(${page.currentPage});
 			});
@@ -276,7 +276,7 @@ function editUser(user_id){
 	 var diag = new top.Dialog();
 	 diag.Drag=true;
 	 diag.Title ="资料";
-	 diag.URL = '<%=basePath%>user/goEditU.do?USER_ID='+user_id;
+	 diag.URL = '<%=basePath%>user/goEditU.do?ID='+user_id;
 	 diag.Width = 469;
 	 diag.Height = 510;
 	 diag.CancelEvent = function(){ //关闭事件

@@ -112,6 +112,7 @@
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
 			a.PNUMBER,
+			a.LASTTIME,
 			a.UNITPRICE_ID,
 			b.GOODCODE,
 			b.GOOD_ID,
@@ -186,6 +187,53 @@
 		ORDER BY a.GOODCODE_ID DESC
 	</select>
 	
+	<select id="listAllToExcel" parameterType="pd" resultType="pd">
+			select
+			a.PNUMBER,
+			 date_format(a.LASTTIME,'%Y-%m-%d %H-%i-%s') as LASTTIME,
+			a.UNITPRICE_ID,
+			b.GOODCODE,
+			b.GOOD_ID,
+			b.GOODNAME,
+			b.GOODTYPECODE,
+			b.GOODSPECIF,
+			b.BARCODE,
+			b.UNITPROP,
+			b.CPRICE,
+			b.SUBGZ_ID,
+			b.DEF1,
+			b.STOCKUPNUM,
+			b.STOCKDOWNNUM,
+			b.SUPPLIER_ID,
+			b.BRANT,
+<!-- 			c.WHNAME, -->
+			e.NAME CUNITNAME,
+			f.NAME FZUNITNAME,
+			g.TYPENAME
+		from 
+			<include refid="tableName"></include>a
+			left join base_good b
+			on a.GOODCODE_ID = b.GOODCODE
+			left join cp_spunit e
+			on b.CUNIT_ID = e.SPUNIT_ID
+			left join cp_spunit f
+			on b.FZUNIT_ID = f.SPUNIT_ID
+			left join base_goodtype g
+			on b.GOODTYPE_ID = g.GOODTYPE_ID
+			left join psi_salebill p on p.SALEBILL_ID=a.SALEBILL_ID
+		where  a.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(a.DR,0)=0 
+		and p.BILLTYPE=2
+		<if test="lastStart!=null and lastStart!='' ">
+			<if test="lastEnd!=null and lastEnd!='' ">
+			 and Date(a.LASTTIME) BETWEEN #{lastStart} and #{lastEnd}
+			</if>
+		</if>
+		<if test="flag==1">
+			and date_format(a.CREATETIME,'%Y-%m')= date_format(now(),'%Y-%m')
+		</if>
+		ORDER BY a.GOODCODE_ID DESC
+	</select>
 	<!-- 库存列表 -->
 	<select id="salesprofitlistPage" parameterType="page" resultType="pd">
 		select

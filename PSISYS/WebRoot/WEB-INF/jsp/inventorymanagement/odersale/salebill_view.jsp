@@ -64,14 +64,13 @@
 										<th class="center">单据编号</th>
 										<th class="center">商品</th>
 										<th class="center">商品编号</th>
+										<th class="center">单位</th>
 										<th class="center">单价</th>
 										<th class="center">数量</th>
-										<th class="center">总经额</th>
-										<th class="center">已付金额</th>
+										<th class="center">金额</th>
 										<th class="center">时间</th>
+										<th class="center">客户</th>
 										<th class="center">经手人</th>
-										<th class="center">起点</th>
-										<th class="center">终点</th>
 									</tr>
 								</thead>
 														
@@ -86,15 +85,13 @@
 												<td class='center'>${var.BILLCODE}</td>
 												<td class='center'>${var.GOODNAME}</td>
 												<td class='center'>${var.GOODCODE}</td>
+												<td class='center'>${var.UNAME}</td>
 												<td class='center'>${var.UNITPRICE_ID}</td>
 												<td class='center'>${var.PNUMBER}</td>
-												<td class='center'>${var.ALLAMOUNT}</td>
-												<td class='center'>${var.PAIDAMOUNT}</td>
+												<td class='center'>${var.AMOUNT}</td>
 												<td class='center'>${var.LASTTIME}</td>
-												<td class='center'>${var.USERNAME}</td>
-												<td class='center'>${var.startplace}</td>
-												<td class='center'>${var.endplace}</td>									
-											
+												<td class='center'>${var.CUATOMERNAME}</td>
+												<td class='center'>${var.NAME}</td>
 											</tr>
 										
 										</c:forEach>

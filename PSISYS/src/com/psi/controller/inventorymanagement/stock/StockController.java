@@ -1,7 +1,9 @@
 package com.psi.controller.inventorymanagement.stock;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -15,6 +17,7 @@ import com.psi.service.basedata.warehouse.WarehouseManager;
 import com.psi.service.inventorymanagement.stock.StockManager;
 import com.psi.util.Const;
 import com.psi.util.Jurisdiction;
+import com.psi.util.ObjectExcelView;
 import com.psi.util.PageData;
 
 /**
@@ -72,5 +75,70 @@ public class StockController extends BaseController {
 		return mv;
 	}
 	
+	
+	 /**导出到excel
+		 * @param
+		 * @throws Exception
+		 */
+		@RequestMapping(value="/excel")
+		public ModelAndView exportExcel() throws Exception{
+			logBefore(logger, Jurisdiction.getUsername()+"导出销售单到excel");
+			if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
+			ModelAndView mv = new ModelAndView();
+			PageData pd = new PageData();
+			pd = this.getPageData();
+			Map<String,Object> dataMap = new HashMap<String,Object>();
+			List<String> titles = new ArrayList<String>();
+			titles.add("仓库");	//1
+			titles.add("商品编号");	//2
+			titles.add("商品名称");	//3
+			titles.add("条码");	//4
+			titles.add("型号");	//5
+			titles.add("规格");	//6
+			titles.add("商品类型");	//7
+			titles.add("单位	");	//8
+			titles.add("辅助数量");	//9
+			titles.add("成本价");	//10
+			titles.add("总金额");	//11
+			titles.add("所属柜组");	//12
+			titles.add("库存数量");	//13
+			titles.add("库存上限");	//14
+			titles.add("库存下线");	//15
+			dataMap.put("titles", titles);
+			
+		
+			List<PageData> varOList = stockService.listAllToExcel(pd);
+			
+			List<PageData> varList = new ArrayList<PageData>();
+			for(int i=0;i<varOList.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", varOList.get(i).getString("WHNAME"));	    //1
+				vpd.put("var2", varOList.get(i).getString("GOODCODE"));	    //2
+				vpd.put("var3", varOList.get(i).getString("GOODNAME"));	//3
+				vpd.put("var4", varOList.get(i).getString("BARCODE"));	    //4
+				vpd.put("var5", varOList.get(i).getString("GOODTYPECODE"));	//5
+				vpd.put("var6", varOList.get(i).getString("GOODSPECIF"));	    //6
+				vpd.put("var7", varOList.get(i).getString("TYPENAME"));	    //7
+				vpd.put("var8", varOList.get(i).getString("CUNITNAME"));	    //8
+				String FZ= varOList.get(i).get("UNITPROP") + " " + varOList.get(i).get("CUNITNAME") + " = 1 " + varOList.get(i).get("FZUNITNAME");
+				vpd.put("var9",FZ);	    //9
+				
+				vpd.put("var10", varOList.get(i).get("CPRICE").toString());	    //10
+				
+				double ZJE = (Integer)varOList.get(i).get("STOCK") * (Double)varOList.get(i).get("CPRICE");
+				vpd.put("var11", String.valueOf(ZJE));	    //11
+				
+				vpd.put("var12", varOList.get(i).getString("SUBGZ_ID"));	    //12
+				vpd.put("var13", varOList.get(i).get("STOCK").toString());	    //13
+				vpd.put("var14", varOList.get(i).get("STOCKUPNUM").toString());	    //14
+				vpd.put("var15", varOList.get(i).get("STOCKDOWNNUM").toString());	    //15
+				varList.add(vpd);
+			}
+			dataMap.put("varList", varList);
+			dataMap.put("title","库存单");
+			ObjectExcelView erv = new ObjectExcelView();
+			mv = new ModelAndView(erv,dataMap);
+			return mv;
+		}
 	
 }

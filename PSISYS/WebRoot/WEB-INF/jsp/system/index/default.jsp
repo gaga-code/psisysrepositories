@@ -20,6 +20,13 @@
 <script type="text/javascript">
 setTimeout("top.hangge()",500);
 </script>
+<!-- 下拉框 -->
+<link rel="stylesheet" href="static/ace/css/chosen.css" />
+<!-- 自定義CSS文件 -->
+<link rel="stylesheet" href="static/myCSS/style.css"/>
+<script type="text/javascript" src="static/js/myjs/head.js"></script>
+<!-- 日期框 -->
+<link rel="stylesheet" href="static/ace/css/datepicker.css" />
 </head>
 <body class="no-skin">
 
@@ -31,6 +38,16 @@ setTimeout("top.hangge()",500);
 				<div class="page-content">
 					<div class="row">
 						<div class="col-xs-12">
+						<!-- 检索  -->
+							<form action="login_default" method="post" name="Form" id="Form">
+								<table style="margin-top:5px;">
+									<tr>
+										<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="${pd.lastStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
+										<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="${pd.lastEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
+										<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>	
+									</tr>
+								</table>
+							</form>
 							<div  style="width: 800px;padding-top: 15px;">
 								<table class="table table-striped table-bordered table-hover">
 									<tr>
@@ -40,8 +57,6 @@ setTimeout("top.hangge()",500);
 										<td><font style="color: red"><b>${pd.outjine }</b></font>&nbsp;元</td>
 										<td style="width: 100px;">总销售利润</td>
 										<td><font style="color: red"><b>${pd.lirun}</b></font>&nbsp;元</td>
-										<td style="width: 120px;">30天内销售金额</td>
-										<td><font style="color: red"><b>${pd.outjine30 }</b></font>&nbsp;元</td>
 									</tr>
 								</table>
 							</div>
@@ -153,12 +168,104 @@ setTimeout("top.hangge()",500);
 	<!-- basic scripts -->
 	<!-- 页面底部js¨ -->
 	<%@ include file="../index/foot.jsp"%>
+	
+	<!-- 删除时确认窗口 -->
+	<script src="static/ace/js/bootbox.js"></script>
 	<!-- ace scripts -->
 	<script src="static/ace/js/ace/ace.js"></script>
-	<!-- inline scripts related to this page -->
+	<!-- 下拉框 -->
+	<script src="static/ace/js/chosen.jquery.js"></script>
+	<!-- 日期框 -->
+	<script src="static/ace/js/date-time/bootstrap-datepicker.js"></script>
+	<!--提示框-->
+	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
 	<script type="text/javascript">
+	
+		if (window.history && window.history.pushState) {
+		    history.pushState("forward", null, location.href);
+		    $(window).on("popstate", function() {
+		         history.pushState("forward", null, location.href);
+		     });
+		}
+
 		$(top.hangge());
+
+		function shenpi(){
+			 top.jzts();
+			 $.ajax({
+					type: "POST",
+					url: '<%=basePath%>goods/check_goods_stock_down_num.do?tm='+new Date().getTime(),
+			    	data: {},
+					dataType:'json',
+					cache: false,
+					success: function(data){
+						//tosearch();
+						top.hangge();
+						if(data != null){
+							if($("#alertBox").is(":hidden")){
+								$('#alertBox').show();
+							}else{
+								var htmlStr = "<div id='alertBox'><div class='boxTop'><span>库存预警</span><span id='boxClose'> X </span></div><ul id=\"alertGoodsList\">";
+								
+								for( var i = 0; i < data.length; i++ ){
+									htmlStr += "<li><span>"+data[i].GOODCODE+"</span><span>"+data[i].GOODNAME+"</span><span>"+data[i].STOCKNUM+"</span></li>"
+								}
+								htmlStr += "</ul></div>";
+								$(".page-content").append(htmlStr);
+	
+							}
+						
+							//预警弹窗消失
+							var closeObj = document.getElementById('boxClose');
+							closeObj.onclick=function(){
+								$('#alertBox').hide();
+							};
+						} 
+					}
+				});
+		}		
+		
+		
+		//检索
+		function tosearch(){
+			top.jzts();
+			$("#Form").submit();
+		}
+		$(function() {
+			shenpi();
+			//日期框
+			$('.date-picker').datepicker({
+				autoclose: true,
+				todayHighlight: true
+			});
+			
+			//下拉框
+			if(!ace.vars['touch']) {
+				$('.chosen-select').chosen({allow_single_deselect:true}); 
+				$(window)
+				.off('resize.chosen')
+				.on('resize.chosen', function() {
+					$('.chosen-select').each(function() {
+						 var $this = $(this);
+						 $this.next().css({'width': $this.parent().width()});
+					});
+				}).trigger('resize.chosen');
+				$(document).on('settings.ace.chosen', function(e, event_name, event_val) {
+					if(event_name != 'sidebar_collapsed') return;
+					$('.chosen-select').each(function() {
+						 var $this = $(this);
+						 $this.next().css({'width': $this.parent().width()});
+					});
+				});
+				$('#chosen-multiple-style .btn').on('click', function(e){
+					var target = $(this).find('input[type=radio]');
+					var which = parseInt(target.val());
+					if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
+					 else $('#form-field-select-4').removeClass('tag-input-style');
+				});
+			}
+		
+		});
 	</script>
-<script type="text/javascript" src="static/ace/js/jquery.js"></script>
 </body>
 </html>

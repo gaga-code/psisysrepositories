@@ -404,6 +404,10 @@
 		                	alert("商品的单价和数量不能为空！");
 		                	return '0';
 		                }
+		                if(shuliang <= 0){
+		                	alert("商品数量必须大于零！");
+		                	return '0';
+		                }
 		            }
 		        }
 		  }
@@ -430,6 +434,15 @@
 				$("#addgoodstishi").tips({
 					side:3,
 		            msg:'请选择商品',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+			return false;
+			}
+			if($("#goodsnum").val()<=0){
+				$("#goodsnum").tips({
+					side:3,
+		            msg:'商品数量必须大于零',
 		            bg:'#AE81FF',
 		            time:2
 		        });

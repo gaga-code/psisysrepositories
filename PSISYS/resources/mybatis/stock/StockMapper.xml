@@ -304,4 +304,41 @@
 		   and IFNULL(DR,0)=0 
 	</update>
 	
+	<select id="listAllToExcel" parameterType="pd" resultType="pd">
+			select
+			a.STOCK,
+			b.GOODCODE,
+			b.GOOD_ID,
+			b.GOODNAME,
+			b.GOODTYPECODE,
+			b.GOODSPECIF,
+			b.BARCODE,
+			b.UNITPROP,
+			b.CPRICE,
+			b.SUBGZ_ID,
+			b.STOCKUPNUM,
+			b.STOCKDOWNNUM,
+			b.SUPPLIER_ID,
+			c.WHNAME,
+			d.TYPENAME,
+			e.NAME CUNITNAME,
+			f.NAME FZUNITNAME
+		from 
+			<include refid="tableName"></include>a
+			left join base_good b
+			on a.GOOD_ID = b.GOODCODE
+			left join base_warehouse c
+			on a.WAREHOUSE_ID = c.WAREHOUSE_ID
+			left join base_goodtype d
+			on b.GOODTYPE_ID = d.GOODTYPE_ID
+			left join cp_spunit e
+			on b.CUNIT_ID = e.SPUNIT_ID
+			left join cp_spunit f
+			on b.FZUNIT_ID = f.SPUNIT_ID
+		where 
+		 a.STOCK > 0
+		and a.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(a.DR,0)=0 
+		ORDER BY a.WAREHOUSE_ID,a.GOOD_ID,a.STOCK DESC
+	</select>
 </mapper>

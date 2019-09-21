@@ -152,4 +152,11 @@
 		from base_warehouse
 		where WHNAME=#{whName}
 	</select>
+	
+	<select id="listWarehouse" parameterType="pd" resultType="pd">
+	 	select WAREHOUSE_ID,WHNAME
+	 	from base_warehouse
+	 	where  PK_SOBOOKS = #{PK_SOBOOKS}
+	    and IFNULL(DR,0)=0 
+	</select>
 </mapper>

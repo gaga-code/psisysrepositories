@@ -67,6 +67,8 @@
 									<c:if test="${QX.cha == 1 }">
 									<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 									</c:if>
+									<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;">	&nbsp;&nbsp;&nbsp;<a class="btn btn-xs btn-success" onclick="toExcel();" title="导出到EXCEL">导出EXCEL</a></td></c:if>
+							
 								</tr>
 							</table>
 							<!-- 检索  -->
@@ -81,7 +83,6 @@
 										<th class="center">单价</th>
 										<th class="center">数量</th>
 										<th class="center">总经额</th>
-										<th class="center">已付金额</th>
 										<th class="center">时间</th>
 										<th class="center">经手人</th>
 										<th class="center">起点</th>
@@ -107,10 +108,9 @@
 												<td class='center'>${var.GOODNAME}</td>
 												<td class='center'>${var.UNITPRICE_ID}</td>
 												<td class='center'>${var.PNUMBER}</td>
-												<td class='center'>${var.ALLAMOUNT}</td>
-												<td class='center'>${var.PAIDAMOUNT}</td>
+												<td class='center'>${var.AMOUNT}</td>
 												<td class='center'>${var.LASTTIME}</td>
-												<td class='center'>${var.USERNAME}</td>
+												<td class='center'>${var.NAME}</td>
 												<td class='center'>${var.startplace}</td>
 												<td class='center'>${var.endplace}</td>									
 											
@@ -174,6 +174,15 @@
 	<script type="text/javascript">
 		$(top.hangge());//关闭加载状态
 
+		
+		
+		//导出excel
+		function toExcel(){
+			var lastStart =  $("#lastStart").val();
+			var lastEnd  = $("#lastEnd").val();
+			 
+			window.location.href='<%=basePath%>inorder/oderSaleExcel.do?lastStart='+lastStart+'&lastEnd='+lastEnd;
+		}
 		
 		//检索
 		function tosearch(){

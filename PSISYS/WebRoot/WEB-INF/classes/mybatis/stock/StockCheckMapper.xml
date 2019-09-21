@@ -238,6 +238,34 @@
 		order by a.LASTTIME DESC
 	</select>
 	
+	<select id="listAllToExcel" parameterType="pd" resultType="pd">
+			select
+			a.PK_SOBOOKS,
+			a.STOCKCHECK_ID,
+			a.LDATE,
+			a.BILLCODE,
+			a.USER_ID,
+			a.WAREHOUSE_ID,
+			a.LOTNUM,
+			a.NOTE,
+			b.WHNAME WAREHOUSE_NAME
+		from 
+		<include refid="tableName"></include>a
+		left join base_warehouse b
+		on a.WAREHOUSE_ID = b.WAREHOUSE_ID
+		where 
+		  a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0
+			<if test="lastStart!=null and lastStart!='' ">
+				<if test="lastEnd!=null and lastEnd!='' ">
+				 and Date(a.LASTTIME) BETWEEN #{lastStart} and #{lastEnd}
+				</if>
+			</if>
+			<if test="flag==1">
+				and date_format(a.CREATETIME,'%Y-%m')= date_format(now(),'%Y-%m')
+			</if>
+			order by a.LASTTIME DESC
+	</select>
 	
 	<!-- 列表 -->
 	<select id="datalistPageByCustomerset" parameterType="page" resultType="pd">

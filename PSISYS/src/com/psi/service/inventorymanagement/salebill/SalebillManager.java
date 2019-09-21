@@ -160,6 +160,25 @@ public interface SalebillManager{
 
 	public List<PageData> listsalebillByGoodCode(Page page) throws Exception;
 
+	public PageData priceSum(PageData pd) throws Exception;
+
+	public PageData liruSum(PageData pd) throws Exception;
+
+	public List<PageData> listSaleInfoByCustomerId(Page page) throws Exception;
+
+	public PageData findCreByCustomerId(PageData pd) throws Exception;
+
+	public List<PageData> listAllToExcel(PageData pd) throws Exception;
+
+	public List<PageData> listSalebillByConditionExcel(Page page) throws Exception;
+
+	public List<PageData> listdetail(Page page) throws Exception;
+
+	public List<PageData> excelDetail(PageData pd) throws Exception;
+
+	public PageData findChaoqiById(PageData pd) throws Exception;
+
+
 
 	
 }

@@ -318,8 +318,7 @@
 				            		if(res.QX.SUPPSETBILLSET == 1 ){
 					            		html += "	<div class='hidden-sm hidden-xs btn-group'> ";
 										html += "		<a class='btn btn-xs btn-success' title='结算' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].INORDER_ID+"','"+res.varList[i].BILLTYPE+"');\"> ";
-										html += "			<i class='ace-icon fa fa-eye bigger-120' title='结算'></i> ";
-										html += "		</a> ";
+										html += "	结算	</a> ";
 				            		}
 									if(res.QX.del == 1){
 										html += "		<a class='btn btn-xs btn-danger' id='delInorder' onclick=\"del('"+res.varList[i].INORDER_ID+"','"+res.varList[i].BILLTYPE+"');\" > ";
@@ -337,10 +336,8 @@
 									if(res.QX.SUPPSETBILLSET == 1){
 										html += "				<li> ";
 										html += "					<a style='cursor:pointer;' id='settleOnInorder' onclick=\"settleone('"+res.varList[i].INORDER_ID+"','"+res.varList[i].BILLTYPE+"');\" class='tooltip-success' data-rel='tooltip' title='结算'> ";
-										html += "						<span class='green'> ";
-										html += "							<i class='ace-icon fa fa-eye bigger-120'></i> ";
-										html += "						</span> ";
-										html += "					</a> ";
+									
+										html += "				结算	</a> ";
 										html += "				</li> ";
 									}
 									if(res.QX.del == 1){

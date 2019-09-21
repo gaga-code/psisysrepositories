@@ -15,6 +15,8 @@ public interface SalesProfitManager{
 	 * @throws Exception
 	 */
 	public List<PageData> list(Page page)throws Exception;
+
+	public List<PageData> listAllToExcel(PageData pd) throws Exception;
 	
 }
 

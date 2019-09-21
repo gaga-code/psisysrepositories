@@ -29,7 +29,7 @@
 					<div class="row">
 						<div class="col-xs-12">
 								<form action="user/${msg }.do" name="userForm" id="userForm" method="post">
-									<input type="hidden" name="USER_ID" id="user_id" value="${pd.USER_ID }"/>
+									<input type="hidden" name="ID" id="user_id" value="${pd.USER_ID }"/>
 									<div id="zhongxin" style="padding-top: 13px;">
 									<table id="table_report" class="table table-striped table-bordered table-hover">
 										<c:if test="${fx != 'head'}">
@@ -87,7 +87,7 @@
 											<td>
 												<select name="SEX" id="SEX" placeholder="请选择" title="性别" style="width:98%;background-color:#EBEBEB" >
 												<c:forEach items="${varListSex}" var="var">
-													<option value="${var.LEVEL_ID }" <c:if test="${var.LEVEL_ID == pd.SEX }">selected</c:if>>${var.TITLE }</option>
+													<option value="${var.LEVEL_ID }" <c:if test="${var.LEVEL_ID == pd.SEX }">selected</c:if>>${var.TITLE}</option>
 												</c:forEach>
 												</select>
 											</td>

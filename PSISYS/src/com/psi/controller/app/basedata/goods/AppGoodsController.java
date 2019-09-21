@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,11 +80,51 @@ public class AppGoodsController extends BaseController {
 	//获取商品表
 		@RequestMapping("/findByBarCode")
 		@ResponseBody
-		public HashMap<String,Object> findByBarCode( HttpServletRequest request) throws Exception{
+		public List<PageData> findByBarCode( HttpServletRequest request) throws Exception{
 			PageData pd=new PageData();
 			pd=this.getPageData();
+			
+			String path = request.getContextPath();
+			String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/uploadFiles/uploadImgs/";
+			
+			HashMap<String,Object> map =  new HashMap();
+			Session session = Jurisdiction.getSession();
+			Object PK_SOBOOKS;
+			if(pd.getString("PK_SOBOOKS")!=null){
+			    PK_SOBOOKS=pd.getString("PK_SOBOOKS");
+			}else{
+			     PK_SOBOOKS=session.getAttribute("PK_SOBOOKS");
+			}
+			
 			pd=appGoodsService.findByBarCode(pd);
-			return pd;
+			List<PageData> lists=new ArrayList(); //获取商品信息
+			lists.add(pd);
+			for(int i=0;i<lists.size();i++){
+				String GOODCODE=lists.get(i).getString("GOODCODE");
+				pd.put("GOODCODE", GOODCODE);
+				List<PageData> fpd=appStockService.listStockById(pd); //获取商品在不同库存的数量
+				/*for(int j=0;j<fpd.size();j++){
+					String PostionNum=fpd.get(i).getString("WHNAME")+"的库存数量："+fpd.get(i).get("STOCK");
+					lists.get(i).put("PostionNum", PostionNum);
+				}*/
+				
+				lists.get(i).put("stockNum", fpd);
+				pd.put("PK_SOBOOKS", PK_SOBOOKS);
+				pd.put("GOODCODE", GOODCODE);
+				lists.get(i).put("Path", basePath+lists.get(i).getString("GOODPIC"));
+				List<PageData> lpd=appSalelbillService.listDataAndNumAndPrice(pd); //获取商品最近五次销售信息
+				if(lpd!=null&&lpd.size()!=0){
+					  SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					for(int j =0;j<lpd.size();j++){
+						String d=formatter.format(lpd.get(j).get("CREATETIME"));
+						lpd.get(j).put("CREATETIME", d);
+					}
+				     lists.get(i).put("PNDlist",lpd);
+				}else{
+				     lists.get(i).put("PNDlist","");
+				}
+			}
+			return lists;
 		}
 	
 

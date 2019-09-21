@@ -200,6 +200,7 @@ public class InOutComeTypeController extends BaseController {
 			vpd.put("var4", varOList.get(i).getString("NOTE"));	//3
 			varList.add(vpd);
 		}
+		dataMap.put("title", "收入收出类型表");
 		dataMap.put("varList", varList);
 		ObjectExcelView erv = new ObjectExcelView();
 		mv = new ModelAndView(erv,dataMap);

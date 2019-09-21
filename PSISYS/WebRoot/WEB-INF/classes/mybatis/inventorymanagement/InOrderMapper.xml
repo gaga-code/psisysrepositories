@@ -313,6 +313,13 @@
 					 -->
 				)
 		</if>
+		<!-- 录单日期日期条件 -->
+		<if test="pd.lastStart!=null and pd.lastStart!=''">
+			and a.LDATE &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and a.LDATE &lt;= #{pd.lastEnd} 
+		</if>
 		<!-- 供应商ID -->
 		<if test="pd.SUPPLIER_ID != null and pd.SUPPLIER_ID != ''">
 			and  a.SUPPLIER_ID= #{pd.SUPPLIER_ID}
@@ -478,15 +485,15 @@
 	</update>
 	
 	<select id="datalistPageByOderSale" parameterType="page" resultType="pd">
-		select a.BILLCODE,d.GOODNAME,b.UNITPRICE_ID,b.PNUMBER,a.ALLAMOUNT,a.PAIDAMOUNT,a.LASTTIME,c.USERNAME,a.BILLTYPE,
+		select b.BILLCODE,d.GOODNAME,a.UNITPRICE_ID,a.PNUMBER,a.AMOUNT,a.LASTTIME,c.NAME,b.BILLTYPE,
 		e.SUPPLIERNAME as startplace , f.WHNAME as endplace
-		from psi_inorder as a 
-		left join  psi_inorder_body as b on  a.INORDER_ID=b.INORDER_ID
-		left join sys_user as c on a.USER_ID=c.USER_ID
-		left join  base_good as d on b.GOODCODE_ID=d.GOODCODE
-		left join base_supplier as e on a.SUPPLIER_ID=e.SUPPLIER_ID 
-		left join  base_warehouse as f on b.WAREHOUSE_ID=f.WAREHOUSE_ID
-		where a.PK_SOBOOKS=#{PK_SOBOOKS}
+		from psi_inorder_body as a 
+		left join  psi_inorder as b on  a.INORDER_ID=b.INORDER_ID
+		left join sys_user as c on b.USER_ID=c.USER_ID
+		left join  base_good as d on a.GOODCODE_ID=d.GOODCODE
+		left join base_supplier as e on b.SUPPLIER_ID=e.SUPPLIER_ID 
+		left join  base_warehouse as f on a.WAREHOUSE_ID=f.WAREHOUSE_ID
+		where a.PK_SOBOOKS=1
 		and ifnull(a.dr,0)=0
 		<if test="pd.keywords!=null and pd.keywords!='' ">
 			and d.GOODNAME like concat('%',#{pd.keywords},'%')
@@ -503,7 +510,7 @@
 			and b.WAREHOUSE_ID=#{pd.WAREHOUSE_ID}
 		</if>
 		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
-				and a.BILLTYPE = #{pd.BILLTYPE}
+				and b.BILLTYPE = #{pd.BILLTYPE}
 		</if>
 		order by a.LASTTIME desc
 	</select>
@@ -539,5 +546,127 @@
 		<if test="pd.BILLTYPE!=null and pd.BILLTYPE!=''">
 				and a.BILLTYPE = #{pd.BILLTYPE}
 		</if>
+		order by a.CREATETIME desc 
+ 	</select>
+	
+	<select id="listInOderByConditionExcel" parameterType="page" resultType="pd">
+		select a.INORDER_ID,a.BILLCODE , a.BILLTYPE,c.GOODNAME ,d.NAME , e.SUPPLIERNAME , f.WHNAME ,a.ALLAMOUNT,a.PAIDAMOUNT,a.UNPAIDAMOUNT,
+		b.PNUMBER,date_format(a.CREATETIME,'%Y-%m-%d %H-%i-%s') as  CREATETIME,b.UNITPRICE_ID,g.PAYMETHOD,h.PAYMETHODNAME
+		from 	
+		psi_inorder as a left JOIN psi_inorder_body as b on a.INORDER_ID=b.INORDER_ID
+		left join base_good as c on b.GOODCODE_ID=c.GOODCODE
+		left join  sys_user as d on a.USER_ID=d.USER_ID
+		left join base_supplier as e on  a.SUPPLIER_ID=e.SUPPLIER_ID
+		left join base_warehouse as f on b.WAREHOUSE_ID=f.WAREHOUSE_ID
+		left join psi_suppsetbill as g on a.SUPPSETBILL_ID=g.SUPPSETBILL_ID
+		left join base_paymethod as h on  h.PAYMETHOD_ID=g.PAYMETHOD
+		where a.PK_SOBOOKS=#{pd.PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		and a.BILLSTATUS=2
+		and a.INORDER_ID  in 
+	    <foreach collection="list" item="item" index="index"
+	            open="(" close=")" separator=",">
+	            ${item}
+	     </foreach>
+		order by a.CREATETIME desc 
+	</select>
+	
+	<select id="priceSum" parameterType="pd" resultType="pd">
+		select sum( ALLAMOUNT)  as ZPRICE
+		from psi_inorder  
+		where PK_SOBOOKS=#{PK_SOBOOKS}
+		and ifnull(dr,0)=0
+		and BILLSTATUS!=3
+		and BILLTYPE!=8
+		<if test="flag!=1">
+			<if test="lastStart!=null and lastStart!=''">
+				and LASTTIME &gt;= #{lastStart} 
+			</if>
+			<if test="lastEnd!=null and lastEnd!=''">
+				and LASTTIME &lt;= #{lastEnd} 
+			</if>
+		</if>
+		<if test="flag==1">
+			and date_format(CREATETIME,'%Y-%m-%d')= date_format(now(),'%Y-%m-%d')
+		</if>
+	</select>
+	
+	
+	<select id="listAllToExcel" parameterType="pd" resultType="pd">
+		select a.BILLCODE,a.SUPPLIERNO,b.SUPPLIERNAME,a.ALLAMOUNT,a.PAIDAMOUNT,a.UNPAIDAMOUNT,
+		a.BILLSTATUS,a.ISSETTLEMENTED,a.LDATE,c.NAME
+		from psi_inorder as a left join base_supplier as b on a.SUPPLIER_ID=b.SUPPLIER_ID
+		left join sys_user as c on c.USER_ID=a.USER_ID
+		where a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		<if test="flag!=1">
+			<if test="lastStart!=null and lastStart!=''">
+				and a.LASTTIME &gt;= #{lastStart} 
+			</if>
+			<if test="lastEnd!=null and lastEnd!=''">
+				and a.LASTTIME &lt;= #{lastEnd} 
+			</if>
+		</if>
+		<if test="flag==1">
+			and date_format(a.CREATETIME,'%Y-%m')= date_format(now(),'%Y-%m')
+		</if>
+		<if test="BILLTYPE!=null and BILLTYPE!=''">
+			and a.BILLTYPE=#{BILLTYPE}
+		</if>
+		order by a.CREATETIME desc
+	</select>
+	
+	<select id="listOrderSaleToExcel" parameterType="pd" resultType="pd">
+		(select b.BILLCODE,d.GOODNAME,a.UNITPRICE_ID,a.PNUMBER,a.AMOUNT,a.AMOUNT,date_format(b.LDATE,'%Y-%m-%d %H-%i-%s') as  LASTTIME ,
+		c.NAME,b.BILLTYPE,	e.SUPPLIERNAME as startplace , f.WHNAME as endplace
+			from psi_inorder_body as a 
+			left join  psi_inorder as b on  a.INORDER_ID=b.INORDER_ID
+			left join sys_user as c on b.USER_ID=c.USER_ID
+			left join  base_good as d on a.GOODCODE_ID=d.GOODCODE
+			left join base_supplier as e on b.SUPPLIER_ID=e.SUPPLIER_ID 
+			left join  base_warehouse as f on a.WAREHOUSE_ID=f.WAREHOUSE_ID
+			where a.PK_SOBOOKS=1
+				and ifnull(a.dr,0)=0
+				and b.BILLTYPE!=8
+				<if test="flag!=1">
+					<if test="lastStart!=null and lastStart!=''">
+						and a.LASTTIME &gt;= #{lastStart} 
+					</if>
+					<if test="lastEnd!=null and lastEnd!=''">
+						and a.LASTTIME &lt;= #{lastEnd} 
+					</if>
+				</if>
+				<if test="flag==1">
+					and date_format(a.CREATETIME,'%Y-%m')= date_format(now(),'%Y-%m')
+				</if>
+			)
+			
+			union 
+			
+		(	select b.BILLCODE,d.GOODNAME,a.UNITPRICE_ID,a.PNUMBER,a.AMOUNT,a.AMOUNT,date_format(b.LDATE,'%Y-%m-%d %H-%i-%s') as LASTTIME ,
+		c.NAME,b.BILLTYPE,	 f.WHNAME as startplace ,e.CUATOMERNAME as endplace 
+			from psi_salebillbody as a 
+			left join  psi_salebill as b on  a.SALEBILL_ID=b.SALEBILL_ID
+			left join sys_user as c on b.USER_ID=c.USER_ID
+			left join  base_good as d on a.GOODCODE_ID=d.GOODCODE
+			left join base_customer as e on b.CUSTOMER_ID=e.CUSTOMER_ID 
+			left join  base_warehouse as f on a.WAREHOUSE_ID=f.WAREHOUSE_ID
+			where a.PK_SOBOOKS=1
+				and ifnull(a.dr,0)=0
+				and b.BILLTYPE!=8
+				<if test="flag!=1">
+					<if test="lastStart!=null and lastStart!=''">
+						and a.LASTTIME &gt;= #{lastStart} 
+					</if>
+					<if test="lastEnd!=null and lastEnd!=''">
+						and a.LASTTIME &lt;= #{lastEnd} 
+					</if>
+				</if>
+				<if test="flag==1">
+					and date_format(a.CREATETIME,'%Y-%m')= date_format(now(),'%Y-%m')
+				</if>
+			) 
+			 order by LASTTIME desc
+			
 	</select>
 </mapper>

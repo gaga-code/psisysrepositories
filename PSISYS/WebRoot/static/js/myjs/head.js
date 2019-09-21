@@ -1,6 +1,13 @@
 var locat = (window.location+'').split('/'); 
 $(function(){if('main'== locat[3]){locat =  locat[0]+'//'+locat[2];}else{locat =  locat[0]+'//'+locat[2]+'/'+locat[3];};});
-
+//window.onload = function(){
+//	if('main'== locat[3]){
+//		locat =  locat[0]+'//'+locat[2];
+//	}else{
+//		locat =  locat[0]+'//'+locat[2]+'/'+locat[3];
+//	}
+//	getHeadMsg();	//初始页面最顶部信息
+//}
 var fmid = "fhindex";	//菜单点中状态
 var mid = "fhindex";	//菜单点中状态
 var fhsmsCount = 0;		//站内信总数

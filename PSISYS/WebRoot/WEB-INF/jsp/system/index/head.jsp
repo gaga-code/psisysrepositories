@@ -18,9 +18,13 @@
 				<!-- /section:basics/sidebar.mobile.toggle -->
 				<div class="navbar-header pull-left">
 					<!-- #section:basics/navbar.layout.brand -->
-					<a class="navbar-brand">
+					<a class="navbar-brand" style="position: absolute; left: 47%; top: 0;">
 						<small> <!-- <i class="fa fa-leaf"></i> --> ${pd.SYSNAME} </small>
 					</a>
+					
+					<div style="position: absolute; left: 0; top: 0px; background: rgba(255,255,255,0.5);width:189px; height: 45px; text-align: center;">
+					   <img src="static/login/images/kplogo.png" width="auto" height="45px" alt=""/>
+				   </div>
 
 					<!-- /section:basics/navbar.layout.brand -->
 
@@ -78,7 +82,8 @@
 						<!-- #section:basics/navbar.user_menu -->
 						<li class="light-blue">
 							<a data-toggle="dropdown"  class="dropdown-toggle" href="#">
-								<img class="nav-user-photo" src="static/ace/avatars/user.jpg" alt="Jason's Photo" id="userPhoto" />
+								<!-- <img class="nav-user-photo" src="static/ace/avatars/user.jpg" alt="Jason's Photo" id="userPhoto" /> -->
+								<span id="Name" style="display: inline-block; width: 40px; height: 40px; line-height: 40px; font-size: 20px; margin-top: 2px; background: rgba(0,0,0,0.5); border-radius: 50%;"></span>
 								<span class="user-info" id="user_info">
 								</span>
 								<i class="ace-icon fa fa-caret-down"></i>
@@ -91,9 +96,9 @@
 								<li>
 									<a onclick="editUserH();" style="cursor:pointer;"><i class="ace-icon fa fa-user"></i>修改资料</a><!-- editUserH()在 WebRoot\static\js\myjs\head.js中 -->
 								</li>
-								<li id="systemset">
-									<a onclick="editSys();" style="cursor:pointer;"><i class="ace-icon fa fa-cog"></i>系统设置</a><!-- editSys()在 WebRoot\static\js\myjs\head.js中 -->
-								</li>
+							<!-- 	<li id="systemset">
+									<a onclick="editSys();" style="cursor:pointer;"><i class="ace-icon fa fa-cog"></i>系统设置</a>editSys()在 WebRoot\static\js\myjs\head.js中
+								</li> -->
 								<li class="divider"></li>
 								<li>
 									<a href="logout"><i class="ace-icon fa fa-power-off"></i>退出登录</a>
@@ -108,3 +113,13 @@
 			</div><!-- /.navbar-container -->
 		</div>
 		<div id="fhsmsobj"><!-- 站内信声音消息提示 --></div>
+		<script>
+			window.onload = function(){
+				var str = document.getElementById('user_info').innerHTML;
+				var name = str.split("</small>")[1];
+				var zi = name.split("")[2];
+				document.getElementById('Name').innerHTML = zi;
+			}
+			
+			
+		</script>

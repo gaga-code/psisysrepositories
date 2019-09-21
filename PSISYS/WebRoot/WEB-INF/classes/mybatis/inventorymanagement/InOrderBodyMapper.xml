@@ -267,4 +267,61 @@
 		    and a.PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(a.dr,0)=0
 	</select>
+	
+	<select id="datalistPageDetail" parameterType="page" resultType="pd">
+		select b.BILLCODE,c.WHNAME,d.GOODCODE,d.GOODNAME,a.PNUMBER,a.UNITPRICE_ID,a.AMOUNT,d.BARCODE,
+		e.NAME,b.BILLTYPE,f.SUPPLIERNAME,b.BILLSTATUS,a.CREATETIME,b.ISSETTLEMENTED
+		from psi_inorder_body as a 
+		left join psi_inorder as b on a.INORDER_ID=b.INORDER_ID
+		left join base_warehouse as c on c.WAREHOUSE_ID=a.WAREHOUSE_ID
+		left join base_good as d on d.GOODCODE=a.GOODCODE_ID
+		left join sys_user as e on e.USER_ID=b.USER_ID
+		left join base_supplier as f on f.SUPPLIER_ID=b.SUPPLIER_ID
+		where  a.PK_SOBOOKS = #{pd.PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0
+			and b.BILLSTATUS!=3
+			and b.BILLTYPE!=8
+				<!-- 录单日期日期条件 -->
+			<if test="pd.lastStart!=null and pd.lastStart!=''">
+				and b.LDATE &gt;= #{pd.lastStart} 
+			</if>
+			<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+				and b.LDATE &lt;= #{pd.lastEnd} 
+			</if>
+			<if test="pd.keywords!=null and pd.keywords!=''">
+				and d.GOODNAME like concat('%',#{pd.keywords},'%')
+				or f.SUPPLIERNAME like concat('%',#{pd.keywords},'%')
+				or d.GOODCODE like concat('%',#{pd.keywords},'%')
+				or e.NAME  like concat('%',#{pd.keywords},'%')
+		 	   	or c.WHNAME  like concat('%',#{pd.keywords},'%')
+			</if>
+			order by a.CREATETIME desc
+	</select>
+	
+	<select id="excelDetail" parameterType="pd" resultType="pd">
+		select b.BILLCODE,c.WHNAME,d.GOODCODE,d.GOODNAME,a.PNUMBER,a.UNITPRICE_ID,a.AMOUNT,d.BARCODE,
+		e.NAME,b.BILLTYPE,f.SUPPLIERNAME,b.BILLSTATUS,date_format(b.CREATETIME,'%Y-%m-%d %H-%i-%s') as CREATETIME,b.ISSETTLEMENTED
+		from psi_inorder_body as a 
+		left join psi_inorder as b on a.INORDER_ID=b.INORDER_ID
+		left join base_warehouse as c on c.WAREHOUSE_ID=a.WAREHOUSE_ID
+		left join base_good as d on d.GOODCODE=a.GOODCODE_ID
+		left join sys_user as e on e.USER_ID=b.USER_ID
+		left join base_supplier as f on f.SUPPLIER_ID=b.SUPPLIER_ID
+		where  a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0
+			and b.BILLSTATUS!=3
+			and b.BILLTYPE!=8
+			<if test="flag!=1">
+				<if test="lastStart!=null and lastStart!=''">
+					and b.LDATE &gt;= #{astStart} 
+				</if>
+				<if test="lastEnd!=null and lastEnd!=''">
+					and b.LDATE &lt;= #{lastEnd} 
+				</if>
+			</if>
+			<if test="flag==1">
+					and date_format(a.CREATETIME,'%Y-%m')= date_format(now(),'%Y-%m')
+			</if>	
+			order by a.CREATETIME desc
+	</select>
 </mapper>

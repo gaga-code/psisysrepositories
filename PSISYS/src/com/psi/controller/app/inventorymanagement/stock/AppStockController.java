@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.psi.controller.base.BaseController;
 import com.psi.service.app.inventorymanagement.tock.AppStockManager;
+import com.psi.service.basedata.warehouse.WarehouseManager;
 import com.psi.util.Const;
 import com.psi.util.PageData;
 
@@ -23,6 +24,9 @@ public class AppStockController extends BaseController{
 	@Resource
 	private AppStockManager appStockService;
 	
+	@Resource(name="warehouseService")
+	private WarehouseManager warehouseService;
+	
 	@RequestMapping("/getStockById")//根据商品编号查询每个库的库存
 	public List<PageData> listStockById() throws Exception{
 		PageData pd=new PageData();
@@ -30,7 +34,17 @@ public class AppStockController extends BaseController{
 		List<PageData> list=appStockService.listStockById(pd);
 		return list;
 	}
-
+	
+	// 获取仓库列表
+	@RequestMapping("/listWarehouse")
+	@ResponseBody
+	public List<PageData> listWarehouse( HttpServletRequest request) throws Exception{
+		PageData pd = new PageData();
+		pd=this.getPageData();
+	   
+		List<PageData> lpd=warehouseService.listWarehouse(pd);
+		return lpd;
+	}
 	// 获取今日商品库存预警信息 预断货品数 
 	@RequestMapping("/getGoosWarningDown")
 	@ResponseBody

@@ -128,6 +128,19 @@ public interface InOrderManager{
 	public List<PageData> listInOderByCondition(Page page) throws Exception;
 
 	public List<PageData> printInOrder(PageData pd) throws Exception;
+
+	public PageData priceSum(PageData pd) throws Exception;
+
+	public List<PageData> listAllToExcel(PageData pd) throws Exception;
+
+
+	public List<PageData> listOrderSaleToExcel(PageData pd) throws Exception;
+
+	public List<PageData> listInOderByConditionExcel(Page page) throws Exception;
+
+	public List<PageData> listdetail(Page page) throws Exception;
+
+	public List<PageData> excelDetail(PageData pd) throws Exception;
 	
 }
 

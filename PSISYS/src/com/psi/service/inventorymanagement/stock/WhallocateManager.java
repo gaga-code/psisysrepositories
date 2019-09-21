@@ -122,6 +122,8 @@ public interface WhallocateManager{
 	 * @return
 	 */
 	public Integer getStock(PageData pd)throws Exception;
+
+	public List<PageData> listAllToExcel(PageData pd) throws Exception;
 	
 }
 

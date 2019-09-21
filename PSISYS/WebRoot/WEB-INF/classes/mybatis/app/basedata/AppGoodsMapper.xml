@@ -227,4 +227,34 @@
 		and PK_SOBOOKS=#{PK_SOBOOKS}
 		and IFNULL(dr,0)=0 
 	</update>
+
+	<select id="findByBarCode" parameterType="pd" resultType="pd">
+		select
+			a.GOODTYPE_ID,
+			a.GOODCODE,
+			a.GOODNAME,	
+			a.GOODPIC,
+			a.GOODSPECIF,
+			a.FZUNIT_ID,
+			a.SUBGZ_ID,
+			a.CPRICE,
+			a.BARCODE,
+			a.RPRICE,
+			a.CUNIT_ID,
+			a.STOCKNUM,
+			a.FZUNIT_ID,
+			a.UNITPROP,
+			a.PK_SOBOOKS,
+			b.TYPENAME,
+			c.NAME as CUNIT,
+			d.NAME as FZUNIT
+		from 
+		base_good as a left join base_goodtype as b
+		on a.GOODTYPE_ID =b.GOODTYPE_ID
+		left join cp_spunit as c on c.SPUNIT_ID=a.CUNIT_ID
+		left join cp_spunit as d on d.SPUNIT_ID=a.FZUNIT_ID
+		where BARCODE=#{BARCODE}
+			and a.PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(a.dr,0)=0 
+	</select>
 </mapper>

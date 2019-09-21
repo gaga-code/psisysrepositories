@@ -225,7 +225,7 @@ public class InOrderController extends BaseController {
 	 */
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"列表inorder");
+		logBefore(logger, Jurisdiction.getUsername()+"列表进货单");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
@@ -234,6 +234,16 @@ public class InOrderController extends BaseController {
 		if(null != keywords && !"".equals(keywords)){
 			pd.put("keywords", keywords.trim());
 		}
+		
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+		}
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+		} 
+		
 		pd.put("BILLTYPE", 1);
 		page.setPd(pd);
 		List<PageData> supplierList = supplierService.listAll(pd);	//列出supplier列表;
@@ -245,6 +255,48 @@ public class InOrderController extends BaseController {
 		mv.setViewName("inventorymanagement/inorder/inorder_list");
 		return mv;
 	}
+	
+	
+	
+	/**详情列表
+	 * @param page
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/listdetail")
+	public ModelAndView listdetail(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表进货详情单");
+		String menuUrl = "inorder/listdetail.do"; //菜单地址(权限用)
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+		
+		
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart);
+		}
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd);
+		} 
+		
+		pd.put("BILLTYPE", 1);
+		page.setPd(pd);
+		
+		List<PageData>	varList = inOrderService.listdetail(page);	//列出inorder列表
+		
+		mv.addObject("varList", varList);
+		mv.addObject("pd", pd);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		mv.setViewName("inventorymanagement/inorder/inorder_listdetail");
+		return mv;
+	}
+	
 	
 	/**进货单列表点击事件用到
 	 * 提供指定进货单的详情
@@ -473,36 +525,66 @@ public class InOrderController extends BaseController {
 		pd = this.getPageData();
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		List<String> titles = new ArrayList<String>();
-		titles.add("姓名");	//1
-		titles.add("年龄");	//2
-		titles.add("手机");	//3
-		titles.add("地址");	//4
-		titles.add("QQ");	//5
-		titles.add("微信");	//6
-		titles.add("建档时间");	//7
-		titles.add("消费金额");	//8
-		titles.add("级别");	//9
-		titles.add("备注1");	//10
-		titles.add("备注2");	//11
+		titles.add("单据编号");	//1
+		titles.add("供应商票号");	//2
+		titles.add("供应商");	//3
+		titles.add("总金额");	//4
+		titles.add("已付金额");	//5
+		titles.add("未付金额");	//6
+		titles.add("单据状态");	//7
+		titles.add("结算状态	");	//8
+		titles.add("日期");	//9
+		titles.add("经手人");	//10
 		dataMap.put("titles", titles);
-		pd.put("USERNAME", Jurisdiction.getUsername());
-		List<PageData> varOList = inOrderService.listAll(pd);
+		
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		int flag1=1;
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+			flag1=0;
+		}
+		int flag2=1;
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 23:59:59");
+			flag2=0;
+		} 
+		if(flag1==0&&flag2==0){
+			pd.put("flag", 1);
+		}
+		
+		pd.put("BILLTYPE", 1);
+		List<PageData> varOList = inOrderService.listAllToExcel(pd);
+		
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
-			vpd.put("var1", varOList.get(i).getString("NAME"));	    //1
-			vpd.put("var2", varOList.get(i).getString("AGE"));	    //2
-			vpd.put("var3", varOList.get(i).get("PHONE").toString());	//3
-			vpd.put("var4", varOList.get(i).getString("ADDRESS"));	    //4
-			vpd.put("var5", varOList.get(i).get("QQ").toString());	//5
-			vpd.put("var6", varOList.get(i).getString("WEIXIN"));	    //6
-			vpd.put("var7", varOList.get(i).getString("CTIME"));	    //7
-			vpd.put("var8", varOList.get(i).get("MONEY").toString());	//8
-			vpd.put("var9", varOList.get(i).getString("LEVEL"));	    //9
-			vpd.put("var10", varOList.get(i).getString("REMARKS1"));	    //10
-			vpd.put("var11", varOList.get(i).getString("REMARKS2"));	    //11
+			vpd.put("var1", varOList.get(i).getString("BILLCODE"));	    //1
+			vpd.put("var2", varOList.get(i).getString("SUPPLIERNO"));	    //2
+			vpd.put("var3", varOList.get(i).getString("SUPPLIERNAME"));	//3
+			vpd.put("var4", varOList.get(i).get("ALLAMOUNT").toString());	    //4
+			vpd.put("var5", varOList.get(i).get("PAIDAMOUNT").toString());	//5
+			vpd.put("var6", varOList.get(i).get("UNPAIDAMOUNT").toString());	    //6
+			String BILLSTATUS=varOList.get(i).getString("BILLSTATUS");
+			if(BILLSTATUS.equals("1")){
+				vpd.put("var7", "未审核");	    //7
+			}else if(BILLSTATUS.equals("2")){
+				vpd.put("var7", "已审核");	    //7
+			}else{
+				vpd.put("var7", "作废");	    //7
+			}
+			String ISSETTLEMENTED = varOList.get(i).getString("ISSETTLEMENTED");
+			if(ISSETTLEMENTED.equals("0")){
+				vpd.put("var8", "未结算" );	//8
+			}else if(ISSETTLEMENTED.equals("1")){
+				vpd.put("var8", "已结算");	//8
+			}
+			
+			vpd.put("var9", varOList.get(i).getString("LDATE"));	    //9
+			vpd.put("var10", varOList.get(i).getString("NAME"));	    //10
 			varList.add(vpd);
 		}
+		dataMap.put("title","进货单");
 		dataMap.put("varList", varList);
 		ObjectExcelView erv = new ObjectExcelView();
 		mv = new ModelAndView(erv,dataMap);
@@ -517,7 +599,7 @@ public class InOrderController extends BaseController {
 	
 	@RequestMapping(value="/listInOderSale")
 	public ModelAndView listInOderSale(Page page) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"出入库列表");
+		logBefore(logger, Jurisdiction.getUsername()+"库存买卖记录");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		PageData pd = new PageData();
 		pd= this.getPageData();
@@ -535,7 +617,7 @@ public class InOrderController extends BaseController {
 			pd.put("lastStart", lastLoginStart+" 00:00:00");
 		}
 		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
-			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+			pd.put("lastEnd", lastLoginEnd+" 23:59:59");
 		} 
 		pd.put("USERNAME", Jurisdiction.getUsername());
 		
@@ -566,4 +648,168 @@ public class InOrderController extends BaseController {
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
 	}
+	
+	 /**导出到excel
+		 * @param
+		 * @throws Exception
+		 */
+		@RequestMapping(value="/oderSaleExcel")
+		public ModelAndView oderSaleExcel() throws Exception{
+			logBefore(logger, Jurisdiction.getUsername()+"导出inorder到excel");
+			if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
+			ModelAndView mv = new ModelAndView();
+			PageData pd = new PageData();
+			pd = this.getPageData();
+			Map<String,Object> dataMap = new HashMap<String,Object>();
+			List<String> titles = new ArrayList<String>();
+			titles.add("单据编号");	//1
+			titles.add("单据类型");	//2
+			titles.add("商品名称	");	//3
+			titles.add("单价");	//4
+			titles.add("数量");	//5
+			titles.add("金额");	//6
+			titles.add("起点");	//9
+			titles.add("终点");	//10
+			titles.add("日期");	//9
+			titles.add("经手人");	//10
+			dataMap.put("titles", titles);
+			
+			String lastLoginStart = pd.getString("lastStart");	//开始时间
+			String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+			int flag1=1;
+			if(lastLoginStart != null && !"".equals(lastLoginStart)){
+				pd.put("lastStart", lastLoginStart+" 00:00:00");
+				flag1=0;
+			}
+			int flag2=1;
+			if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+				pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+				flag2=0;
+			} 
+			if(flag1==0&&flag2==0){
+				pd.put("flag", 1);
+			}
+			
+			pd.put("BILLTYPE", 1);
+			List<PageData> varOList = inOrderService.listOrderSaleToExcel(pd);
+			
+			List<PageData> varList = new ArrayList<PageData>();
+			for(int i=0;i<varOList.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", varOList.get(i).getString("BILLCODE"));	    //1
+				String BILLTYPE= varOList.get(i).getString("BILLTYPE");
+				if(BILLTYPE.equals("1")){
+					vpd.put("var2", "进货单");	    //2
+				}else if(BILLTYPE.equals("2")){
+					vpd.put("var2", "销售单");	    //2
+				}
+				vpd.put("var3", varOList.get(i).getString("GOODNAME"));	//3
+				vpd.put("var4", varOList.get(i).get("UNITPRICE_ID").toString());	    //4
+				vpd.put("var5", varOList.get(i).get("PNUMBER").toString());	//5
+				vpd.put("var6", String.valueOf(varOList.get(i).get("AMOUNT")));	    //6
+				vpd.put("var7", varOList.get(i).getString("startplace"));	    //9
+				vpd.put("var8", varOList.get(i).getString("endplace"));	    //10
+				vpd.put("var9", varOList.get(i).getString("LASTTIME"));	    //9
+				vpd.put("var10", varOList.get(i).getString("NAME"));	    //10
+				varList.add(vpd);
+			}
+			dataMap.put("title","买卖仓库单");
+			dataMap.put("varList", varList);
+			ObjectExcelView erv = new ObjectExcelView();
+			mv = new ModelAndView(erv,dataMap);
+			return mv;
+		}
+		
+		
+		
+		/**导出到excel
+		 * @param
+		 * @throws Exception
+		 */
+		@RequestMapping(value="/excelDetail")
+		public ModelAndView excelDetail() throws Exception{
+			String menuUrl = "inorder/listdetail.do"; //菜单地址(权限用)
+			logBefore(logger, Jurisdiction.getUsername()+"导出进货详细单到excel");
+			if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
+			ModelAndView mv = new ModelAndView();
+			PageData pd = new PageData();
+			pd = this.getPageData();
+			Map<String,Object> dataMap = new HashMap<String,Object>();
+			List<String> titles = new ArrayList<String>();
+			titles.add("单据编号");	//1
+			titles.add("单据类型");	//2
+			titles.add("审核状态");	//3
+			titles.add("商品编码");	//4
+			titles.add("商品条码");	//5
+			titles.add("商品名称");	//5
+			titles.add("数量");	//6
+			titles.add("单价");	//7
+			titles.add("金额");	//8
+			titles.add("结算状态");	//9
+			titles.add("仓库");	//10
+			titles.add("供应商");	//11
+			titles.add("经手人");	//12
+			titles.add("日期");	//13
+			
+			dataMap.put("titles", titles);
+			
+			String lastLoginStart = pd.getString("lastStart");	//开始时间
+			String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+			int flag1=1;
+			if(lastLoginStart != null && !"".equals(lastLoginStart)){
+				pd.put("lastStart", lastLoginStart+" 00:00:00");
+				flag1=0;
+			}
+			int flag2=1;
+			if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+				pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+				flag2=0;
+			} 
+			if(flag1==0&&flag2==0){
+				pd.put("flag", 1);
+			}
+		
+			List<PageData> varOList = inOrderService.excelDetail(pd);
+			
+			List<PageData> varList = new ArrayList<PageData>();
+			for(int i=0;i<varOList.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", varOList.get(i).getString("BILLCODE"));	    //1
+				
+				vpd.put("var2", "进货单");	    //2
+				String BILLSTATUS=varOList.get(i).getString("BILLSTATUS");
+				if(BILLSTATUS.equals("1")){
+					vpd.put("var3", "未审核");	//3
+				}else if(BILLSTATUS.equals("2")){
+					vpd.put("var3", "已审核");	//3
+				}
+				vpd.put("var4", varOList.get(i).getString("GOODCODE"));	//4
+				vpd.put("var5", varOList.get(i).getString("BARCODE"));	//5
+				vpd.put("var6", varOList.get(i).getString("GOODNAME"));	//6
+				vpd.put("var7", varOList.get(i).get("PNUMBER").toString());	//7
+				vpd.put("var8", varOList.get(i).get("UNITPRICE_ID").toString());	//8    
+				vpd.put("var9",  String.valueOf(varOList.get(i).get("AMOUNT")));	//9
+				
+				String ISSETTLEMENTED= varOList.get(i).getString("ISSETTLEMENTED");
+				if(ISSETTLEMENTED.equals("2")){
+					vpd.put("var10","结算中");	    //10
+				}else if(ISSETTLEMENTED.equals("1")){
+					vpd.put("var10","已结算");	    //10
+				}else if(ISSETTLEMENTED.equals("0")){
+					vpd.put("var10","未结算");	    //10
+				}
+				vpd.put("var11", varOList.get(i).getString("WHNAME"));	    //11
+				vpd.put("var12", varOList.get(i).getString("SUPPLIERNAME"));	    //12
+				vpd.put("var13", varOList.get(i).getString("NAME"));	    //113
+				vpd.put("var14", varOList.get(i).getString("CREATETIME"));	    //14
+				varList.add(vpd);
+			}
+			dataMap.put("title","进货详细单");
+			dataMap.put("varList", varList);
+			ObjectExcelView erv = new ObjectExcelView();
+			mv = new ModelAndView(erv,dataMap);
+			return mv;
+		}
+		
+		
 }

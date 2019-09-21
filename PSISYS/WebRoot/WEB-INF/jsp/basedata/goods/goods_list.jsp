@@ -86,7 +86,7 @@
 										<tr>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>
-												<a href="<%=basePath%>uploadFiles/uploadImgs/${var.GOODPIC}" title="${var.TITLE}" class="bwGal"><img src="<%=basePath%>uploadFiles/uploadImgs/${var.GOODPIC}"  width="80" height="40"></a>
+												<img src="<%=basePath%>uploadFiles/uploadImgs/${var.GOODPIC}"  onclick="javascript:window.open(this.src)" style="cursor:hand" width="80" height="40">
 											</td>
 
 											<td class='center'>
@@ -103,7 +103,7 @@
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
-													<a class="btn btn-xs btn-info" title="查看商品信息" onclick="viewSale('${var.GOOD_ID}');">
+													<a class="btn btn-xs btn-info" title="销售情况" onclick="viewSale('${var.GOOD_ID}');">
 														销售情况
 													</a>
 													<a class="btn btn-xs btn-info" title="查看商品信息" onclick="view('${var.GOOD_ID}');">
@@ -407,7 +407,7 @@
 		}
 		
 		
-		//查看商品信息
+		//查看商品销售信息
 		function viewSale(Id){
 			 top.jzts();
 			 var diag = new top.Dialog();

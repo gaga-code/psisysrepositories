@@ -82,6 +82,11 @@ public interface SuppsetbillManager{
 
 
 	public List<PageData> listByCondition(PageData pd) throws Exception;
+
+	public List<PageData> listAllToExcel(PageData pd) throws Exception;
+
+	public List<PageData> listByConditionExcel(PageData pd) throws Exception;
+
 	
 	
 	

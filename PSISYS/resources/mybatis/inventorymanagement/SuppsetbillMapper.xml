@@ -302,4 +302,40 @@
 			and c.NAME like concat('%',#{keywords},'%')
 		</if>
 	</select>
+	
+	<select id="listByConditionExcel" parameterType="pd" resultType="pd">
+		select  a.BILLCODE ,a.INORDER_IDS,b.PAYMETHODNAME, a.BILLNO,c.NAME
+		from psi_suppsetbill as a left join base_paymethod as b on a.PAYMETHOD=b.PAYMETHOD_ID
+		left join sys_user as c on a.USER_ID=c.USER_ID
+		where  a.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(a.DR,0)=0 
+		and a.BILLSTATUS=2
+		<if test="lastStart!=null and lastStart!='' ">
+				<if test="lastEnd!=null and lastEnd!='' ">
+				 and Date(a.LASTTIME) BETWEEN #{lastStart} and #{lastEnd}
+				</if>
+			</if>
+		<if test="flag==1">
+			and date_format(a.CREATETIME,'%Y-%m')= date_format(now(),'%Y-%m')
+		</if>
+	</select>
+	
+	<select id="listAllToExcel" parameterType="pd" resultType="pd">
+		select a.BILLCODE,b.SUPPLIERNAME,d.PAYMETHODNAME,a.PAYABLEALLAM,a.PAYMENTAMOUNT,a.PAYABLEAMOUNT,
+		a.INVOICETYPE,a.BILLNO,a.NOTE,a.LDATE,c.NAME,a.BILLSTATUS
+		from psi_suppsetbill as a left join base_supplier as b on a.FROMUNIT=b.SUPPLIER_ID
+		left join sys_user as c on c.USER_ID=a.USER_ID
+		left join base_paymethod as d on d.PAYMETHOD_ID=a.PAYMETHOD
+		where a.PK_SOBOOKS=#{PK_SOBOOKS}
+		and ifnull(a.dr,0)=0
+		order by a.CREATETIME desc
+		<if test="lastStart!=null and lastStart!='' ">
+			<if test="lastEnd!=null and lastEnd!='' ">
+			 and Date(a.LASTTIME) BETWEEN #{lastStart} and #{lastEnd}
+			</if>
+		</if>
+		<if test="flag==1">
+			and date_format(a.CREATETIME,'%Y-%m')= date_format(now(),'%Y-%m')
+		</if>
+	</select>
 </mapper>

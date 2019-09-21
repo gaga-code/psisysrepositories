@@ -185,26 +185,33 @@ public class WarehouseController extends BaseController {
 	 */
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"导出goods到excel");
+		logBefore(logger, Jurisdiction.getUsername()+"导出仓库表到excel");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		List<String> titles = new ArrayList<String>();
-		titles.add("名称");	//1
-		titles.add("权限标识");	//2
-		titles.add("备注");	//3
+		titles.add("仓库/货位编号");	//1
+		titles.add("仓库/货位名称");	//2
+		titles.add("拼音编码");	//3
+		titles.add("位置");	//3
+		titles.add("经手人");	//3
+		titles.add("说明");	//3
 		dataMap.put("titles", titles);
 		List<PageData> varOList = warehouseService.listAll(pd);
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
-			vpd.put("var1", varOList.get(i).getString("NAME"));	//1
-			vpd.put("var2", varOList.get(i).getString("QX_NAME"));	//2
-			vpd.put("var3", varOList.get(i).getString("BZ"));	//3
+			vpd.put("var1", varOList.get(i).getString("WAREHOUSECODE"));	//1
+			vpd.put("var2", varOList.get(i).getString("WHNAME"));	//2
+			vpd.put("var3", varOList.get(i).getString("YICODE"));	//3
+			vpd.put("var4", varOList.get(i).getString("POSITION"));	//4
+			vpd.put("var5", varOList.get(i).getString("PSI_NAME"));	//5
+			vpd.put("var6", varOList.get(i).getString("NOTE"));	//6
 			varList.add(vpd);
 		}
+		dataMap.put("title", "仓库表");
 		dataMap.put("varList", varList);
 		ObjectExcelView erv = new ObjectExcelView();
 		mv = new ModelAndView(erv,dataMap);

@@ -453,6 +453,12 @@ public class WhallocateService implements WhallocateManager{
 		Integer num = (Integer) result.get("STOCK");
 		return num;
 	}
+
+	@Override
+	public List<PageData> listAllToExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData> )dao.findForList("WhallocateMapper.listAllToExcel", pd);
+	}
 	
 }
 

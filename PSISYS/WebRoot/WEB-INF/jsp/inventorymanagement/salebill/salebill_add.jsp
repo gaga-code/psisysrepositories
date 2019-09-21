@@ -39,6 +39,9 @@
 									<a class="btn btn-mini btn-primary" id='save' onclick="save();">保存</a>
 									<a class="btn btn-mini btn-primary" onclick="shenpi();">审批</a>
 									<a class="btn btn-mini btn-danger" onclick="returnList();">返回</a>
+								</td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<td style="text-align: center;">
+									<a class="btn btn-mini btn-primary" id='viewSaleInfo' onclick="viewSaleInfo();">客户购买详情</a>
 								</td>
 							</tr>
 						<table id="table_report" class="table table-striped table-bordered table-hover">
@@ -71,19 +74,20 @@
 <%-- 								<td><input type="text" name="WAREHOUSE_ID" id="WAREHOUSE_ID" value="${pd.WAREHOUSE_ID}" maxlength="1000" placeholder="这里输入备注"   style="width:98%;"/></td> --%>
 								<td style="width:75px;text-align: right;padding-top: 13px;">客户:</td>
 								<td id="CUSTOMER_select">
-									<select class="chosen-select form-control" name="CUSTOMER_ID" id="CUSTOMER_ID"  style="vertical-align:top;width:98%;" >
+									<select class="chosen-select form-control" name="CUSTOMER_ID" id="CUSTOMER_ID" onchange="checkcustomer(this.value)" style="vertical-align:top;width:98%;" >
 										<option value="">无</option>
 										<c:forEach items="${customerList}" var="var">
 											<option value="${var.CUSTOMER_ID }" <c:if test="${var.CUSTOMER_ID == pd.CUSTOMER_ID }">selected</c:if>>${var.CUATOMERNAME }</option>
 										</c:forEach>
 									</select>
 								</td> 
-								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
-								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000"   style="width:98%;"/></td>
+								
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;padding-left: 0px;padding-right: 0px;">送货地址:</td>
 								<td><input type="text" name="TOADDRESS" id="TOADDRESS"  maxlength="1000" style="width:98%;" /></td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
+								<td><input type="text" name="NOTE" id="NOTE" value="${pd.NOTE}" maxlength="1000"   style="width:98%;"/></td>
 							</tr>
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<%-- <tr>
@@ -106,6 +110,8 @@
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
 									<th class="center">金额</th>
+									<th class="center">规格</th>
+									<th class="center">型号</th>
 									<th class="center">赠送</th>
 									<th class="center">备注</th>
 									<th class="center">操作</th>
@@ -165,6 +171,7 @@
 	    var secondCell = "";
 	    var thirdCell = "";
 	    var fourthCell = "";
+	    var price = new Array();
 	    var stockgoodsnummap = new Map();//key为GOOD_ID+","+wh_id value为库存数量
 	    var shuliangmap = new Map();
 // 	    $(function() {
@@ -189,8 +196,9 @@
 		            }
 		        }
 		}
-		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,WAREHOUSE_ID_NAME_STOCK) {
+		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODSPECIF,GOODTYPECODE,WAREHOUSE_ID_NAME_STOCK) {
 			var Str = WAREHOUSE_ID_NAME_STOCK.split('#');
+			price.push(RPRICE);
 			var selecthtml = "";
 	        if (Str[0] != "") {
 	        	for (var i = 0; i < Str.length - 1; i++) {
@@ -212,10 +220,12 @@
 	                      +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" id="select_wh" >'
 						  +	selecthtml
 						  +'</select></td>'
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+RPRICE+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");'/></td>"
-	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' id='price' style='width:80px' onchange='calculateTheTotalAmount();' value='"+RPRICE+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:80px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:80px' readonly='readonly' value='"+UNITNAME+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:80px' readonly='readonly'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODSPECIF+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:80px' readonly='readonly' value='"+GOODTYPECODE+"'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
@@ -229,7 +239,7 @@
 	         //为新添加的行里面的控件添加新的id属性。
 	         //每插入一行，flag自增一次
 	         flag++;
-			
+		
 		}
 		function changewh(flag,rowId){
 			$("#"+rowId+" #goodsnum"+flag).val(0);
@@ -239,10 +249,8 @@
 		function checkstocknum(goodsnumID, GOOD_ID,rowId){
 			var WAREHOUSE_ID = $("#"+rowId+" #select_wh").val();
 			var stockNum = stockgoodsnummap.get(GOOD_ID+","+WAREHOUSE_ID);//查出库存数量
-			if(stockNum >= $("#"+goodsnumID).val() && $("#"+goodsnumID).val() >=0){
-				calculateTheTotalAmount();
-				return ;
-			}else{
+
+			if($("#"+goodsnumID).val() >stockNum){
 				$("#"+goodsnumID).tips({
 					side:3,
 		            msg:'当前库存为' + stockNum,
@@ -251,7 +259,20 @@
 		        });
 				$("#"+goodsnumID).val(stockNum);
 				$("#"+goodsnumID).focus();
+			}else if($("#"+goodsnumID).val() <=0){
+				$("#"+goodsnumID).tips({
+					side:3,
+		            msg:'数量必须大于0',
+		            bg:'#AE81FF',
+		            time:5
+		        })
+		    	$("#"+goodsnumID).val('1');
+				$("#"+goodsnumID).focus();
+			}else{
+				calculateTheTotalAmount();
+				return ;
 			}
+			
 			<%-- console.log("test");
 			$.ajax({
 				type: "POST",
@@ -308,12 +329,14 @@
 	    	$("#simple-table tr").each(function(i) {
 	            if (i >= 1) {
 	                $(this).children().each(function(j) {
-	                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
-	                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
-	                        if ($(this).children().length > 1) {
-	                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
-	                        }
-	                    }
+	                	if(j<7||j>8){
+		                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+		                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+		                        if ($(this).children().length > 1) {
+		                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+		                        }
+		                    }
+	                	}
 	                });
 	                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
 	            }
@@ -364,12 +387,14 @@
 	    	$("#simple-table tr").each(function(i) {
 	            if (i >= 1) {
 	                $(this).children().each(function(j) {
-	                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
-	                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
-	                        if ($(this).children().length > 1) {
-	                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
-	                        }
-	                    }
+	                	if(j<7||j>8){
+		                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+		                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+		                        if ($(this).children().length > 1) {
+		                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+		                        }
+		                    }
+	                	}
 	                });
 	                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
 	            }
@@ -417,7 +442,33 @@
 			 };
 			 diag.show();
 	  	}
-	  
+	  	
+	  	
+	  	function viewSaleInfo(){
+	  		if($("#CUSTOMER_ID").val()==""){
+				$("#CUSTOMER_select").tips({
+					side:3,
+		            msg:'请先选择客户',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				return false;
+			}
+	  		var CUSTOMER_ID=$("#CUSTOMER_ID").val();
+	  		 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="客户购买详情";
+			 diag.URL = '<%=basePath%>salebill/viewSaleInfo.do?CUSTOMER_ID='+CUSTOMER_ID;
+			 diag.Width = 1000;
+			 diag.Height = 500;
+			 diag.CancelEvent = function(){ //关闭事件
+			
+				diag.close();
+			 };
+			 diag.show();
+	  	}
+	  	
 		function addgoods(){
 			
 			//如果没有选择仓库，不能选择商品
@@ -451,6 +502,8 @@
 				    var UNITNAME=localStorage.getItem("UNITNAME");
 				    var GOODCODE=localStorage.getItem("GOODCODE");
 				    var RPRICE=localStorage.getItem("RPRICE");
+				    var GOODSPECIF=localStorage.getItem("GOODSPECIF");
+				    var GOODTYPECODE=localStorage.getItem("GOODTYPECODE");
 				    var WAREHOUSE_ID_NAME_STOCK=localStorage.getItem("WAREHOUSE_ID_NAME_STOCK");
 				    window.localStorage.removeItem("GOOD_ID");
 				    window.localStorage.removeItem("GOODNAME");
@@ -458,10 +511,12 @@
 				    window.localStorage.removeItem("UNITNAME");
 				    window.localStorage.removeItem("GOODCODE");
 				    window.localStorage.removeItem("RPRICE");
+				    window.localStorage.removeItem("GOODSPECIF");
+				    window.localStorage.removeItem("GOODTYPECODE");
 				    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
 				    if( GOOD_ID != null){
 				    	parseStr(GOODCODE,WAREHOUSE_ID_NAME_STOCK);
-				    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,WAREHOUSE_ID_NAME_STOCK);
+				    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODSPECIF,GOODTYPECODE,WAREHOUSE_ID_NAME_STOCK);
 				    }
 				}else{
 					var s1 = str.split("?");
@@ -471,7 +526,7 @@
 						var s4=s3[0].split(",");
 					    if( s4[0] != null){
 						  	parseStr(s4[0],s3[1]);
-						   	insertNewRow(s4[0],s4[1],s4[2],s4[3],s4[4],s4[5],s3[1]);
+						   	insertNewRow(s4[0],s4[1],s4[2],s4[3],s4[4],s4[5],s4[7],s4[6],s3[1]);
 						 }
 					}
 					  window.localStorage.removeItem("str");
@@ -487,12 +542,14 @@
 		    	$("#simple-table tr").each(function(i) {
 		            if (i >= 1) {
 		                $(this).children().each(function(j) {
-		                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
-		                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
-		                        if ($(this).children().length > 1) {
-		                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
-		                        }
-		                    }
+		                	if(j<7||j>8){
+			                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+			                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+			                        if ($(this).children().length > 1) {
+			                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+			                        }
+			                    }
+		                	}
 		                });
 		                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
 		            }
@@ -509,9 +566,28 @@
 		                	alert("商品的单价和数量不能为空！");
 		                	return '0';
 		                }
+		                if(shuliang<=0){
+		                	$("#goodsnum").tips({
+								side:3,
+					            msg:'商品的数量必须大于0',
+					            bg:'#AE81FF',
+					            time:5
+					        });
+							 return '0';
+		                }
+		                if(danjia<=price[i]){
+		                	$("#price").tips({
+								side:3,
+					            msg:'商品的单价必须大于'+price[i]+"元",
+					            bg:'#AE81FF',
+					            time:5
+					        });
+							 return '0';
+		                }
 		            }
 		        }
 		  }
+		
 		//检查客户是否超期
 		function checkcustomer(CUSTOMER_ID){
 			$.ajax({
@@ -519,23 +595,42 @@
 				url: '<%=basePath%>salebill/checkcustomer.do?tm='+new Date().getTime(),
 		    	data: {"CUSTOMER_ID":CUSTOMER_ID},
 				dataType:'json',
-				cache: false,
-				async:false,
 				success: function(data){
-					if(data.msg == "success"){//存在商品
-						if(data.result){
-							$("#save").tips({
+					 if(data.msg=='OK'){
+						$("#CUSTOMER_select").tips({
+							side:3,
+				            msg:'当前客户的信誉度为' + data.CREDITDEGREE+"账期为"+data.FREETIME+",超期未付金额为"+data.unpaidallam+"。",
+				            bg:'#AE81FF',
+				            time:5
+				        });
+						 return false;
+					 }else{
+						 $("#CUSTOMER_select").tips({
 								side:3,
-					            msg:'当前客户的信誉度为' + data.CREDITDEGREE+",超期未付金额为"+data.unpaidallam+",请慎重开单",
+								  msg:'当前客户的信誉度为' + data.CREDITDEGREE+"账期为"+data.FREETIME,
 					            bg:'#AE81FF',
 					            time:5
 					        });
-						}
-						return true;
-					}else {
-						return false;
-					}
-				}
+					 }
+				},
+			    error: function (jqXHR, textStatus, errorThrown) {
+			    	 if(jqXHR.msg=='OK'){
+							$("#CUSTOMER_select").tips({
+								side:3,
+						       msg:'当前客户的信誉度为' + data.CREDITDEGREE+"账期为"+data.FREETIME+",超期未付金额为"+data.unpaidallam+"。",
+					            bg:'#AE81FF',
+					            time:5
+					        });
+							 return false;
+						 }else{
+							 $("#CUSTOMER_select").tips({
+									side:3,
+								    msg:'当前客户的信誉度为' + data.CREDITDEGREE+"账期为"+data.FREETIME,
+						            bg:'#AE81FF',
+						            time:5
+						        });
+					    }
+		          }
 			});
 		}
 		
@@ -550,6 +645,7 @@
 		        });
 			return false;
 			}
+		
 			if($("#PAYDATE").val()==""){
 				$('#PAYDATE').val(formatDate(new Date()));
 			}
@@ -585,9 +681,34 @@
     			return false;
             	}
 			});
-			$("#Form").submit();
+			
+			var CUSTOMER_ID=$("#CUSTOMER_ID").val();
+			var bool=1;
+			var myajax = $.ajax({
+				type: "POST",
+				url: '<%=basePath%>salebill/chaoqi.do?tm='+new Date().getTime(),
+		    	data: {"CUSTOMER_ID":CUSTOMER_ID},
+				dataType:'json',
+				async:false,
+				success: function(data){
+					 if(data.msg=='NO'){
+						 alert("当前客户有超过30天未结算的销售单！请先结算后再下单！");
+						 bool=2;
+					 }
+				},
+			    error: function (jqXHR, textStatus, errorThrown) {
+			    	 if(jqXHR.msg=='NO'){
+						 alert("当前客户有超过30天未结算的销售单！请先结算后再下单！");
+						 bool=2;
+					 }
+			    }
+			});
+			if(bool==2){
+				return false;
+			}
+		 	$("#Form").submit();
 			$("#zhongxin").hide();
-			$("#zhongxin2").show();
+			$("#zhongxin2").show(); 
 			
 		}
 		function returnList(){

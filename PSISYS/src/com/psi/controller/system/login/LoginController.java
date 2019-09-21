@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,8 @@ import com.psi.service.basedata.customer.CustomerManager;
 import com.psi.service.basedata.goods.GoodsManager;
 import com.psi.service.erp.intoku.IntoKuManager;
 import com.psi.service.erp.outku.OutKuManager;
+import com.psi.service.inventorymanagement.inorder.InOrderManager;
+import com.psi.service.inventorymanagement.salebill.SalebillManager;
 import com.psi.service.system.buttonrights.ButtonrightsManager;
 import com.psi.service.system.fhbutton.FhbuttonManager;
 import com.psi.service.system.fhlog.FHlogManager;
@@ -53,6 +56,9 @@ import com.psi.util.Tools;
 @Controller
 public class LoginController extends BaseController {
 
+	@Resource(name="salebillService")
+	private SalebillManager salebillService;
+	
 	@Resource(name="userService")
 	private UserManager userService;
 	@Resource(name="menuService")
@@ -67,6 +73,10 @@ public class LoginController extends BaseController {
 	private FHlogManager FHLOG;
 	@Resource(name="loginimgService")
 	private LogInImgManager loginimgService;
+	
+	@Resource(name="inOrderService")
+	private InOrderManager inOrderService;
+	
 	@Resource(name="customerService")
 	private CustomerManager customerService;
 	@Resource(name="intokuService")
@@ -88,11 +98,20 @@ public class LoginController extends BaseController {
 		pd = this.getPageData();
 		
 		//获取账套列表
-		pd.put("varList", getAccountSetList(pd));
-		
+		List<PageData> varList=getAccountSetList(pd);
+		LinkedHashMap<String,List<String>> map  = new LinkedHashMap();
+		if(varList!=null){
+			for(int i=0;i<varList.size();i++){
+				pd.put("accountset", varList.get(i).getString("SOBOOKS_ID"));
+				List<String> list=userService.listUserName(pd);
+				map.put("key"+i,list);
+			}
+		}
+		pd.put("varList", varList);
 		pd = this.setLoginPd(pd);	//设置登录页面的配置参数
 		mv.setViewName("system/index/login");
 		mv.addObject("pd",pd);
+		mv.addObject("map",map);
 		return mv;
 	}
 	
@@ -386,32 +405,63 @@ public class LoginController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		int flag1=1;
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+			flag1=0;
+		}
+		int flag2=1;
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 23:59:59");
+			flag2=0;
+		} 
+		if(flag1==1||flag2==1){
+			pd.put("flag", 1);
+		}
+		
 		String USERNAME = pd.getString("USERNAME");
 		USERNAME = Tools.notEmpty(USERNAME)?USERNAME:Jurisdiction.getUsername();
 		pd.put("USERNAME", USERNAME);
 		pd.put("userCount", customerService.listAll(pd).size());		//客户总数
-		PageData jinepd = intokuService.priceSum(pd);
+		PageData jinepd = inOrderService.priceSum(pd);
 		String injine = "0";
 		if(null != jinepd){
 			injine = jinepd.get("ZPRICE").toString();
 		}
 		pd.put("injine",injine);						//总进货金额
-		PageData outjinepd = outkuService.priceSum(pd);
+		
+		
+		PageData outjinepd = salebillService.priceSum(pd);
 		String outjine = "0";
 		if(null != outjinepd){
 			outjine = outjinepd.get("ZPRICE").toString();
 		}
 		pd.put("outjine",outjine);						//总销售金额
+		
+		
 		pd.put("days", 30);
 		pd.put("newUuserCount", customerService.listAll(pd).size());	//30天内新增客户数
+		
+		
 		PageData outjinepd30 = outkuService.priceSum(pd);
 		String outjine30 = "0";
 		if(null != outjinepd30){
 			outjine30 = outjinepd30.get("ZPRICE").toString();
 		}
 		pd.put("outjine30",outjine30);						//30天总销售金额
+		
+		PageData lirun = new PageData();
+		lirun=salebillService.liruSum(pd);
+		
 		DecimalFormat df = new DecimalFormat("#0.00");  
-		pd.put("lirun", df.format(Double.parseDouble(outjine)-Double.parseDouble(injine))); //总销售利润
+		String total="0";
+		if(lirun!=null){
+			total = lirun.get("lirun").toString();
+		}
+		pd.put("lirun",total); //总销售利润
 		mv.addObject("pd",pd);
 		PageData ympd = new PageData();
 		ympd.put("USERNAME", USERNAME);
@@ -454,7 +504,7 @@ public class LoginController extends BaseController {
 		str1 += "</graph>";
 		str2 = str2 + pstr;
 		str2 += "</graph>";
-		
+	
 		mv.addObject("str1",str1);
 		mv.addObject("str2",str2);
 		mv.setViewName("system/index/default");

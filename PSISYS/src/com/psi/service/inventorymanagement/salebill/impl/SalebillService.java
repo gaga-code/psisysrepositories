@@ -628,6 +628,71 @@ public class SalebillService implements SalebillManager{
 		return (List<PageData>)dao.findForList("SalebillMapper.datalistPageByGoodCode", page);
 	}
 
+
+	@Override
+	public PageData priceSum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (PageData)dao.findForObject("SalebillMapper.priceSum", pd);
+	}
+
+
+	@Override
+	public PageData liruSum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (PageData)dao.findForObject("SalebillBodyMapper.liruSum", pd);
+	}
+
+
+	@Override
+	public List<PageData> listSaleInfoByCustomerId(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return  (List<PageData>)dao.findForList("SalebillMapper.datalistPageByCustomerId", page);
+	}
+
+
+	@Override
+	public PageData findCreByCustomerId(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (PageData)dao.findForObject("SalebillMapper.findCreByCustomerId", pd);
+	}
+
+
+	@Override
+	public List<PageData> listAllToExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return  (List<PageData>)dao.findForList("SalebillMapper.listAllToExcel", pd);
+	}
+
+
+	@Override
+	public List<PageData> listSalebillByConditionExcel(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("SalebillMapper.listSalebillByConditionExcel", page);
+	}
+
+
+	@Override
+	public List<PageData> listdetail(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("SalebillBodyMapper.datalistPageDetail", page);
+	}
+
+
+	@Override
+	public List<PageData> excelDetail(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("SalebillBodyMapper.excelDetail", pd);
+	}
+
+
+	@Override
+	public PageData findChaoqiById(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (PageData)dao.findForObject("SalebillMapper.findChaoqiById", pd);
+	}
+
+
+
 	
 }
 

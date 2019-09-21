@@ -91,6 +91,12 @@ public class WarehouseService implements WarehouseManager{
 		// TODO Auto-generated method stub
 		return (String)dao.findForObject("WarehouseMapper.findByName", pd);
 	}
+
+	@Override
+	public List<PageData> listWarehouse(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("WarehouseMapper.listWarehouse", pd);
+	}
 	
 
 }

@@ -37,10 +37,10 @@
 						<table style="margin-top:5px;">
 							<tr>
 								<td style="vertical-align:top;padding-left:2px;">
-									<c:if test="${QX.CUSTOMERSETBILLSET == 1 }">
-										<a class="btn btn-mini btn-success" onclick="settleAll('确定要结算选中的数据吗?');" title="批量结算" >批量结算</a>
+									
+									<a class="btn btn-mini btn-success" onclick="settleAll('确定要结算选中的数据吗?');" title="批量结算" >批量结算</a>
 								
-									</c:if>
+									
 									<c:if test="${QX.add == 1 && msg == 'save' }">
 									<a class="btn btn-mini btn-success" onclick="savecustomersetbill();">保存客户结算单</a>
 									</c:if>
@@ -78,7 +78,8 @@
 								<td style="width:90px;text-align: right;padding-top: 1px;">经手人:</td>
 								<td><input type="text" name="PSI_NAME" id="PSI_NAME" value="${pd.PSI_NAME }" maxlength="32" placeholder="这里输入经手人" title="经手人" style="width:98%;" readonly="readonly" /></td>
 								<input type="hidden" id="FROMUNIT" name="FROMUNIT" value="${pd.FROMUNIT}"   /> 
-								
+								<td style="width:90px;text-align: right;padding-top: 1px;">时间:</td> 
+								<td><input type="text" name="date" id="date" maxlength="32"  style="width:98%;" /></td>
 							</tr>
 							<tr>
 								<td style="width:90px;text-align: right;padding-top: 1px;">经销方式:</td>
@@ -186,10 +187,34 @@
         var msg = "";
 		$(top.hangge());//关闭加载状态
 		//检索
+	
 		function tosearch(){
 			top.jzts();
 			$("#Form").submit();
 		}
+		
+		function dateFormat(fmt, date) {
+		    let ret;
+		    let opt = {
+		        "Y+": date.getFullYear().toString(),        // 年
+		        "m+": (date.getMonth() + 1).toString(),     // 月
+		        "d+": date.getDate().toString(),            // 日
+		        "H+": date.getHours().toString(),           // 时
+		        "M+": date.getMinutes().toString(),         // 分
+		        "S+": date.getSeconds().toString()          // 秒
+		        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+		    };
+		    for (let k in opt) {
+		        ret = new RegExp("(" + k + ")").exec(fmt);
+		        if (ret) {
+		            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+		        };
+		    };
+		    return fmt;
+		}
+		
+		var date=dateFormat("YYYY-mm-dd HH:MM", new Date())
+		$("#date").val(date);
 		$(window).on('load', function () {
 			var sid = $("#FROMUNIT").val();
 			var payid = $("#PAYMETHOD").val();
@@ -318,8 +343,8 @@
 				            		if(res.QX.SUPPSETBILLSET == 1 ){
 					            		html += "	<div class='hidden-sm hidden-xs btn-group'> ";
 										html += "		<a class='btn btn-xs btn-success' title='结算' id='settleOnsalebill' onclick=\"settleone('"+res.varList[i].SALEBILL_ID+"','"+res.varList[i].BILLTYPE+"');\"> ";
-										html += "			<i class='ace-icon fa fa-eye bigger-120' title='结算'></i> ";
-										html += "		</a> ";
+											
+										html += "	结算	</a> ";
 				            		}
 									if(res.QX.del == 1){
 										html += "		<a class='btn btn-xs btn-danger' id='delsalebill' onclick=\"del('"+res.varList[i].SALEBILL_ID+"','"+res.varList[i].BILLTYPE+"');\" > ";
@@ -337,10 +362,8 @@
 									if(res.QX.SUPPSETBILLSET == 1){
 										html += "				<li> ";
 										html += "					<a style='cursor:pointer;' id='settleOnsalebill' onclick=\"settleone('"+res.varList[i].SALEBILL_ID+"','"+res.varList[i].BILLTYPE+"');\" class='tooltip-success' data-rel='tooltip' title='结算'> ";
-										html += "						<span class='green'> ";
-										html += "							<i class='ace-icon fa fa-eye bigger-120'></i> ";
-										html += "						</span> ";
-										html += "					</a> ";
+									
+										html += "			结算		</a> ";
 										html += "				</li> ";
 									}
 									if(res.QX.del == 1){

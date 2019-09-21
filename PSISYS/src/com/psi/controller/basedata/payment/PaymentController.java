@@ -242,11 +242,13 @@ public class PaymentController extends BaseController {
 			vpd.put("var3", varOList.get(i).getString("NOTE"));	//3
 			varList.add(vpd);
 		}
+		dataMap.put("title", "支付方式表");
 		dataMap.put("varList", varList);
 		ObjectExcelView erv = new ObjectExcelView();
 		mv = new ModelAndView(erv,dataMap);
 		return mv;
 	}
+	
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder){
@@ -277,7 +279,7 @@ public class PaymentController extends BaseController {
 			start=1;
 		}
 		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
-			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+			pd.put("lastEnd", lastLoginEnd+" 23:59:59");
 			end=1;
 		} 
 		if(start==0&&end==0){//如果没有指定时间，默认是当天
@@ -363,5 +365,141 @@ public class PaymentController extends BaseController {
 		}
 		return list3;
 	}
+	
+	
+
+	 /**导出到excel
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/inorderSaleExcel")
+	public ModelAndView inorderSaleExcel() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"导出进销支付到excel");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
+		ModelAndView mv = new ModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		List<String> titles = new ArrayList<String>();
+		titles.add("单据编号");	//1
+		titles.add("单据类型");	//2
+		titles.add("商品");	//3
+		titles.add("单价");	//4
+		titles.add("数量");	//5
+		titles.add("总金额");	//6
+		titles.add("已付金额");	//7
+		titles.add("未付金额	");	//8
+		titles.add("仓库");	//9
+		titles.add("支付方式");	//10
+		titles.add("经手人");	//11
+		titles.add("日期");	//12
+		dataMap.put("titles", titles);
+		
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		int flag1=1;
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+			flag1=0;
+		}
+		int flag2=1;
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 23:59:59");
+			flag2=0;
+		} 
+		if(flag1==0&&flag2==0){
+			pd.put("flag", 1);
+		}
+		
+		
+		List<PageData> varOList = new ArrayList();
+		
+		varOList=settleResultsExcel("INORDER_IDS","INORDER_ID",pd);
+		
+		List<PageData> list4 = settleResultsExcel("SALEBILL_IDS","SALEBILL_ID",pd);
+		
+		 varOList.addAll(list4);
+			
+		List<PageData> varList = new ArrayList<PageData>();
+		for(int i=0;i<varOList.size();i++){
+			PageData vpd = new PageData();
+			vpd.put("var1", varOList.get(i).getString("BILLCODE"));	    //1
+			String BILLTYPE= varOList.get(i).getString("BILLTYPE");
+			if(BILLTYPE.equals("1")){
+				vpd.put("var2","进货单");	    //2
+			}else if(BILLTYPE.equals("2")){
+				vpd.put("var2","销售单");	    //2
+			}
+			vpd.put("var3", varOList.get(i).getString("GOODNAME"));	//3
+			vpd.put("var4", varOList.get(i).get("UNITPRICE_ID").toString());	    //4
+			vpd.put("var5", varOList.get(i).get("PNUMBER").toString());	//5
+			vpd.put("var6", varOList.get(i).get("ALLAMOUNT").toString());	    //6
+			vpd.put("var7", varOList.get(i).get("PAIDAMOUNT").toString());	    //7
+			vpd.put("var8", varOList.get(i).get("UNPAIDAMOUNT").toString());	    //8
+			vpd.put("var9", varOList.get(i).getString("WHNAME"));	    //9
+			vpd.put("var10", varOList.get(i).getString("PAYMETHODNAME"));	    //10
+			vpd.put("var11", varOList.get(i).getString("NAME"));	    //11
+			vpd.put("var12", varOList.get(i).getString("CREATETIME"));	    //12
+			varList.add(vpd);
+		}
+		dataMap.put("title","进销支付单");
+		dataMap.put("varList", varList);
+		ObjectExcelView erv = new ObjectExcelView();
+		mv = new ModelAndView(erv,dataMap);
+		return mv;
+	}
+	
+	
+	public List<PageData> settleResultsExcel(String str1,String str2,PageData pd) throws Exception{
+		List<PageData> list;
+		List<PageData> list1;
+		List<PageData> list3 = null;
+	    List list2 = new ArrayList();  //用来装ID 
+	    if(str2.equals("INORDER_ID")){
+	    	list1=suppsetbillService.listByConditionExcel(pd);//列出供应商列表
+	    }else{
+	    	list1=customersetbillService.listByConditionExcel(pd);//列出客户列表
+	    }
+		HashMap<String,Object> hashmap = new HashMap();
+		if(list1!=null&&list1.size()!=0){
+			for (int i = 0; i < list1.size(); i++) {
+				String[] strArr = list1.get(i).getString(str1).split(","); // 切割IDS
+				for (int j = 0; j < strArr.length; j++) {
+					String str = strArr[j];
+					list2.add(str);
+					String PAYMETHODNAME = list1.get(i).getString("PAYMETHODNAME");
+	
+					if (hashmap.containsKey(str)) {
+						boolean bool = hashmap.get(str).toString().contains(PAYMETHODNAME);
+						if (!bool) {
+							hashmap.replace(str, hashmap.get(str) + "," + PAYMETHODNAME);
+						}
+					} else {
+						hashmap.put(str, PAYMETHODNAME);
+					}
+				}
+			}
+			Page page = new Page();
+			page.setPd(pd);
+			page.setList(list2);
+			pd.put("list", list2); // 放进page，传到mapper进行条件判断
+		    if(str2.equals("INORDER_ID")){ 
+		    	list3 = inOrderService.listInOderByConditionExcel(page);
+		    }else{
+		    	list3=salebillService.listSalebillByConditionExcel(page);
+		    }
+			for (int i = 0; i < list3.size(); i++) {
+				String PAYMETHODNAME = list3.get(i).getString("PAYMETHODNAME");
+				if (PAYMETHODNAME == null) {
+					String INORDER_ID = list3.get(i).getString(str2);
+					String key = hashmap.get("'"+INORDER_ID+"'").toString();
+					list3.get(i).put("PAYMETHODNAME", key);
+				}
+			}
+		}
+		return list3;
+	}
+	
+	
 }
 

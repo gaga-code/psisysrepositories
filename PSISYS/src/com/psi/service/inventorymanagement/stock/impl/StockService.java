@@ -29,6 +29,12 @@ public class StockService implements StockManager{
 		return (List<PageData>)dao.findForList("StockMapper.stocklistPage", page);
 	}
 
+	@Override
+	public List<PageData> listAllToExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("StockMapper.listAllToExcel", pd);
+	}
+
 
 }
 

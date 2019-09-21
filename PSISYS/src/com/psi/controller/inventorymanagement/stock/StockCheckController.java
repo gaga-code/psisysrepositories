@@ -277,7 +277,7 @@ public class StockCheckController extends BaseController {
 			pd.put("lastStart", lastLoginStart+" 00:00:00");
 		}
 		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
-			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+			pd.put("lastEnd", lastLoginEnd+" 23:59:59");
 		} 
 		page.setPd(pd);
 		List<PageData>	varList = stockCheckService.list(page);	//列出stockcheck列表
@@ -507,43 +507,48 @@ public class StockCheckController extends BaseController {
 	 */
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"导出stockcheck到excel");
+		logBefore(logger, Jurisdiction.getUsername()+"导出库存盘点到excel");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		List<String> titles = new ArrayList<String>();
-		titles.add("姓名");	//1
-		titles.add("年龄");	//2
-		titles.add("手机");	//3
-		titles.add("地址");	//4
-		titles.add("QQ");	//5
-		titles.add("微信");	//6
-		titles.add("建档时间");	//7
-		titles.add("消费金额");	//8
-		titles.add("级别");	//9
-		titles.add("备注1");	//10
-		titles.add("备注2");	//11
+		titles.add("录单日期");	//1
+		titles.add("单据编号");	//2
+		titles.add("盘点人");	//3
+		titles.add("批号");	//4
+		titles.add("备注");	//5
 		dataMap.put("titles", titles);
-		pd.put("USERNAME", Jurisdiction.getUsername());
-		List<PageData> varOList = stockCheckService.listAll(pd);
+		
+		String lastLoginStart = pd.getString("lastStart");	//开始时间
+		String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+		int flag1=1;
+		if(lastLoginStart != null && !"".equals(lastLoginStart)){
+			pd.put("lastStart", lastLoginStart+" 00:00:00");
+			flag1=0;
+		}
+		int flag2=1;
+		if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+			pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+			flag2=0;
+		} 
+		if(flag1==0&&flag2==0){
+			pd.put("flag", 1);
+		}
+		 
+		List<PageData> varOList = stockCheckService.listAllToExcel(pd);
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
-			vpd.put("var1", varOList.get(i).getString("NAME"));	    //1
-			vpd.put("var2", varOList.get(i).getString("AGE"));	    //2
-			vpd.put("var3", varOList.get(i).get("PHONE").toString());	//3
+			vpd.put("var1", varOList.get(i).getString("LDATE"));	    //1
+			vpd.put("var2", varOList.get(i).getString("BILLCODE"));	    //2
+			vpd.put("var3", varOList.get(i).getString("PSI_NAME"));	//3
 			vpd.put("var4", varOList.get(i).getString("ADDRESS"));	    //4
-			vpd.put("var5", varOList.get(i).get("QQ").toString());	//5
-			vpd.put("var6", varOList.get(i).getString("WEIXIN"));	    //6
-			vpd.put("var7", varOList.get(i).getString("CTIME"));	    //7
-			vpd.put("var8", varOList.get(i).get("MONEY").toString());	//8
-			vpd.put("var9", varOList.get(i).getString("LEVEL"));	    //9
-			vpd.put("var10", varOList.get(i).getString("REMARKS1"));	    //10
-			vpd.put("var11", varOList.get(i).getString("REMARKS2"));	    //11
+			vpd.put("var5", varOList.get(i).getString("NOTE"));	//5
 			varList.add(vpd);
 		}
+		dataMap.put("title","仓库盘点单");
 		dataMap.put("varList", varList);
 		ObjectExcelView erv = new ObjectExcelView();
 		mv = new ModelAndView(erv,dataMap);

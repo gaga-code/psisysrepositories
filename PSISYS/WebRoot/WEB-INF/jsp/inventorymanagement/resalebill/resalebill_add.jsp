@@ -40,6 +40,10 @@
 									<a class="btn btn-mini btn-primary" onclick="shenpi();">审批</a>
 									<a class="btn btn-mini btn-danger" onclick="returnList();">返回</a>
 								</td>
+								</td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<td style="text-align: center;">
+									<a class="btn btn-mini btn-primary" id='viewSaleInfo' onclick="viewSaleInfo();">客户购买详情</a>
+								</td>
 							</tr>
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
@@ -106,6 +110,8 @@
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
 									<th class="center">金额</th>
+									<th class="center">型号</th>
+									<th class="center">规格</th>
 									<th class="center">赠送</th>
 									<th class="center">备注</th>
 									<th class="center">操作</th>
@@ -189,7 +195,7 @@
 		            }
 		        }
 		}
-		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,WAREHOUSE_ID_NAME_STOCK) {
+		function insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF,WAREHOUSE_ID_NAME_STOCK) {
 			var Str = WAREHOUSE_ID_NAME_STOCK.split('#');
 			var selecthtml = "";
 	        if (Str[0] != "") {
@@ -212,10 +218,12 @@
 	                      +'<td class="center"><select class="chosen-select form-control" onchange="changewh(\''+flag+'\',\''+rowId+'\');" style="vertical-align:top;width:98%;" id="select_wh" >'
 						  +	selecthtml
 						  +'</select></td>'
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+RPRICE+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");'/></td>"
-	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:80px' onchange='calculateTheTotalAmount();' value='"+RPRICE+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:80px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:80px' readonly='readonly' value='"+UNITNAME+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:80px' readonly='readonly'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODSPECIF+"'/></td>"
+	                      + "<td class='center'><input type='text' maxlength='100' style='width:80px' readonly='readonly' value='"+GOODTYPECODE+"'/></td>"
 	                      + "<td class='center'><input type='checkbox' id='checkbox"+ flag +"' value='0' onclick='exe(\"checkbox"+ flag +"\");' /></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
@@ -241,19 +249,29 @@
 			var stockNum = stockgoodsnummap.get(GOOD_ID+","+WAREHOUSE_ID);//查出库存数量
 			
 			
-				if($("#"+goodsnumID).val() >=0){
-					calculateTheTotalAmount();
-					return ;
-				}else{
-					$("#"+goodsnumID).tips({
-						side:3,
-			            msg:'数量不能少于0',
-			            bg:'#AE81FF',
-			            time:5
-			        });
-					$("#"+goodsnumID).val(0);
-					$("#"+goodsnumID).focus();
-				}
+
+			if($("#"+goodsnumID).val() >stockNum){
+				$("#"+goodsnumID).tips({
+					side:3,
+		            msg:'当前库存为' + stockNum,
+		            bg:'#AE81FF',
+		            time:5
+		        });
+				$("#"+goodsnumID).val(stockNum);
+				$("#"+goodsnumID).focus();
+			}else if($("#"+goodsnumID).val() <=0){
+				$("#"+goodsnumID).tips({
+					side:3,
+		            msg:'数量必须大于0',
+		            bg:'#AE81FF',
+		            time:5
+		        })
+		    	$("#"+goodsnumID).val('1');
+				$("#"+goodsnumID).focus();
+			}else{
+				calculateTheTotalAmount();
+				return ;
+			}
 				calculateTheTotalAmount();
 			<%-- console.log("test");
 			$.ajax({
@@ -311,12 +329,14 @@
 	    	$("#simple-table tr").each(function(i) {
 	            if (i >= 1) {
 	                $(this).children().each(function(j) {
-	                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
-	                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
-	                        if ($(this).children().length > 1) {
-	                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
-	                        }
-	                    }
+	                	if(j<7||j>8){
+		                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+		                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+		                        if ($(this).children().length > 1) {
+		                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+		                        }
+		                    }
+	                	}
 	                });
 	                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
 	            }
@@ -367,12 +387,14 @@
 	    	$("#simple-table tr").each(function(i) {
 	            if (i >= 1) {
 	                $(this).children().each(function(j) {
-	                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
-	                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
-	                        if ($(this).children().length > 1) {
-	                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
-	                        }
-	                    }
+	                	if(j<7||j>8){
+		                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+		                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+		                        if ($(this).children().length > 1) {
+		                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+		                        }
+		                    }
+	                	}
 	                });
 	                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
 	            }
@@ -454,6 +476,8 @@
 				    var UNITNAME=localStorage.getItem("UNITNAME");
 				    var GOODCODE=localStorage.getItem("GOODCODE");
 				    var RPRICE=localStorage.getItem("RPRICE");
+				    var GOODSPECIF=localStorage.getItem("GOODSPECIF");
+				    var GOODTYPECODE=localStorage.getItem("GOODTYPECODE");
 				    var WAREHOUSE_ID_NAME_STOCK=localStorage.getItem("WAREHOUSE_ID_NAME_STOCK");
 				    window.localStorage.removeItem("GOOD_ID");
 				    window.localStorage.removeItem("GOODNAME");
@@ -461,10 +485,12 @@
 				    window.localStorage.removeItem("UNITNAME");
 				    window.localStorage.removeItem("GOODCODE");
 				    window.localStorage.removeItem("RPRICE");
+				    window.localStorage.removeItem("GOODSPECIF");
+				    window.localStorage.removeItem("GOODTYPECODE");
 				    window.localStorage.removeItem("WAREHOUSE_ID_NAME_STOCK");
 				    if( GOOD_ID != null){
 				    	parseStr(GOODCODE,WAREHOUSE_ID_NAME_STOCK);
-				    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,WAREHOUSE_ID_NAME_STOCK);
+				    	insertNewRow(GOOD_ID,GOODNAME,BARCODE,UNITNAME,GOODCODE,RPRICE,GOODTYPECODE,GOODSPECIF,WAREHOUSE_ID_NAME_STOCK);
 				    }
 				}else{
 					var s1 = str.split("?");
@@ -474,7 +500,7 @@
 						var s4=s3[0].split(",");
 					    if( s4[0] != null){
 						  	parseStr(s4[0],s3[1]);
-						   	insertNewRow(s4[0],s4[1],s4[2],s4[3],s4[4],s4[5],s3[1]);
+						   	insertNewRow(s4[0],s4[1],s4[2],s4[3],s4[4],s4[5],s4[6],s4[7],s3[1]);
 						 }
 					}
 					  window.localStorage.removeItem("str");
@@ -490,12 +516,14 @@
 		    	$("#simple-table tr").each(function(i) {
 		            if (i >= 1) {
 		                $(this).children().each(function(j) {
-		                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
-		                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
-		                        if ($(this).children().length > 1) {
-		                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
-		                        }
-		                    }
+		                	if(j<7||j>8){
+			                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+			                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+			                        if ($(this).children().length > 1) {
+			                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+			                        }
+			                    }
+		                	}
 		                });
 		                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
 		            }
@@ -652,6 +680,31 @@
 	        });
 			return false;
 		}
+		
+	  	function viewSaleInfo(){
+	  		if($("#CUSTOMER_ID").val()==""){
+				$("#CUSTOMER_select").tips({
+					side:3,
+		            msg:'请先选择客户',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				return false;
+			}
+	  		var CUSTOMER_ID=$("#CUSTOMER_ID").val();
+	  		 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="客户购买详情";
+			 diag.URL = '<%=basePath%>salebill/viewSaleInfo.do?CUSTOMER_ID='+CUSTOMER_ID;
+			 diag.Width = 1000;
+			 diag.Height = 500;
+			 diag.CancelEvent = function(){ //关闭事件
+			
+				diag.close();
+			 };
+			 diag.show();
+	  	}
 		</script>
 </body>
 </html>

@@ -148,4 +148,22 @@
 		   and PK_SOBOOKS = #{PK_SOBOOKS}
 		   and IFNULL(DR,0)=0 
 	</update>
+	
+	<select id="listAllToExcel" parameterType="pd" resultType="pd">
+		select
+			<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include> 
+		where  PK_SOBOOKS = #{PK_SOBOOKS}
+			and IFNULL(DR,0)=0 
+			<if test="lastStart!=null and lastStart!='' ">
+					<if test="lastEnd!=null and lastEnd!='' ">
+					 and Date(LASTTIME) BETWEEN #{lastStart} and #{lastEnd}
+					</if>
+			</if>
+			<if test="flag==1">
+				and date_format(CREATETIME,'%Y-%m')= date_format(now(),'%Y-%m')
+			</if>
+			order by CREATETIME desc
+	</select>
 </mapper>

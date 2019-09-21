@@ -235,11 +235,14 @@ public class UserController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		pd.put("USER_ID", pd.get("ID"));
 		if("1".equals(pd.getString("USER_ID"))){return null;}		//不能修改admin用户
 		pd.put("ROLE_ID", "1");
 		List<Role> roleList = roleService.listAllRolesByPId(pd);	//列出所有系统用户角色
 		mv.addObject("fx", "user");
 		pd = userService.findById(pd);								//根据ID读取
+		mv.addObject("varListSex", EnumProductUtil.productSexList());
+		mv.addObject("varListLEduction", EnumProductUtil.productEductionList());
 		mv.setViewName("system/user/user_edit");
 		mv.addObject("msg", "editU");
 		mv.addObject("pd", pd);
@@ -317,6 +320,7 @@ public class UserController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		pd.put("USER_ID", pd.get("ID"));
 		if(!Jurisdiction.getUsername().equals(pd.getString("USERNAME"))){		//如果当前登录用户修改用户资料提交的用户名非本人
 			if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}  //校验权限 判断当前操作者有无用户管理查看权限
 			if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限判断当前操作者有无用户管理修改权限
@@ -325,7 +329,10 @@ public class UserController extends BaseController {
 			pd.put("ROLE_ID", userService.findByUsername(pd).getString("ROLE_ID")); //对角色ID还原本人角色ID
 		}
 		if(pd.getString("PASSWORD") != null && !"".equals(pd.getString("PASSWORD"))){
-			pd.put("PASSWORD", new SimpleHash("SHA-1", pd.getString("USERNAME"), pd.getString("PASSWORD")).toString());
+			String USERNAME = pd.getString("USERNAME");
+			String PASSWORD=pd.getString("PASSWORD");
+			String passwd = new SimpleHash("SHA-1", USERNAME, PASSWORD).toString();	//密码加密
+			pd.put("PASSWORD", passwd);
 		}
 		userService.editU(pd);	//执行修改
 		FHLOG.save(Jurisdiction.getUsername(), "修改系统用户："+pd.getString("USERNAME"));

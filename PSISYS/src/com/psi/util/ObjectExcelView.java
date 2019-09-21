@@ -32,7 +32,13 @@ public class ObjectExcelView extends AbstractExcelView{
 		HSSFSheet sheet;
 		HSSFCell cell;
 		response.setContentType("application/octet-stream");
-		response.setHeader("Content-Disposition", "attachment;filename="+filename+".xls");
+		if(model.get("title")==null){
+			response.setHeader("Content-Disposition", "attachment;filename="+filename+".xls");
+		}else{
+			String title= (String) model.get("title")+".xls";
+	    	response.setHeader("Content-disposition", "attachment; filename="+ new String(title.getBytes("gb2312"),"ISO8859-1"));
+			//response.setHeader("Content-Disposition", "attachment;filename="+title+".xls");
+		}
 		sheet = workbook.createSheet("sheet1");
 		
 		List<String> titles = (List<String>) model.get("titles");

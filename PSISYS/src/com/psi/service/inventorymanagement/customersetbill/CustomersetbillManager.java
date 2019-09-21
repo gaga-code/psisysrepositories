@@ -83,6 +83,14 @@ public interface CustomersetbillManager{
 	public List<PageData> listByCondition(PageData pd) throws Exception;
 
 	public List<PageData> listCustomterbillByPay(PageData pd) throws Exception;
+
+	public List<PageData> listAllToExcel(PageData pd) throws Exception;
+
+	public List<PageData> listByConditionExcel(PageData pd) throws Exception;
+
+	public List<PageData> listdetail(Page page) throws Exception;
+
+	public List<PageData> excelDetail(PageData pd) throws Exception;
 	
 	
 	

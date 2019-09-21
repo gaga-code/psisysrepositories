@@ -423,6 +423,30 @@ public class CustomersetbillService implements CustomersetbillManager{
 		// TODO Auto-generated method stub
 		return (List<PageData>)dao.findForList("CustomersetbillMapper.listCustomterbillByPay", pd);
 	}
+
+	@Override
+	public List<PageData> listAllToExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("CustomersetbillMapper.listAllToExcel", pd);
+	}
+
+	@Override
+	public List<PageData> listByConditionExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("CustomersetbillMapper.listByConditionExcel", pd);
+	}
+
+	@Override
+	public List<PageData> listdetail(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("CustomersetbillMapper.datalistPageDetail", page);
+	}
+
+	@Override
+	public List<PageData> excelDetail(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("CustomersetbillMapper.excelDetail", pd);
+	}
 	
 }
 

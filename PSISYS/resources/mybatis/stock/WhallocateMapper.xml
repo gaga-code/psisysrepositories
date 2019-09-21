@@ -358,4 +358,40 @@
 			and PK_SOBOOKS = #{PK_SOBOOKS}
 			and IFNULL(dr,0)=0
 	</update>
+	
+		<select id="listAllToExcel" parameterType="pd" resultType="pd">
+		select
+			a.PK_SOBOOKS,
+			a.WHALLOCATE_ID,
+			a.LDATE,
+			a.BILLCODE,
+			d.NAME,
+			a.OUTWH_ID,
+			a.INWH_ID,
+			a.BILLSTATUS,
+			a.NOTE,
+			b.WHNAME OUTWH_NAME,
+			c.WHNAME INWH_NAME
+		from 
+	psi_whallocate a 
+		left join base_warehouse b
+		on a.OUTWH_ID = b.WAREHOUSE_ID
+		left join base_warehouse c
+		on a.INWH_ID = c.WAREHOUSE_ID
+		left join sys_user d 
+		on d.USER_ID=a.USER_ID
+		where 
+		 a.PK_SOBOOKS = #{PK_SOBOOKS}
+		and IFNULL(a.dr,0)=0
+		<!-- 录单日期日期条件 -->
+		<if test="lastStart!=null and lastStart!=''">
+			and a.LDATE &gt;= #{lastStart} 
+		</if>
+		<if test="lastEnd!=null and lastEnd!=''">
+			and a.LDATE &lt;= #{lastEnd} 
+		</if>
+		order by a.LASTTIME DESC
+	</select>
+	
+	
 </mapper>

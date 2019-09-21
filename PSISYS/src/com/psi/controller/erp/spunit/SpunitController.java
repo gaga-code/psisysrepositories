@@ -175,7 +175,7 @@ public class SpunitController extends BaseController {
 	 */
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"导出Spunit到excel");
+		logBefore(logger, Jurisdiction.getUsername()+"导出计量单位表到excel");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
@@ -184,7 +184,6 @@ public class SpunitController extends BaseController {
 		List<String> titles = new ArrayList<String>();
 		titles.add("计量单位");	//1
 		titles.add("备注");	//2
-		titles.add("用户名");	//3
 		dataMap.put("titles", titles);
 		List<PageData> varOList = spunitService.listAll(Jurisdiction.getUsername());
 		List<PageData> varList = new ArrayList<PageData>();
@@ -192,9 +191,9 @@ public class SpunitController extends BaseController {
 			PageData vpd = new PageData();
 			vpd.put("var1", varOList.get(i).getString("NAME"));	    //1
 			vpd.put("var2", varOList.get(i).getString("BZ"));	    //2
-			vpd.put("var3", varOList.get(i).getString("USERNAME"));	    //3
 			varList.add(vpd);
 		}
+		dataMap.put("title", "计量单位表");
 		dataMap.put("varList", varList);
 		ObjectExcelView erv = new ObjectExcelView();
 		mv = new ModelAndView(erv,dataMap);

@@ -66,7 +66,16 @@
 <!-- 								</td> -->
 								<td style="width:75px;text-align: right;padding-top: 13px;">结款日期:</td>
 								<td style="padding-left:2px;"><input class="span10 date-picker" name="PAYDATE" id="PAYDATE"  value="${pd.PAYDATE}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:98%;" /></td>
-							
+								<td style="width:75px;text-align: right;padding-top: 13px;">结款方式:</td>
+								<td class='center' >
+									<c:if test="${pd.DISTRIBUTIONMODE == 1}">
+										<input class="span10 date-picker"  value="现结" type="text"  readonly="readonly" style="width:98%;" />				
+									</c:if>
+									<c:if test="${pd.DISTRIBUTIONMODE == 2}">
+								 		<input class="span10 date-picker"  value="月结" type="text"  readonly="readonly" style="width:98%;" />				
+									</c:if>
+									
+								</td>
 								</tr>
 							<input id = "goodslist" name ="goodslist" type="hidden"/>
 							<tr>

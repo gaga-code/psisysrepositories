@@ -128,6 +128,8 @@ public interface StockCheckManager{
 	 * @return
 	 */
 	public List<PageData> getStockWH(PageData pd)throws Exception;
+
+	public List<PageData> listAllToExcel(PageData pd) throws Exception;
 	
 }
 

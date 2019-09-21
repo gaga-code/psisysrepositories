@@ -202,6 +202,7 @@
 		        success: function (res) {
 		            var html="<option value='0'>请选择客户</option>";
 		            console.log(res);
+		            
 		            for (var i = 0; i < res.varList.length; i++) {
 		                if (sid == res.varList[i].CUSTOMER_ID) {
 		                    html += "<option  value='" + res.varList[i].CUSTOMER_ID + "' selected='selected' data-name='"+res.varList[i].CUATOMERNAME+"'>" + res.varList[i].CUATOMERNAME + "</option>";

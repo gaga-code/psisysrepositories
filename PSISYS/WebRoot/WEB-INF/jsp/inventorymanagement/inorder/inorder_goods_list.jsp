@@ -94,6 +94,9 @@
 														<button class="btn btn-minier btn-primary dropdown-toggle" onclick="view('${var.GOOD_ID}','${var.GOODNAME}','${var.BARCODE}','${var.UNITNAME}','${var.GOODCODE}' ,'${var.CPRICE}','${var.GOODTYPECODE}','${var.GOODSPECIF}','${var.WAREHOUSE_ID_NAME_STOCK}'); " data-toggle="dropdown" data-position="auto">
 															选择
 														</button>
+														<a class="btn btn-minier btn-primary dropdown-toggle" title="销售情况" onclick="viewSale('${var.GOOD_ID}');">
+														销售情况
+														</a>
 													</div>
 												</div>
 											</td>
@@ -310,6 +313,25 @@
 			 diag. ShowMaxButton = false;	//最大化按钮
 		     diag.ShowMinButton = true;		//最小化按钮
 			 diag.CancelEvent = function(){ //关闭事件
+				diag.close();
+			 };
+			 diag.show();
+		}
+		
+		//查看商品销售信息
+		function viewSale(Id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="查看商品销售情况";
+			 diag.URL = '<%=basePath%>goods/listsalebill.do?GOOD_ID='+Id;
+			 diag.Width = 1200;
+			 diag.Height = 600;
+			 diag.Modal = true;				//有无遮罩窗口
+			 diag. ShowMaxButton = true;	//最大化按钮
+		     diag.ShowMinButton = true;		//最小化按钮
+			 diag.CancelEvent = function(){ //关闭事件
+			
 				diag.close();
 			 };
 			 diag.show();

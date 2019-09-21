@@ -55,6 +55,8 @@ public interface WarehouseManager{
 	public String findByWid(PageData pd) throws Exception;
 
 	public String findByName(PageData pd) throws Exception;
+
+	public List<PageData> listWarehouse(PageData pd) throws Exception;
 	
 }
 

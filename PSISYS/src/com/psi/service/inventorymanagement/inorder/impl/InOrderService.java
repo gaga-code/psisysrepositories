@@ -554,6 +554,43 @@ public class InOrderService implements InOrderManager{
 		// TODO Auto-generated method stub
 		return (List<PageData>)dao.findForList("InOrderBodyMapper.printInOrder", pd);
 	}
+
+	@Override
+	public PageData priceSum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (PageData)dao.findForObject("InOrderMapper.priceSum", pd);
+	}
+
+	@Override
+	public List<PageData> listAllToExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return  (List<PageData>)dao.findForList("InOrderMapper.listAllToExcel", pd);
+	}
+
+
+	@Override
+	public List<PageData> listOrderSaleToExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return  (List<PageData>)dao.findForList("InOrderMapper.listOrderSaleToExcel", pd);
+	}
+
+	@Override
+	public List<PageData> listInOderByConditionExcel(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return  (List<PageData>)dao.findForList("InOrderMapper.listInOderByConditionExcel",  page);
+	}
+
+	@Override
+	public List<PageData> listdetail(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("InOrderBodyMapper.datalistPageDetail",  page);
+	}
+
+	@Override
+	public List<PageData> excelDetail(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return  (List<PageData>)dao.findForList("InOrderBodyMapper.excelDetail",  pd);
+	}
 	
 }
 

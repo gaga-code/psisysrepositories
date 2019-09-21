@@ -117,7 +117,7 @@ public class SuppsetbillController extends BaseController {
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"列表suppsetbill");
-		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		ModelAndView mv = this.getModelAndView();
 				PageData pd = new PageData();
 		pd = this.getPageData();
@@ -147,6 +147,8 @@ public class SuppsetbillController extends BaseController {
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
 	}
+	
+
 	
 	/**列表(弹窗选择用)
 	 * @param page
@@ -366,65 +368,84 @@ public class SuppsetbillController extends BaseController {
 	}
 	
 	 /**导出到excel
-	 * @param
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/excel")
-	public ModelAndView exportExcel() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"导出suppsetbill到excel");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
-		ModelAndView mv = new ModelAndView();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		Map<String,Object> dataMap = new HashMap<String,Object>();
-		List<String> titles = new ArrayList<String>();
-		titles.add("姓名");	//1
-		titles.add("客户编号");	//2
-		titles.add("手机");	//3
-		titles.add("地址");	//4
-		titles.add("简称");	//5
-		titles.add("拼音编码");	//6
-		titles.add("建档时间");	//7
-		titles.add("信誉程度");	//8
-		titles.add("电话");	//9
-		titles.add("传真");	//10
-		titles.add("传呼");	//11
-		titles.add("联系人");	//12
-		titles.add("经销方式");	//13
-		titles.add("经手人");	//14
-		titles.add("备注");	//15
-		titles.add("备注2");	//16
-		titles.add("备注3");	//17
-		dataMap.put("titles", titles);
-		List<PageData> varOList = suppsetbillService.listAll(pd);
-		List<PageData> varList = new ArrayList<PageData>();
-		for(int i=0;i<varOList.size();i++){
-			PageData vpd = new PageData();
-			vpd.put("var1", varOList.get(i).getString("SUPPLIERNAME"));	    //1
-			vpd.put("var2", varOList.get(i).getString("SUPPLIERCODE"));	    //2
-			vpd.put("var3", varOList.get(i).get("PHONE").toString());	//3
-			vpd.put("var4", varOList.get(i).getString("ADDRESS"));	    //4
-			vpd.put("var5", varOList.get(i).get("SIMPLENAME").toString());	//5
-			vpd.put("var6", varOList.get(i).getString("YICODE"));	    //6
-			String createtime = ((Timestamp)varOList.get(i).get("CREATETIME")).toString();
-			vpd.put("var7", createtime.substring(0, createtime.length()-2));	    //7
-			vpd.put("var8", varOList.get(i).get("CREDITDEGREE").toString());	//8
-			vpd.put("var9", varOList.get(i).getString("TELEPHONE"));	    //9
-			vpd.put("var10", varOList.get(i).getString("FAX"));	    //10
-			vpd.put("var11", varOList.get(i).getString("PAGING"));	    //11
-			vpd.put("var12", varOList.get(i).getString("LINKMAN"));	    //12
-			vpd.put("var13","1".equals( varOList.get(i).getString("DISTRIBUTIONMODE") )?"现金":"月结");	    //13
-			vpd.put("var14", varOList.get(i).getString("PSI_NAME"));	    //14
-			vpd.put("var14", varOList.get(i).getString("NOTE"));	    //15
-			vpd.put("var15", varOList.get(i).getString("NOTE2"));	    //16
-			vpd.put("var16", varOList.get(i).getString("NOTE3"));	    //17
-			varList.add(vpd);
+		 * @param
+		 * @throws Exception
+		 */
+		@RequestMapping(value="/excel")
+		public ModelAndView exportExcel() throws Exception{
+			logBefore(logger, Jurisdiction.getUsername()+"导出供应商结算单到excel");
+			if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
+			ModelAndView mv = new ModelAndView();
+			PageData pd = new PageData();
+			pd = this.getPageData();
+			Map<String,Object> dataMap = new HashMap<String,Object>();
+			List<String> titles = new ArrayList<String>();
+			titles.add("单据编号");	//1
+			titles.add("供应商");	//2
+			titles.add("付款方式");	//3
+			titles.add("总金额");	//4
+			titles.add("应付金额");	//5
+			titles.add("实付金额");	//6
+			titles.add("单据状态");	//7
+			titles.add("发票类型");	//8
+			titles.add("票号");	//9
+			titles.add("备注");	//10
+			titles.add("日期");	//11
+			titles.add("经手人");	//12
+			dataMap.put("titles", titles);
+			
+			String lastLoginStart = pd.getString("lastStart");	//开始时间
+			String lastLoginEnd = pd.getString("lastEnd");		//结束时间
+			int flag1=1;
+			if(lastLoginStart != null && !"".equals(lastLoginStart)){
+				pd.put("lastStart", lastLoginStart+" 00:00:00");
+				flag1=0;
+			}
+			int flag2=1;
+			if(lastLoginEnd != null && !"".equals(lastLoginEnd)){
+				pd.put("lastEnd", lastLoginEnd+" 00:00:00");
+				flag2=0;
+			} 
+			if(flag1==0&&flag2==0){
+				pd.put("flag", 1);
+			}
+			
+			List<PageData> varOList = suppsetbillService.listAllToExcel(pd);
+			
+			List<PageData> varList = new ArrayList<PageData>();
+			for(int i=0;i<varOList.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", varOList.get(i).getString("BILLCODE"));	    //1
+				vpd.put("var2", varOList.get(i).getString("SUPPLIERNAME"));	    //2
+				vpd.put("var3", varOList.get(i).getString("PAYMETHODNAME"));	//3
+				vpd.put("var4", varOList.get(i).get("PAYABLEALLAM").toString());	    //4
+				vpd.put("var5", varOList.get(i).get("PAYABLEAMOUNT").toString());	//5
+				vpd.put("var6", varOList.get(i).get("PAYMENTAMOUNT").toString());	    //6
+				
+				String BILLSTATUS = varOList.get(i).getString("BILLSTATUS");
+				if(BILLSTATUS.equals("1")){
+					vpd.put("var7", "未审核");	    //7
+				}else if(BILLSTATUS.equals("2")){
+					vpd.put("var7", "已审核");	    //7
+				}else if(BILLSTATUS.equals("3")){
+					vpd.put("var7", "作废");	    //7
+				}
+				
+				vpd.put("var8", varOList.get(i).getString("INVOICETYPE"));	    //8
+				vpd.put("var9", varOList.get(i).getString("BILLNO"));	    //9
+				vpd.put("var10", varOList.get(i).getString("NOTE"));	    //10
+				vpd.put("var11", varOList.get(i).getString("LDATE"));	    //11
+				vpd.put("var12",varOList.get(i).getString("NAME"));   //12
+			
+				varList.add(vpd);
+			}
+			dataMap.put("title", "供应商结算单");
+			dataMap.put("varList", varList);
+			ObjectExcelView erv = new ObjectExcelView();
+			mv = new ModelAndView(erv,dataMap);
+			return mv;
 		}
-		dataMap.put("varList", varList);
-		ObjectExcelView erv = new ObjectExcelView();
-		mv = new ModelAndView(erv,dataMap);
-		return mv;
-	}
+	
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder){

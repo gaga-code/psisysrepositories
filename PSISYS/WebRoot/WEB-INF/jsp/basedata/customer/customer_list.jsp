@@ -67,7 +67,7 @@
 									<th class="center">地址</th>
 									<th class="center">经销方式</th>
 									<th class="center">账期</th>
-									<th class="center">经手人</th>
+									
 <!-- 									<th class="center">消费记录</th>
 									<th class="center">跟踪记录</th> -->
 									<th class="center">备注</th>
@@ -98,7 +98,7 @@
 											   <td class='center'>月结</td>
 											</c:if>
 											<td class='center'>${var.FREETIME}</td>
-											<td class='center'>${var.PSI_NAME}</td>
+										
 <%-- 											<td class='center'><a style="cursor:pointer;" onclick="consume('${var.CUSTOMER_ID}')">[查看消费记录]</a></td>
 											<td class='center'><a style="cursor:pointer;" onclick="chaImg('${var.CUSTOMER_ID}')">[查看跟踪记录]</a></td> --%>
 											<td class='center'>${var.NOTE}</td>
@@ -110,11 +110,16 @@
 													<a class="btn btn-xs btn-success" title="查看" onclick="view('${var.CUSTOMER_ID}');">
 														<i class="ace-icon fa fa-eye bigger-120" title="查看"></i>
 													</a>
+													
 													<c:if test="${QX.edit == 1 }">
 													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.CUSTOMER_ID}');">
 														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
 													</a>
 													</c:if>
+												
+													<a class="btn btn-xs btn-primary" id='viewSaleInfo' onclick="viewSaleInfo('${var.CUSTOMER_ID}');">
+														购买详情
+													</a>
 													<c:if test="${QX.duizhang == 1 }">
 														<a class="btn btn-xs btn-success" title="对账单" onclick="duizhang('${var.CUSTOMER_ID}');">
 															对账单
@@ -292,6 +297,22 @@
 				}
 			});
 		}
+		
+	 	function viewSaleInfo(CUSTOMER_ID){	
+	  		 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="客户购买详情";
+			 diag.URL = '<%=basePath%>salebill/viewSaleInfo.do?CUSTOMER_ID='+CUSTOMER_ID;
+			 diag.Width = 1000;
+			 diag.Height = 500;
+			 diag.CancelEvent = function(){ //关闭事件
+			
+				diag.close();
+			 };
+			 diag.show();
+	  	}
+	 	
 		//新增
 		function add(){
 			 top.jzts();

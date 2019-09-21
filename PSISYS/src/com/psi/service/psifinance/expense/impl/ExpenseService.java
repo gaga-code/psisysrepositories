@@ -62,7 +62,11 @@ public class ExpenseService implements ExpenseManager{
 			pageData.put("EXPENSE_ID", pd.get("EXPENSE_ID"));
 			pageData.put("INOUTCOMETYPE_ID", aexpen[1]);
 			pageData.put("AMOUNT", aexpen[2]);
-			pageData.put("NOTE", aexpen[3]);
+			if(aexpen.length==4){
+				pageData.put("NOTE", aexpen[3]);
+			}else{
+				pageData.put("NOTE", "");
+			}
 			dao.save("ExpenseBodyMapper.save", pageData);
 		}
 		dao.save("ExpenseMapper.save", pd);
@@ -165,6 +169,12 @@ public class ExpenseService implements ExpenseManager{
 		//表名和主键字段名
 		jdbcTempUtil.deleteAll(idstr.toString().substring(0,idstr.toString().length()-1), (String)Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS), "psi_inorder", "INORDER_ID");
 		jdbcTempUtil.deleteAll(idstr.toString().substring(0,idstr.toString().length()-1), (String)Jurisdiction.getSession().getAttribute(Const.SESSION_PK_SOBOOKS), "psi_inorder_body", "INORDER_ID");
+	}
+
+	@Override
+	public List<PageData> listAllToExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return ( List<PageData> )dao.findForList("ExpenseMapper.listAllToExcel", pd);
 	}
 
 

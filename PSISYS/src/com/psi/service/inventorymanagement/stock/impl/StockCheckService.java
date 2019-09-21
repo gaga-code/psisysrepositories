@@ -508,6 +508,12 @@ public class StockCheckService implements StockCheckManager{
 		}
 		return result;
 	}
+
+	@Override
+	public List<PageData> listAllToExcel(PageData pd) throws Exception {
+	
+		return (List<PageData>)dao.findForList("StockMapper.listAllToExcel", pd);
+	}
 	
 }
 
