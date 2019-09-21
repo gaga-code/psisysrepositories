@@ -1,0 +1,289 @@
+
+############在主页面中新建一个页面#########################
+
+导入head.js一定要在头里面导入，否则会被强制退出
+<script type="text/javascript" src="static/js/myjs/head.js"></script>
+
+function edit(Id){
+			var url = 'inorder/goEdit.do?INORDER_ID='+Id;
+			siMenu('z191','lm181','添加进货单',url);
+}
+
+############在主页面中新建一个页面#########################
+
+
+<form id="form1" runat="server">
+    <div>
+          <table id="orderTable" border='1' cellpadding="1" cellspacing="0" style="border-collapse: collapse; border-color:#C0C0C0;" rules="none" width="80%" align="center">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">申报部门</th>
+                        <th style="width: 20%;">街镇</th>
+                        <th style="width: 20%;">路段名称</th>
+                        <th style="width: 30%;">起止路名</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tr id="row0">
+                    <td>
+                        <select id="UrbanDepNo0" name="UrbanDepNo" style="width:90%">
+                        <option value="1">三林城管署</option>
+                        <option value="2">港城城管署</option>
+                        <option value="3">惠南城管署</option>
+                        <option value="4">金桥城管署</option>
+                        <option value="5">陆家嘴城管办</option>
+                        <option value="6">川沙城管署</option> 
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="LocNo0" name="LocNo" style="width:90%"/>
+                        
+                    </td>
+                    <td>
+                        <input type="text" id="RoadSectionName0" name="RoadSectionName" style="width:90%"/>
+                    </td>
+                    <td>
+                        <input type="text" id="StStartRoad0" name="StStartRoad" style="width:45%"/>--
+                        <input type="text" id="EndRoadName0" name="EndRoadName" style="width:45%"/>
+                    </td>
+                    <td>
+                        <input type="button" name="delete"  value="删 除" style="width:80px" onclick="deleteSelectedRow(0)" />
+                    
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" colspan="5">
+                    <br />
+                        <input type="button" name="insert"  value="增加一行" style="width:80px" onclick="insertNewRow()" />
+                            <input type="button"  value=" 保    存 "  style="width:80px"  onclick="GetValue()" />
+                    </td>
+                </tr>
+            </table>
+    </div>
+     <div style="MARGIN: 40px auto;">
+         <table id="TableInfo" border='1' cellpadding="0" cellspacing="0" style="border-collapse: collapse; border-color:#C0C0C0;" width="80%" align="center">
+                    <tr>
+                            <td align="center">
+                                申报部门
+                            </td>
+                            <td align="center">
+                                街镇
+                            </td>
+                            <td align="center">
+                                路段名称
+                            </td>
+                            <td align="center">
+                                起止路名
+                            </td>
+                            <td align="center">
+                                操作
+                            </td>
+                    </tr>
+            </table>
+     </div>
+    </form>
+
+
+
+
+
+
+//声明全局变量
+	    var formvalue = "";
+	    var flag = 1;
+	    var index=1;
+	    var firstCell = "";
+	    var secondCell = "";
+	    var thirdCell = "";
+	    var fourthCell = "";
+	    $(function() {
+	        //初始化第一行
+	        firstCell = $("#row0 td:eq(0)").html();
+	        secondCell = $("#row0 td:eq(1)").html();
+	        thirdCell = $("#row0 td:eq(2)").html();
+	        fourthCell = $("#row0 td:eq(3)").html();
+	    });
+	
+		function insertNewRow() {
+			 //获取表格有多少行
+	        var rowLength = $("#orderTable tr").length;
+	        //这里的rowId就是row加上标志位的组合。是每新增一行的tr的id。
+	        var rowId = "row" + flag;
+	      //每次往下标为flag+1的下面添加tr,因为append是往标签内追加。所以用after
+	        var insertStr = "<tr id=" + rowId + ">"
+	                      + "<td style='width: 20%'>" + firstCell + "</td>"
+	                      + "<td style='width: 20%'>" + secondCell + "</td>"
+	                      + "<td style='width: 20%'>" + thirdCell + "</td>"
+	                      + "<td style='width: 30%'>" + fourthCell + "</td>"
+	                      + "<td><input type='button' name='delete' value='删除' style='width:80px' onclick='deleteSelectedRow(\"" + rowId + "\")' />";
+	                      +"</tr>";
+	        //这里的行数减2，是因为要减去底部的一行和顶部的一行，剩下的为开始要插入行的索引
+	                      $("#orderTable tr:eq(" + (rowLength - 2) + ")").after(insertStr); //将新拼接的一行插入到当前行的下面
+	         //为新添加的行里面的控件添加新的id属性。
+	         $("#" + rowId + " td:eq(0)").children().eq(0).attr("id", "UrbanDepNo" + flag);
+	         $("#" + rowId + " td:eq(1)").children().eq(0).attr("id", "LocNo" + flag);
+	         $("#" + rowId + " td:eq(2)").children().eq(0).attr("id", "RoadSectionName" + flag);
+	         $("#" + rowId + " td:eq(3)").children().eq(0).attr("id", "StStartRoad" + flag);
+	         $("#" + rowId + " td:eq(3)").children().eq(1).attr("id", "EndRoad" + flag);
+	         //每插入一行，flag自增一次
+	         flag++;
+			
+		}
+		
+		//-----------------删除一行，根据行ID删除-start--------    
+	    function deleteSelectedRow(rowID) {
+	        if (confirm("确定删除该行吗？")) {
+	            $("#" + rowID).remove();
+	        }
+	    }
+		
+	  //-----------------获取表单中的值----start--------------
+	    function GetValue() {
+	    	var value = "";
+	        $("#orderTable tr").each(function(i) {
+	            if (i >= 1) {
+	                $(this).children().each(function(j) {
+	                    if ($("#orderTable tr").eq(i).children().length - 1 != j) {
+	                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+	                        if ($(this).children().length > 1) {
+	                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+	                        }
+	                    }
+	                });
+	                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
+	            }
+	        });
+	        value = value.substr(0, value.length);
+	        ReceiveValue(value);
+//	        $("#formvalue").val(value);
+//	        $("formvalue").submit();
+	    }
+		
+	  //-------------------接收表单中的值-----------------------------
+	    function ReceiveValue(str) {
+	        var Str = str.split('#');
+	        if (Str[0] != "") {
+	            for (var i = 0; i < Str.length - 1; i++) {
+	                var value = Str[i].split(',');
+	                var dept = value[0];
+	                var street = value[1]
+	                var section = value[2];
+	                var Broad = value[3];
+	                var Eroad = value[4];
+	                insertTable(dept, street, section, Broad, Eroad);
+	                $("input[type='text']").val("");
+	                $("select[name='UrbanDepNo']").val("0");
+	            }
+	        }
+	    }
+	  
+	    //---------------将表单中的数据添加到新表中---------------------        
+	    function insertTable(dept, street, section, Broad, Eroad) {
+	                var department = "";
+	                switch (dept) { 
+	                  case "1":
+	                      department = "三林城管署";
+	                      break;
+	                  case "2":
+	                      department = "港城城管署";
+	                      break;
+	                  case "3":
+	                      department = "惠南城管署";
+	                      break;
+	                  case "4":
+	                      department = "金桥城管署";
+	                      break;
+	                  case "5":
+	                      department = "陆家嘴城管办";
+	                      break;
+	                  case "6":
+	                      department = "川沙城管署";
+	                      break;
+	                  default:
+	                      break;
+	                }
+	                //将接收到数据添加到新表TableInfo中。
+	                $('#TableInfo').append("<tr id=" + index + "><td align='center'>" + department + "</td><td align='center'>" + street + "</td><td align='center'>" + section + "</td><td align='center'>" + Broad + "-" + Eroad + "</td><td align='center'><a href='#' onclick='deltr(" + index + ")'>删 除</a></td></tr>");　
+	                index++;
+	            }
+	  
+	  //----------新表中的删除方法-----------
+	    function deltr(index) {
+	        if (confirm("确定删除吗?")) {
+	            $("tr[id='" + index + "']").remove();
+	        }
+	    }
+	  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
