@@ -88,9 +88,9 @@
 									<th class="center">单价</th>
 									<th class="center">数量</th>
 									<th class="center">计量单位</th>
+									<th class="center">金额</th>
 									<th class="center">型号</th>
 									<th class="center" width="200px">规格</th>
-									<th class="center">金额</th>
 									<th class="center">备注</th>
 									<th class="center">操作</th>
 								</tr>
@@ -195,9 +195,9 @@
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' onchange='calculateTheTotalAmount();' value='"+CPRICE+"'/></td>"
 	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' id='goodsnum"+ flag +"' onchange='checkstocknum(\"goodsnum"+ flag +"\",\""+GOODCODE+"\",\""+rowId+"\");'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+UNITNAME+"'/></td>"
+	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' readonly='readonly' value='"+GOODTYPECODE +"'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:200px' readonly='readonly' value='"+GOODSPECIF +"'/></td>"
-	                      + "<td class='center'><input type='number' maxlength='100' style='width:100px' readonly='readonly'/></td>"
 	                      + "<td class='center'><input type='text' maxlength='100' style='width:100px' /></td>"
 	                      + "<td style='display:none'><input type='hidden' value='"+BARCODE+"'/></td>"
 	                      + "<td class='center'><div class='hidden-sm hidden-xs btn-group'><a class='btn btn-xs btn-danger' onclick='deleteSelectedRow(\"" + rowId + "\")'><i class='ace-icon fa fa-trash-o bigger-120'></i></a></div></td>"
@@ -248,12 +248,14 @@
 	    	$("#simple-table tr").each(function(i) {
 	            if (i >= 1) {
 	                $(this).children().each(function(j) {
-	                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
-	                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
-	                        if ($(this).children().length > 1) {
-	                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
-	                        }
-	                    }
+	                	if(j<7||j>8){
+		                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+		                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+		                        if ($(this).children().length > 1) {
+		                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+		                        }
+		                    }
+	                	}
 	                });
 	                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
 	            }
@@ -292,12 +294,14 @@
 	    	$("#simple-table tr").each(function(i) {
 	            if (i >= 1) {
 	                $(this).children().each(function(j) {
-	                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
-	                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
-	                        if ($(this).children().length > 1) {
-	                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
-	                        }
-	                    }
+	                	if(j<7||j>8){
+		                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+		                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+		                        if ($(this).children().length > 1) {
+		                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+		                        }
+		                    }
+	                	}
 	                });
 	                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
 	            }
@@ -312,7 +316,7 @@
 	                var shuliang = value[4];
 	                if(danjia!= ''&& shuliang!= ''){
 	                	result = result + danjia * shuliang;
-	                	$("#simple-table tr").eq(i+1).children().eq(8).children().eq(0).val(danjia * shuliang);
+	                	$("#simple-table tr").eq(i+1).children().eq(6).children().eq(0).val(danjia * shuliang);
 	                	console.log(i);
 	                }
 	            }
@@ -382,12 +386,14 @@
 		    	$("#simple-table tr").each(function(i) {
 		            if (i >= 1) {
 		                $(this).children().each(function(j) {
-		                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
-		                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
-		                        if ($(this).children().length > 1) {
-		                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
-		                        }
-		                    }
+		                	if(j<7||j>8){
+			                    if ($("#simple-table tr").eq(i).children().length - 1 != j) {
+			                        value += $(this).children().eq(0).val() + "," //获取每个单元格里的第一个控件的值
+			                        if ($(this).children().length > 1) {
+			                            value += $(this).children().eq(1).val() + "," //如果单元格里有两个控件，获取第二个控件的值
+			                        }
+			                    }
+		                	}
 		                });
 		                value = value.substr(0, value.length - 1) + "#"; //每个单元格的数据以“，”分割，每行数据以“#”号分割
 		            }
