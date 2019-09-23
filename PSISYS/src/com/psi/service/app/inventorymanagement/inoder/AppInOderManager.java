@@ -25,4 +25,6 @@ public interface AppInOderManager {
 
 	int listInOrderNum(PageData pd) throws Exception;
 
+	void updateshenpi(PageData pd) throws Exception;
+
 }

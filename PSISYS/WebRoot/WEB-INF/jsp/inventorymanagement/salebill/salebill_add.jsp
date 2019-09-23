@@ -430,7 +430,7 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="该商品的前十条销售记录";
-			 diag.URL = '<%=basePath%>salebill/getSaleInfo.do?GOODCODE='+GOODCODE+'&CUSTOMER_ID='+CUSTOMER_ID;
+			 diag.URL = '<%=basePath%>salebill/getSaleInfo.do?GOODCODE='+GOODCODE;
 			 diag.Width = 600;
 			 diag.Height = 400;
 			 diag.CancelEvent = function(){ //关闭事件

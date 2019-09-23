@@ -354,7 +354,7 @@ public class AppInOderController extends BaseController{
 		
 		pd.put("BILLSTATUS", 2);
 		//pd.put("LASTTIME", Tools.date2Str(new Date()));	//最后修改时间
-		inOrderService.updateshenpi(pd);
+		appInOderService.updateshenpi(pd);
 		return map;
 	}
 	
