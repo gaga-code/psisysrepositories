@@ -58,7 +58,11 @@
 								</c:if>
 								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if>
 								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="fromExcel();" title="从EXCEL导入"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon blue"></i></a></td></c:if>
-								
+								<td style="vertical-align:top;padding-left:2px">
+									<c:if test="${QX.add == 1 }">
+									<a class="btn btn-xs btn-success" onclick="add();">新增</a>
+									</c:if>
+								</td>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -72,6 +76,9 @@
 									<th class="center">商品编号</th>
 									<th class="center">商品条码</th>
 									<th class="center">商品规格</th>
+									<th class="center">成本价</th>
+									<th class="center">进货价</th>
+									<th class="center">商品库存</th>
 									<th class="center">计量单位</th>
 									<th class="center">操作</th>
 								</tr>
@@ -97,6 +104,9 @@
 											<td class='center'>${var.GOODCODE}</td>
 											<td class='center'>${var.BARCODE}</td>
 											<td class='center'>${var.GOODSPECIF}</td>
+											<td class='center'>${var.CPRICE}</td>
+											<td class='center'>${var.LASTPPRICE}</td>
+											<td class='center'>${var.STOCKNUM}</td>
 											<td class='center'>${var.UNITNAME}</td>
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
@@ -177,11 +187,11 @@
 						<div class="page-header position-relative">
 						<table style="width:100%;">
 							<tr>
-								<td style="vertical-align:top;">
+								<%-- <td style="vertical-align:top;">
 									<c:if test="${QX.add == 1 }">
 									<a class="btn btn-mini btn-success" onclick="add();">新增</a>
 									</c:if>
-								</td>
+								</td> --%>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 							</tr>
 						</table>

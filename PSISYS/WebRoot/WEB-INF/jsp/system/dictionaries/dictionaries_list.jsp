@@ -48,6 +48,14 @@
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="gsearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
+								<td style="vertical-align:top;padding-left:4px">
+									<c:if test="${QX.add == 1 }">
+									<a class="btn btn-xs btn-success" onclick="add('${DICTIONARIES_ID}');">新增</a>
+									</c:if>
+									<c:if test="${null != pd.DICTIONARIES_ID && pd.DICTIONARIES_ID != ''}">
+									<a class="btn btn-xs btn-success" onclick="goSondict('${pd.PARENT_ID}');">返回</a>
+									</c:if>
+								</td>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -142,14 +150,14 @@
 						<div class="page-header position-relative">
 						<table style="width:100%;">
 							<tr>
-								<td style="vertical-align:top;">
+								<%-- <td style="vertical-align:top;">
 									<c:if test="${QX.add == 1 }">
 									<a class="btn btn-sm btn-success" onclick="add('${DICTIONARIES_ID}');">新增</a>
 									</c:if>
 									<c:if test="${null != pd.DICTIONARIES_ID && pd.DICTIONARIES_ID != ''}">
 									<a class="btn btn-sm btn-success" onclick="goSondict('${pd.PARENT_ID}');">返回</a>
 									</c:if>
-								</td>
+								</td> --%>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 							</tr>
 						</table>

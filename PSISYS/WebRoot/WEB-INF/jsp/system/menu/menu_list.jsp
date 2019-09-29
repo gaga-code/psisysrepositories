@@ -37,7 +37,13 @@
 				<div class="page-content">
 					<div class="row">
 						<div class="col-xs-12">
-
+							<div style="margin-bottom:10px;">
+								<!-- &nbsp;&nbsp; -->
+								<c:if test="${QX.add == 1 }"><a class="btn btn-sm btn-success" onclick="addmenu('${MENU_ID}');">新增</a></c:if>
+								<c:if test="${null != pd.MENU_ID && pd.MENU_ID != '0'}">
+									<a class="btn btn-sm btn-success" onclick="goSonmenu('${pd.PARENT_ID}');">返回</a>
+								</c:if>
+							</div>
 							<table id="dynamic-table" class="table table-striped table-bordered table-hover">
 								<thead>
 									<tr>
@@ -138,13 +144,7 @@
 								</tbody>
 							</table>
 							
-							<div>
-								&nbsp;&nbsp;
-								<c:if test="${QX.add == 1 }"><a class="btn btn-sm btn-success" onclick="addmenu('${MENU_ID}');">新增</a></c:if>
-								<c:if test="${null != pd.MENU_ID && pd.MENU_ID != '0'}">
-									<a class="btn btn-sm btn-success" onclick="goSonmenu('${pd.PARENT_ID}');">返回</a>
-								</c:if>
-							</div>
+							
 							
 						</div>
 						<!-- /.col -->

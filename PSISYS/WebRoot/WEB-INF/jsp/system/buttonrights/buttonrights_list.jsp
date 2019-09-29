@@ -44,7 +44,13 @@
 											</tr>
 										</c:otherwise>
 										</c:choose>
-									<td></td>
+									<td>
+										
+										<c:if test="${QX.cha == 1 }">
+										<a class="btn btn-s btn-success" onclick="window.location.href='<%=basePath%>buttonrights/list.do?type=2&ROLE_ID=${pd.ROLE_ID }';">切换视图</a>
+										</c:if>
+									</td>
+									</td>
 								</tr>
 							</table>
 							<div style="overflow-x: scroll; scrolling: auto;width: 100%;">
@@ -108,11 +114,11 @@
 							<div class="page-header position-relative">
 							<table style="width:100%;">
 								<tr>
-									<td style="vertical-align:top;">
+									<%-- <td style="vertical-align:top;">
 										<c:if test="${QX.cha == 1 }">
 										<a class="btn btn-mini btn-success" onclick="window.location.href='<%=basePath%>buttonrights/list.do?type=2&ROLE_ID=${pd.ROLE_ID }';">切换视图</a>
 										</c:if>
-									</td>
+									</td> --%>
 								</tr>
 							</table>
 							</div>

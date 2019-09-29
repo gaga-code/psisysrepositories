@@ -661,23 +661,13 @@
 			if (navigator.userAgent.indexOf("Window") > 0)
 			{
 
-				 if (window.ActiveXObject || "ActiveXObject" in window)  //IE
+			 if (window.ActiveXObject || "ActiveXObject" in window)  //IE
                     {
 					objAuth.SetCheckDogCallBack("insertDog", "removeDog");
 					setTimeout(checkDog, 1000);
 				}
-				else
-				{
-                    alert("请使用IE浏览器登陆！！");
-                    window.location.href = "about:blank";
-
-				}
 			}
 
-			else
-			{
-				;
-			}
 		}
 		function validateLogin()
 
@@ -693,7 +683,7 @@
 			var pwd = "654321";
 
 
-
+		
 
 			if(pwd.length<6 || pwd.length>16)
 			{
@@ -732,30 +722,35 @@
 				{
 					if(challenge == "001")
 					{
+						alert(916);
 						reportStatus(916);
 					}
 					else if(challenge == "002")
 					{
+						alert(917);
 						reportStatus(917);
 					}
 					else
 					{
+						alert(918);
 						reportStatus(918);
 					}
-
+					
 					return false;
 				}
 
 				//Generate digest
+				alert("Generate digest");
 				objAuth.GetDigestEx(scope, authCode, pwd, challenge);
 
-				return false;
+				return true;
 			}
-
+			alert("open the dog");
 			//Open the dog
 			stat = objAuth.Open(scope, authCode);
 			if(stat != 0)
 			{
+				alert(stat);
 				reportStatus(stat);
 
 				return false;
@@ -765,6 +760,7 @@
 			stat = objAuth.VerifyUserPin(pwd);
 			if(stat != 0)
 			{
+				alert(stat);
 				objAuth.Close();
 				reportStatus(stat);
 
@@ -775,6 +771,7 @@
 			stat = objAuth.GetDogID();
 			if(stat != 0)
 			{
+				alert(stat);
 				objAuth.Close();
 				reportStatus(stat);
 
@@ -815,7 +812,7 @@
 			stat = objAuth.GetDigest(challenge);
 			if(stat != 0)
 			{
-				console.log(stat);
+				alert(stat);
 				objAuth.Close();
 				reportStatus(stat);
 				
@@ -833,6 +830,7 @@
 			stat = doAuth(dogID, digest);
 			if(stat != 0)
 			{
+				alert(stat);
 				objAuth.Close();
 				reportStatus(stat);
 
@@ -879,16 +877,5 @@
                 return false;
             }
         }
+		
 
-/*if(validateLogin()===true) {
-								saveCookie();
-								window.location.href = "main/index";
-							}
-							else {
-								$("#loginname").tips({
-									side: 1,
-									msg: "加密狗错误",
-									bg: '#FF5080',
-									time: 15
-								});
-*/

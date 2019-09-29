@@ -83,7 +83,7 @@ public class FhbuttonService implements FhbuttonManager{
 	 * DATA_IDS   主键 
 	 * PK_SOBOOKS  帐套主键
 	 */
-	public void deleteAll(String ArrayDATA_IDS[])throws Exception{
+	public void deleteAll(String... ArrayDATA_IDS)throws Exception{
 		StringBuffer idstr = new StringBuffer("");
 		for(int i = 0; i < ArrayDATA_IDS.length; i++) {
 			idstr.append("'"+ArrayDATA_IDS[i]+"',");

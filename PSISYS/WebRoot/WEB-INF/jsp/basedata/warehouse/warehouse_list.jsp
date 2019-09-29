@@ -42,7 +42,14 @@
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
 								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;">	&nbsp;&nbsp;&nbsp;<a class="btn btn-xs btn-success" onclick="toExcel();" title="导出到EXCEL">导出EXCEL</a></td></c:if>
-							
+								<td style="vertical-align:top;padding-left:2px">
+									<c:if test="${QX.add == 1 }">
+									<a class="btn btn-xs btn-success" onclick="add();">新增</a>
+									</c:if>
+<%-- 									<c:if test="${QX.del == 1 }"> --%>
+<!-- 									<a class="btn btn-sm btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a> -->
+<%-- 									</c:if> --%>
+								</td>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -147,14 +154,14 @@
 						<div class="page-header position-relative">
 						<table style="width:100%;">
 							<tr>
-								<td style="vertical-align:top;">
+								<%-- <td style="vertical-align:top;">
 									<c:if test="${QX.add == 1 }">
 									<a class="btn btn-sm btn-success" onclick="add();">新增</a>
 									</c:if>
-<%-- 									<c:if test="${QX.del == 1 }"> --%>
+									<c:if test="${QX.del == 1 }">
 <!-- 									<a class="btn btn-sm btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a> -->
-<%-- 									</c:if> --%>
-								</td>
+									</c:if>
+								</td> --%>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 							</tr>
 						</table>

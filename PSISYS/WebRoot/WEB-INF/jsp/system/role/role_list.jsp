@@ -47,7 +47,11 @@
 											</tr>
 										</c:otherwise>
 										</c:choose>
-									<td></td>
+									<td>
+								<c:if test="${QX.add == 1 }">
+								&nbsp;&nbsp;<a class="btn btn-sm btn-success" onclick="addRole('${pd.ROLE_ID }');">新增角色</a>
+								</c:if>
+									</td>
 								</tr>
 							</table>
 							
@@ -149,11 +153,7 @@
 									</c:otherwise>
 								</c:choose>
 							</table>
-							<div>
-							<c:if test="${QX.add == 1 }">
-								&nbsp;&nbsp;<a class="btn btn-sm btn-success" onclick="addRole('${pd.ROLE_ID }');">新增角色</a>
-							</c:if>
-							</div>
+							
 							
 						</div>
 						<!-- /.col -->

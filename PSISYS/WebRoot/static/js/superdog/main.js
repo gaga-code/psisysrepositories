@@ -691,7 +691,7 @@
 			setTimeout(checkDog, 500);
 		}
 	}
-    if (navigator.userAgent.indexOf("Window") > 0)
+    /*if (navigator.userAgent.indexOf("Window") > 0)
     {
 
         if (window.ActiveXObject || "ActiveXObject" in window)  //IE
@@ -704,7 +704,7 @@
             window.location.href = "about:blank";
 
         }
-    }
+    }*/
 
 
     document.onkeydown = function(e) {

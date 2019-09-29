@@ -3,7 +3,9 @@
         <wb-resource deploy-path="/" source-path="/WebRoot" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/resources"/>
-        <property name="java-output-path" value="/PSISYS/WebRoot/WEB-INF/classes"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/META-INF"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/classes"/>
         <property name="context-root" value="PSISYS"/>
+        <property name="java-output-path" value="/PSISYS/WebRoot/WEB-INF/classes"/>
     </wb-module>
 </project-modules>

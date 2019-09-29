@@ -50,7 +50,7 @@ public interface FhbuttonManager{
 	 * @param ArrayDATA_IDS
 	 * @throws Exception
 	 */
-	public void deleteAll(String ArrayDATA_IDS[])throws Exception;
+	public void deleteAll(String... ArrayDATA_IDS)throws Exception;
 	
 }
 

@@ -26,6 +26,13 @@
 				
 						<input type="hidden" name="PK_SOBOOKS" id="PK_SOBOOKS" value="${pd.PK_SOBOOKS}"/>
 						<div id="zhongxin" style="padding-top: 13px;">
+						<div style="margin-bottom: 4px;">
+							<c:if test="${QX.edit == 1 }">
+								<a class="btn btn-mini btn-success" onclick="edit('${pd.PK_SOBOOKS}');">修改</a>
+							</c:if>
+							<a class="btn btn-mini btn-success" onclick="duizhang()">导出</a>
+						</div>
+						
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">标题:</td>
@@ -56,10 +63,7 @@
 							</tr>
 						</table>
 						</div>
-						<c:if test="${QX.edit == 1 }">
-							<a class="btn btn-mini btn-success" onclick="edit('${pd.PK_SOBOOKS}');">修改</a>
-						</c:if>
-						<a class="btn btn-mini btn-success" onclick="duizhang()">导出</a>
+						
 					</div>
 					<!-- /.col -->
 				</div>

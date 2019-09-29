@@ -48,7 +48,7 @@ public class StockModpriService implements SalebillManager{
 	 * @param pd
 	 * @throws Exception
 	 */
-	public void save(PageData pd)throws Exception{
+	public PageData save(PageData pd)throws Exception{
 		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_SALEBILL_PFIX); //获取该编号类型的最大编号
 		pd.put("BILLCODE", strs[0]);
 		//保存商品
@@ -88,6 +88,7 @@ public class StockModpriService implements SalebillManager{
 			ppp.put("Code_ID", strs[1]);
 			billCodeService.updateMaxNo(ppp);
 		}
+		return pd;
 	}
 	
 	/**删除
@@ -449,12 +450,13 @@ public class StockModpriService implements SalebillManager{
 	 * @throws Exception 
 	 */
 	@Override
-	public Integer getStock(PageData pd) throws Exception {
+	public PageData getStock(PageData pd) throws Exception {
 		PageData result = (PageData)dao.findForObject("StockMapper.getStock", pd);
-		Integer num = (Integer) result.get("STOCK");
-		return num;
+		//Integer num = (Integer) result.get("STOCK");
+		return result;
 	}
 
+	
 	@Override
 	public List<PageData> listForPassTimeSaleBill(Page page) throws Exception {
 		// TODO Auto-generated method stub
@@ -519,6 +521,60 @@ public class StockModpriService implements SalebillManager{
 
 	@Override
 	public List<PageData> listsalebillByGoodCode(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PageData priceSum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PageData liruSum(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> listSaleInfoByCustomerId(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PageData findCreByCustomerId(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> listAllToExcel(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> listSalebillByConditionExcel(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> listdetail(Page page) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PageData> excelDetail(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PageData findChaoqiById(PageData pd) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -29,10 +29,15 @@
 						<div class="col-xs-12">
 	
 						<table style="margin-top:10px;">
-							<tr bgcolor="#E0E0E0" style="height:26px;">
-								<td style="padding-left: 15px;">在线人数：</td>
-								<td>
+							<tr  style="height:26px;">
+								<td bgcolor="#E0E0E0" style="padding-left: 15px;">在线人数：</td>
+								<td bgcolor="#E0E0E0">
 									<div style="width:39px;" id="onlineCount">0</div>
+								</td>
+								<td style="vertical-align:top;padding-left: 10px;">
+									<c:if test="${QX.del == 1 }">
+									<a title="批量强制下线" class="btn btn-xs btn-danger" onclick="makeAll('确定要把这些用户强制下线吗?');" >强制下线</a>
+									</c:if>
 								</td>
 							</tr>
 						</table>
@@ -56,11 +61,11 @@
 				 		<div class="page-header position-relative">
 						<table style="width:100%;">
 							<tr>
-								<td style="vertical-align:top;">
+								<%-- <td style="vertical-align:top;">
 									<c:if test="${QX.del == 1 }">
 									<a title="批量强制下线" class="btn btn-mini btn-danger" onclick="makeAll('确定要把这些用户强制下线吗?');" >强制下线</a>
 									</c:if>
-								</td>
+								</td> --%>
 							</tr>
 						</table>
 						</div>
