@@ -37,5 +37,7 @@ public interface AppSalebillManager {
 
 	int listsalebillNum(PageData pd) throws Exception;
 
+	void updateshenpi(PageData pd) throws Exception;
+
 
 }

@@ -130,7 +130,7 @@ public class ReSalebillController extends BaseController{
 		pd.put("PAIDAMOUNT", 0);
 		pd.put("THISPAY", 0);
 		pd.put("ISSETTLEMENTED", 0);
-		pd = salebillService.save(pd);
+		pd = reSalebillService.save(pd);
 		List<PageData> customerList = customerService.listAll(pd);	//列出customer列表;
 		List<PageData> warehouseList = warehouseService.listAll(pd);	//列出仓库列表;
 	/*	mv.setViewName("inventorymanagement/salebill/salebill_edit");

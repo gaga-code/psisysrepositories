@@ -6,4 +6,6 @@ public interface ReSalebillManager {
 
 	void updatefanshen(PageData pd) throws Exception;
 
+	PageData save(PageData pd) throws Exception;
+
 }

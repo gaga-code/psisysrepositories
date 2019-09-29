@@ -5,12 +5,19 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.psi.dao.DaoSupport;
 import com.psi.entity.Page;
+import com.psi.entity.PsiBillCode;
 import com.psi.service.inventorymanagement.reinorder.ReInOrderManager;
+import com.psi.service.system.BillCodePsi.BillCodeManager;
+import com.psi.util.Const;
+import com.psi.util.JdbcTempUtil;
 import com.psi.util.PageData;
+import com.psi.util.ProductBillCodeUtil;
+import com.psi.util.UuidUtil;
 
 @Service
 @SuppressWarnings("unchecked")
@@ -18,6 +25,18 @@ public class ReInOrderService implements ReInOrderManager{
 
 	@Resource(name="daoSupport")
 	private DaoSupport dao;
+	
+	
+	//用于批量删除
+	@Autowired
+	private JdbcTempUtil jdbcTempUtil;
+	
+	@Autowired
+	private ProductBillCodeUtil productBillCodeUtil;
+	
+	@Resource(name="billCodeService")
+	private BillCodeManager billCodeService;
+	
 	@Override
 	public List<PageData> list(Page page) throws Exception {
 		// TODO Auto-generated method stub
@@ -89,6 +108,63 @@ public class ReInOrderService implements ReInOrderManager{
 		
 	}
 	
+	
+	/**新增
+	 * @param pd
+	 * @throws Exception
+	 */
+	@Override
+	public void save(PageData pd)throws Exception{
+		String[] strs = productBillCodeUtil.getBillCode(Const.BILLCODE_SUPPRETURN_PFIX); //获取该编号类型的最大编号
+		pd.put("BILLCODE", strs[0]);
+		//保存商品
+		String goodslist = (String) pd.get("goodslist");
+		String[] split = goodslist.split("#");
+		//遍历每行数据
+		for(int i = 0; i < split.length; i++) {
+			String[] agoods = split[i].split(",");
+			PageData pageData = new PageData();
+			pageData.put("INORDERBODY_ID", UuidUtil.get32UUID());
+			pageData.put("INORDER_ID", pd.get("INORDER_ID"));
+			pageData.put("PK_SOBOOKS", pd.get("PK_SOBOOKS"));
+			pageData.put("APPBILLNO", strs[0]);
+			
+			pageData.put("GOODCODE_ID", agoods[1]);
+			pageData.put("WAREHOUSE_ID", agoods[2]);
+			pageData.put("UNITPRICE_ID", agoods[3]);
+			pageData.put("PNUMBER", agoods[4]);
+			pageData.put("AMOUNT", agoods[6]);
+			
+			if(agoods.length==8){ //如果BARCODE有值，agoods的长度是9
+				pageData.put("NOTE", agoods[7]);
+			}else{  //否则长度为8
+				pageData.put("NOTE", "");
+			}
+			
+			if(agoods.length==9){ //如果BARCODE有值，agoods的长度是9
+				pageData.put("BARCODE", agoods[8]);
+			}else{  //否则长度为8
+				pageData.put("BARCODE", null);
+			}
+			
+			dao.save("InOrderBodyMapper.save", pageData);
+		}
+		dao.save("InOrderMapper.save", pd);
+		//保存进货单编号
+		if(strs[1] == null){ //新增
+			PsiBillCode psiBillCode = new PsiBillCode();
+			psiBillCode.setCode_ID(UuidUtil.get32UUID());
+			psiBillCode.setCodeType(Const.BILLCODE_SUPPRETURN_PFIX);
+			psiBillCode.setMaxNo(strs[0]);
+			psiBillCode.setNOTE("退货编号");
+			billCodeService.insertBillCode(psiBillCode);
+		}else{//修改
+			PageData ppp = new PageData();
+			ppp.put("MaxNo",strs[0]);
+			ppp.put("Code_ID", strs[1]);
+			billCodeService.updateMaxNo(ppp);
+		}
+	}
 	
 	
 }

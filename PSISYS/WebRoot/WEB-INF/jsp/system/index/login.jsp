@@ -14,10 +14,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <!--使用加密狗 -->
-<object id="AuthIE" name="AuthIE" width="0px" height="0px"
+<!-- <object id="AuthIE" name="AuthIE" width="0px" height="0px"
 			codebase="DogAuth.CAB#version=2,3,1,58083"
 			classid="CLSID:05C384B0-F45D-46DB-9055-C72DC76176E3">
-</object>
+</object> -->
 
 <link rel="stylesheet" href="static/login/bootstrap.min.css" />
 <link rel="stylesheet" href="static/login/css/camera.css" />
@@ -25,9 +25,9 @@
 <link rel="stylesheet" href="static/login/matrix-login.css" />
 <link href="static/login/font-awesome.css" rel="stylesheet" />
 
-<!-- 使用加密狗 static/js/superdog/login.js-->
+<!-- <!-- 使用加密狗 static/js/superdog/login.js-->
 <script type="text/javascript" src="static/js/superdog/login.js"></script>
-
+ -->
 <script type="text/javascript" src="static/login/js/jquery-1.5.1.min.js"></script>
 <!-- 软键盘控件start -->
 <!-- <link href="static/login/keypad/css/framework/form.css" rel="stylesheet" type="text/css"/> -->
@@ -300,8 +300,8 @@
 		}; */
 	</script>
 </head>
-<body onload="loadFunc()"> <!-- 使用加密狗  onload="loadFunc()-->
-	
+<!-- <body onload="loadFunc()">  --><!-- 使用加密狗  onload="loadFunc()-->
+ <body>	
 	<%-- <c:if test="${pd.isMusic == 'yes' }">
 	<div style="display: none">
 	    <audio src="static/login/music/fh1.mp3" autoplay=""></audio>
@@ -563,11 +563,11 @@
 					success: function(data){
 						if("success" == data.result){
 							
-							/*	saveCookie();
-								window.location.href = "main/index";  */
+								saveCookie();
+								window.location.href = "main/index";  
 								
 							// <!-- 使用加密狗  validateLogin-->
-							if(validateLogin()===true) {
+							/* if(validateLogin()===true) {
 								saveCookie();
 								window.location.href = "main/index";
 							}
@@ -578,7 +578,7 @@
 									bg: '#FF5080',
 									time: 15
 								});
-							}
+							} */
 						}else if("usererror" == data.result){
 							$("#loginname").tips({
 								side : 1,

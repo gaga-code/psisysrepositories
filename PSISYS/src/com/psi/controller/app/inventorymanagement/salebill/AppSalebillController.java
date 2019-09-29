@@ -627,7 +627,7 @@ public class AppSalebillController extends BaseController {
 		map.put("BILLCODE", pd.get("BILLCODE"));
 		map.put("OK", "OK");
 		
-		salebillService.updateshenpi(pd);
+		appSalebillService.updateshenpi(pd);
 		
 		return map ;
 	}

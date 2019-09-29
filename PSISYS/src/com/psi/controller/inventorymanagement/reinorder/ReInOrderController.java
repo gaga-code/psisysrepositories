@@ -186,7 +186,7 @@ public class ReInOrderController extends BaseController {
 		pd.put("PAIDAMOUNT", 0);
 		pd.put("THISPAY", 0);
 		pd.put("ISSETTLEMENTED", 0);
-		inOrderService.save(pd);
+		reInOrderService.save(pd);
 //		mv.addObject("msg","success");
 //		mv.setViewName("save_result");
 //		mv.setViewName("inventorymanagement/inorder/inorder_list");
