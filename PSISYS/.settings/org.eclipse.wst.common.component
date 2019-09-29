@@ -5,7 +5,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/META-INF"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/classes"/>
-        <property name="context-root" value="PSISYS"/>
         <property name="java-output-path" value="/PSISYS/WebRoot/WEB-INF/classes"/>
+        <property name="context-root" value="psisys"/>
     </wb-module>
 </project-modules>
