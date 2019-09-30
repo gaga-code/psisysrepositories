@@ -513,8 +513,8 @@ public class CustomersetbillController extends BaseController {
 		titles.add("录单日期");	//3
 		titles.add("客户名称");	//4
 		titles.add("经手人");	//5
-		titles.add("支付方式");	//6
-		titles.add("金额");	//7
+		titles.add("金额");	//6
+		titles.add("支付方式");	//7
 		dataMap.put("titles", titles);
 		
 		String lastLoginStart = pd.getString("lastStart");	//开始时间
@@ -535,6 +535,9 @@ public class CustomersetbillController extends BaseController {
 		
 		List<PageData>	varOList = customersetbillService.excelDetail(pd);	//列出customersetbill列表
 		
+		//根据支付方式进行合计
+		List<PageData>	countList = customersetbillService.excelCount(pd);
+		
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
@@ -546,6 +549,20 @@ public class CustomersetbillController extends BaseController {
 			vpd.put("var6", String.valueOf(varOList.get(i).get("PAYMENTAMOUNT")));	    //8
 			vpd.put("var7", varOList.get(i).getString("PAYMETHODNAME"));	    //9
 	
+			varList.add(vpd);
+		}
+		//换行
+		 PageData line = new PageData();
+		 line.put("var1", "");
+		 line.put("var2", ""); varList.add(line);
+		PageData countTittles = new PageData();
+		countTittles.put("var1", "支付方式");	    //1
+		countTittles.put("var2", "合计");
+		varList.add(countTittles);
+		for(int i=0;i<countList.size();i++){
+			PageData vpd = new PageData();
+			vpd.put("var1", countList.get(i).getString("PAYMETHODNAME"));	    //1
+			vpd.put("var2", String.valueOf(countList.get(i).get("PAYMENTAMOUNT")));	    //2
 			varList.add(vpd);
 		}
 		dataMap.put("title", "客户结算明细单"); 

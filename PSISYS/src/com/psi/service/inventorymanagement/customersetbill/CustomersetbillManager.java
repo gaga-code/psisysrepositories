@@ -93,6 +93,9 @@ public interface CustomersetbillManager{
 	public List<PageData> excelDetail(PageData pd) throws Exception;
 	
 	
+	public List<PageData> excelCount(PageData pd) throws Exception;
+	
+	
 	
 }
 

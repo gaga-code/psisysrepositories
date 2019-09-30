@@ -413,4 +413,42 @@
 		</if>
 		order by a.CREATETIME desc
 	</select>
+	
+	
+	
+	
+	
+	
+	<select id="excelCount" parameterType="pd" resultType="pd">
+	select a.PAYMETHOD,c.PAYMETHODNAME,sum(a.PAYMENTAMOUNT) as PAYMENTAMOUNT
+	from psi_customersetbill as a 
+	left join base_paymethod as c on a.PAYMETHOD=c.PAYMETHOD_ID 
+	where  a.PK_SOBOOKS=#{PK_SOBOOKS}
+	and ifnull(a.dr,0)=0
+	<if test="flag!=1">
+		<if test="lastStart!=null and lastStart!='' ">
+			<if test="lastEnd!=null and lastEnd!='' ">
+			 and Date(a.LASTTIME) BETWEEN #{lastStart} and #{lastEnd}
+			</if>
+		</if>
+	</if>
+	group by a.PAYMETHOD,c.PAYMETHODNAME
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </mapper>

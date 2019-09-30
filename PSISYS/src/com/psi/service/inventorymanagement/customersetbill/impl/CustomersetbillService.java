@@ -448,5 +448,11 @@ public class CustomersetbillService implements CustomersetbillManager{
 		return (List<PageData>)dao.findForList("CustomersetbillMapper.excelDetail", pd);
 	}
 	
+	@Override
+	public List<PageData> excelCount(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>)dao.findForList("CustomersetbillMapper.excelCount", pd);
+	}
+	
 }
 
